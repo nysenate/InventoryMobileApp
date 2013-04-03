@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Verification2" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/preferencePWD"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/preferencePWD"
+        android:layout_marginTop="67dp"
+        android:hint="@string/verify_msg2"
+        android:isScrollContainer="true"
+        android:text="@string/verify2_list"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/preferencePWD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/barcode_number" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="@string/verify_msg2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/preferencePWD"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="52dp"
+        android:onClick="cancelButton"
+        android:text="@string/cancel_button" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button2"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_alignLeft="@+id/textView2"
+        android:onClick="cancelButton"
+        android:text="@string/ok_button" />
+
+</RelativeLayout>

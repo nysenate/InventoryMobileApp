@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="gov.nysenate.inventory.android"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+		<receiver android:name=".CheckInternet" >
+    			<intent-filter >
+        			<action android:name="android.net.wifi.STATE_CHANGE" />
+        			<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+    			</intent-filter>
+		</receiver>
+        <activity
+            android:name="gov.nysenate.inventory.android.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.DisplayMessageActivity"
+            android:label="@string/title_activity_display_message"
+            android:parentActivityName="gov.nysenate.inventory.android.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MainActivity" />
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.HttpExampleActivity"
+            android:label="@string/title_activity_http_example" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.MenuActivity"
+            android:label="@string/title_activity_menu" 
+            android:parentActivityName="gov.nysenate.inventory.android.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MainActivity" />         
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.MovP1"
+            android:label="@string/title_activity_add_item" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.LocationActivity"
+            android:label="@string/title_activity_location" 
+            android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.CloseActivity"
+            android:label="@string/title_activity_close" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.SearchResultActivity"
+            android:label="@string/title_activity_search_result" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.AddItemActivity2"
+            android:label="@string/title_activity_add_item_activity2" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.MovPick1"
+            android:label="@string/title_activity_mov_pick1" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Movp1"
+            android:label="@string/title_activity_movp1" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Move_pickup1"
+            android:label="@string/title_activity_move_pickup1" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Move"
+            android:label="@string/title_activity_move" 
+            android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Pickup1"
+            android:label="@string/title_activity_pickup1" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Pickup2Activity"
+            android:label="@string/title_activity_pickup2" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Verification"
+            android:label="@string/title_activity_verification"
+            android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.TableActivity"
+            android:label="@string/title_activity_table" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Verification_list"
+            android:label="@string/title_activity_verification2" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.VeriListActivity"
+            android:label="@string/title_activity_veri_list"
+            android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.ListActivity"
+            android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.ListtestActivity"
+            android:label="@string/title_activity_listtest" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.VerSummaryActivity"
+            android:label="@string/title_activity_ver_summary" >
+        </activity>        
+    </application>
+
+</manifest>
