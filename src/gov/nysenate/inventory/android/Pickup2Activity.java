@@ -237,7 +237,7 @@ public class Pickup2Activity extends Activity {
         		       "Scanned items(Existing+New) : "+AllScannedItems.size() +"\n"+
         		       "Missing items : "+missingItems.size() +"\n"+
         		       "New items     : "+newItems.size()+"\n";
-		Intent intent = new Intent(this, Move.class); // change later to pickup3
+		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("loc_code", loc_code);
 		intent.putExtra("summery", summery);
 		intent.putIntegerArrayListExtra("scannedBarcodeNumbers", scannedItems);

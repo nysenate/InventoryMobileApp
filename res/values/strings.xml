@@ -52,16 +52,20 @@
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_listtest">ListtestActivity</string>
     <string name="count">Count</string>
-    <string name="image">Thumbnail</string>    
-    <string name="title_activity_ver_summary">VerSummaryActivity</string>    
-    <string name="preferences_title">Your Preferences</string>  
-    <string name="ver_summary_title">Scanned Summary Confirmation</string>   
+    <string name="image">Thumbnail</string>
+    <string name="title_activity_ver_summary">VerSummaryActivity</string>
+    <string name="preferences_title">Your Preferences</string>
+    <string name="ver_summary_title">Scanned Summary Confirmation</string>
+
     <string-array name="verify_sort">
         <item>Description</item>
         <item>Senate Tag#</item>
         <item>Last Inventory Date</item>
         <item>Last Inventory Date Descending</item>
-    </string-array>   
+    </string-array>
+
     <string name="pickup2Msg">Please scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
+    <string name="title_activity_pickup3">Pickup3</string>
+
 </resources>

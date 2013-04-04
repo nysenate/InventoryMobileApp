@@ -10,22 +10,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-		<receiver android:name=".CheckInternet" >
-    			<intent-filter >
-        			<action android:name="android.net.wifi.STATE_CHANGE" />
-        			<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-    			</intent-filter>
-		</receiver>
+        <receiver android:name="gov.nysenate.inventory.android.CheckInternet" >
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="gov.nysenate.inventory.android.MainActivity"
             android:label="@string/app_name" >
@@ -34,7 +36,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </activity>
+        </activity>
         <activity
             android:name="gov.nysenate.inventory.android.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
@@ -49,11 +51,11 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.MenuActivity"
-            android:label="@string/title_activity_menu" 
+            android:label="@string/title_activity_menu"
             android:parentActivityName="gov.nysenate.inventory.android.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MainActivity" />         
+                android:value="gov.nysenate.inventory.android.MainActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.SearchActivity"
@@ -61,8 +63,7 @@
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />            
-
+                android:value="gov.nysenate.inventory.android.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.MovP1"
@@ -70,11 +71,11 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.LocationActivity"
-            android:label="@string/title_activity_location" 
+            android:label="@string/title_activity_location"
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+                android:value="gov.nysenate.inventory.android.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.CloseActivity"
@@ -102,11 +103,11 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Move"
-            android:label="@string/title_activity_move" 
+            android:label="@string/title_activity_move"
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+                android:value="gov.nysenate.inventory.android.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup1"
@@ -122,7 +123,7 @@
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />            
+                android:value="gov.nysenate.inventory.android.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.TableActivity"
@@ -138,8 +139,7 @@
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />            
-
+                android:value="gov.nysenate.inventory.android.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.ListActivity"
@@ -152,7 +152,11 @@
         <activity
             android:name="gov.nysenate.inventory.android.VerSummaryActivity"
             android:label="@string/title_activity_ver_summary" >
-        </activity>        
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Pickup3"
+            android:label="@string/title_activity_pickup3" >
+        </activity>
     </application>
 
 </manifest>
