@@ -6,100 +6,84 @@
     android:paddingLeft="20dp"
     tools:context=".Pickup1" >
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="100sp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_alignTop="@+id/button1"
-        android:layout_marginLeft="34dp"
-        android:layout_toRightOf="@+id/button1"
-        android:onClick="okButton"
-        android:padding="4dip"
-        android:paddingTop="20dp"
-        android:text="@string/ok_button" />
-
+    
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/select_origin_loc"
-        android:textSize="25sp" />
+        android:layout_marginTop="17dp"
+        android:text="@string/select_origin_loc" />
 
-    <EditText
-        android:id="@+id/barcode"
-        android:layout_width="wrap_content"
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView1"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="14dp"
-        android:layout_toRightOf="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="140dp"
         android:ems="10"
-        android:hint="@string/barcode_number"
-        android:inputType="number"
-        android:padding="4dip" >
+        android:hint="@string/select_origin_loc" >
 
         <requestFocus />
 
-    </EditText>
+    </AutoCompleteTextView>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="100sp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/barcode"
-        android:layout_alignBottom="@+id/barcode"
-        android:layout_alignLeft="@+id/textView2"
-        android:onClick="search"
-        android:padding="4dip"
-        android:paddingTop="20dp"
-        android:text="@string/scan_button" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="100sp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="17dp"
-        android:onClick="cancelButton"
-        android:padding="4dip"
-        android:text="@string/cancel_button" />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignLeft="@+id/autoCompleteTextView1"
+        android:layout_alignRight="@+id/autoCompleteTextView1"
+        android:layout_below="@+id/autoCompleteTextView1"
+        android:layout_marginTop="21dp"
+        android:hint="@string/details"
+        android:text="@string/details" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_below="@+id/button2"
-        android:layout_marginTop="24dp"
-        android:text="@string/select_dest_loc" />
+        android:layout_height="200dp"
+        android:layout_alignLeft="@+id/autoCompleteTextView2"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_below="@+id/autoCompleteTextView2"
+        android:layout_marginTop="44dp"
+        android:hint="@string/details"
+        android:text="TextView" />
 
-    <EditText
-        android:id="@+id/preferencePWD"
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_below="@+id/textView2"
         android:ems="10"
-        android:hint="@string/select_dest_hint" >
-    </EditText>
+        android:hint="@string/select_dest_loc" >
+    </AutoCompleteTextView>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="222dp"
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button1"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_alignLeft="@+id/textView1"
+        android:onClick="cancelButton"
+        android:text="@string/cancel_button" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/textView3"
-        android:layout_below="@+id/preferencePWD"
-        android:lines="5"
-        android:padding="4dip"
-        android:paddingTop="30dp"
-        android:text="@string/details"
-        android:textSize="25sp" />
+        android:layout_alignTop="@+id/textView3"
+        android:layout_marginTop="181dp"
+        android:hint="@string/ok_button"
+        android:onClick="okButton"
+        android:text="@string/ok_button" />
 
 </RelativeLayout>
