@@ -235,7 +235,7 @@ public class Pickup2Activity extends Activity {
 		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("originLocation", originLocation);
 		intent.putExtra("destinationLocation", destinationLocation);
-		String countStr= ""+count;
+		String countStr= Integer.toString(count);
 		intent.putExtra("count", countStr);
 		intent.putIntegerArrayListExtra("scannedBarcodeNumbers", scannedItems);
 		intent.putStringArrayListExtra("scannedList", AllScannedItems);//scanned items list
