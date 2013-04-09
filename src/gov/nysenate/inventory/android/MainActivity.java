@@ -10,6 +10,7 @@ import android.text.Html;
 
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,7 +44,7 @@ public class MainActivity extends Activity {
 	String senateSSIDpwd = "";
 	String senateVisitorSSID = "";
 	String senateVisitorSSIDpwd = "";
-	String wifiMessage = "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app.";
+	String wifiMessage = "" /*"Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app."*/;
 	String currentSSID = "";
 
 	String URL = "";
@@ -154,7 +155,7 @@ public class MainActivity extends Activity {
 				}
 			}
 
-			if (senateWifiFound > -1) {
+/*			if (senateWifiFound > -1) {
 				wifiMessage = "YES!";
 				// wifiMessage =
 				// "Great news!!! NY Senate Wireless Network was found. You should have access to information needed for this app.";
@@ -164,7 +165,7 @@ public class MainActivity extends Activity {
 				wifiMessage = "Okay news!!! Wireless Networks were found but none of them are NY Senate Wireless Networks. You *might* have access to information needed for this app if you can connect to one of these networks.";
 			} else {
 				wifiMessage = "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app.";
-			}
+			}*/
 
 			if (connectedTo == -1) {
 				// wifiMessage = wifiMessage +
@@ -372,6 +373,17 @@ public class MainActivity extends Activity {
 
 	// our code begins
 
+	public void setPreferences() {
+		Intent intent = new Intent(this, PreferenceActivity.class);
+		// Intent intent = new Intent(this, MenuActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+	
+	}
+	
+	
+
+	
 	public void validate(View view) {
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		// Intent intent = new Intent(this, MenuActivity.class);
