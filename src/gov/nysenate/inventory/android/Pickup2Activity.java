@@ -231,19 +231,14 @@ public class Pickup2Activity extends Activity {
 	}
 	
 	public void okButton(View view){
-		//create lists for summery activity
-		  ArrayList<String> missingItems=new ArrayList<String>();// for saving items which are not allocated to that location
-        String summery="Total items   : "+numItems+"\n"+
-        		       "Scanned items(Existing+New) : "+AllScannedItems.size() +"\n"+
-        		       "Missing items : "+missingItems.size() +"\n"+
-        		       "New items     : "+newItems.size()+"\n";
+		// send the data to Pickup3 activity
 		Intent intent = new Intent(this, Pickup3.class); 
-		intent.putExtra("loc_code", loc_code);
-		intent.putExtra("summery", summery);
+		intent.putExtra("originLocation", originLocation);
+		intent.putExtra("destinationLocation", destinationLocation);
+		String countStr= ""+count;
+		intent.putExtra("count", countStr);
 		intent.putIntegerArrayListExtra("scannedBarcodeNumbers", scannedItems);
 		intent.putStringArrayListExtra("scannedList", AllScannedItems);//scanned items list
-		intent.putStringArrayListExtra("missingList", missingItems);//missing items list
-		intent.putStringArrayListExtra("newItems", newItems);//new items list
 		startActivity(intent);
 	}
 	
