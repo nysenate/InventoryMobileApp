@@ -18,8 +18,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.speech.RecognizerIntent;
 
 public class MenuActivity extends Activity implements OnItemClickListener {
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+	    
+	private ListView mList;
+	    
 	public static final String[] titles = new String[] { "Search",
 			"Verification", "Move Items", "Logout" };
 
@@ -235,5 +240,18 @@ public class MenuActivity extends Activity implements OnItemClickListener {
 		dialog.show();
 
 	}
+	
+	
+
+    /**
+     * Fire an intent to start the speech recognition activity.
+     */
+    private void startVoiceRecognitionActivity() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
+        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+    }	
 
 }

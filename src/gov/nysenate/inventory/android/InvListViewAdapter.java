@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
  
 public class InvListViewAdapter extends ArrayAdapter<InvItem> {
@@ -25,7 +28,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
  
     /*private view holder class*/
     private class ViewHolder {
-    	
+    	ImageView speech2Txt;
     	TextView decommodityf;
     }
  
@@ -38,6 +41,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.invlist_item, null);
             holder = new ViewHolder();
+            holder.speech2Txt  = (ImageView) convertView.findViewById(R.id.invListSpeech);
             holder.decommodityf = (TextView) convertView.findViewById(R.id.invListItem);
             convertView.setTag(holder);
         } else {
@@ -46,10 +50,14 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         
         if (position%2>0) {
         	holder.decommodityf.setBackgroundColor(context.getResources().getColor(R.color.white));
-        }
+        	holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.speech2Txt.setImageResource(R.drawable.speech2txt);
+                    }
         else {
+        	holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
         	holder.decommodityf.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-        }
+            holder.speech2Txt.setImageResource(-1);
+                    }
  
         if (rowItem.getType().equalsIgnoreCase("NEW")) {
             holder.decommodityf.setText(rowItem.getNusenate()+" "+rowItem.getDecommodityf());
@@ -60,7 +68,18 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         	holder.decommodityf.setTextColor( context.getResources().getColor(R.color.black) ); //black
         	
         }
- 
+        OnClickListener l = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (v.getId()==R.id.invListSpeech){
+					
+				}
+				
+			}
+        };
+		holder.speech2Txt.setOnClickListener(l); 
         return convertView;
     }
+    
+    
 }

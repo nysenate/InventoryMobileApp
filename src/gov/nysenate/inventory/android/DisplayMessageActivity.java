@@ -78,10 +78,17 @@ public class DisplayMessageActivity extends Activity {
 					finish();
 				}
 				status = "yes1";
+				if (user_name==null||user_name.trim().length()==0) { // TESTING PURPOSE ONLY!!!
+					user_name = "height";
+				}
+				MainActivity.nauser = user_name;
+				System.out.println ("NAUSER NOW SET TO "+user_name);
 			} else {
 				// display error
 				status = "no";
-			}
+				MainActivity.nauser = null;
+				System.out.println ("NAUSER NULL!!");
+				}
 
 			// Create the text view
 			TextView textView = new TextView(this);

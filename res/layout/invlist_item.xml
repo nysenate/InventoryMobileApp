@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
- 
     <TextView
         android:id="@+id/invListItem"
 	    android:layout_width="match_parent"
@@ -13,5 +12,12 @@
     	android:paddingRight="?android:attr/listPreferredItemPaddingRight"
     	android:minHeight="?android:attr/listPreferredItemHeightSmall"
         />
+     <ImageView
+        android:id="@+id/invListSpeech"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/invListItem"
+    	android:gravity="center_vertical"        
+        android:layout_alignParentRight="true"/>
     
 </RelativeLayout>

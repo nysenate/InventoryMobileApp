@@ -2,8 +2,13 @@ package gov.nysenate.inventory.android;
 
 
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -16,6 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,11 +29,21 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -43,11 +59,16 @@ public class Pickup3 extends Activity {
 	String originLocation=null;
 	String destinationLocation=null;
 	String count=null;
+	private SignatureView sign;
+	private byte[] imageInByte = {};
+	Intent intent = getIntent();	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pickup3);
-		
+		 sign = (SignatureView) findViewById(R.id.blsignImageView);
+		 //sign.setBackgroundResource(R.drawable.smove);
+		 //sign.setPadding(2,2,0,0);
 
     	// Find the ListView resource.   
       ListView  ListViewTab1 = (ListView) findViewById( R.id.listView1);  
@@ -83,6 +104,9 @@ public class Pickup3 extends Activity {
 		return true;
 	}
 
+	public void clearSignature(View view) {
+		sign.clearSignatureWorkaround();
+	}
 	
 public void okButton(View view){
 		
@@ -125,8 +149,11 @@ public void okButton(View view){
  					AsyncTask<String, String, String> resr1;
 						try {
 							// Get the URL from the properties 
-			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();    
-			 				resr1 = new RequestTask().execute(URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum);
+							
+							
+			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+			 			    System.out.println("("+MainActivity.nauser+")");
+			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem=6221", URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum);
 							res=resr1.get().trim().toString();
 						
  						} catch (InterruptedException e) {
@@ -160,17 +187,105 @@ public void okButton(View view){
 		startActivity(intent);
 	}
 
-	
+/*class ImageUploadTask extends AsyncTask<String, String, String> {
+
+			@Override
+			protected String doInBackground(String... uri) {
+				//HttpClient httpclient = new DefaultHttpClient();
+				//HttpResponse response;
+				//String responseString = null;
+				//Get connection to image upload web service
+				 ByteArrayOutputStream bs = new ByteArrayOutputStream();
+				 Bitmap bitmap = sign.getImage();
+				 bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+				 imageInByte = bs.toByteArray();
+				 System.out.println("Image Byte Array Size:"+imageInByte.length);
+				 String response = "";			
+				 try {
+				 URL url = new URL(uri[0]+"?filename=newimage");
+
+				 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				 // Set connection parameters.
+				 conn.setDoInput(true);
+				 conn.setDoOutput(true);
+				 conn.setUseCaches(false);
+				 
+				 //Set content type to PNG
+				 conn.setRequestProperty("Content-Type", "image/png");
+				 OutputStream outputStream = conn.getOutputStream();
+				 OutputStream out =  outputStream;
+				 // Write out the bytes of the content string to the stream.
+				 out.write(imageInByte);
+				 out.flush();
+				 out.close();
+				 // Read response from the input stream.
+				 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				 String temp;
+				 while ((temp = in.readLine()) != null) {
+					 response += temp + "\n";
+				 }
+				 temp = null;
+				 in.close();
+				 System.out.println("Server response:\n'" + response + "'");
+				 
+				 } catch (Exception e) {
+				 e.printStackTrace();
+				 }	
+				 return response;
+			}
+		}    */
+	    		
+
 	class RequestTask extends AsyncTask<String, String, String>{
 
 	    @Override
 	    protected String doInBackground(String... uri) {
-	        HttpClient httpclient = new DefaultHttpClient();
+	    	// First Upload the Signature and get the nuxsign from the Server
+	    	
+			 ByteArrayOutputStream bs = new ByteArrayOutputStream();
+			 Bitmap bitmap = sign.getImage();
+			 bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+			 imageInByte = bs.toByteArray();
+			 System.out.println("Image Byte Array Size:"+imageInByte.length);
+			 String responseString = "";			
+			 try {
+			 URL url = new URL(uri[0]);
+
+			 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			 // Set connection parameters.
+			 conn.setDoInput(true);
+			 conn.setDoOutput(true);
+			 conn.setUseCaches(false);
+			 
+			 //Set content type to PNG
+			 conn.setRequestProperty("Content-Type", "image/png");
+			 OutputStream outputStream = conn.getOutputStream();
+			 OutputStream out =  outputStream;
+			 // Write out the bytes of the content string to the stream.
+			 out.write(imageInByte);
+			 out.flush();
+			 out.close();
+			 // Read response from the input stream.
+			 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			 String temp;
+			 while ((temp = in.readLine()) != null) {
+				 responseString += temp + "\n";
+			 }
+			 temp = null;
+			 in.close();
+			 System.out.println("Server response:\n'" + responseString + "'");
+			 
+			 } catch (Exception e) {
+			 e.printStackTrace();
+			 }	
+
+	    	// Then post the rest of the information along with the NUXRSIGN 
+	    	HttpClient httpclient = new DefaultHttpClient();
 	        HttpResponse response;
-	        String responseString = null;
+	        responseString = null;
 	        try {
 	        	
-	           response = httpclient.execute(new HttpGet(uri[0]));
+	           response = httpclient.execute(new HttpGet(uri[1]));
 	       //   HttpPost hp=   	new HttpPost(uri[0]);
 	        	//HttpGet hp=   	new HttpGet(uri[0]);
 	        //	hp.setHeader("Content-Type", "application/json"); // just for this we want the variable to be json object
@@ -199,4 +314,8 @@ public void okButton(View view){
 	    }
 	}
 	
+	
+	
+		
+   
 }

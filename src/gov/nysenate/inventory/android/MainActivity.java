@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
 	String currentSSID = "";
     private ListView mList;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+	public static String nauser = null;
 
 	String URL = "";
 	public static Properties properties; // Since we want to refer to this in

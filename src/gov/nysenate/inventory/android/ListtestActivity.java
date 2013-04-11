@@ -25,6 +25,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -34,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class ListtestActivity extends Activity {
 	public EditText count_text;
 	public TextView loc_details;
 	public String res = null;
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;	
 	public String status = null;
 	public ListView listView;
 	public String loc_code = null; // populate this from the location code from
@@ -166,6 +169,7 @@ public class ListtestActivity extends Activity {
 			status = "no";
 		}
 
+	    
 		adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
 
 		// ArrayAdapter<StringBuilder>
@@ -180,6 +184,7 @@ public class ListtestActivity extends Activity {
 		count_text.setText(Integer.toString(count));
 		// populate the listview
 		listView.setAdapter(adapter);
+	
 		// --code from other activity
 		// ends-----------------------------------------------------------------
 
@@ -191,7 +196,30 @@ public class ListtestActivity extends Activity {
 		// listView = (ListView) findViewById(R.id.listView1 );
 
 	}
+    private void startVoiceRecognitionActivity() {
+        Intent intentSpeech = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intentSpeech.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intentSpeech.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
+        startActivityForResult(intentSpeech, VOICE_RECOGNITION_REQUEST_CODE);
+    }	
+    
+    /**
+     * Handle the results from the recognition activity.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Fill the list view with the strings the recognizer thought it could have heard
+            ArrayList<String> matches = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+        	TextView t = (TextView) findViewById(R.id.textView2);
+        	t.setText(matches.get(0));
+        }
 
+        super.onActivityResult(requestCode, resultCode, data);
+    }    
+    
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void onTextChanged(CharSequence s, int start, int before,

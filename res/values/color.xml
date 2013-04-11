@@ -14,5 +14,6 @@
  <color name="blueback">#99FFFF</color>
  <color name="articlecolor">#3399FF</color> 
  <color name="article_title">#3399FF</color> 
+ <color name="signcolor">#F5F7A3</color> 
  <color name="cachecolor">#8ad0e8</color>
 </resources>
