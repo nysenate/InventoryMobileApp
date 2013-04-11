@@ -62,6 +62,8 @@ public class Pickup3 extends Activity {
 	private SignatureView sign;
 	private byte[] imageInByte = {};
 	Intent intent = getIntent();	
+	String originLocationCode="";
+	String destinationLocationCode="";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +83,11 @@ public class Pickup3 extends Activity {
       scannedBarcodeNumbers=getIntent().getIntegerArrayListExtra("scannedBarcodeNumbers");
       loc_code=getIntent().getStringExtra("loc_code");
       
+      String originLocationCodeArr[]=originLocation.split("-");
+      originLocationCode=originLocationCodeArr[0];
+      String destinationLocationCodeArr[]=destinationLocation.split("-");
+      destinationLocationCode=destinationLocationCodeArr[0];
+  
       // Create summary from the given information
      	String summery="Origin Location      : "+ originLocation+"\n"+
 		       "Destination location : "+destinationLocation+"\n"+"\n"+
@@ -135,7 +142,12 @@ public void okButton(View view){
 		}
      */		
 		
-	
+	// call the servlet image upload and return the nuxrsign
+	  
+	  String NAPICKUPBY="Vik";
+	  String NUXRPUSIGN="1234";
+	  String NUXRRELSIGN="2345";
+	  String NARELEASEBY="vRelease";
 	  
 	// Send it to the server	
 		
@@ -148,12 +160,11 @@ public void okButton(View view){
 									
  					AsyncTask<String, String, String> resr1;
 						try {
-							// Get the URL from the properties 
-							
-							
+							// Get the URL from the properties 						
 			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			 			    System.out.println("("+MainActivity.nauser+")");
-			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem=6221", URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum);
+			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem=6221", URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
+
 							res=resr1.get().trim().toString();
 						
  						} catch (InterruptedException e) {
