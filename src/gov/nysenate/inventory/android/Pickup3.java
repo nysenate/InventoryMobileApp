@@ -4,6 +4,7 @@ package gov.nysenate.inventory.android;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -43,6 +44,8 @@ public class Pickup3 extends Activity {
 	String originLocation=null;
 	String destinationLocation=null;
 	String count=null;
+	 String originLocationCode="";
+	 String destinationLocationCode="";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +63,11 @@ public class Pickup3 extends Activity {
       scannedBarcodeNumbers=getIntent().getIntegerArrayListExtra("scannedBarcodeNumbers");
       loc_code=getIntent().getStringExtra("loc_code");
       
+      String originLocationCodeArr[]=originLocation.split("-");
+      originLocationCode=originLocationCodeArr[0];
+      String destinationLocationCodeArr[]=destinationLocation.split("-");
+      destinationLocationCode=destinationLocationCodeArr[0];
+  
       // Create summary from the given information
      	String summery="Origin Location      : "+ originLocation+"\n"+
 		       "Destination location : "+destinationLocation+"\n"+"\n"+
@@ -113,10 +121,10 @@ public void okButton(View view){
 		
 	// call the servlet image upload and return the nuxrsign
 	  
-	  String NAPICKUPBY="";
-	  String NUXRPUSIGN="";
-	  String NUXRRELSIGN="";
-	  String NARELEASEBY="";
+	  String NAPICKUPBY="Vik";
+	  String NUXRPUSIGN="1234";
+	  String NUXRRELSIGN="2345";
+	  String NARELEASEBY="vRelease";
 	  
 	// Send it to the server	
 		
@@ -131,7 +139,11 @@ public void okButton(View view){
 						try {
 							// Get the URL from the properties 
 			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();    
-			 				resr1 = new RequestTask().execute(URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
+			 			    
+			 			//  String URI = java.net.URLEncoder.encode(URL+"/"+"Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY, "utf-8");
+			 			
+			 			   resr1 = new RequestTask().execute(URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
+			 			//  resr1 = new RequestTask().execute(resr1);
 							res=resr1.get().trim().toString();
 						
  						} catch (InterruptedException e) {
