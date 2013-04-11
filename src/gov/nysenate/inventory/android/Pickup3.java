@@ -113,7 +113,10 @@ public void okButton(View view){
 		
 	// call the servlet image upload and return the nuxrsign
 	  
-	  
+	  String NAPICKUPBY="";
+	  String NUXRPUSIGN="";
+	  String NUXRRELSIGN="";
+	  String NARELEASEBY="";
 	  
 	// Send it to the server	
 		
@@ -128,7 +131,7 @@ public void okButton(View view){
 						try {
 							// Get the URL from the properties 
 			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();    
-			 				resr1 = new RequestTask().execute(URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum);
+			 				resr1 = new RequestTask().execute(URL+"/Pickup?originLocation="+originLocation+"&destinationLocation="+destinationLocation+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
 							res=resr1.get().trim().toString();
 						
  						} catch (InterruptedException e) {
