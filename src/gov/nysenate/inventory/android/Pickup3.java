@@ -111,7 +111,9 @@ public void okButton(View view){
 		}
      */		
 		
-	
+	// call the servlet image upload and return the nuxrsign
+	  
+	  
 	  
 	// Send it to the server	
 		
