@@ -157,6 +157,18 @@
             android:name="gov.nysenate.inventory.android.Pickup3"
             android:label="@string/title_activity_pickup3" >
         </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Delivery1"
+            android:label="@string/title_activity_delivery1" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Delivery2"
+            android:label="@string/title_activity_delivery2" >
+        </activity>
+        <activity
+            android:name="gov.nysenate.inventory.android.Delivery3"
+            android:label="@string/title_activity_delivery3" >
+        </activity>
     </application>
 
 </manifest>

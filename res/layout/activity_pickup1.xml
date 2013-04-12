@@ -52,7 +52,7 @@
         android:layout_below="@+id/autoCompleteTextView2"
         android:layout_marginTop="44dp"
         android:hint="@string/details"
-        android:text="TextView" />
+        android:text="@string/details" />
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"

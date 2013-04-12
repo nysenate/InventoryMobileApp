@@ -52,7 +52,7 @@ public class Move extends Activity {
 
 	public void delivery(View view) {
 
-		Intent intent = new Intent(this, Pickup1.class);
+		Intent intent = new Intent(this, Delivery1.class);
 		startActivity(intent);
 
 	}

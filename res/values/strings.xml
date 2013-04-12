@@ -67,5 +67,11 @@
     <string name="pickup2Msg">Please scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
     <string name="title_activity_pickup3">Pickup3</string>
+    <string name="title_activity_delivery1">Delivery1</string>
+    <string name="delivery1_msg">Please select location for delivery</string>
+    <string name="delivery1_hint">Please scan or enter location code</string>
+    <string name="title_activity_delivery2">Delivery2</string>
+    <string name="delivery2_msg">Please select one for delivery</string>
+    <string name="title_activity_delivery3">Delivery3</string>
 
 </resources>
