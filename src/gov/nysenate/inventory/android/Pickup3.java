@@ -2,6 +2,9 @@ package gov.nysenate.inventory.android;
 
 
 
+import gov.nysenate.inventory.android.ListtestActivity.verList;
+import gov.nysenate.inventory.android.Pickup1.RequestTask;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +13,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -20,6 +24,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import android.net.ConnectivityManager;
@@ -36,13 +42,19 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -64,11 +76,20 @@ public class Pickup3 extends Activity {
 	Intent intent = getIntent();	
 	String originLocationCode="";
 	String destinationLocationCode="";
+	public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
+	public ArrayList<String> employeeNameList = new ArrayList<String>();
+	AutoCompleteTextView naemployeeView;
+	int nuxrefem = -1; 
+	String requestTaskType = ""; 
+	
+	public String status = null;
+	String URL;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pickup3);
 		 sign = (SignatureView) findViewById(R.id.blsignImageView);
+		 sign.setMinDimensions(200, 100);
 		 //sign.setBackgroundResource(R.drawable.smove);
 		 //sign.setPadding(2,2,0,0);
 
@@ -94,6 +115,16 @@ public class Pickup3 extends Activity {
 		       "Total items          : "+count;
       // Set the summary to the textview
       TextView summeryView = (TextView)findViewById(R.id.textView3 );
+      naemployeeView = (AutoCompleteTextView) findViewById(R.id.naemployee);
+      naemployeeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    	    @Override
+    	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    	    	 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                 imm.hideSoftInputFromWindow(
+                		 naemployeeView.getWindowToken(), 0);    	        
+    	    }
+    	});
+
       summeryView.setText(summery);
       
       
@@ -101,8 +132,131 @@ public class Pickup3 extends Activity {
      
         // Set the ArrayAdapter as the ListView's adapter.  
      ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
+     
+     // Get the Employee Name List from the Web Service and populate the Employee Name Autocomplete Field with it
+     
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			// fetch data
+			status = "yes";
 
+			// Get the URL from the properties
+			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+			requestTaskType = "EmployeeList";
+			AsyncTask<String, String, String> resr1 = new RequestTask()
+					.execute(URL + "/EmployeeList");
+			try {
+				res = resr1.get().trim().toString();
+				// code for JSON
+
+				String jsonString = resr1.get().trim().toString();
+				JSONArray jsonArray = new JSONArray(jsonString);
+				for (int x=0;x<jsonArray.length();x++) {
+					JSONObject jo = new JSONObject();
+					jo = jsonArray.getJSONObject(x);
+					Employee currentEmployee = new Employee();
+					currentEmployee.setEmployeeData(jo.getInt("nuxrefem"), jo.getString("naemployee"));
+					employeeHiddenList.add(currentEmployee);
+					employeeNameList.add( jo.getString("naemployee"));
+				}
+				
+				Collections.sort(employeeNameList);
+				
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+						android.R.layout.simple_dropdown_item_1line,
+						employeeNameList);
+				
+				// for origin dest code
+				naemployeeView.setThreshold(1);
+				naemployeeView.setAdapter(adapter);
+				// for destination code
+
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			status = "yes1";
+		} else {
+			// display error
+			status = "no";
+		}
+
+		// code for textwatcher
+		// for origin location code
+		// loc_code = (EditText) findViewById(R.id.editText1);
+		// loc_code.addTextChangedListener(filterTextWatcher);
+	
+		naemployeeView.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				String employeeSelected = naemployeeView.getText().toString();
+				int employeeFoundAt = findEmployee(employeeSelected);
+				System.out.println("EMPLOYEE SELECTED:"+employeeSelected+" FOUND AT:"+employeeFoundAt);
+				if (employeeSelected==null||employeeSelected.length()==0) {
+					nuxrefem = -1;
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+
+					Toast toast = Toast
+							.makeText(
+									context,
+									"No Employee entered.",
+									3000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				else if (employeeFoundAt==-1) {
+					nuxrefem = -1;
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+
+					Toast toast = Toast
+							.makeText(
+									context,
+									"Employee not found.",
+									3000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				else {
+					nuxrefem = employeeHiddenList.get(employeeFoundAt).getEmployeeXref();
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+					Toast toast = Toast
+							.makeText(
+									context,
+									"Employee xref#:"+nuxrefem+" Name:"+employeeHiddenList.get(employeeFoundAt).getEmployeeName(),
+									3000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				nuxrefem = -1; 
+			}
+		});
 	}
+	
+	public int findEmployee(String employeeName) {
+		for (int x=0;x<employeeHiddenList.size();x++) {
+			if (employeeName.equals(employeeHiddenList.get(x).getEmployeeName())) {
+				return x;
+			}
+		}
+		return -1;
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,7 +270,46 @@ public class Pickup3 extends Activity {
 	}
 	
 public void okButton(View view){
-		
+	   String employeePicked = naemployeeView.getEditableText().toString();
+	   if (employeePicked.trim().length()>0) {
+		   int foundEmployee = this.findEmployee(employeePicked);
+		   
+		   if (foundEmployee<0) {
+			   nuxrefem = -1;
+		   }
+		   else {
+		   		nuxrefem = this.employeeHiddenList.get(foundEmployee).getEmployeeXref();
+		   }
+	   }
+	   else {
+		   nuxrefem = -1;
+	   }
+	
+	   if (nuxrefem<0) {
+			Context context = getApplicationContext();
+			int duration = Toast.LENGTH_SHORT;
+			if (naemployeeView.getEditableText().toString().trim().length()>0) {
+			Toast toast = Toast
+					.makeText(
+							context,
+							"!!ERROR: No xref# found for employee",
+							3000);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			}
+			else {
+				Toast toast = Toast
+						.makeText(
+								context,
+								"!!ERROR: You must first pick an employee name for the signature.",
+								3000);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();				
+			}
+			return;
+		   
+	   }
+	
 		//new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
 		String jsonString=null;
 		String status=null;
@@ -145,7 +338,8 @@ public void okButton(View view){
 	// call the servlet image upload and return the nuxrsign
 	  
 	  String NAPICKUPBY="Vik";
-	  String NUXRPUSIGN="1234";
+	  String NUXRPUSIGN= "";
+	  String NUXREFEM= Integer.toString(nuxrefem);
 	  String NUXRRELSIGN="2345";
 	  String NARELEASEBY="vRelease";
 	  
@@ -157,13 +351,14 @@ public void okButton(View view){
  			    if (networkInfo != null && networkInfo.isConnected()) {
  			        // fetch data
  			    	status="yes";
-									
+ 			    	requestTaskType = "Pickup";				
  					AsyncTask<String, String, String> resr1;
 						try {
 							// Get the URL from the properties 						
-			 			    String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+							
+							String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			 			    System.out.println("("+MainActivity.nauser+")");
-			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem=6221", URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRPUSIGN="+NUXRPUSIGN+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
+			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
 
 							res=resr1.get().trim().toString();
 						
@@ -187,7 +382,7 @@ public void okButton(View view){
  				if(res.length()==0){
 					text="Database not updated";
 				}
- 				
+
 				int duration = Toast.LENGTH_SHORT;
 				Toast toast = Toast.makeText(context, text, duration);
 				toast.setGravity(Gravity.CENTER, 0, 0);
@@ -252,80 +447,120 @@ public void okButton(View view){
 	    @Override
 	    protected String doInBackground(String... uri) {
 	    	// First Upload the Signature and get the nuxsign from the Server
-	    	
-			 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-			 Bitmap bitmap = sign.getImage();
-			 bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
-			 imageInByte = bs.toByteArray();
-			 System.out.println("Image Byte Array Size:"+imageInByte.length);
-			 String responseString = "";			
-			 try {
-			 URL url = new URL(uri[0]);
+	    	if (requestTaskType.equalsIgnoreCase("Pickup")) {
+    			String NUXRPUSIGN = "";
+	    		
+	    		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+	    		Bitmap bitmap = sign.getImage();
+	    		bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+	    		imageInByte = bs.toByteArray();
+	    		System.out.println("Image Byte Array Size:"+imageInByte.length);
+	    		String responseString = "";			
+	    		try {
+	    			URL url = new URL(uri[0]);
 
-			 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			 // Set connection parameters.
-			 conn.setDoInput(true);
-			 conn.setDoOutput(true);
-			 conn.setUseCaches(false);
+	    			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	    			// Set connection parameters.
+	    			conn.setDoInput(true);
+	    			conn.setDoOutput(true);
+	    			conn.setUseCaches(false);
 			 
-			 //Set content type to PNG
-			 conn.setRequestProperty("Content-Type", "image/png");
-			 OutputStream outputStream = conn.getOutputStream();
-			 OutputStream out =  outputStream;
-			 // Write out the bytes of the content string to the stream.
-			 out.write(imageInByte);
-			 out.flush();
-			 out.close();
-			 // Read response from the input stream.
-			 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			 String temp;
-			 while ((temp = in.readLine()) != null) {
-				 responseString += temp + "\n";
-			 }
-			 temp = null;
-			 in.close();
-			 System.out.println("Server response:\n'" + responseString + "'");
-			 
-			 } catch (Exception e) {
-			 e.printStackTrace();
-			 }	
+	    			//Set content type to PNG
+	    			conn.setRequestProperty("Content-Type", "image/png");
+	    			OutputStream outputStream = conn.getOutputStream();
+	    			OutputStream out =  outputStream;
+	    			// Write out the bytes of the content string to the stream.
+	    			out.write(imageInByte);
+	    			out.flush();
+	    			out.close();
+	    			// Read response from the input stream.
+	    			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	    			String temp;
+	    			while ((temp = in.readLine()) != null) {
+	    				responseString += temp + "\n";
+	    			}
+	    			temp = null;
+	    			in.close();
+	    			System.out.println("Server response:\n'" + responseString + "'");
+	    			int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
+	    			if (nuxrsignLoc>-1) {
+	    					NUXRPUSIGN = responseString.substring(nuxrsignLoc+9).replaceAll("\r", "").replaceAll("\n", "");
+	    			}
+	    			else {
+	    				NUXRPUSIGN = responseString.replaceAll("\r", "").replaceAll("\n", "");
+	    			}
+	    				
+	    		} catch (Exception e) {
+	    			e.printStackTrace();
+	    		}	
 
-	    	// Then post the rest of the information along with the NUXRSIGN 
-	    	HttpClient httpclient = new DefaultHttpClient();
-	        HttpResponse response;
-	        responseString = null;
-	        try {
+	    		// Then post the rest of the information along with the NUXRSIGN 
+	    		HttpClient httpclient = new DefaultHttpClient();
+	    		HttpResponse response;
+	    		responseString = null;
+	    		try {
 	        	
-	           response = httpclient.execute(new HttpGet(uri[1]));
-	       //   HttpPost hp=   	new HttpPost(uri[0]);
-	        	//HttpGet hp=   	new HttpGet(uri[0]);
-	        //	hp.setHeader("Content-Type", "application/json"); // just for this we want the variable to be json object
-	        //	hp.setEntity(new ByteArrayEntity(
-	        //			scannedBarcodeNumbers.toString().getBytes("UTF8"))) ;
-	      //  	response = httpclient.execute(hp);
-	            StatusLine statusLine = response.getStatusLine();
-	            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-	                ByteArrayOutputStream out = new ByteArrayOutputStream();
-	                response.getEntity().writeTo(out);
-	                out.close();
-	                responseString = out.toString();
-	            } else{
-	                //Closes the connection.
-	                response.getEntity().getContent().close();
-	                throw new IOException(statusLine.getReasonPhrase());
-	            }
-	        } catch (ClientProtocolException e) {
-	            //TODO Handle problems..
-	        } catch (IOException e) {
-	            //TODO Handle problems..
-	        }
-	        res=responseString;
-	        return responseString;
-	        
+	                String pickupURL = uri[1]+"&NUXRPUSIGN="+NUXRPUSIGN;
+	                System.out.println("pickupURL:"+pickupURL);
+					response = httpclient.execute(new HttpGet(pickupURL));
+	    			//   HttpPost hp=   	new HttpPost(uri[0]);
+	    			//HttpGet hp=   	new HttpGet(uri[0]);
+	    			//	hp.setHeader("Content-Type", "application/json"); // just for this we want the variable to be json object
+	    			//	hp.setEntity(new ByteArrayEntity(
+	    			//			scannedBarcodeNumbers.toString().getBytes("UTF8"))) ;
+	    			//  	response = httpclient.execute(hp);
+	    			StatusLine statusLine = response.getStatusLine();
+	    			if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+	    				ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    				response.getEntity().writeTo(out);
+	    				out.close();
+	    				responseString = out.toString();
+	    			} else{
+	    				//Closes the connection.
+	    				response.getEntity().getContent().close();
+	    				throw new IOException(statusLine.getReasonPhrase());
+	    			}
+	    		} catch (ClientProtocolException e) {
+	    			//TODO Handle problems..
+	    		} catch (IOException e) {
+	    			//TODO Handle problems..
+	    		}
+	    		res=responseString;
+	    		return responseString;
+	    	}
+	    	else if (requestTaskType.equalsIgnoreCase("EmployeeList")) {
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpResponse response;
+				String responseString = null;
+				try {
+					response = httpclient.execute(new HttpGet(uri[0]));
+					StatusLine statusLine = response.getStatusLine();
+					if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						response.getEntity().writeTo(out);
+						out.close();
+						responseString = out.toString();
+					} else {
+						// Closes the connection.
+						response.getEntity().getContent().close();
+						throw new IOException(statusLine.getReasonPhrase());
+					}
+				} catch (ClientProtocolException e) {
+					// TODO Handle problems..
+				} catch (IOException e) {
+					// TODO Handle problems..
+				}
+				res = responseString;
+	    		return responseString;
+	    	}
+	    	else {
+	    		System.out.println ("!!ERROR: Invalid requestTypeTask:"+requestTaskType);
+	    		return "!!ERROR: Invalid requestTypeTask:"+requestTaskType;
+	    	}
 	    }
 	}
 	
-	
+
 	
 		
    

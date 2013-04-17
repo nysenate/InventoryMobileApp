@@ -9,16 +9,21 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 /**
  * A simple view to capture a path traced onto the screen. Initially intended to be used to captures signatures.
+ *
  * 
  * @author Andrew Crichton
  * @version 0.1
+ * @modifications made by Brian Heitner
  */
 public class SignatureView extends View {
     @SuppressWarnings("unused")
@@ -27,7 +32,9 @@ public class SignatureView extends View {
     private Paint bgPaint = new Paint(Color.WHITE);
     private Bitmap mBitmap;
     private Canvas mCanvas;
-
+    private int minWidth, minHeight, maxWidth, maxHeight;
+    private int stateToSave;
+    
     private float curX, curY;
 
     private static final int TOUCH_TOLERANCE = 4;
@@ -79,6 +86,79 @@ public class SignatureView extends View {
         return true;
     }
     
+    public void setMinDimensions (int minWidth, int minHeight) {
+    	this.minWidth = minWidth;
+    	this.minWidth = minHeight;
+    }
+
+    public void setMaxDimensions (int maxWidth, int maxHeight) {
+    	this.maxWidth = maxWidth;
+    	this.maxHeight = maxHeight;
+    }
+
+    public void setMinWidth (int minWidth) {
+    	this.minWidth = minWidth;
+    }
+    
+    public void setMinHeight (int minHeight) {
+    	this.minHeight = minHeight;
+    }
+
+    public void setMaxWidth (int maxWidth) {
+    	this.maxWidth = maxWidth;
+    }
+    
+    public void setMaxHeight (int maxHeight) {
+    	this.maxHeight = maxHeight;
+    }
+    
+    public int getMinWidth(){
+    	return minWidth;
+    }
+    
+    public int getMinHeight(){
+    	return minHeight;
+    }
+
+    public int getMaxWidth(){
+    	return maxWidth;
+    }
+    
+    public int getMaxHeight(){
+    	return maxHeight;
+    }
+    
+    @Override
+    public Parcelable onSaveInstanceState() {
+      //begin boilerplate code that allows parent classes to save state
+    	Log.i("SavedState", "Saving the state");
+      Parcelable superState = super.onSaveInstanceState();
+
+      SavedState ss = new SavedState(superState);
+      //end
+
+      ss.stateToSave = this.stateToSave;
+
+      return ss;
+    }    
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+      //begin boilerplate code so parent classes can restore state
+      if(!(state instanceof SavedState)) {
+        super.onRestoreInstanceState(state);
+        return;
+      }
+
+      SavedState ss = (SavedState)state;
+   	  Log.i("RestoreState", "Restoring the state");
+
+      super.onRestoreInstanceState(ss.getSuperState());
+      //end
+
+      this.stateToSave = ss.stateToSave;
+    }
+
     public void clearSignatureWorkaround() {
         mCanvas.drawColor(Color.WHITE);
     	for (int x=1;x<this.getWidth();x++) {
@@ -101,16 +181,61 @@ public class SignatureView extends View {
         this.mBitmap = bitmap;
         this.invalidate();
     }
+    
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         int bitmapWidth = mBitmap != null ? mBitmap.getWidth() : 0;
         int bitmapHeight = mBitmap != null ? mBitmap.getWidth() : 0;
+        
+        if (minWidth > 0 && width<minWidth) {
+        	width = minWidth;
+        }
+        if (minHeight > 0 && height<minHeight) {
+        	height = minHeight;
+        }
+        if (maxWidth > 0 && width>maxWidth) {
+        	width = maxWidth;
+        }
+        if (maxHeight > 0 && height>maxHeight) {
+        	height = maxHeight;
+        }
+
+        if (minWidth > 0 && bitmapWidth<minWidth) {
+        	bitmapWidth = minWidth;
+        }
+        if (minHeight > 0 && bitmapHeight<minHeight) {
+        	bitmapHeight = minHeight;
+        }
+        if (maxWidth > 0 && bitmapWidth>maxWidth) {
+        	bitmapWidth = maxWidth;
+        }
+        if (maxHeight > 0 && bitmapHeight>maxHeight) {
+        	bitmapHeight = maxHeight;
+        }
+                
         if (bitmapWidth >= width && bitmapHeight >= height) 
             return;
         if (bitmapWidth < width) 
-            bitmapWidth = width;
+        		bitmapWidth = width;
         if (bitmapHeight < height) 
             bitmapHeight = height;
+        
+        if (bitmapHeight<1) {
+        	bitmapHeight = 1;
+        }
+        if (bitmapWidth<1) {
+        	bitmapWidth = 1;
+        }
+
+        if (height<1) {
+        	height = 1;
+        }
+        if (width<1) {
+        	width = 1;
+        }
+        
+        
+        Log.i("I", " PROBLEM AREA: NEW WIDTH:"+bitmapWidth+" NEW HEIGHT:"+bitmapHeight);
         Bitmap newBitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         Canvas newCanvas = new Canvas();
         newCanvas.setBitmap(newBitmap);
@@ -181,4 +306,33 @@ public class SignatureView extends View {
         mPath.reset();
     }
    
+    static class SavedState extends BaseSavedState {
+    	   int stateToSave;
+
+    	    SavedState(Parcelable superState) {
+    	      super(superState);
+    	    }
+
+    	    private SavedState(Parcel in) {
+    	      super(in);
+    	      this.stateToSave = in.readInt();
+    	    }
+
+    	    @Override
+    	    public void writeToParcel(Parcel out, int flags) {
+    	      super.writeToParcel(out, flags);
+    	      out.writeInt(this.stateToSave);
+    	    }
+
+    	    //required field that makes Parcelables from a Parcel
+    	    public static final Parcelable.Creator<SavedState> CREATOR =
+    	        new Parcelable.Creator<SavedState>() {
+    	          public SavedState createFromParcel(Parcel in) {
+    	            return new SavedState(in);
+    	          }
+    	          public SavedState[] newArray(int size) {
+    	            return new SavedState[size];
+    	          }
+    	    };
+    	  }
 }

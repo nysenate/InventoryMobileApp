@@ -30,6 +30,7 @@
 
         <activity
             android:name="gov.nysenate.inventory.android.MainActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +41,7 @@
         <activity
             android:name="gov.nysenate.inventory.android.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
+			android:screenOrientation="portrait" 
             android:parentActivityName="gov.nysenate.inventory.android.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -47,10 +49,12 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.HttpExampleActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_http_example" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.MenuActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_menu"
             android:parentActivityName="gov.nysenate.inventory.android.MainActivity" >
             <meta-data
@@ -59,6 +63,7 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.SearchActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_search"
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
@@ -67,11 +72,13 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.MovP1"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_add_item" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.LocationActivity"
             android:label="@string/title_activity_location"
+			android:screenOrientation="portrait" 
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -79,31 +86,38 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.CloseActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_close" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.SearchResultActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_search_result" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.AddItemActivity2"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_add_item_activity2" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.MovPick1"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_mov_pick1" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Movp1"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_movp1" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Move_pickup1"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_move_pickup1" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Move"
             android:label="@string/title_activity_move"
+			android:screenOrientation="portrait" 
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -111,15 +125,18 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup1"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_pickup1" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup2Activity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_pickup2" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Verification"
             android:label="@string/title_activity_verification"
+			android:screenOrientation="portrait" 
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -127,15 +144,18 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.TableActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_table" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Verification_list"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_verification2" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.VeriListActivity"
             android:label="@string/title_activity_veri_list"
+			android:screenOrientation="portrait" 
             android:parentActivityName="gov.nysenate.inventory.android.MenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -143,19 +163,24 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.ListActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_list" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.ListtestActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_listtest" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.VerSummaryActivity"
+			android:screenOrientation="portrait" 
             android:label="@string/title_activity_ver_summary" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup3"
-            android:label="@string/title_activity_pickup3" >
+            android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait" 
+            android:label="@string/title_activity_pickup3"  >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Delivery1"

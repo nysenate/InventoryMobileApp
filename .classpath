@@ -4,5 +4,8 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="C:/Nobackup/Downloads/google-gson-2.2.2/gson-2.2.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Nobackup/Downloads/google-gson-2.2.2/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Nobackup/Downloads/google-gson-2.2.2/gson-2.2.2-javadoc.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

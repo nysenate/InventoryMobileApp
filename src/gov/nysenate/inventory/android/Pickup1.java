@@ -3,6 +3,7 @@ package gov.nysenate.inventory.android;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -76,6 +77,7 @@ public class Pickup1 extends Activity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					locCodeList.add(jsonArray.getString(i).toString());
 				}
+				Collections.sort(locCodeList);
 
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 						android.R.layout.simple_dropdown_item_1line,
@@ -270,15 +272,12 @@ public class Pickup1 extends Activity {
 	}
 
 	public void okButton(View view) {
-
 		Intent intent = new Intent(this, Pickup2Activity.class);
-		intent.putExtra("originLocation", originLocation); // for origin code
-		intent.putExtra("destinationLocation", destinationLocation); // for
+		intent.putExtra("originLocation", originLocation); 				// for origin code
+		intent.putExtra("destinationLocation", destinationLocation); 	// for
 																		// destination
 																		// code
-
 		startActivity(intent);
-
 	}
 
 	public void cancelButton(View view) {
