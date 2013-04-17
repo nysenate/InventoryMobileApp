@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
+    android:layout_height="match_parent"
+    android:onClick="startCommentsSpeech"
     tools:context=".Pickup3" >
 
     <TextView
@@ -11,11 +12,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginLeft="21sp"
+        android:layout_marginTop="22sp"
         android:gravity="center"
         android:text="@string/ver_summary_title"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/textView3"
@@ -25,7 +26,7 @@
         android:layout_below="@+id/textView1"
         android:layout_marginTop="16dp"
         android:text="Total Items"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
    
 
@@ -42,10 +43,12 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView3"
-        android:layout_marginTop="27dp" >
+        android:layout_marginTop="27dp"
+        android:background="@color/bluelight" >
+
     </ListView>
 
     <Button
@@ -63,8 +66,7 @@
         android:layout_height="100dp"
         android:layout_above="@+id/button1"
         android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/naemployee"
-        android:layout_marginBottom="53dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
@@ -72,9 +74,34 @@
         android:id="@+id/naemployee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/listView1"
+        android:layout_above="@+id/blsignImageView"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="@string/employee_list_hint" />
+        android:hint="@string/employee_list_hint" >
+
+        <requestFocus />
+    </AutoCompleteTextView>
+
+    <EditText
+        android:id="@+id/pickupCommentsEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/blsignImageView"
+        android:layout_alignRight="@+id/blsignImageView"
+        android:layout_below="@+id/listView1"
+        android:ems="10"
+        android:hint="Pickup Comments Here"
+        android:inputType="textMultiLine" />
+
+    <ImageView
+        android:id="@+id/pickupCommentsSpeechButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/pickupCommentsEditText"
+        android:layout_marginTop="18dp"
+        android:layout_toRightOf="@+id/pickupCommentsEditText"
+        android:clickable="true"
+        android:onClick="startCommentsSpeech"
+        android:src="@drawable/speech2txt" />
 
 </RelativeLayout>

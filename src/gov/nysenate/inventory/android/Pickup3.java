@@ -36,12 +36,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -55,6 +57,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -81,6 +84,7 @@ public class Pickup3 extends Activity {
 	AutoCompleteTextView naemployeeView;
 	int nuxrefem = -1; 
 	String requestTaskType = ""; 
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	
 	public String status = null;
 	String URL;
@@ -90,6 +94,7 @@ public class Pickup3 extends Activity {
 		setContentView(R.layout.activity_pickup3);
 		 sign = (SignatureView) findViewById(R.id.blsignImageView);
 		 sign.setMinDimensions(200, 100);
+		 //sign.setInitialBitmap( BitmapFactory.decodeResource(getResources(),  R.drawable.simplethinborder));
 		 //sign.setBackgroundResource(R.drawable.smove);
 		 //sign.setPadding(2,2,0,0);
 
@@ -268,6 +273,35 @@ public class Pickup3 extends Activity {
 	public void clearSignature(View view) {
 		sign.clearSignatureWorkaround();
 	}
+	
+
+    /**
+     * Fire an intent to start the speech recognition activity.
+     */
+    public void startCommentsSpeech(View view) {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pickup Comments Speech");
+        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+    }	
+
+   /**
+    * Handle the results from the recognition activity.
+    */
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+           // Fill the list view with the strings the recognizer thought it could have heard
+           ArrayList<String> matches = data.getStringArrayListExtra(
+                   RecognizerIntent.EXTRA_RESULTS);
+       	EditText commentsEditText = (EditText) findViewById(R.id.pickupCommentsEditText);
+       	commentsEditText.setText(matches.get(0));
+       }
+
+       super.onActivityResult(requestCode, resultCode, data);
+   }    
+   	
 	
 public void okButton(View view){
 	   String employeePicked = naemployeeView.getEditableText().toString();

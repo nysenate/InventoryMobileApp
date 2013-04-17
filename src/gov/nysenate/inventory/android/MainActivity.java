@@ -416,8 +416,8 @@ public class MainActivity extends Activity {
 	public void validate(View view) {
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		// Intent intent = new Intent(this, MenuActivity.class);
-		EditText user_name = (EditText) findViewById(R.id.user_name);
-		EditText password = (EditText) findViewById(R.id.password);
+		ClearableEditText user_name = (ClearableEditText) findViewById(R.id.user_name);
+		ClearableEditText password = (ClearableEditText) findViewById(R.id.password);
 		String u_name = user_name.getText().toString();
 		String pwd = password.getText().toString();
 		intent.putExtra(u_name_intent, u_name);

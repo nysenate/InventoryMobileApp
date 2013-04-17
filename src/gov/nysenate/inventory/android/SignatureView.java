@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -34,6 +35,8 @@ public class SignatureView extends View {
     private Canvas mCanvas;
     private int minWidth, minHeight, maxWidth, maxHeight;
     private int stateToSave;
+    private Bitmap initialBitmap;
+    private Context currentContext = null;
     
     private float curX, curY;
 
@@ -42,17 +45,25 @@ public class SignatureView extends View {
 
     public SignatureView(Context context) {
         super(context);
-        init();
+        init(context);
     }
     public SignatureView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
     public SignatureView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context);
     }
-    private void init() {
+    private void init(Context curContext) {
+    	initialBitmap = this.getImage();
+    	this.currentContext = curContext;
+    	if (initialBitmap==null||initialBitmap.getWidth()<1||initialBitmap.getHeight()<1) {
+    	    initialBitmap = BitmapFactory.decodeResource( currentContext.getApplicationContext().getResources(),  R.drawable.simplethinborder);    	           
+    	    if (initialBitmap==null) {
+    	        Log.i("Initial", "Initial Bitmap not created");
+    	    }
+    	}
         setFocusable(true);
         mPath = new Path();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -60,6 +71,11 @@ public class SignatureView extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(STROKE_WIDTH);
     }
+    
+    public void setInitialBitmap(Bitmap bmap) {
+        this.initialBitmap = bmap;
+    }
+    
     public void setSigColor(int color) {
         mPaint.setColor(color);
     }
@@ -160,16 +176,25 @@ public class SignatureView extends View {
     }
 
     public void clearSignatureWorkaround() {
-        mCanvas.drawColor(Color.WHITE);
-    	for (int x=1;x<this.getWidth();x++) {
-    		for (int y=1;y<this.getHeight();y++) {
-    			if (mBitmap.getPixel(x, y)==Color.BLUE) {
-    				mBitmap.setPixel(x, y, Color.WHITE);
-    			}
-    		}
-    	}
-//    	this.setBackgroundResource(R.drawable.simplethinborder);
-    	invalidate();    	
+    	
+        if (initialBitmap==null) {
+           Log.i("ClearSIG", "InitialBitmap was null");
+            mCanvas.drawColor(Color.WHITE);
+            for (int x=1;x<this.getWidth();x++) {
+                for (int y=1;y<this.getHeight();y++) {
+                    if (mBitmap.getPixel(x, y)==Color.BLUE) {
+                        mBitmap.setPixel(x, y, Color.WHITE);
+                    }
+                }
+            }
+
+        }
+        else {
+            Log.i("ClearSIG", "InitialBitmap was "+initialBitmap.getWidth()+"x"+initialBitmap.getHeight());
+            this.setImage(initialBitmap);
+        }
+    	
+//    	this.setBackgroundResource(R.drawable.simplethinborder);	
     	//this.setBackgroundResource(R.drawable.simplethinborder);
     }
     
