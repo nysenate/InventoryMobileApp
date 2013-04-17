@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -283,7 +284,8 @@ public class Pickup3 extends Activity {
 	    else {
 	        Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
 	    }
-		sign.setImage(clearedSignature);
+		sign.clearSignature();
+		//sign.setBackgroundResource(R.drawable.simplethinborder);
 	}
 	
 
@@ -353,10 +355,23 @@ public void okButton(View view){
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();				
 			}
+
 			return;
 		   
 	   }
 	
+       if (!sign.isSigned()) {
+           Context context = getApplicationContext();           
+           Toast toast = Toast
+                   .makeText(
+                           context,
+                           "!!ERROR: Employee must also sign within the Red box.",
+                           3000);
+           toast.setGravity(Gravity.CENTER, 0, 0);
+           toast.show();               
+           return;
+       }	   
+	   
 		//new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
 		String jsonString=null;
 		String status=null;
@@ -384,11 +399,11 @@ public void okButton(View view){
 		
 	// call the servlet image upload and return the nuxrsign
 	  
-	  String NAPICKUPBY="Vik";
+	  String NAPICKUPBY = MainActivity.nauser;
 	  String NUXRPUSIGN= "";
 	  String NUXREFEM= Integer.toString(nuxrefem);
-	  String NUXRRELSIGN="2345";
-	  String NARELEASEBY="vRelease";
+	  String NUXRRELSIGN="";
+	  String NARELEASEBY= URLEncoder.encode(this.naemployeeView.getText().toString());
 	  
 	// Send it to the server	
 		
@@ -404,7 +419,7 @@ public void okButton(View view){
 							// Get the URL from the properties 						
 							
 							String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
-			 			    System.out.println("("+MainActivity.nauser+")");
+			 			    //System.out.println("("+MainActivity.nauser+")");
 			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
 
 							res=resr1.get().trim().toString();

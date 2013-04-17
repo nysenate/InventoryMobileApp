@@ -38,6 +38,8 @@ public class SignatureView extends View {
     private Bitmap initialBitmap;
     private Context currentContext = null;
     
+    private boolean signed = false;
+    
     private float curX, curY;
 
     private static final int TOUCH_TOLERANCE = 4;
@@ -84,21 +86,25 @@ public class SignatureView extends View {
     }
     public boolean clearSignature() {
         if (mBitmap != null)
-            System.out.println(" mBitmap createFakeMotionEvents");
+            //System.out.println(" mBitmap createFakeMotionEvents");
             //createFakeMotionEvents();
         if (mCanvas != null) {
-            System.out.println("*mCanvas CLEAR");
-//            mCanvas.drawColor(Color.WHITE);
-//            mCanvas.drawPaint(new Paint(Color.WHITE));
-//          mCanvas.drawRect(0, 0, 0, 0, new Paint(Color.WHITE));
+            //System.out.println("*mCanvas CLEAR");
+            //mCanvas.drawColor(Color.GREEN);
+            //mCanvas.drawPaint(new Paint(Color.GREEN));
+            //mPaint.setColor(Color.BLUE);
+            //mCanvas.drawRect(3, 3, this.getWidth()-6, this.getHeight()-6, new Paint(Color.MAGENTA));
+            
             clearSignatureWorkaround();
             mPath.reset();
             invalidate();
         }
         else {
-            System.out.println("CLEAR ELSE");
+            //System.out.println("CLEAR ELSE");
             return false;
         }  
+        this.signed = false;
+        
         return true;
     }
     
@@ -179,25 +185,34 @@ public class SignatureView extends View {
     	
         if (initialBitmap==null) {
            Log.i("ClearSIG", "InitialBitmap was null");
-            mCanvas.drawColor(Color.WHITE);
+            mCanvas.drawColor(Color.TRANSPARENT);
             for (int x=1;x<this.getWidth();x++) {
                 for (int y=1;y<this.getHeight();y++) {
-                    if (mBitmap.getPixel(x, y)==Color.BLUE) {
-                        mBitmap.setPixel(x, y, Color.WHITE);
-                    }
+                    mBitmap.setPixel(x, y, Color.TRANSPARENT);
+                    /*if (mBitmap.getPixel(x, y)==Color.BLUE) {
+                        mBitmap.setPixel(x, y, Color.TRANSPARENT);
+                    }*/
                 }
             }
 
         }
         else {
-            Log.i("ClearSIG", "InitialBitmap was "+initialBitmap.getWidth()+"x"+initialBitmap.getHeight());
             this.setImage(initialBitmap);
         }
-    	
+    	this.signed = false;
 //    	this.setBackgroundResource(R.drawable.simplethinborder);	
     	//this.setBackgroundResource(R.drawable.simplethinborder);
     }
     
+    
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+    
+    
+    public boolean isSigned() {
+        return this.signed;
+    }
     
     public Bitmap getImage() {
         return this.mBitmap;
@@ -259,8 +274,7 @@ public class SignatureView extends View {
         	width = 1;
         }
         
-        
-        Log.i("I", " PROBLEM AREA: NEW WIDTH:"+bitmapWidth+" NEW HEIGHT:"+bitmapHeight);
+//        Log.i("I", " PROBLEM AREA: NEW WIDTH:"+bitmapWidth+" NEW HEIGHT:"+bitmapHeight);
         Bitmap newBitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         Canvas newCanvas = new Canvas();
         newCanvas.setBitmap(newBitmap);
@@ -328,6 +342,7 @@ public class SignatureView extends View {
             mCanvas.setBitmap(mBitmap);
         }
         mCanvas.drawPath(mPath, mPaint);
+        this.signed = true;
         mPath.reset();
     }
    
