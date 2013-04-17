@@ -1,6 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import com.google.gson.annotations.SerializedName;
 
 /*
  * To change this template, choose Tools | Templates

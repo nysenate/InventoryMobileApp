@@ -1,38 +1,49 @@
 package gov.nysenate.inventory.android;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AutoCompleteTextView;
 
 public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
 
     public String defaultValue = "";
     final Drawable imgX = getResources().getDrawable(android.R.drawable.ic_delete ); // X image
-
-
+    boolean showClearMsg = false;
+    Context context = null;
+    boolean clearField = true;
+    private String clearMsg = "Do you want to clear this field?";
+    
     public ClearableAutoCompleteTextView(Context context) {
         super(context);
-
+        
+        this.context = context;
+        
         init();
     }
 
     public ClearableAutoCompleteTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
+        
+        this.context = context;
+        
         init();
     }
 
     public ClearableAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        this.context = context;
+
         init();
     }
-
 
     void init()  {
 
@@ -46,7 +57,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                ClearableAutoCompleteTextView et = ClearableAutoCompleteTextView.this;
+                final ClearableAutoCompleteTextView et = ClearableAutoCompleteTextView.this;
 
                 // Is there an X showing?
                 if (et.getCompoundDrawables()[2] == null) return false;
@@ -54,8 +65,37 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
                 if (event.getAction() != MotionEvent.ACTION_UP) return false;
                 // Is touch on our clear button?
                 if (event.getX() > et.getWidth() - et.getPaddingRight() - imgX.getIntrinsicWidth()) {
-                    et.setText("");
-                    ClearableAutoCompleteTextView.this.removeClearButton();
+                    clearField = true;
+                    if (showClearMsg){
+                        clearField = false;
+                       // super.getContext()
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        // Add the buttons
+                        builder.setMessage(clearMsg)
+                               .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User clicked OK button
+                                    clearField = true;
+                                    et.setText("");
+                                    ClearableAutoCompleteTextView.this.removeClearButton();
+                                    
+                                }
+                               })
+                              .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    clearField = false;
+                                }
+                            });
+
+                     // Create the AlertDialog
+                     AlertDialog dialog = builder.create();
+                     dialog.show();
+                    }
+                    if (clearField) {
+                        et.setText("");
+                        ClearableAutoCompleteTextView.this.removeClearButton();
+                    }
                 }
                 return false;
             }
@@ -78,6 +118,22 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         });
     }
 
+    public void showClearMsg(boolean showClearMsg) {
+        this.showClearMsg = showClearMsg;
+    }
+
+    public boolean getShowClearMsg() {
+        return showClearMsg;
+    }  
+    
+    public void setClearMsg(String clearMsg) {
+        this.clearMsg = clearMsg;
+    }
+    
+    public String getClearMsg() {
+        return this.clearMsg;
+    }
+    
     void manageClearButton() {
         if (this.getText().toString().equals("") )
             removeClearButton();

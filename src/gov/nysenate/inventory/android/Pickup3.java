@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.android;
 
-
-
 import gov.nysenate.inventory.android.ListtestActivity.verList;
 import gov.nysenate.inventory.android.Pickup1.RequestTask;
 
@@ -47,6 +45,7 @@ import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -81,10 +80,11 @@ public class Pickup3 extends Activity {
 	String destinationLocationCode="";
 	public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
 	public ArrayList<String> employeeNameList = new ArrayList<String>();
-	AutoCompleteTextView naemployeeView;
+	ClearableAutoCompleteTextView naemployeeView;
 	int nuxrefem = -1; 
 	String requestTaskType = ""; 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+	ClearableEditText commentsEditText;
 	
 	public String status = null;
 	String URL;
@@ -92,8 +92,11 @@ public class Pickup3 extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pickup3);
-		 sign = (SignatureView) findViewById(R.id.blsignImageView);
-		 sign.setMinDimensions(200, 100);
+		sign = (SignatureView) findViewById(R.id.blsignImageView);
+		sign.setMinDimensions(200, 100);
+        commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
+        commentsEditText.setClearMsg("Do you want to clear the Pickup Comments?");
+        commentsEditText.showClearMsg(true);
 		 //sign.setInitialBitmap( BitmapFactory.decodeResource(getResources(),  R.drawable.simplethinborder));
 		 //sign.setBackgroundResource(R.drawable.smove);
 		 //sign.setPadding(2,2,0,0);
@@ -120,7 +123,9 @@ public class Pickup3 extends Activity {
 		       "Total items          : "+count;
       // Set the summary to the textview
       TextView summeryView = (TextView)findViewById(R.id.textView3 );
-      naemployeeView = (AutoCompleteTextView) findViewById(R.id.naemployee);
+      naemployeeView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
+      naemployeeView.setClearMsg("Do you want to clear the name of the signer?");
+      naemployeeView.showClearMsg(true);
       naemployeeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     	    @Override
     	    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -271,7 +276,14 @@ public class Pickup3 extends Activity {
 	}
 
 	public void clearSignature(View view) {
-		sign.clearSignatureWorkaround();
+	    Bitmap clearedSignature = BitmapFactory.decodeResource(getResources(), R.drawable.simplethinborder);
+	    if (clearedSignature==null) {
+	        Log.i("ClearSig", "Signature drawable was NULL");
+	    }
+	    else {
+	        Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
+	    }
+		sign.setImage(clearedSignature);
 	}
 	
 
@@ -279,11 +291,13 @@ public class Pickup3 extends Activity {
      * Fire an intent to start the speech recognition activity.
      */
     public void startCommentsSpeech(View view) {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pickup Comments Speech");
-        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+        if (view.getId()==R.id.pickupCommentsSpeechButton) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pickup Comments Speech");
+            startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+        }
     }	
 
    /**
@@ -295,7 +309,6 @@ public class Pickup3 extends Activity {
            // Fill the list view with the strings the recognizer thought it could have heard
            ArrayList<String> matches = data.getStringArrayListExtra(
                    RecognizerIntent.EXTRA_RESULTS);
-       	EditText commentsEditText = (EditText) findViewById(R.id.pickupCommentsEditText);
        	commentsEditText.setText(matches.get(0));
        }
 

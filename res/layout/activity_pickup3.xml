@@ -70,7 +70,7 @@
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
-    <AutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,9 +80,9 @@
         android:hint="@string/employee_list_hint" >
 
         <requestFocus />
-    </AutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-    <EditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/pickupCommentsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,10 +95,9 @@
 
     <ImageView
         android:id="@+id/pickupCommentsSpeechButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
         android:layout_alignTop="@+id/pickupCommentsEditText"
-        android:layout_marginTop="18dp"
         android:layout_toRightOf="@+id/pickupCommentsEditText"
         android:clickable="true"
         android:onClick="startCommentsSpeech"

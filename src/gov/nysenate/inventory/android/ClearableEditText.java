@@ -1,10 +1,13 @@
 package gov.nysenate.inventory.android;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,10 +16,15 @@ public class ClearableEditText extends EditText {
 
     public String defaultValue = "";
     final Drawable imgX = getResources().getDrawable(android.R.drawable.ic_delete); // X image
-
+    private boolean showClearMsg = false;
+    Context context = null;
+    boolean clearField = true;
+    private String clearMsg = "Do you want to clear this field?";
 
     public ClearableEditText(Context context) {
         super(context);
+
+        this.context = context;
 
         init();
     }
@@ -24,11 +32,15 @@ public class ClearableEditText extends EditText {
     public ClearableEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        this.context = context;
+
         init();
     }
 
     public ClearableEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        this.context = context;
 
         init();
     }
@@ -46,7 +58,7 @@ public class ClearableEditText extends EditText {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                ClearableEditText et = ClearableEditText.this;
+                final ClearableEditText et = ClearableEditText.this;
 
                 // Is there an X showing?
                 if (et.getCompoundDrawables()[2] == null) return false;
@@ -54,8 +66,37 @@ public class ClearableEditText extends EditText {
                 if (event.getAction() != MotionEvent.ACTION_UP) return false;
                 // Is touch on our clear button?
                 if (event.getX() > et.getWidth() - et.getPaddingRight() - imgX.getIntrinsicWidth()) {
-                    et.setText("");
-                    ClearableEditText.this.removeClearButton();
+                    clearField = true;
+                    if (showClearMsg){
+                        clearField = false;
+                       // super.getContext()
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        // Add the buttons
+                        builder.setMessage(clearMsg)
+                               .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User clicked OK button
+                                    clearField = true;
+                                    et.setText("");
+                                    ClearableEditText.this.removeClearButton();
+                                    
+                                }
+                               })
+                              .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    clearField = false;
+                                }
+                            });
+
+                     // Create the AlertDialog
+                     AlertDialog dialog = builder.create();
+                     dialog.show();
+                    }
+                    if (clearField) {
+                        et.setText("");
+                        ClearableEditText.this.removeClearButton();
+                    }
                 }
                 return false;
             }
@@ -84,6 +125,23 @@ public class ClearableEditText extends EditText {
         else
             addClearButton();
     }
+
+    public void showClearMsg(boolean showClearMsg) {
+        this.showClearMsg = showClearMsg;
+    }
+
+    public boolean getShowClearMsg() {
+        return showClearMsg;
+    }  
+    
+    public void setClearMsg(String clearMsg) {
+        this.clearMsg = clearMsg;
+    }
+    
+    public String getClearMsg() {
+        return this.clearMsg;
+    }
+    
     void addClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0], 
                 this.getCompoundDrawables()[1],
