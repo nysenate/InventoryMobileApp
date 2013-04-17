@@ -25,12 +25,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Pickup1 extends Activity {
 	public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
@@ -41,8 +47,8 @@ public class Pickup1 extends Activity {
 	public String res = null;
 	public String status = null;
 	public String loc_code_str = null;
-	AutoCompleteTextView autoCompleteTextView1;// for origin location code
-	AutoCompleteTextView autoCompleteTextView2;// for destination location code
+	ClearableAutoCompleteTextView autoCompleteTextView1;// for origin location code
+	ClearableAutoCompleteTextView autoCompleteTextView2;// for destination location code
 	public String originLocation = null;
 	public String destinationLocation = null;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
@@ -83,12 +89,20 @@ public class Pickup1 extends Activity {
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
 				// for origin dest code
-				autoCompleteTextView1 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+				autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 				autoCompleteTextView1.setThreshold(1);
 				autoCompleteTextView1.setAdapter(adapter);
+				autoCompleteTextView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			            @Override
+			            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	                        Log.i("ItemClicked", "ITEM CLICKED");
+	                        boolean focusRequested = autoCompleteTextView2.requestFocus();
+			            }
+			        });
+
 				// for destination code
 
-				autoCompleteTextView2 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+				autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
 				autoCompleteTextView2.setThreshold(1);
 				autoCompleteTextView2.setAdapter(adapter);
 

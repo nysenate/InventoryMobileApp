@@ -16,7 +16,7 @@
         android:layout_marginTop="17dp"
         android:text="@string/select_origin_loc" />
 
-    <AutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
 
         <requestFocus />
 
-    </AutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
     <TextView
         android:id="@+id/textView2"
@@ -54,7 +54,7 @@
         android:hint="@string/details"
         android:text="@string/details" />
 
-    <AutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:layout_below="@+id/textView2"
         android:ems="10"
         android:hint="@string/select_dest_loc" >
-    </AutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
     <Button
         android:id="@+id/button2"

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 
 import android.view.Gravity;
 import android.view.Menu;
@@ -53,7 +54,8 @@ public class MainActivity extends Activity {
     private ListView mList;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	public static String nauser = null;
-
+	ClearableEditText user_name;
+    ClearableEditText password;
 	String URL = "";
 	public static Properties properties; // Since we want to refer to this in
 											// other activities
@@ -66,6 +68,12 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+        user_name = (ClearableEditText) findViewById(R.id.user_name);
+        //user_name.setClearMsg("Do you want to clear your username?");
+        //user_name.showClearMsg(true);
+        password = (ClearableEditText) findViewById(R.id.password);
+        //password.setClearMsg("Do you want to clear your password?");
+        //password.showClearMsg(true);
 
 		// Read from the /assets directory for properties of the project
 		// we can modify this file and the URL will be changed
@@ -416,8 +424,6 @@ public class MainActivity extends Activity {
 	public void validate(View view) {
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		// Intent intent = new Intent(this, MenuActivity.class);
-		EditText user_name = (EditText) findViewById(R.id.user_name);
-		EditText password = (EditText) findViewById(R.id.password);
 		String u_name = user_name.getText().toString();
 		String pwd = password.getText().toString();
 		intent.putExtra(u_name_intent, u_name);
