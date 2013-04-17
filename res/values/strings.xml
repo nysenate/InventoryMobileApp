@@ -73,5 +73,6 @@
     <string name="title_activity_delivery2">Delivery2</string>
     <string name="delivery2_msg">Please select one for delivery</string>
     <string name="title_activity_delivery3">Delivery3</string>
+    <string name="delivery3_msg">Delivery confirmation</string>
 
 </resources>
