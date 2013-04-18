@@ -1,8 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.android.ListtestActivity.verList;
-import gov.nysenate.inventory.android.Pickup1.RequestTask;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -86,9 +83,9 @@ public class Pickup3 extends Activity {
 	String requestTaskType = ""; 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	ClearableEditText commentsEditText;
-	
 	public String status = null;
 	String URL;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,11 +95,8 @@ public class Pickup3 extends Activity {
         commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
         commentsEditText.setClearMsg("Do you want to clear the Pickup Comments?");
         commentsEditText.showClearMsg(true);
-		 //sign.setInitialBitmap( BitmapFactory.decodeResource(getResources(),  R.drawable.simplethinborder));
-		 //sign.setBackgroundResource(R.drawable.smove);
-		 //sign.setPadding(2,2,0,0);
-
-    	// Find the ListView resource.   
+	
+      // Find the ListView resource.   
       ListView  ListViewTab1 = (ListView) findViewById( R.id.listView1);  
       
       // get data from intent of  previous activity   
@@ -112,7 +106,6 @@ public class Pickup3 extends Activity {
       count=getIntent().getStringExtra("count");
       scannedBarcodeNumbers=getIntent().getIntegerArrayListExtra("scannedBarcodeNumbers");
       loc_code=getIntent().getStringExtra("loc_code");
-      
       String originLocationCodeArr[]=originLocation.split("-");
       originLocationCode=originLocationCodeArr[0];
       String destinationLocationCodeArr[]=destinationLocation.split("-");
@@ -122,8 +115,16 @@ public class Pickup3 extends Activity {
      	String summery="Origin Location      : "+ originLocation+"\n"+
 		       "Destination location : "+destinationLocation+"\n"+"\n"+
 		       "Total items          : "+count;
-      // Set the summary to the textview
+    
+     	// Set the summary to the textview
       TextView summeryView = (TextView)findViewById(R.id.textView3 );
+      summeryView.setText(summery);
+      Adapter  listAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, AllScannedItems);  
+      
+      // Set the ArrayAdapter as the ListView's adapter.  
+      ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
+    
+      // Brian code starts
       naemployeeView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
       naemployeeView.setClearMsg("Do you want to clear the name of the signer?");
       naemployeeView.showClearMsg(true);
@@ -136,14 +137,7 @@ public class Pickup3 extends Activity {
     	    }
     	});
 
-      summeryView.setText(summery);
-      
-      
-     Adapter  listAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, AllScannedItems);  
-     
-        // Set the ArrayAdapter as the ListView's adapter.  
-     ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
-     
+       
      // Get the Employee Name List from the Web Service and populate the Employee Name Autocomplete Field with it
      
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -342,7 +336,7 @@ public void okButton(View view){
 					.makeText(
 							context,
 							"!!ERROR: No xref# found for employee",
-							3000);
+							duration);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 			}
@@ -455,53 +449,7 @@ public void okButton(View view){
 		startActivity(intent);
 	}
 
-/*class ImageUploadTask extends AsyncTask<String, String, String> {
 
-			@Override
-			protected String doInBackground(String... uri) {
-				//HttpClient httpclient = new DefaultHttpClient();
-				//HttpResponse response;
-				//String responseString = null;
-				//Get connection to image upload web service
-				 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-				 Bitmap bitmap = sign.getImage();
-				 bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
-				 imageInByte = bs.toByteArray();
-				 System.out.println("Image Byte Array Size:"+imageInByte.length);
-				 String response = "";			
-				 try {
-				 URL url = new URL(uri[0]+"?filename=newimage");
-
-				 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				 // Set connection parameters.
-				 conn.setDoInput(true);
-				 conn.setDoOutput(true);
-				 conn.setUseCaches(false);
-				 
-				 //Set content type to PNG
-				 conn.setRequestProperty("Content-Type", "image/png");
-				 OutputStream outputStream = conn.getOutputStream();
-				 OutputStream out =  outputStream;
-				 // Write out the bytes of the content string to the stream.
-				 out.write(imageInByte);
-				 out.flush();
-				 out.close();
-				 // Read response from the input stream.
-				 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				 String temp;
-				 while ((temp = in.readLine()) != null) {
-					 response += temp + "\n";
-				 }
-				 temp = null;
-				 in.close();
-				 System.out.println("Server response:\n'" + response + "'");
-				 
-				 } catch (Exception e) {
-				 e.printStackTrace();
-				 }	
-				 return response;
-			}
-		}    */
 	    		
 
 	class RequestTask extends AsyncTask<String, String, String>{
