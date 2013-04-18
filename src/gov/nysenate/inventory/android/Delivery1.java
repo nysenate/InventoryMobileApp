@@ -4,6 +4,7 @@ package gov.nysenate.inventory.android;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -69,6 +70,8 @@ public class Delivery1 extends Activity {
 					locCodeList.add(jsonArray.getString(i).toString());
 				}
 
+				Collections.sort(locCodeList);
+				
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
