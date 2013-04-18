@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -86,6 +87,7 @@ public class Pickup3 extends Activity {
 	String requestTaskType = ""; 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	ClearableEditText commentsEditText;
+	private String DECOMMENTS = null;
 	
 	public String status = null;
 	String URL;
@@ -403,8 +405,23 @@ public void okButton(View view){
 	  String NUXRPUSIGN= "";
 	  String NUXREFEM= Integer.toString(nuxrefem);
 	  String NUXRRELSIGN="";
-	  String NARELEASEBY= URLEncoder.encode(this.naemployeeView.getText().toString());
+	  String NARELEASEBY = null;
+	  DECOMMENTS = null;
 	  
+	  try {
+	      NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText().toString(), "UTF-8");
+	  } catch (UnsupportedEncodingException e1) {
+	      // TODO Auto-generated catch block
+	      e1.printStackTrace();
+	  }
+
+	  try {
+	      DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText().toString(), "UTF-8");
+	  } catch (UnsupportedEncodingException e1) {
+	     // TODO Auto-generated catch block
+	     e1.printStackTrace();
+	  }
+
 	// Send it to the server	
 		
 		// check network connection
@@ -453,56 +470,7 @@ public void okButton(View view){
 		// ===================ends
 		Intent intent = new Intent(this, MenuActivity.class);
 		startActivity(intent);
-	}
-
-/*class ImageUploadTask extends AsyncTask<String, String, String> {
-
-			@Override
-			protected String doInBackground(String... uri) {
-				//HttpClient httpclient = new DefaultHttpClient();
-				//HttpResponse response;
-				//String responseString = null;
-				//Get connection to image upload web service
-				 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-				 Bitmap bitmap = sign.getImage();
-				 bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
-				 imageInByte = bs.toByteArray();
-				 System.out.println("Image Byte Array Size:"+imageInByte.length);
-				 String response = "";			
-				 try {
-				 URL url = new URL(uri[0]+"?filename=newimage");
-
-				 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				 // Set connection parameters.
-				 conn.setDoInput(true);
-				 conn.setDoOutput(true);
-				 conn.setUseCaches(false);
-				 
-				 //Set content type to PNG
-				 conn.setRequestProperty("Content-Type", "image/png");
-				 OutputStream outputStream = conn.getOutputStream();
-				 OutputStream out =  outputStream;
-				 // Write out the bytes of the content string to the stream.
-				 out.write(imageInByte);
-				 out.flush();
-				 out.close();
-				 // Read response from the input stream.
-				 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				 String temp;
-				 while ((temp = in.readLine()) != null) {
-					 response += temp + "\n";
-				 }
-				 temp = null;
-				 in.close();
-				 System.out.println("Server response:\n'" + response + "'");
-				 
-				 } catch (Exception e) {
-				 e.printStackTrace();
-				 }	
-				 return response;
-			}
-		}    */
-	    		
+	}  		
 
 	class RequestTask extends AsyncTask<String, String, String>{
 
@@ -562,7 +530,7 @@ public void okButton(View view){
 	    		responseString = null;
 	    		try {
 	        	
-	                String pickupURL = uri[1]+"&NUXRPUSIGN="+NUXRPUSIGN;
+	                String pickupURL = uri[1]+"&NUXRPUSIGN="+NUXRPUSIGN+"&DECOMMENTS="+DECOMMENTS;
 	                System.out.println("pickupURL:"+pickupURL);
 					response = httpclient.execute(new HttpGet(pickupURL));
 	    			//   HttpPost hp=   	new HttpPost(uri[0]);
