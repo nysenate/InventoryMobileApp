@@ -43,7 +43,7 @@ public class VerSummaryActivity extends Activity {
 	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<String> missingItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location
-	ArrayList<Integer> scannedBarcodeNumbers= new ArrayList<Integer>();	    
+	ArrayList<String> scannedBarcodeNumbers= new ArrayList<String>();	    
 	public  String res=null;
 	String loc_code=null;
 
@@ -84,7 +84,7 @@ public class VerSummaryActivity extends Activity {
 		      AllScannedItems = getIntent().getStringArrayListExtra("scannedList");
 		      missingItems = getIntent().getStringArrayListExtra("missingList");
 		      newItems = getIntent().getStringArrayListExtra("newItems");
-		      scannedBarcodeNumbers=getIntent().getIntegerArrayListExtra("scannedBarcodeNumbers");
+		      scannedBarcodeNumbers=getIntent().getStringArrayListExtra("scannedBarcodeNumbers");
 		      loc_code=getIntent().getStringExtra("loc_code");
 		      String summary=getIntent().getStringExtra("summary");
 		      

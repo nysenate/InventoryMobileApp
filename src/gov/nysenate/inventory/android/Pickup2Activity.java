@@ -43,7 +43,7 @@ public class Pickup2Activity extends Activity {
 	public	String status=null;
 	public ListView listView;
 	public String loc_code=null; // populate this from the location code from previous activity
-    ArrayList<Integer> scannedItems= new ArrayList<Integer>();
+    ArrayList<String> scannedItems= new ArrayList<String>();
 	ArrayList<verList> list = new ArrayList<verList>();
 	ArrayList<StringBuilder> dispList = new ArrayList<StringBuilder>();
 	ArrayAdapter<StringBuilder> adapter ;
@@ -101,7 +101,7 @@ public class Pickup2Activity extends Activity {
 		public void afterTextChanged(Editable s) {
 			if (barcode.getText().toString().length() >= 6) {
 				String barcode_num = barcode.getText().toString().trim();
-				int barcode_number = Integer.parseInt(barcode_num);
+				String barcode_number =barcode_num;
 
 				int flag = 0;
 
@@ -237,7 +237,7 @@ public class Pickup2Activity extends Activity {
 		intent.putExtra("destinationLocation", destinationLocation);
 		String countStr= Integer.toString(count);
 		intent.putExtra("count", countStr);
-		intent.putIntegerArrayListExtra("scannedBarcodeNumbers", scannedItems);
+		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
 		intent.putStringArrayListExtra("scannedList", AllScannedItems);//scanned items list
 		startActivity(intent);
 	}
@@ -254,7 +254,7 @@ public class Pickup2Activity extends Activity {
 		return true;
 	}
 	public class verList {
-        int NUSENATE;
+    String NUSENATE;
     String CDCATEGORY;
     String DECOMMODITYF;
 }

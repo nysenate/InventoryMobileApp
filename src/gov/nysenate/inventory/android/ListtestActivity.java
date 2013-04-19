@@ -52,7 +52,7 @@ public class ListtestActivity extends Activity {
 	public ListView listView;
 	public String loc_code = null; // populate this from the location code from
 									// previous activity
-	ArrayList<Integer> scannedItems = new ArrayList<Integer>();
+	ArrayList<String> scannedItems = new ArrayList<String>();
 	ArrayList<verList> list = new ArrayList<verList>();
 	ArrayList<StringBuilder> dispList = new ArrayList<StringBuilder>();
 	ArrayList<InvItem> invList = new ArrayList<InvItem>();
@@ -121,7 +121,7 @@ public class ListtestActivity extends Activity {
 					JSONObject jo = new JSONObject();
 					jo = jsonArray.getJSONObject(i);
 					verList vl = new verList();
-					vl.NUSENATE = (Integer) jo.get("NUSENATE");
+					vl.NUSENATE = jo.getString("NUSENATE");
 					vl.CDCATEGORY = jo.getString("CDCATEGORY");
 					vl.DECOMMODITYF = jo.getString("DECOMMODITYF");
 
@@ -141,7 +141,7 @@ public class ListtestActivity extends Activity {
 					// 3/15/13 BH Coded below to use InvItem Objects to display
 					// the list.
 					InvItem invItem = new InvItem(
-							Integer.toString(vl.NUSENATE), vl.CDCATEGORY,
+							vl.NUSENATE, vl.CDCATEGORY,
 							"EXISTING", vl.DECOMMODITYF);
 					invList.add(invItem);
 					// invItem = null;
@@ -235,7 +235,7 @@ public class ListtestActivity extends Activity {
 				// loc_details.setText(loc_code.getText().toString());
 				// listView.
 				String barcode_num = barcode.getText().toString().trim();
-				int barcode_number = Integer.parseInt(barcode_num);
+				String barcode_number = barcode_num;
 
 				// to delete an element from the list
 				int flag = 0;
@@ -256,7 +256,7 @@ public class ListtestActivity extends Activity {
 				for (int i = 0; i < list.size(); i++) {
 					// this if will not remove the "New items" and previously
 					// scanned items
-					if ((list.get(i).NUSENATE == barcode_number)
+					if ((list.get(i).NUSENATE.equals(barcode_number) )
 							&& (scannedItems.contains(barcode_number) == false)) {
 						list.remove(i);
 
@@ -353,7 +353,7 @@ public class ListtestActivity extends Activity {
 					// 3/15/13 BH Coded below to use InvItem Objects to display
 					// the list.
 					InvItem invItem = new InvItem(
-							Integer.toString(vl.NUSENATE), vl.CDCATEGORY,
+							vl.NUSENATE, vl.CDCATEGORY,
 							"NEW", s_new.toString());
 					invList.add(invItem);
 
@@ -444,7 +444,7 @@ public class ListtestActivity extends Activity {
 		Intent intent = new Intent(this, VerSummaryActivity.class);
 		intent.putExtra("loc_code", loc_code);
 		intent.putExtra("summary", summary);
-		intent.putIntegerArrayListExtra("scannedBarcodeNumbers", scannedItems);
+		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
 		intent.putStringArrayListExtra("scannedList", AllScannedItems);// scanned
 																		// items
 																		// list
@@ -480,7 +480,9 @@ public class ListtestActivity extends Activity {
 				return lInvItem.getDecommodityf().compareTo(
 						rInvItem.getDecommodityf());
 			} else if (currentSortValue.equalsIgnoreCase("Senate Tag#")) {
-				return lInvItem.getNusenate().compareTo(rInvItem.getNusenate());
+			    Integer lNusenate = new Integer(lInvItem.getNusenate());
+                Integer rNusenate = new Integer(rInvItem.getNusenate());
+				return lNusenate.compareTo(rNusenate);
 			} else if (currentSortValue.equalsIgnoreCase("Last Inventory Date")) {
 				// Need to Pull Inventory Date C
 				return lInvItem.getDecommodityf().compareTo(
@@ -517,7 +519,7 @@ public class ListtestActivity extends Activity {
 	}
 
 	public class verList {
-		int NUSENATE;
+		String NUSENATE;
 		String CDCATEGORY;
 		String DECOMMODITYF;
 	}
