@@ -27,11 +27,21 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_height="300dp"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
-        android:layout_marginTop="81dp" >
-
+        android:layout_marginTop="66dp" 
+     >
     </ListView>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="53dp"
+        android:onClick="okButton"
+        android:text="@string/ok_button" />
 
 </RelativeLayout>

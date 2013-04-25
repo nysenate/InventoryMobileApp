@@ -11,7 +11,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -22,8 +21,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -33,37 +30,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.speech.RecognizerIntent;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.TabSpec;
+
 
 public class Pickup3 extends Activity {
+	
 	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<Integer> scannedBarcodeNumbers= new ArrayList<Integer>();	    
 	public  String res=null;
@@ -397,7 +381,9 @@ public void okButton(View view){
 	  String NUXRPUSIGN= "";
 	  String NUXREFEM= Integer.toString(nuxrefem);
 	  String NUXRRELSIGN="";
-	  String NARELEASEBY= URLEncoder.encode(this.naemployeeView.getText().toString());
+	  String RELEASEBY=this.naemployeeView.getText().toString().replace(",", " ");
+	  
+	  String NARELEASEBY= URLEncoder.encode(RELEASEBY);
 	  
 	// Send it to the server	
 		
@@ -464,7 +450,7 @@ public void okButton(View view){
 	    		Bitmap bitmap = sign.getImage();
 	    		bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
 	    		imageInByte = bs.toByteArray();
-	    		System.out.println("Image Byte Array Size:"+imageInByte.length);
+	    	//	System.out.println("Image Byte Array Size:"+imageInByte.length);
 	    		String responseString = "";			
 	    		try {
 	    			URL url = new URL(uri[0]);
@@ -491,7 +477,7 @@ public void okButton(View view){
 	    			}
 	    			temp = null;
 	    			in.close();
-	    			System.out.println("Server response:\n'" + responseString + "'");
+	    	//		System.out.println("Server response:\n'" + responseString + "'");
 	    			int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
 	    			if (nuxrsignLoc>-1) {
 	    					NUXRPUSIGN = responseString.substring(nuxrsignLoc+9).replaceAll("\r", "").replaceAll("\n", "");
@@ -571,7 +557,36 @@ public void okButton(View view){
 	}
 	
 
-	
+	class RequestTask2 extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... uri) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpResponse response;
+			String responseString = null;
+			try {
+				response = httpclient.execute(new HttpGet(uri[0]));
+				StatusLine statusLine = response.getStatusLine();
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					responseString = out.toString();
+				} else {
+					// Closes the connection.
+					response.getEntity().getContent().close();
+					throw new IOException(statusLine.getReasonPhrase());
+				}
+			} catch (ClientProtocolException e) {
+				// TODO Handle problems..
+			} catch (IOException e) {
+				// TODO Handle problems..
+			}
+			res = responseString;
+			return responseString;
+
+		}
+	}
 		
    
 }
