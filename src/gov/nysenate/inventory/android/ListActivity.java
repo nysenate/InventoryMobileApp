@@ -69,7 +69,7 @@ public class ListActivity extends Activity {
 					JSONObject jo = new JSONObject();
 					jo = jsonArray.getJSONObject(i);
 					verList vl = new verList();
-					vl.NUSENATE = (Integer) jo.get("NUSENATE");
+					vl.NUSENATE =  jo.getString("NUSENATE");
 					vl.CDCATEGORY = jo.getString("CDCATEGORY");
 					vl.DECOMMODITYF = jo.getString("DECOMMODITYF");
 
@@ -164,7 +164,7 @@ public class ListActivity extends Activity {
 	}
 
 	public class verList {
-		int NUSENATE;
+		String NUSENATE;
 		String CDCATEGORY;
 		String DECOMMODITYF;
 	}

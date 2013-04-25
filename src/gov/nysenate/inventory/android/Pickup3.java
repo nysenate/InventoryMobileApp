@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -49,7 +50,7 @@ import android.widget.Toast;
 public class Pickup3 extends Activity {
 	
 	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
-	ArrayList<Integer> scannedBarcodeNumbers= new ArrayList<Integer>();	    
+	ArrayList<String> scannedBarcodeNumbers= new ArrayList<String>();	    
 	public  String res=null;
 	String loc_code=null;
 	String originLocation=null;
@@ -67,6 +68,10 @@ public class Pickup3 extends Activity {
 	String requestTaskType = ""; 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	ClearableEditText commentsEditText;
+
+	private String DECOMMENTS = null;
+	
+
 	public String status = null;
 	String URL;
 	
@@ -88,7 +93,7 @@ public class Pickup3 extends Activity {
       originLocation= getIntent().getStringExtra("originLocation");
       destinationLocation=getIntent().getStringExtra("destinationLocation");
       count=getIntent().getStringExtra("count");
-      scannedBarcodeNumbers=getIntent().getIntegerArrayListExtra("scannedBarcodeNumbers");
+      scannedBarcodeNumbers=getIntent().getStringArrayListExtra("scannedBarcodeNumbers");
       loc_code=getIntent().getStringExtra("loc_code");
       String originLocationCodeArr[]=originLocation.split("-");
       originLocationCode=originLocationCodeArr[0];
@@ -246,7 +251,6 @@ public class Pickup3 extends Activity {
 		return -1;
 	}
 	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -263,7 +267,6 @@ public class Pickup3 extends Activity {
 	        Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
 	    }
 		sign.clearSignature();
-		//sign.setBackgroundResource(R.drawable.simplethinborder);
 	}
 	
 
@@ -378,13 +381,34 @@ public void okButton(View view){
 	// call the servlet image upload and return the nuxrsign
 	  
 	  String NAPICKUPBY = MainActivity.nauser;
-	  String NUXRPUSIGN= "";
 	  String NUXREFEM= Integer.toString(nuxrefem);
-	  String NUXRRELSIGN="";
+	  String NUXRRELSIGN="1111";
+/*    changes VP
 	  String RELEASEBY=this.naemployeeView.getText().toString().replace(",", " ");
 	  
 	  String NARELEASEBY= URLEncoder.encode(RELEASEBY);
+     */
+	  String NARELEASEBY = null;
+	  DECOMMENTS = null;
+/*      String NADELIVERBY= "";
+      String NAACCEPTBY = "";
+      String NUXRACCPTSIGN="";*/
+
 	  
+	  try {
+	      NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText().toString().replace(",", " "), "UTF-8");
+	  } catch (UnsupportedEncodingException e1) {
+	      // TODO Auto-generated catch block
+	      e1.printStackTrace();
+	  }
+
+	  try {
+	      DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText().toString(), "UTF-8");
+	  } catch (UnsupportedEncodingException e1) {
+	     // TODO Auto-generated catch block
+	     e1.printStackTrace();
+	  }
+
 	// Send it to the server	
 		
 		// check network connection
@@ -400,7 +424,12 @@ public void okButton(View view){
 							
 							String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			 			    //System.out.println("("+MainActivity.nauser+")");
+
 			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
+
+
+			 		//		resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
+
 
 							res=resr1.get().trim().toString();
 						
@@ -433,10 +462,14 @@ public void okButton(View view){
 		// ===================ends
 		Intent intent = new Intent(this, MenuActivity.class);
 		startActivity(intent);
+
 	}
 
 
 	    		
+
+	
+
 
 	class RequestTask extends AsyncTask<String, String, String>{
 
@@ -444,8 +477,8 @@ public void okButton(View view){
 	    protected String doInBackground(String... uri) {
 	    	// First Upload the Signature and get the nuxsign from the Server
 	    	if (requestTaskType.equalsIgnoreCase("Pickup")) {
-    			String NUXRPUSIGN = "";
-	    		
+    			String NUXRRELSIGN = "";
+    			
 	    		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 	    		Bitmap bitmap = sign.getImage();
 	    		bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
@@ -480,10 +513,10 @@ public void okButton(View view){
 	    	//		System.out.println("Server response:\n'" + responseString + "'");
 	    			int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
 	    			if (nuxrsignLoc>-1) {
-	    					NUXRPUSIGN = responseString.substring(nuxrsignLoc+9).replaceAll("\r", "").replaceAll("\n", "");
+	    			    NUXRRELSIGN = responseString.substring(nuxrsignLoc+9).replaceAll("\r", "").replaceAll("\n", "");
 	    			}
 	    			else {
-	    				NUXRPUSIGN = responseString.replaceAll("\r", "").replaceAll("\n", "");
+	    			    NUXRRELSIGN = responseString.replaceAll("\r", "").replaceAll("\n", "");
 	    			}
 	    				
 	    		} catch (Exception e) {
@@ -496,15 +529,9 @@ public void okButton(View view){
 	    		responseString = null;
 	    		try {
 	        	
-	                String pickupURL = uri[1]+"&NUXRPUSIGN="+NUXRPUSIGN;
+	                String pickupURL = uri[1]+"&NUXRRELSIGN="+NUXRRELSIGN+"&DECOMMENTS="+DECOMMENTS;
 	                System.out.println("pickupURL:"+pickupURL);
 					response = httpclient.execute(new HttpGet(pickupURL));
-	    			//   HttpPost hp=   	new HttpPost(uri[0]);
-	    			//HttpGet hp=   	new HttpGet(uri[0]);
-	    			//	hp.setHeader("Content-Type", "application/json"); // just for this we want the variable to be json object
-	    			//	hp.setEntity(new ByteArrayEntity(
-	    			//			scannedBarcodeNumbers.toString().getBytes("UTF8"))) ;
-	    			//  	response = httpclient.execute(hp);
 	    			StatusLine statusLine = response.getStatusLine();
 	    			if(statusLine.getStatusCode() == HttpStatus.SC_OK){
 	    				ByteArrayOutputStream out = new ByteArrayOutputStream();
