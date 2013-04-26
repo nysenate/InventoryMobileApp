@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Gravity;
@@ -481,9 +482,21 @@ public void okButton(View view){
     			
 	    		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 	    		Bitmap bitmap = sign.getImage();
-	    		bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+	    		Bitmap scaledBitmap =  Bitmap.createScaledBitmap(bitmap, 200, 40, true);
+                //System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
+                for (int x=0;x<scaledBitmap.getWidth();x++) {
+                    for (int y=0;y<scaledBitmap.getHeight();y++) {
+                         String strColor = String.format("#%06X", 0xFFFFFF & scaledBitmap.getPixel(x, y));
+                         if (strColor.equals("#000000")||scaledBitmap.getPixel(x, y)==Color.TRANSPARENT) {
+//                             System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
+                             scaledBitmap.setPixel(x, y, Color.WHITE);
+                         }
+                    }
+                }
+	    		scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+                //System.out.println("!!JPG COMPRESSED SIZE: -> "+scaledBitmap.getByteCount());
 	    		imageInByte = bs.toByteArray();
-	    	//	System.out.println("Image Byte Array Size:"+imageInByte.length);
+	    		//System.out.println("Image Byte Array Size:"+imageInByte.length);
 	    		String responseString = "";			
 	    		try {
 	    			URL url = new URL(uri[0]);
@@ -495,7 +508,7 @@ public void okButton(View view){
 	    			conn.setUseCaches(false);
 			 
 	    			//Set content type to PNG
-	    			conn.setRequestProperty("Content-Type", "image/png");
+	    			conn.setRequestProperty("Content-Type", "image/jpg");
 	    			OutputStream outputStream = conn.getOutputStream();
 	    			OutputStream out =  outputStream;
 	    			// Write out the bytes of the content string to the stream.
@@ -582,38 +595,5 @@ public void okButton(View view){
 	    	}
 	    }
 	}
-	
 
-	class RequestTask2 extends AsyncTask<String, String, String> {
-
-		@Override
-		protected String doInBackground(String... uri) {
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpResponse response;
-			String responseString = null;
-			try {
-				response = httpclient.execute(new HttpGet(uri[0]));
-				StatusLine statusLine = response.getStatusLine();
-				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					response.getEntity().writeTo(out);
-					out.close();
-					responseString = out.toString();
-				} else {
-					// Closes the connection.
-					response.getEntity().getContent().close();
-					throw new IOException(statusLine.getReasonPhrase());
-				}
-			} catch (ClientProtocolException e) {
-				// TODO Handle problems..
-			} catch (IOException e) {
-				// TODO Handle problems..
-			}
-			res = responseString;
-			return responseString;
-
-		}
-	}
-		
-   
 }

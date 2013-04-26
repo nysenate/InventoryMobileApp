@@ -52,7 +52,6 @@ public class MainActivity extends Activity {
 	String wifiMessage = "" /*"Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app."*/;
 	String currentSSID = "";
     private ListView mList;
-	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	public static String nauser = null;
 	ClearableEditText user_name;
     ClearableEditText password;
@@ -388,39 +387,6 @@ public class MainActivity extends Activity {
 
 	// our code begins
 
-	
-    public void clickVoice(View view) {
-        startVoiceRecognitionActivity();
-  }
-
-    /**
-     * Fire an intent to start the speech recognition activity.
-     */
-    private void startVoiceRecognitionActivity() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
-        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
-    }	
-
-    /**
-     * Handle the results from the recognition activity.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Fill the list view with the strings the recognizer thought it could have heard
-            ArrayList<String> matches = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-        	TextView t = (TextView) findViewById(R.id.textView2);
-        	t.setText(matches.get(0));
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }    
-    
-	
 	public void validate(View view) {
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		// Intent intent = new Intent(this, MenuActivity.class);
