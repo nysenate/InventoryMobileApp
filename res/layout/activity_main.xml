@@ -66,24 +66,4 @@
         android:layout_alignBottom="@+id/pickupCommentsSpeechButton"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="46dp"
-        android:onClick="clickVoice"
-        android:text="Voice Test" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/password"
-        android:layout_below="@+id/button2"
-        android:layout_marginTop="39dp"
-        android:text="Speech Results" />
-
 </RelativeLayout>

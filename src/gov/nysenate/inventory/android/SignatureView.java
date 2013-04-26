@@ -9,6 +9,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -185,15 +186,18 @@ public class SignatureView extends View {
     	
         if (initialBitmap==null) {
            Log.i("ClearSIG", "InitialBitmap was null");
-            mCanvas.drawColor(Color.TRANSPARENT);
             for (int x=1;x<this.getWidth();x++) {
                 for (int y=1;y<this.getHeight();y++) {
-                    mBitmap.setPixel(x, y, Color.TRANSPARENT);
+                    mBitmap.setPixel(x, y, Color.TRANSPARENT);  
                     /*if (mBitmap.getPixel(x, y)==Color.BLUE) {
                         mBitmap.setPixel(x, y, Color.TRANSPARENT);
                     }*/
                 }
+                /*mCanvas.drawColor(Color.WHITE);
+                mCanvas.drawRect(0f, 0f, (float)this.getWidth(), (float)this.getHeight(), bgPaint);*/
+                
             }
+            
 
         }
         else {
