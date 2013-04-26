@@ -396,7 +396,7 @@ public void okButton(View view){
 
 	  
 	  try {
-	      NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText().toString().replace(",", " "), "UTF-8");
+	      NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText().toString(), "UTF-8");
 	  } catch (UnsupportedEncodingException e1) {
 	      // TODO Auto-generated catch block
 	      e1.printStackTrace();
