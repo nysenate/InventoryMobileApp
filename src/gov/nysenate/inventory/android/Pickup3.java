@@ -494,6 +494,7 @@ public void okButton(View view){
                     }
                 }
 	    		scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+	    		System.out.println ("Hey just testing git");
                 //System.out.println("!!JPG COMPRESSED SIZE: -> "+scaledBitmap.getByteCount());
 	    		imageInByte = bs.toByteArray();
 	    		//System.out.println("Image Byte Array Size:"+imageInByte.length);
