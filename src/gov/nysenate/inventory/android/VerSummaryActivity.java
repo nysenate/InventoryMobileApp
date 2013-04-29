@@ -1,24 +1,13 @@
 package gov.nysenate.inventory.android;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
+
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -194,43 +183,6 @@ public class VerSummaryActivity extends Activity {
 	}
 
 	
-	class RequestTask extends AsyncTask<String, String, String>{
-
-	    @Override
-	    protected String doInBackground(String... uri) {
-	        HttpClient httpclient = new DefaultHttpClient();
-	        HttpResponse response;
-	        String responseString = null;
-	        try {
-	        	
-	           response = httpclient.execute(new HttpGet(uri[0]));
-	       //   HttpPost hp=   	new HttpPost(uri[0]);
-	        	//HttpGet hp=   	new HttpGet(uri[0]);
-	        //	hp.setHeader("Content-Type", "application/json"); // just for this we want the variable to be json object
-	        //	hp.setEntity(new ByteArrayEntity(
-	        //			scannedBarcodeNumbers.toString().getBytes("UTF8"))) ;
-	      //  	response = httpclient.execute(hp);
-	            StatusLine statusLine = response.getStatusLine();
-	            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-	                ByteArrayOutputStream out = new ByteArrayOutputStream();
-	                response.getEntity().writeTo(out);
-	                out.close();
-	                responseString = out.toString();
-	            } else{
-	                //Closes the connection.
-	                response.getEntity().getContent().close();
-	                throw new IOException(statusLine.getReasonPhrase());
-	            }
-	        } catch (ClientProtocolException e) {
-	            //TODO Handle problems..
-	        } catch (IOException e) {
-	            //TODO Handle problems..
-	        }
-	        res=responseString;
-	        return responseString;
-	        
-	    }
-	}
 	
 	
 }

@@ -2,8 +2,6 @@ package gov.nysenate.inventory.android;
 
 
 
-import gov.nysenate.inventory.android.VerSummaryActivity.RequestTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,7 +78,6 @@ public class Delivery3 extends Activity {
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL")
 					.toString();
 			
-			
 			AsyncTask<String, String, String> resr1 = new RequestTask()
 					.execute(URL+"/DeliveryDetails?nuxrpickup="+nuxrpd);
 			
@@ -141,7 +138,9 @@ public class Delivery3 extends Activity {
 			status = "no";
 		}
 		
-	
+	    // list of name of the employee for autocomplete (get from server and populate the autocomplete textview)
+		
+		
 		// Signature from 'Accepted By'
 		
 		// Save the signature on server (Received By), comments, Name
