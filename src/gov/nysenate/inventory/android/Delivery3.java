@@ -183,7 +183,9 @@ public class Delivery3 extends Activity {
 			status = "no";
 		}
 		
-	
+	    // list of name of the employee for autocomplete (get from server and populate the autocomplete textview)
+		
+		
 		// Signature from 'Accepted By'
 		
 		// Save the signature on server (Received By), comments, Name
