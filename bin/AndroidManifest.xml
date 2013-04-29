@@ -192,6 +192,8 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Delivery3"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+			android:screenOrientation="portrait"             
             android:label="@string/title_activity_delivery3" >
         </activity>
     </application>

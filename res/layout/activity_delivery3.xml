@@ -34,14 +34,66 @@
      >
     </ListView>
 
+    <gov.nysenate.inventory.android.ClearableEditText
+        android:id="@+id/deliveryCommentsEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/blacceptsignImageView"
+        android:layout_alignRight="@+id/blacceptsignImageView"
+        android:layout_below="@+id/listView1"
+        android:ems="10"
+        android:hint="Delivery Comments Here"
+        android:inputType="textMultiLine" />
+
+    <ImageView
+        android:id="@+id/deliveryCommentsSpeechButton"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:layout_alignTop="@+id/deliveryCommentsEditText"
+        android:layout_toRightOf="@+id/deliveryCommentsEditText"
+        android:clickable="true"
+        android:onClick="startCommentsSpeech"
+        android:src="@drawable/speech2txt" />
+
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+        android:id="@+id/naemployee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/blacceptsignImageView"
+        android:layout_marginLeft="92dp"
+        android:layout_toRightOf="@+id/button1"
+        android:ems="10"
+        android:hint="@string/employee_list_hint" >
+
+        <requestFocus />
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+
+    <gov.nysenate.inventory.android.SignatureView
+        android:id="@+id/blacceptsignImageView"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_above="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="27dp"
+        android:background="@drawable/simplethinborder"
+        android:paddingLeft="100dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="clearSignature"
+        android:text="Clear Signature" />
+
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="53dp"
         android:onClick="okButton"
         android:text="@string/ok_button" />
-
+    
 </RelativeLayout>

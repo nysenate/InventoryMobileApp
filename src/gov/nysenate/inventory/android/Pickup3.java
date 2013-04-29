@@ -69,10 +69,7 @@ public class Pickup3 extends Activity {
 	String requestTaskType = ""; 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	ClearableEditText commentsEditText;
-
 	private String DECOMMENTS = null;
-	
-
 	public String status = null;
 	String URL;
 	
@@ -466,10 +463,6 @@ public void okButton(View view){
 
 	}
 
-
-	    		
-
-	
 
 
 	class RequestTask extends AsyncTask<String, String, String>{

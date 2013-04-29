@@ -113,13 +113,18 @@ public class Delivery2 extends Activity {
 				
 					 public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 						 // this will go to the Delivery 3 activity with the data 
-                      
+					       System.out.println("Clicked on position "+position);
                            String selectedPickup= deliveryList.get(position);
+                           System.out.println("Clicked on position "+position+" B");
                            String [] itemDetails=selectedPickup.split(":");
-                   		String nuxrpickup=itemDetails[0];
+                           System.out.println("Clicked on position "+position+" C");
+                   		   String nuxrpickup=itemDetails[0];
+                           System.out.println("Clicked on position "+position+" D");
                    		
                 		intent.putExtra("location", location); 
+                        System.out.println("Clicked on position "+position+" E");
                 		intent.putExtra("nuxrpickup", nuxrpickup); 
+                        System.out.println("Clicked on position "+position+" F");
 
                 		startActivity(intent);
                    		Log.i("I am here","ListView"+position);

@@ -1,8 +1,13 @@
 package gov.nysenate.inventory.android;
 
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -24,6 +29,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -56,9 +63,8 @@ public class Delivery1 extends Activity {
 
 			// Get the URL from the properties
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
-
 			AsyncTask<String, String, String> resr1 = new RequestTask()
-					.execute(URL + "/locCodeList");
+					.execute(URL + "/locCodeList?NATYPE=DELIVERY");
 			try {
 				res = resr1.get().trim().toString();
 				// code for JSON
@@ -221,5 +227,129 @@ public class Delivery1 extends Activity {
 		getMenuInflater().inflate(R.menu.activity_delivery1, menu);
 		return true;
 	}
+	
+/*   Pickup3 AsyncTask
+ *  class RequestTask extends AsyncTask<String, String, String>{
+
+        @Override
+        protected String doInBackground(String... uri) {
+            // First Upload the Signature and get the nuxsign from the Server
+            if (requestTaskType.equalsIgnoreCase("Pickup")) {
+                String NUXRRELSIGN = "";
+                
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                Bitmap bitmap = sign.getImage();
+                Bitmap scaledBitmap =  Bitmap.createScaledBitmap(bitmap, 200, 40, true);
+                //System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
+                for (int x=0;x<scaledBitmap.getWidth();x++) {
+                    for (int y=0;y<scaledBitmap.getHeight();y++) {
+                         String strColor = String.format("#%06X", 0xFFFFFF & scaledBitmap.getPixel(x, y));
+                         if (strColor.equals("#000000")||scaledBitmap.getPixel(x, y)==Color.TRANSPARENT) {
+//                             System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
+                             scaledBitmap.setPixel(x, y, Color.WHITE);
+                         }
+                    }
+                }
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+                imageInByte = bs.toByteArray();
+                String responseString = "";         
+                try {
+                    URL url = new URL(uri[0]);
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    // Set connection parameters.
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setUseCaches(false);
+             
+                    //Set content type to PNG
+                    conn.setRequestProperty("Content-Type", "image/jpg");
+                    OutputStream outputStream = conn.getOutputStream();
+                    OutputStream out =  outputStream;
+                    // Write out the bytes of the content string to the stream.
+                    out.write(imageInByte);
+                    out.flush();
+                    out.close();
+                    // Read response from the input stream.
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String temp;
+                    while ((temp = in.readLine()) != null) {
+                        responseString += temp + "\n";
+                    }
+                    temp = null;
+                    in.close();
+            //      System.out.println("Server response:\n'" + responseString + "'");
+                    int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
+                    if (nuxrsignLoc>-1) {
+                        NUXRRELSIGN = responseString.substring(nuxrsignLoc+9).replaceAll("\r", "").replaceAll("\n", "");
+                    }
+                    else {
+                        NUXRRELSIGN = responseString.replaceAll("\r", "").replaceAll("\n", "");
+                    }
+                        
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }   
+
+                // Then post the rest of the information along with the NUXRSIGN 
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse response;
+                responseString = null;
+                try {
+                
+                    String pickupURL = uri[1]+"&NUXRRELSIGN="+NUXRRELSIGN+"&DECOMMENTS="+DECOMMENTS;
+                    System.out.println("pickupURL:"+pickupURL);
+                    response = httpclient.execute(new HttpGet(pickupURL));
+                    StatusLine statusLine = response.getStatusLine();
+                    if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else{
+                        //Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    //TODO Handle problems..
+                } catch (IOException e) {
+                    //TODO Handle problems..
+                }
+                res=responseString;
+                return responseString;
+            }
+            else if (requestTaskType.equalsIgnoreCase("EmployeeList")) {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse response;
+                String responseString = null;
+                try {
+                    response = httpclient.execute(new HttpGet(uri[0]));
+                    StatusLine statusLine = response.getStatusLine();
+                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else {
+                        // Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    // TODO Handle problems..
+                } catch (IOException e) {
+                    // TODO Handle problems..
+                }
+                res = responseString;
+                return responseString;
+            }
+            else {
+                System.out.println ("!!ERROR: Invalid requestTypeTask:"+requestTaskType);
+                return "!!ERROR: Invalid requestTypeTask:"+requestTaskType;
+            }
+        }
+    }	
+ */
 
 }
