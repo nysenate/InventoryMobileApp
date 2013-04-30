@@ -7,9 +7,9 @@
     <string name="user_name_str">User Name</string>
     <string name="password_str">Password</string>
     <string name="button_str">Login</string>
-    <string name="title_activity_display_message">DisplayMessageActivity</string>
+    <string name="title_activity_display_message">You should not see this</string>
     <string name="title_activity_http_example">HttpExampleActivity</string>
-    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_menu">Main Menu</string>
     <string name="button1">Search</string>
     <string name="button2">Move Item</string>
     <string name="button3">Modify Info</string>
@@ -19,7 +19,7 @@
     <string name="button7">Delivery</string>
     <string name="button8">Verification </string>
     <string name="menu_msg">Please select an option</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_search">Search Inventory</string>
     <string name="title_activity_add_item">AddItemActivity</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="SearchActivity_MSG">Please scan the item or enter the barcode number </string>
@@ -36,24 +36,24 @@
     <string name="title_activity_mov_pick1">MovPick1</string>
     <string name="title_activity_movp1">Movp1</string>
     <string name="title_activity_move_pickup1">Move_pickup1</string>
-    <string name="title_activity_move">Move</string>
-    <string name="title_activity_pickup1">Pickup1</string>
+    <string name="title_activity_move">Move Menu</string>
+    <string name="title_activity_pickup1">Pickup Locations</string>
     <string name="select_origin_loc">Please scan or enter origin location code</string>
     <string name="select_dest_loc">Please enter destination location code</string>
     <string name="select_dest_hint">Destination location code</string>
-    <string name="title_activity_pickup2">Pickup2Activity</string>
-    <string name="title_activity_verification">Verification</string>
-    <string name="verify_msg1">Please select location for Verification</string>
+    <string name="title_activity_pickup2">Inventory Pickup</string>
+    <string name="title_activity_verification">Verification Location</string>
+    <string name="verify_msg1">Please select/enter location for Verification:</string>
     <string name="title_activity_table">TableActivity</string>
     <string name="title_activity_verification2">Verification2</string>
     <string name="verify_msg2">Please scan items for Verification</string>
     <string name="verify2_list">List of scanned items </string>
     <string name="title_activity_veri_list">VeriListActivity</string>
     <string name="title_activity_list">ListActivity</string>
-    <string name="title_activity_listtest">ListtestActivity</string>
+    <string name="title_activity_listtest">Inventory Verification</string>
     <string name="count">Count</string>
     <string name="image">Thumbnail</string>
-    <string name="title_activity_ver_summary">VerSummaryActivity</string>
+    <string name="title_activity_ver_summary">Verification Summary</string>
     <string name="preferences_title">Your Preferences</string>
     <string name="ver_summary_title">Scanned Summary Confirmation</string>
 
@@ -66,13 +66,13 @@
 
     <string name="pickup2Msg">Please scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
-    <string name="title_activity_pickup3">Pickup3</string>
-    <string name="title_activity_delivery1">Delivery1</string>
+    <string name="title_activity_pickup3">Pickup Summary/Confirmation</string>
+    <string name="title_activity_delivery1">Delivery Location</string>
     <string name="delivery1_msg">Please select location for delivery</string>
     <string name="delivery1_hint">Please scan or enter location code</string>
-    <string name="title_activity_delivery2">Delivery2</string>
+    <string name="title_activity_delivery2">Pickups available to Deliver</string>
     <string name="delivery2_msg">Please select one for delivery</string>
-    <string name="title_activity_delivery3">Delivery3</string>
+    <string name="title_activity_delivery3">Inventory Delivery</string>
     <string name="delivery3_msg">Delivery confirmation</string>
     <string name="employee_list_hint">Name of Signer</string>
 
