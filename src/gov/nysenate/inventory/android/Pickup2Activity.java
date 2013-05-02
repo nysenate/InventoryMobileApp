@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Pickup2Activity extends Activity {
+public class Pickup2Activity extends SenateActivity {
 	public EditText barcode;
 	public EditText count_text;
 	public TextView loc_details;

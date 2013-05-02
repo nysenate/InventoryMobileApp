@@ -30,7 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ListActivity extends Activity {
+public class ListActivity extends SenateActivity {
 	public String res = null;
 	public String status = null;
 	public String barcode;
@@ -115,7 +115,7 @@ public class ListActivity extends Activity {
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
@@ -130,7 +130,7 @@ public class ListActivity extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
+	}*/
 
 	class RequestTask extends AsyncTask<String, String, String> {
 

@@ -23,7 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-public class Delivery1 extends Activity {
+public class Delivery1 extends SenateActivity {
 	AutoCompleteTextView autoCompleteTextView1;// for location code
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	String URL = "";

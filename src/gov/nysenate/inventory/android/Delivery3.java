@@ -48,7 +48,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Delivery3 extends Activity {
+public class Delivery3 extends SenateActivity {
 	public TextView loc_details;
 	String location="";
     String nuxrpd="";
@@ -380,9 +380,10 @@ public class Delivery3 extends Activity {
 				toast.show();
 		
 		
-		// 3. send the intent to the Menu Activity
+		// 3. send the intent to the Move Menu Activity
 		
-		Intent intent = new Intent(this, MenuActivity.class);
+//		Intent intent = new Intent(this, MenuActivity.class);
+		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
 	}
 	@Override
