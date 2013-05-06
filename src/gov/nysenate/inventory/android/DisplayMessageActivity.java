@@ -49,7 +49,7 @@ public class DisplayMessageActivity extends Activity {
 					String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
 							.toString();
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/NewServlet?user=" + user_name
+							.execute(URL + "/Login?user=" + user_name
 									+ "&pwd=" + password);
 					try {
 						res = resr1.get().trim().toString();
