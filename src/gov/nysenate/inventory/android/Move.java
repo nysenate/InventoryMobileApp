@@ -65,23 +65,23 @@ catch (Exception e) {
 		return true;
 	}
 
-/*	@Override
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
+		case R.id.menu_move_useraction:
+			Toast toast = Toast.makeText(getApplicationContext(), "Show User Log",
 					Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
-			NavUtils.navigateUpFromSameTask(this);
+			//NavUtils.navigateUpFromSameTask(this);
 
-			overridePendingTransition(R.anim.in_left, R.anim.out_right);
+			//overridePendingTransition(R.anim.in_left, R.anim.out_right);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}*/
+	}
 
 	public void pickup(View view) {
 

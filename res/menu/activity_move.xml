@@ -5,5 +5,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/menu_settings"/>
-
+    <item
+        android:id="@+id/menu_move_useraction"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Recent Actions Log"/>
+    
 </menu>
