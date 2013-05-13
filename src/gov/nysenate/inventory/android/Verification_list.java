@@ -24,7 +24,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class Verification_list extends Activity {
@@ -34,6 +37,9 @@ public class Verification_list extends Activity {
 	public String res = null;
 	public String status = null;
 	ArrayList<Integer> scannedItems = new ArrayList<Integer>();
+	ImageButton buttonVerifyListContinue;
+	ImageButton buttonVerifyListCancel;
+	ProgressBar progressBarVerifyList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,9 @@ public class Verification_list extends Activity {
 		loc_code = (EditText) findViewById(R.id.preferencePWD);
 		loc_code.addTextChangedListener(filterTextWatcher);
 		loc_details = (TextView) findViewById(R.id.textView2);
+		buttonVerifyListContinue = (ImageButton) findViewById(R.id.buttonVerifyListContinue);	
+		buttonVerifyListCancel = (ImageButton) findViewById(R.id.buttonVerifyListCancel);		
+		progressBarVerifyList = (ProgressBar) findViewById(R.id.progressBarVerifyList);
 
 	}
 
@@ -141,16 +150,26 @@ public class Verification_list extends Activity {
 	}
 
 	public void okButton(View view) {
-
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerifyListContinue.startAnimation(alphaUp);
+		progressBarVerifyList.setVisibility(ProgressBar.VISIBLE);
 		Intent intent = new Intent(this, ListtestActivity.class);
 		startActivity(intent);
-
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+	
 	}
 
 	public void cancelButton(View view) {
 
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerifyListCancel.startAnimation(alphaUp);
 		Intent intent = new Intent(this, ListtestActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
 
 	}
 }

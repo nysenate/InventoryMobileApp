@@ -9,59 +9,81 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Move extends SenateActivity {
+public class Move extends SenateActivity implements OnItemClickListener {
 
     private String res = null;
     public String URL = null;
     TextView pickupDeliveryStats;
 
+	private ListView mList;
+    
+	public static final String[] titles = new String[] { "Pickup",
+			"Delivery"};/*, "Pickup/Deliver Log"*/
+
+	public static final String[] descriptions = new String[] {
+			"Pickup items from initial location",
+			"Deliver items that have been picked up to a new location"}; /*,
+			"Show History on Pickup/Delivered items"*/
+
+	public static final Integer[] images = { R.drawable.pickup3,
+			R.drawable.delivery2}; /*, R.drawable.log*/
+
+	ListView listView;
+	List<RowItem> rowItems;    
+    
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_move);
+		rowItems = new ArrayList<RowItem>();
+		for (int i = 0; i < titles.length; i++) {
+			RowItem item = new RowItem(images[i], titles[i]);
+			rowItems.add(item);
+		}
+
+		listView = (ListView) findViewById(R.id.moveMenu2);
+		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
+				R.layout.list_item, rowItems);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(this);
 	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		RowItem curRow = rowItems.get(position);
+		if (curRow.getTitle().equalsIgnoreCase("Pickup")) {
+			this.pickup(view);
+		} else if (curRow.getTitle().equalsIgnoreCase("Delivery")) {
+			this.delivery(view);
+		} else if (curRow.getTitle().equalsIgnoreCase("Pickup/Deliver Log")) {
+				// TODO
+		}
+
+		/*
+		 * Toast toast = Toast.makeText(getApplicationContext(), "TEST Item " +
+		 * (position + 1) + ": " + rowItems.get(position), Toast.LENGTH_SHORT);
+		 * toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+		 * toast.show();
+		 */
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_move, menu);
-  /*      URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
-        String sDtstart = "";
-        Date d = new Date();
-        try {
-            sDtstart = new SimpleDateFormat("MMddyy").format(d);
-            System.out.println("sDtstart:"+sDtstart);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        AsyncTask<String, String, String> resr1 = null;        
-        pickupDeliveryStats = (TextView) findViewById(R.id.pickupDeliveryStats);
-      try {
-    System.out.println (URL + "/PickupDeliveryStats?NAUSER="+MainActivity.nauser+"&DTSTART="+sDtstart);
-    resr1 = new RequestTask()
-    .execute(URL + "/PickupDeliveryStats?NAUSER="+MainActivity.nauser+"&DTSTART="+sDtstart);
-    res = resr1.get().trim().toString();
-    pickupDeliveryStats.setText(res);
-}
-catch (Exception e) {
-//    pickupDeliveryStats.setText("Pickup/Delivery Stats could not be loaded.");
-}
-    // code for JSON
-
-        
-	    try {
-	        res = resr1.get().trim().toString();
-	    }
-	    catch (Exception e) {
-	        e.printStackTrace();
-	    }*/
 		return true;
 	}
 
@@ -74,6 +96,9 @@ catch (Exception e) {
 					Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
+			Intent intent = new Intent(this, UserActionActivity.class);
+			startActivity(intent);
+            overridePendingTransition(R.anim.in_up, R.anim.out_up);
 			//NavUtils.navigateUpFromSameTask(this);
 
 			//overridePendingTransition(R.anim.in_left, R.anim.out_right);
@@ -87,6 +112,8 @@ catch (Exception e) {
 
 		Intent intent = new Intent(this, Pickup1.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		
 
 	}
 
@@ -94,6 +121,7 @@ catch (Exception e) {
 
 		Intent intent = new Intent(this, Delivery1.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
 	}
 

@@ -28,18 +28,6 @@
         android:text="Total Items"
         android:textSize="20sp" />
 
-   
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@android:id/tabhost"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="51dp"
-        android:onClick="okButton"
-        android:text="@string/ok_button" />
-
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
@@ -47,28 +35,9 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView3"
         android:layout_marginTop="27dp"
-        android:background="@color/bluelight" >
+		android:background="@drawable/customshape" >
 
     </ListView>
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="clearSignature"
-        android:text="Clear Signature" />
-
-    <gov.nysenate.inventory.android.SignatureView
-        android:id="@+id/blsignImageView"
-        android:layout_width="500dp"
-        android:layout_height="100dp"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/simplethinborder"
-        android:paddingLeft="100dp" />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
@@ -102,5 +71,45 @@
         android:clickable="true"
         android:onClick="startCommentsSpeech"
         android:src="@drawable/speech2txt" />
+
+    <ImageButton
+        android:id="@+id/buttonPickup3Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:onClick="backButton"
+        android:src="@drawable/bback" />
+
+    <gov.nysenate.inventory.android.SignatureView
+        android:id="@+id/blsignImageView"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_above="@+id/btnPickup3ClrSig"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/simplethinborder"
+        android:paddingLeft="100dp" />
+
+    <ImageButton
+        android:id="@+id/btnPickup3Cont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@null"
+        android:onClick="continueButton"
+        android:src="@drawable/bcontinue" />
+
+    <ImageButton
+        android:id="@+id/btnPickup3ClrSig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnPickup3Cont"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:onClick="clearSignatureButton"
+        android:src="@drawable/bclearsignature" />
 
 </RelativeLayout>

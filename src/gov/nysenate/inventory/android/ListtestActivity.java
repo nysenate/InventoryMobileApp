@@ -24,10 +24,12 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -36,7 +38,7 @@ import android.widget.Toast;
 
 public class ListtestActivity extends SenateActivity {
 
-	public EditText barcode;
+	public ClearableEditText barcode;
 	public EditText count_text;
 	public TextView loc_details;
 	public String res = null;
@@ -52,6 +54,9 @@ public class ListtestActivity extends SenateActivity {
 	ArrayList<String> dispType = new ArrayList<String>();
 	String currentSortValue = "Description";
 	public Spinner sortList;
+	ImageButton buttonVerListContinue;
+	ImageButton buttonVerListCancel;
+	
 	String URL = ""; // this will be initialized once in onCreate() and used for
 						// all server calls.
 	InvListViewAdapter adapter;
@@ -83,6 +88,10 @@ public class ListtestActivity extends SenateActivity {
 		listView = (ListView) findViewById(R.id.preferenceList);
 		sortList = (Spinner) findViewById(R.id.sortList);
 		sortList.setOnItemSelectedListener(new SortChangedListener());
+	
+		buttonVerListContinue = (ImageButton) findViewById(R.id.buttonVerListContinue);
+		buttonVerListCancel = (ImageButton) findViewById(R.id.buttonVerListCancel);		
+	
 
 		// check network connection
 
@@ -183,7 +192,7 @@ public class ListtestActivity extends SenateActivity {
 
 		// code for textwatcher
 
-		barcode = (EditText) findViewById(R.id.preferencePWD);
+		barcode = (ClearableEditText) findViewById(R.id.preferencePWD);
 		barcode.addTextChangedListener(filterTextWatcher);
 
 		// listView = (ListView) findViewById(R.id.listView1 );
@@ -388,6 +397,11 @@ public class ListtestActivity extends SenateActivity {
 	
 	
 	public void okButton(View view) {
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerListContinue.startAnimation(alphaUp);
+		
 		// create lists for summary activity
 		ArrayList<String> missingItems = new ArrayList<String>();// for saving
 																	// items
@@ -424,12 +438,26 @@ public class ListtestActivity extends SenateActivity {
 																	// list
 		intent.putStringArrayListExtra("newItems", newItems);// new items list
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);		
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerListContinue.startAnimation(alphaUp);
+		
 	}
 
 	public void cancelButton(View view) {
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerListCancel.startAnimation(alphaUp);
 		Intent intent = new Intent(this, Verification.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerListCancel.startAnimation(alphaUp);
 	}
+
 
 	public void dispToster(String msg) {
 		Context context = getApplicationContext();

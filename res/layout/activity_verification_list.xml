@@ -39,24 +39,38 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/preferencePWD"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="52dp"
-        android:onClick="cancelButton"
-        android:text="@string/cancel_button" />
 
-    <Button
-        android:id="@+id/button1"
+
+    <ProgressBar
+        android:id="@+id/progressBarVerifyList"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button2"
-        android:layout_alignBottom="@+id/button2"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="39dp"
+        android:layout_toRightOf="@+id/button1"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/buttonVerifyListCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
-        android:onClick="cancelButton"
-        android:text="@string/ok_button" />
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="72dp"
+        android:background="@null"        
+        android:onClick="okButton"
+        android:src="@drawable/bcancel" />
+
+    <ImageButton
+        android:id="@+id/buttonVerifyListContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/buttonVerifyListCancel"
+        android:layout_marginLeft="22dp"
+        android:layout_toRightOf="@+id/preferencePWD"
+        android:background="@null"
+        android:onClick="okButton"
+        android:src="@drawable/bcontinue" />
 
 </RelativeLayout>

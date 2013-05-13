@@ -17,14 +17,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Delivery1 extends SenateActivity {
-	AutoCompleteTextView autoCompleteTextView1;// for location code
+	ClearableAutoCompleteTextView autoCompleteTextView1;// for location code
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	String URL = "";
 	public String res = null;
@@ -66,9 +70,19 @@ public class Delivery1 extends SenateActivity {
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
 				// for origin dest code
-				autoCompleteTextView1 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+				autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 				autoCompleteTextView1.setThreshold(1);
 				autoCompleteTextView1.setAdapter(adapter);
+				autoCompleteTextView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		              @Override
+		              public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		                   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		                   imm.hideSoftInputFromWindow(
+		                		   autoCompleteTextView1.getWindowToken(), 0);               
+		              }
+		          });
+		        				
+				
 				// for destination code
 
 				
@@ -160,19 +174,46 @@ public class Delivery1 extends SenateActivity {
 		}
 	};
 	
-	
 
-	
-		public void okButton(View view) {
+		public void continueButton(View view) {
+            int duration = Toast.LENGTH_SHORT;
+            
+            String currentLocation = this.autoCompleteTextView1.getText().toString();
 
-			Intent intent = new Intent(this, Delivery2.class);
-			intent.putExtra("location", deliveryLocation); // for location code of delivery
-			startActivity(intent);
+			if (currentLocation.trim().length()==0) {
+	            Toast toast = Toast
+	                    .makeText(
+	                            this.getApplicationContext(),
+	                            "!!ERROR: You must first pick a Delivery Location.",
+	                            duration);
+	            toast.setGravity(Gravity.CENTER, 0, 0);
+	            toast.show();
+				
+			}
+			else if (locCodeList.indexOf(currentLocation) ==-1) {
+	            Toast toast = Toast
+	                    .makeText(
+	                            this.getApplicationContext(),
+	                            "!!ERROR: Location Code \""+currentLocation+"\" is either invalid or not currently a Delivery Location.",
+	                            duration);
+	            toast.setGravity(Gravity.CENTER, 0, 0);
+	            toast.show();
+				
+			}
+			else {
+				Intent intent = new Intent(this, Delivery2.class);
+				intent.putExtra("location", deliveryLocation); // for location code of delivery
+				startActivity(intent);
+				overridePendingTransition(R.anim.in_right, R.anim.out_left);
+			}
+			
 		}
 
 		public void cancelButton(View view) {
 			Intent intent = new Intent(this, Move.class);
 			startActivity(intent);
+	        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+			
 		}
 
 	@Override

@@ -65,25 +65,24 @@
         android:hint="@string/select_dest_loc" >
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-    <Button
-        android:id="@+id/button2"
+    <ImageButton
+        android:id="@+id/buttonPickup1Continue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_alignLeft="@+id/textView1"
-        android:onClick="cancelButton"
-        android:text="@string/cancel_button" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:onClick="continueButton"
+        android:src="@drawable/bcontinue" />
 
-    <Button
-        android:id="@+id/button1"
+    <ImageButton
+        android:id="@+id/buttonPickup1Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_marginTop="181dp"
-        android:hint="@string/ok_button"
-        android:onClick="okButton"
-        android:text="@string/ok_button" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:onClick="cancelButton"
+        android:src="@drawable/bcancel" />
 
 </RelativeLayout>

@@ -19,10 +19,13 @@ import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
@@ -35,6 +38,11 @@ public class VerSummaryActivity extends SenateActivity {
 	ArrayList<String> scannedBarcodeNumbers= new ArrayList<String>();	    
 	public  String res=null;
 	String loc_code=null;
+	
+	ImageButton  buttonVerSumBack;
+	ImageButton  buttonVerSumContinue;
+	ProgressBar  progressVerSum;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,7 @@ public class VerSummaryActivity extends SenateActivity {
 		    	spec2.setContent(R.id.tab2);
 
 		    	TabSpec spec3=tabHost.newTabSpec("Tab 3");
-		    	spec3.setIndicator("New");
+		    	spec3.setIndicator("New/Found");
 		    	spec3.setContent(R.id.tab3);
 
 		    	tabHost.addTab(spec1);
@@ -67,6 +75,10 @@ public class VerSummaryActivity extends SenateActivity {
 		      ListView  ListViewTab1 = (ListView) findViewById( R.id.listView1);  
 		      ListView  ListViewTab2 = (ListView) findViewById( R.id.listView2);
 		      ListView  ListViewTab3 = (ListView) findViewById( R.id.listView3);
+		      
+		      this.progressVerSum = (ProgressBar)findViewById ( R.id.progressVerSum );
+		      this.buttonVerSumBack = (ImageButton)findViewById ( R.id.buttonVerSumBack );
+		      this.buttonVerSumContinue = (ImageButton)findViewById ( R.id.buttonVerSumContinue );
 		      
 		        // get Lists from intent of  previous activity   
 		        
@@ -103,9 +115,27 @@ public class VerSummaryActivity extends SenateActivity {
 	}
 	
 	
-  	
-	public void okButton(View view){
+	public void backButton(View view){
 		
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerSumBack.startAnimation(alphaUp);		
+		Intent intent = new Intent(this, ListtestActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerSumBack.startAnimation(alphaUp);		
+		
+	}
+	public void continueButton(View view){
+		
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerSumContinue.startAnimation(alphaUp);		
+		progressVerSum.setVisibility(ProgressBar.VISIBLE);
 		//new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
 		String jsonString=null;
 		String status=null;
@@ -180,6 +210,11 @@ public class VerSummaryActivity extends SenateActivity {
 		// ===================ends
 		Intent intent = new Intent(this, MenuActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerSumContinue.startAnimation(alphaUp);			
+		
 	}
 
 	

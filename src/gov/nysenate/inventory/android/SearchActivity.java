@@ -18,25 +18,31 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SearchActivity extends SenateActivity {
-	EditText barcode;
+	ClearableEditText barcode;
 	String res = null;
 	public String status = null;
 	TextView textView;
+	ImageButton buttonSearchBack;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 
-		barcode = (EditText) findViewById(R.id.barcode);
+		barcode = ( ClearableEditText) findViewById(R.id.barcode);
 		barcode.addTextChangedListener(filterTextWatcher);// Adding Listener to
 															// barcode field
 		textView = (TextView) findViewById(R.id.textView1);
+		buttonSearchBack = (ImageButton)findViewById(R.id.buttonSearchBack);
+		
 	}
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -111,9 +117,17 @@ public class SearchActivity extends SenateActivity {
 	}*/
 
 	public void okButton(View view) {
-		this.finish();// close the current activity
-		Intent intent = new Intent(this, MenuActivity.class);
-		startActivity(intent);
+		if (view.getId()==R.id.buttonSearchBack) {
+			float alpha = 0.45f;
+			AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+			alphaUp.setFillAfter(true);
+			buttonSearchBack.startAnimation(alphaUp);
+		
+			//this.finish();// close the current activity
+			Intent intent = new Intent(this, MenuActivity.class);
+			startActivity(intent);
+		    overridePendingTransition(R.anim.in_left, R.anim.out_right);			
+		}
 
 	}
 

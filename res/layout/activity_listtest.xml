@@ -4,25 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".ListtestActivity" >
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:text="@string/cancel_button" 
-        android:onClick="cancelButton" />
 
-    <ListView
-        android:id="@+id/preferenceList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_below="@+id/preferencePWD"
-        android:layout_alignParentLeft="true" >
-
-    </ListView>
 
     <EditText
         android:id="@+id/editText2"
@@ -36,17 +18,6 @@
         android:hint="@string/count" >
     </EditText>
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="19dp"
-        android:layout_marginLeft="46dp"
-        android:onClick="okButton"
-        android:text="@string/ok_button" />
-
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -58,7 +29,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30sp" />
 
-    <EditText
+    <gov.nysenate.inventory.andriod.ClearableEditText
         android:id="@+id/preferencePWD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,15 +44,15 @@
         android:textStyle="bold" >
 
         <requestFocus />
-    </EditText>
+    </gov.nysenate.inventory.andriod.ClearableEditText>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/editText2"
+        android:layout_alignLeft="@+id/textView1"
         android:layout_alignTop="@+id/sortList"
-        android:layout_toRightOf="@+id/button1"
         android:gravity="center"
         android:text="Sort By"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -95,4 +66,33 @@
         android:entries="@array/verify_sort"
         android:gravity="center" />
 
+    <ListView
+        android:id="@+id/preferenceList"
+        android:layout_width="wrap_content"
+        android:layout_height="670dp"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/buttonVerListContinue"
+        android:layout_below="@+id/preferencePWD" >
+    </ListView>
+
+    <ImageButton
+        android:id="@+id/buttonVerListContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:onClick="okButton"
+        android:src="@drawable/bcontinue" />
+
+    <ImageButton
+        android:id="@+id/buttonVerListCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:onClick="cancelButton"
+        android:src="@drawable/bcancel" />
+    
 </RelativeLayout>

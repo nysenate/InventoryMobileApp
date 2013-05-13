@@ -16,15 +16,17 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Pickup2Activity extends SenateActivity {
-	public EditText barcode;
-	public EditText count_text;
+	public ClearableEditText barcode;
+	public TextView pickupCounter;
 	public TextView loc_details;
 	public TextView TextView2;
 	public  String res=null;
@@ -42,7 +44,8 @@ public class Pickup2Activity extends SenateActivity {
    // These 3 ArrayLists will be used to transfer data to next activity and to the server
     ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
     ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location
-    
+    ImageButton buttonPickup2Cont;
+    ImageButton buttonPickup2Cancel;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +66,21 @@ public class Pickup2Activity extends SenateActivity {
 		TextView2.setText("Origin : "+ originLocation+"\n"
 		                 +"Destination : "+destinationLocation);
 		// display the count on screen
-		count_text = (EditText) findViewById(R.id.editText2);
+		pickupCounter = (TextView) findViewById(R.id.pickupCounter);
 
-		count_text.setText(Integer.toString(count));
+		pickupCounter.setText(Integer.toString(count));
 		// populate the listview
 		listView.setAdapter(adapter);
 
 		// code for textwatcher
 
-		barcode = (EditText) findViewById(R.id.editText1);
+		barcode = (ClearableEditText) findViewById(R.id.barcode);
 		barcode.addTextChangedListener(filterTextWatcher);
 
+		// ImageButton Setup
+		buttonPickup2Cont = (ImageButton) findViewById(R.id.buttonPickup2Cont);
+	    buttonPickup2Cancel = (ImageButton) findViewById(R.id.buttonPickup2Cancel);
+		
 	}
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -182,17 +189,37 @@ public class Pickup2Activity extends SenateActivity {
 				// refresh the view
 				adapter.notifyDataSetChanged();
 				count = list.size();
-				count_text.setText(Integer.toString(count));
+				pickupCounter.setText(Integer.toString(count));
 				listView.setAdapter(adapter);
 				barcode.setText("");
 			}
 		}
 	};
     
+
+	/*	public void continueButton(View view) {
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Continue.startAnimation(alphaUp);		
+		Intent intent = new Intent(this, Pickup2Activity.class);
+		intent.putExtra("originLocation", originLocation); 				// for origin code
+		intent.putExtra("destinationLocation", destinationLocation); 	// for
+																		// destination
+																		// code
+		startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Continue.startAnimation(alphaUp);	        
+	}*/
 	
-	
-	public void okButton(View view){
+	public void continueButton(View view){
 		// send the data to Pickup3 activity
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonPickup2Cont.startAnimation(alphaUp);		
 		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("originLocation", originLocation);
 		intent.putExtra("destinationLocation", destinationLocation);
@@ -201,12 +228,24 @@ public class Pickup2Activity extends SenateActivity {
 		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
 		intent.putStringArrayListExtra("scannedList", AllScannedItems);//scanned items list
 		startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup2Cont.startAnimation(alphaUp);	        
 	}
 	
 	public void cancelButton(View view){
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonPickup2Cancel.startAnimation(alphaUp);		
 		Intent intent = new Intent(this, Pickup1.class);
 		startActivity(intent);
-	}
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup2Cancel.startAnimation(alphaUp);	        
+        }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

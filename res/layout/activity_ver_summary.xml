@@ -41,14 +41,14 @@
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/button1"
         android:layout_alignLeft="@+id/textView3"
         android:layout_below="@+id/textView3"
         android:layout_marginTop="37dp" >
         
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="583dp"
             android:orientation="vertical" >
 
             <TabWidget
@@ -60,7 +60,7 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="516dp" >
 
                 <LinearLayout
                     android:id="@+id/tab1"
@@ -103,14 +103,33 @@
         </LinearLayout>
     </TabHost>
 
-    <Button
-        android:id="@+id/button1"
+    <ProgressBar
+        android:id="@+id/progressVerSum"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@android:id/tabhost"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="51dp"
-         android:onClick="okButton"
-        android:text="@string/ok_button" />
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 
+    <ImageButton
+        android:id="@+id/buttonVerSumContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:onClick="continueButton"
+        android:src="@drawable/bcontinue" />
+
+    <ImageButton
+        android:id="@+id/buttonVerSumBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:onClick="backButton"
+        android:src="@drawable/bback" />
+    
 </RelativeLayout>

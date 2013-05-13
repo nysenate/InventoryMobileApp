@@ -15,7 +15,7 @@
         android:textSize="25dp"
         android:text="@string/delivery1_msg" />
 
-    <AutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:hint="@string/delivery1_hint" >
 
         <requestFocus />
-    </AutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
     <TextView
         android:id="@+id/textView2"
@@ -40,24 +40,24 @@
         android:text="@string/details"
         android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/button2"
+    <ImageButton
+        android:id="@+id/btnDelivery1Cont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_alignRight="@+id/autoCompleteTextView1"
-        android:onClick="okButton"
-        android:text="@string/ok_button" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:onClick="continueButton"
+        android:src="@drawable/bcontinue" />
 
-    <Button
-        android:id="@+id/button1"
+    <ImageButton
+        android:id="@+id/btnDelivery1Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="98dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
         android:onClick="cancelButton"
-        android:text="@string/cancel_button" />
+        android:src="@drawable/bcancel" />
 
 </RelativeLayout>

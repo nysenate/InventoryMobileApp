@@ -3,83 +3,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Pickup2Activity" >
-     <TextView
-         android:id="@+id/textView1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentTop="true"
-         android:layout_marginLeft="26dp"
-         android:layout_marginTop="20dp"
-         android:text="@string/pickup2Msg"
-         android:textSize="25dp" />
 
-    <Button
-        android:id="@+id/button2"
+    <ImageButton
+        android:id="@+id/buttonPickup2Cont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:text="@string/cancel_button" 
-        android:onClick="cancelButton" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:onClick="continueButton"
+        android:src="@drawable/bcontinue" />
+
+    <ImageButton
+        android:id="@+id/buttonPickup2Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:onClick="cancelButton"
+        android:src="@drawable/bcancel" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/pickup2Msg"
+        android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/pickupCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editText1"
+        android:layout_alignBottom="@+id/editText1"
+        android:layout_alignParentRight="true"
+        android:ems="10"
+        android:hint="@string/count" >
+
+        <requestFocus />
+    </TextView>
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText1" >
-
-    </ListView>
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText1"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/editText1"
-        android:layout_toRightOf="@+id/textView1"
-        android:ems="10"
-        android:hint="@string/count" >
-    </EditText>
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="19dp"
-        android:layout_marginLeft="46dp"
-        android:onClick="okButton"
-        android:text="@string/ok_button" />
-
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="500dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:hint="@string/barcode_number"
-        android:inputType="number" >
-
-        <requestFocus />
-
-    </EditText>
+        android:layout_marginTop="87dp" >
+    </ListView>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="21dp"
-        android:layout_toLeftOf="@+id/editText2"
-        android:text="@string/pickup2Msg2" />
+        android:text="@string/pickup2Msg2"
+        android:textSize="18dp" />
+
+    <gov.nysenate.inventory.android.ClearableEditText
+        android:id="@+id/barcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView2"
+        android:ems="10"
+        android:hint="@string/barcode_number"
+        android:inputType="number" />
 
 </RelativeLayout>

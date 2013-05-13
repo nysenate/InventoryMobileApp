@@ -12,10 +12,17 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +65,8 @@ public class MainActivity extends Activity {
 	String URL = "";
 	public static Properties properties; // Since we want to refer to this in
 											// other activities
-
+	ImageButton buttonLogin;
+	ProgressBar progressBarLogin;
 	public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
 	public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
 
@@ -77,6 +85,59 @@ public class MainActivity extends Activity {
 		// Read from the /assets directory for properties of the project
 		// we can modify this file and the URL will be changed
 		Resources resources = this.getResources();
+		progressBarLogin = (ProgressBar)findViewById(R.id.progressBarLogin);
+		buttonLogin = (ImageButton)findViewById(R.id.buttonLogin);
+      /*  final ImageView v = (ImageView) findViewById(R.id.buttonLogin);
+        
+
+        
+        v.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				if (arg0.getId()==R.id.buttonLogin) {
+
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+
+					Toast toast = Toast
+							.makeText(
+									context,
+									"In Login Button Press",
+									3000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+					
+				switch (arg1.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                    {
+                        ((ImageView)v).setImageAlpha(200);
+                        validate(v);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP:
+                    {
+                        ((ImageView)v).setImageAlpha(255);
+                    }
+                }
+				
+				}
+				else {
+					Context context = getApplicationContext();
+					int duration = Toast.LENGTH_SHORT;
+
+					Toast toast = Toast
+							.makeText(
+									context,
+									"In OTHER Press",
+									3000);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();					
+				}
+				return false;
+			}
+        });        */
 		AssetManager assetManager = resources.getAssets();
 		try {
 			InputStream inputStream = assetManager.open("invApp.properties");
@@ -388,14 +449,22 @@ public class MainActivity extends Activity {
 	// our code begins
 
 	public void validate(View view) {
-		Intent intent = new Intent(this, DisplayMessageActivity.class);
-		// Intent intent = new Intent(this, MenuActivity.class);
-		String u_name = user_name.getText().toString();
-		String pwd = password.getText().toString();
-		intent.putExtra(u_name_intent, u_name);
-		intent.putExtra(pwd_intent, pwd);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		if (view.getId()==R.id.buttonLogin) {
+			float alpha = 0.45f;
+			AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+			alphaUp.setFillAfter(true);
+			buttonLogin.startAnimation(alphaUp);
+			progressBarLogin.setVisibility(ProgressBar.VISIBLE);
+			Intent intent = new Intent(this, DisplayMessageActivity.class);
+			// Intent intent = new Intent(this, MenuActivity.class);
+			String u_name = user_name.getText().toString();
+			String pwd = password.getText().toString();
+			intent.putExtra(u_name_intent, u_name);
+			intent.putExtra(pwd_intent, pwd);
+			startActivity(intent);
+			overridePendingTransition(R.anim.in_right, R.anim.out_left);
+			((ImageView)view).setImageAlpha(255);
+		}
 	}
 
 	// our code ends

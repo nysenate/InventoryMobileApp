@@ -16,7 +16,7 @@
         android:text="@string/SearchActivity_MSG"
         android:textSize="25sp" />
 
-    <EditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:padding="4dip" >
 
         <requestFocus />
-    </EditText>
+    </gov.nysenate.inventory.android.ClearableEditText>
 
     <TextView
         android:id="@+id/textView1"
@@ -45,16 +45,15 @@
         android:text="@string/details"
         android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="100sp"
+    <ImageButton
+        android:id="@+id/buttonSearchBack"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView2"
         android:layout_below="@+id/textView1"
-        android:layout_marginRight="78dp"
-        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp"
+        android:background="@null"
         android:onClick="okButton"
-        android:padding="4dip"
-        android:paddingTop="20dp"
-        android:text="@string/ok_button" />
+        android:src="@drawable/bback" />
+
 </RelativeLayout>

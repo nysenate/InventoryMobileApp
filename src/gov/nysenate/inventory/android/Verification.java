@@ -22,9 +22,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +37,10 @@ public class Verification extends SenateActivity {
 	public String res = null;
 	public String status = null;
 	public String loc_code_str = null;
-	AutoCompleteTextView autoCompleteTextView1;
+	ClearableAutoCompleteTextView autoCompleteTextView1;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
+	ImageButton buttonVerify1Continue;
+	ImageButton buttonVerify1Cancel;
 
 	String URL = "";
 
@@ -48,6 +52,9 @@ public class Verification extends SenateActivity {
 		loc_code = (EditText) findViewById(R.id.preferencePWD);
 		// code for the autocomplete arraylist of location
 
+		buttonVerify1Continue = (ImageButton) findViewById(R.id.buttonVerify1Continue);
+		buttonVerify1Cancel= (ImageButton) findViewById(R.id.buttonVerify1Cancel);;		
+		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -76,7 +83,7 @@ public class Verification extends SenateActivity {
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
 
-				autoCompleteTextView1 = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+				autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 				autoCompleteTextView1.setThreshold(1);
 				autoCompleteTextView1.setAdapter(adapter);
 
@@ -190,16 +197,32 @@ public class Verification extends SenateActivity {
 
 	public void okButton(View view) {
 
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerify1Continue.startAnimation(alphaUp);
 		Intent intent = new Intent(this, ListtestActivity.class);
 		intent.putExtra(loc_code_intent, loc_code_str);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerify1Continue.startAnimation(alphaUp);
 
 	}
 
 	public void cancelButton(View view) {
 
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonVerify1Cancel.startAnimation(alphaUp);
 		Intent intent = new Intent(this, MenuActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonVerify1Cancel.startAnimation(alphaUp);
 
 	}
 

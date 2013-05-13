@@ -37,11 +37,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,6 +74,9 @@ public class Pickup3 extends SenateActivity {
 	private String DECOMMENTS = null;
 	public String status = null;
 	String URL;
+	ImageButton buttonPickup3Continue;
+	ImageButton buttonPickup3Back;
+	ImageButton buttonPickup3ClearSignature;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +117,9 @@ public class Pickup3 extends SenateActivity {
       ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
     
       // Brian code starts
+  	  buttonPickup3Continue = (ImageButton)findViewById(R.id.btnPickup3Cont);
+  	  buttonPickup3Back = (ImageButton)findViewById(R.id.buttonPickup3Back);
+  	  buttonPickup3ClearSignature = (ImageButton)findViewById(R.id.btnPickup3ClrSig);      
       naemployeeView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
       naemployeeView.setClearMsg("Do you want to clear the name of the signer?");
       naemployeeView.showClearMsg(true);
@@ -256,17 +264,6 @@ public class Pickup3 extends SenateActivity {
 		return true;
 	}
 
-	public void clearSignature(View view) {
-	    Bitmap clearedSignature = BitmapFactory.decodeResource(getResources(), R.drawable.simplethinborder);
-	    if (clearedSignature==null) {
-	        Log.i("ClearSig", "Signature drawable was NULL");
-	    }
-	    else {
-	        Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
-	    }
-		sign.clearSignature();
-	}
-	
 
     /**
      * Fire an intent to start the speech recognition activity.
@@ -295,9 +292,12 @@ public class Pickup3 extends SenateActivity {
 
        super.onActivityResult(requestCode, resultCode, data);
    }    
-   	
-	
-public void okButton(View view){
+   	  
+public void continueButton(View view){
+	float alpha = 0.45f;
+	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+	alphaUp.setFillAfter(true);
+	buttonPickup3Continue.startAnimation(alphaUp);		
 	   String employeePicked = naemployeeView.getEditableText().toString();
 	   if (employeePicked.trim().length()>0) {
 		   int foundEmployee = this.findEmployee(employeePicked);
@@ -461,9 +461,42 @@ public void okButton(View view){
 		//Intent intent = new Intent(this, MenuActivity.class);
 		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
-
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup3Continue.startAnimation(alphaUp);	 
 	}
 
+public void backButton(View view){
+	float alpha = 0.45f;
+	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+	alphaUp.setFillAfter(true);
+	buttonPickup3Back.startAnimation(alphaUp);		
+	Intent intent = new Intent(this, Pickup2Activity.class);
+	startActivity(intent);
+    overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    alphaUp = new AlphaAnimation(1f, 1f);
+	alphaUp.setFillAfter(true);
+	buttonPickup3Back.startAnimation(alphaUp);	        
+    }
+
+public void clearSignatureButton(View view) {
+	float alpha = 0.45f;
+	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+	alphaUp.setFillAfter(true);
+	buttonPickup3ClearSignature.startAnimation(alphaUp);	
+    Bitmap clearedSignature = BitmapFactory.decodeResource(getResources(), R.drawable.simplethinborder);
+    if (clearedSignature==null) {
+        Log.i("ClearSig", "Signature drawable was NULL");
+    }
+    else {
+        Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
+    }
+	sign.clearSignature();
+    alphaUp = new AlphaAnimation(1f, 1f);
+	alphaUp.setFillAfter(true);
+	buttonPickup3ClearSignature.startAnimation(alphaUp);	        
+}
 
 
 	class RequestTask extends AsyncTask<String, String, String>{

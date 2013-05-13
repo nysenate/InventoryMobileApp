@@ -39,12 +39,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +73,10 @@ public class Delivery3 extends SenateActivity {
     String requestTaskType = "";
     String employeeList = "";
     private String DECOMMENTS = null;
+    ImageButton btnDelivery3ClrSig;
+    ImageButton btnDelivery3Back;
+    ImageButton btnDelivery3Cont;
+    
     
 	public ArrayList<String> deliveryDetails = new ArrayList<String>();
 	//ArrayList<DeliveryItem> deliveryList = new ArrayList<DeliveryItem>();
@@ -89,6 +96,11 @@ public class Delivery3 extends SenateActivity {
 		loc_details=(TextView)findViewById(R.id.textView2 );
 		loc_details.setText(location);	
 		//Get the barcode numbers from the server and set it to the listview
+		
+		// Configure Image Buttons
+	    btnDelivery3ClrSig = (ImageButton) findViewById(R.id.btnDelivery3ClrSig);
+	    btnDelivery3Back = (ImageButton) findViewById(R.id.btnDelivery3Back);
+	    btnDelivery3Cont = (ImageButton) findViewById(R.id.btnDelivery3Cont);
 
 		
         // Setup the Signature Field (sign) and Delivery Comments (commentsEditText)
@@ -222,6 +234,7 @@ public class Delivery3 extends SenateActivity {
         // for origin dest code
         naemployeeView.setThreshold(1);
         naemployeeView.setAdapter(adapter);
+		Delivery2.progressBarDelivery2.setVisibility(ProgressBar.INVISIBLE);
 		
 		
 	}
@@ -235,11 +248,14 @@ public class Delivery3 extends SenateActivity {
         return -1;
     }
 	
-	
-	public void okButton(View view) {
+	public void continueButton(View view) {
 	    // when ok button is pressed 
 	    // 1. First validate to ensure that an employee name was picked and the
 	    //    employee signed his name.
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		this.btnDelivery3Cont.startAnimation(alphaUp);		
 	    
 	    String employeePicked = naemployeeView.getEditableText().toString();
 	    NAACCEPTBY = "";
@@ -385,6 +401,11 @@ public class Delivery3 extends SenateActivity {
 //		Intent intent = new Intent(this, MenuActivity.class);
 		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);		
+		this.btnDelivery3Cont.startAnimation(alphaUp);		
+		
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -393,7 +414,7 @@ public class Delivery3 extends SenateActivity {
 		return true;
 	}
 
-	   public void clearSignature(View view) {
+	public void clearSignatureButton(View view) {
 	        Bitmap clearedSignature = BitmapFactory.decodeResource(getResources(), R.drawable.simplethinborder);
 	        if (clearedSignature==null) {
 	            Log.i("ClearSig", "Signature drawable was NULL");
@@ -402,7 +423,7 @@ public class Delivery3 extends SenateActivity {
 	            Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
 	        }
 	        sign.clearSignature();
-	    }
+	 }
 	    
 
 	    /**
@@ -432,6 +453,13 @@ public class Delivery3 extends SenateActivity {
 
 	       super.onActivityResult(requestCode, resultCode, data);
 	   }    
+	   
+	   
+		public void backButton(View view) {
+			this.finish();
+	        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		}
+	    
 	
 	
 	// class for connecting to internet and sending HTTP request to server

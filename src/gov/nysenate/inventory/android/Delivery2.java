@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class Delivery2 extends SenateActivity {
@@ -37,15 +38,24 @@ public class Delivery2 extends SenateActivity {
 	ListView listview;
 	String location ="";
 	Intent intent;
+	static ProgressBar progressBarDelivery2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_delivery2);
+		
+		//define progressBar
+		
+		progressBarDelivery2 = (ProgressBar) findViewById( R.id.progressBarDelivery2 );
+		
+		
 		//define intent
+		
+			
 		 intent = new Intent(this, Delivery3.class);
 		//1. Get the intent from Delivery1 activity and display it
 		
-		 location = getIntent().getStringExtra("location");
+		location = getIntent().getStringExtra("location");
 		loc_details=(TextView)findViewById(R.id.textView2 );
 		loc_details.setText(location);
 	
@@ -105,22 +115,18 @@ public class Delivery2 extends SenateActivity {
 
 				
 					 public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
+						 progressBarDelivery2.setVisibility(ProgressBar.VISIBLE);
 						 // this will go to the Delivery 3 activity with the data 
-					       System.out.println("Clicked on position "+position);
                            String selectedPickup= deliveryList.get(position);
-                           System.out.println("Clicked on position "+position+" B");
                            String [] itemDetails=selectedPickup.split(":");
-                           System.out.println("Clicked on position "+position+" C");
                    		   String nuxrpickup=itemDetails[0];
-                           System.out.println("Clicked on position "+position+" D");
                    		
-                		intent.putExtra("location", location); 
-                        System.out.println("Clicked on position "+position+" E");
-                		intent.putExtra("nuxrpickup", nuxrpickup); 
-                        System.out.println("Clicked on position "+position+" F");
+                           intent.putExtra("location", location); 
+                           intent.putExtra("nuxrpickup", nuxrpickup); 
 
-                		startActivity(intent);
-                   		Log.i("I am here","ListView"+position);
+                           startActivity(intent);
+                           overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                   			Log.i("I am here","ListView"+position);
 						     }
 					 
 				
@@ -138,7 +144,13 @@ public class Delivery2 extends SenateActivity {
 		getMenuInflater().inflate(R.menu.activity_delivery2, menu);
 		return true;
 	}
+
 	
+	public void cancelButton(View view) {
+		Intent intent = new Intent(this, Delivery1.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+	}
 
 		
 

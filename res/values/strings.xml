@@ -53,7 +53,7 @@
     <string name="title_activity_listtest">Inventory Verification</string>
     <string name="count">Count</string>
     <string name="image">Thumbnail</string>
-    <string name="title_activity_ver_summary">Verification Summary</string>
+    <string name="title_activity_ver_summary">Location Summary Verification</string>
     <string name="preferences_title">Your Preferences</string>
     <string name="ver_summary_title">Scanned Summary Confirmation</string>
 

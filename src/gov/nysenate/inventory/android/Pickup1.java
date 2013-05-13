@@ -23,11 +23,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -47,6 +49,9 @@ public class Pickup1 extends SenateActivity {
 	public String destinationLocation = null;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	String URL = "";
+	ImageButton buttonPickup1Continue;
+	ImageButton buttonPickup1Cancel;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,9 @@ public class Pickup1 extends SenateActivity {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
+
+				buttonPickup1Continue =  (ImageButton) findViewById(R.id.buttonPickup1Continue);
+				buttonPickup1Cancel =  (ImageButton) findViewById(R.id.buttonPickup1Cancel);			
 				// for origin dest code
 				autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 				autoCompleteTextView1.setThreshold(1);
@@ -91,7 +99,15 @@ public class Pickup1 extends SenateActivity {
 			            @Override
 			            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	                        Log.i("ItemClicked", "ITEM CLICKED");
-	                        boolean focusRequested = autoCompleteTextView2.requestFocus();
+	                        if (autoCompleteTextView2.getText().toString().trim().length()>0) {
+                         	   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                         	   imm.hideSoftInputFromWindow(
+                         			   autoCompleteTextView1.getWindowToken(), 0);   	                        		                        	
+	                        }
+	                        else {
+	                        	boolean focusRequested = autoCompleteTextView2.requestFocus();
+	                        }
+	                        
 			            }
 			        });
 
@@ -100,6 +116,43 @@ public class Pickup1 extends SenateActivity {
 				autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
 				autoCompleteTextView2.setThreshold(1);
 				autoCompleteTextView2.setAdapter(adapter);
+				autoCompleteTextView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		            @Override
+		            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        int duration = Toast.LENGTH_SHORT;
+                        if (autoCompleteTextView1.getText().toString().trim().length()==0) {
+                            boolean focusRequested = autoCompleteTextView1.requestFocus();
+                            Toast toast = Toast
+                                    .makeText(
+                                            getApplicationContext(),
+                                            "Please pick a from location.",
+                                            duration);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();                            
+                        }
+                        else {
+                           if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                               if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                            	   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            	   imm.hideSoftInputFromWindow(
+                            			   autoCompleteTextView1.getWindowToken(), 0);   
+                               }
+                               else {
+                            	   
+                               }
+                           }
+                           else {
+                        	     boolean focusRequested = autoCompleteTextView1.requestFocus();
+                        	     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                          	   	 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);                        	     
+                           }
+                           
+                        	
+                        }
+ 		            }
+		        });
+
+				
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -250,19 +303,103 @@ public class Pickup1 extends SenateActivity {
 
 	
 
-	public void okButton(View view) {
-		Intent intent = new Intent(this, Pickup2Activity.class);
-		intent.putExtra("originLocation", originLocation); 				// for origin code
-		intent.putExtra("destinationLocation", destinationLocation); 	// for
+	public void continueButton(View view) {
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Continue.startAnimation(alphaUp);		
+        int duration = Toast.LENGTH_SHORT;
+        
+        String currentFromLocation = this.autoCompleteTextView1.getText().toString();
+        String currentToLocation = this.autoCompleteTextView2.getText().toString();
+
+		if (currentFromLocation.trim().length()==0) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: You must first pick a from location.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);                              	
+			
+		}
+		else if (locCodeList.indexOf(currentFromLocation) ==-1) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: From Location Code \""+currentFromLocation+"\" is invalid.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);                              	
+			
+		}
+		else if (currentToLocation.trim().length()==0) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: You must first pick a to location.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView2.requestFocus();
+			
+		}
+		else if (locCodeList.indexOf(currentFromLocation) ==-1) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: To Location Code \""+currentToLocation+"\" is invalid.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView2.requestFocus();
+			
+		}
+		else if (currentToLocation.equalsIgnoreCase(currentFromLocation)) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: To Location Code \""+currentToLocation+"\" cannot be the same as the From Location Code.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView2.requestFocus();
+
+		}
+		else {
+		
+			Intent intent = new Intent(this, Pickup2Activity.class);
+			intent.putExtra("originLocation", originLocation); 				// for origin code
+			intent.putExtra("destinationLocation", destinationLocation); 	// for
 																		// destination
 																		// code
-		startActivity(intent);
+			startActivity(intent);
+	        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		}
+		
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Continue.startAnimation(alphaUp);	        
 	}
 
 	public void cancelButton(View view) {
 
-		Intent intent = new Intent(this, MenuActivity.class);
+		float alpha = 0.45f;
+		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Cancel.startAnimation(alphaUp);		
+		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        alphaUp = new AlphaAnimation(1f, 1f);
+		alphaUp.setFillAfter(true);
+		buttonPickup1Cancel.startAnimation(alphaUp);        
 
 	}
 

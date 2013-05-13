@@ -23,22 +23,13 @@
         android:layout_alignRight="@+id/autoCompleteTextView1"
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="42dp"
-        android:background="@color/bluelight"
+        android:background="@drawable/customshape"
         android:hint="@string/details"
         android:text="@string/details"
         android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_alignRight="@+id/textView2"
-        android:onClick="cancelButton"
-        android:text="@string/cancel_button" />
 
-    <AutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -50,13 +41,25 @@
         android:ems="10"
         android:hint="@string/location_code" />
 
-    <Button
-        android:id="@+id/button1"
+    <ImageButton
+        android:id="@+id/buttonVerify1Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
         android:layout_centerVertical="true"
-        android:hint="@string/ok_button"
+        android:layout_marginLeft="23dp"
+        android:background="@null"
+        android:onClick="cancelButton"
+        android:src="@drawable/bcancel" />
+
+    <ImageButton
+        android:id="@+id/buttonVerify1Continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_alignTop="@+id/buttonVerify1Cancel"
+        android:background="@null"
         android:onClick="okButton"
-        android:text="@string/ok_button" />
+        android:src="@drawable/bcontinue" />
+
 </RelativeLayout>
