@@ -48,7 +48,7 @@ public class Delivery1 extends Activity {
 			// Get the URL from the properties
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			AsyncTask<String, String, String> resr1 = new RequestTask()
-					.execute(URL + "/locCodeList?NATYPE=DELIVERY");
+					.execute(URL + "/LocCodeList?NATYPE=DELIVERY");
 			try {
 				res = resr1.get().trim().toString();
 				// code for JSON
@@ -137,7 +137,7 @@ public class Delivery1 extends Activity {
 							.toString();
 
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/locationDetails?barcode_num="
+							.execute(URL + "/LocationDetails?barcode_num="
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();

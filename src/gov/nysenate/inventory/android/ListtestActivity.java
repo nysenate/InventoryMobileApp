@@ -96,7 +96,7 @@ public class ListtestActivity extends Activity {
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 
 			AsyncTask<String, String, String> resr1 = new RequestTask()
-					.execute(URL + "/itemsList?loc_code=" + loc_code);
+					.execute(URL + "/ItemsList?loc_code=" + loc_code);
 
 			try {
 
@@ -296,7 +296,7 @@ public class ListtestActivity extends Activity {
 						// scannedItems.add(barcode);
 
 						AsyncTask<String, String, String> resr1 = new RequestTask()
-								.execute(URL + "/itemDetails?barcode_num="
+								.execute(URL + "/ItemDetails?barcode_num="
 										+ barcode_num);
 						try {
 							res = resr1.get().trim().toString();

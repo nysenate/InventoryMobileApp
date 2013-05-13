@@ -58,7 +58,7 @@ public class Verification extends Activity {
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 
 			AsyncTask<String, String, String> resr1 = new RequestTask()
-					.execute(URL + "/locCodeList");
+					.execute(URL + "/LocCodeList");
 			try {
 				res = resr1.get().trim().toString();
 				// code for JSON
@@ -136,7 +136,7 @@ public class Verification extends Activity {
 					status = "yes";
 
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/locationDetails?barcode_num="
+							.execute(URL + "/LocationDetails?barcode_num="
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
