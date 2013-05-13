@@ -20,7 +20,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.speech.RecognizerIntent;
 
-public class MenuActivity extends Activity implements OnItemClickListener {
+public class MenuActivity extends SenateActivity implements OnItemClickListener {
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	    
 	private ListView mList;
@@ -136,7 +136,7 @@ public class MenuActivity extends Activity implements OnItemClickListener {
 	public void backButtonPressed() {
 		super.onBackPressed();
 		finish();
-		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		//overridePendingTransition(R.anim.in_left, R.anim.out_right);
 	}
 
 	public void search(View view) {

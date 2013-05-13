@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class LocationActivity extends Activity {
+public class LocationActivity extends SenateActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

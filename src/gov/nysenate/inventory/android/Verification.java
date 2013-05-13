@@ -28,7 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Verification extends Activity {
+public class Verification extends SenateActivity {
 	public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
 	public EditText loc_code;
 	public TextView loc_details;
@@ -203,10 +203,10 @@ public class Verification extends Activity {
 
 	}
 
-	@Override
+	/*@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);
-	}
+	}*/
 
 }

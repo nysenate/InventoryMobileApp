@@ -23,7 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends SenateActivity {
 	EditText barcode;
 	String res = null;
 	public String status = null;
@@ -93,7 +93,7 @@ Log.i("Activity Search onCreate ","Start Activity");
 		return true;
 	}
 
-	@Override
+/*	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
@@ -109,7 +109,7 @@ Log.i("Activity Search onCreate ","Start Activity");
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
+	}*/
 
 	public void okButton(View view) {
 		this.finish();// close the current activity
@@ -125,11 +125,11 @@ Log.i("Activity Search onCreate ","Start Activity");
 
 	}
 
-	@Override
+/*	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);
-	}
+	}*/
 
 
 

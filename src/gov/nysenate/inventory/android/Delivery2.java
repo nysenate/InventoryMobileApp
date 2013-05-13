@@ -27,7 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Delivery2 extends Activity {
+public class Delivery2 extends SenateActivity {
 	public TextView loc_details;
 	String status=null;
 	String URL=null;

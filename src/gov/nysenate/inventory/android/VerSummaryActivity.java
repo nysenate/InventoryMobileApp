@@ -28,7 +28,7 @@ import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-public class VerSummaryActivity extends Activity {
+public class VerSummaryActivity extends SenateActivity {
 	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<String> missingItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location

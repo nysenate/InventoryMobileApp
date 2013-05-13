@@ -48,7 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class Pickup3 extends Activity {
+public class Pickup3 extends SenateActivity {
 	
 	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
 	ArrayList<String> scannedBarcodeNumbers= new ArrayList<String>();	    
@@ -423,10 +423,10 @@ public void okButton(View view){
 							String   URL=MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			 			    //System.out.println("("+MainActivity.nauser+")");
 
-			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NUXRRELSIGN="+NUXRRELSIGN+"&NARELEASEBY="+NARELEASEBY);
-
-
 			 		//		resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
+
+
+			 				resr1 = new RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem, URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
 
 
 							res=resr1.get().trim().toString();
@@ -458,7 +458,8 @@ public void okButton(View view){
 				toast.show();
 		
 		// ===================ends
-		Intent intent = new Intent(this, MenuActivity.class);
+		//Intent intent = new Intent(this, MenuActivity.class);
+		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
 
 	}

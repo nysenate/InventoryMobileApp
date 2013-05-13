@@ -75,5 +75,7 @@
     <string name="title_activity_delivery3">Inventory Delivery</string>
     <string name="delivery3_msg">Delivery confirmation</string>
     <string name="employee_list_hint">Name of Signer</string>
+    <string name="title_activity_user_action">Current Activity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

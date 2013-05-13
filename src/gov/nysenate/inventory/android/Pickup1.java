@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -31,7 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Pickup1 extends Activity {
+public class Pickup1 extends SenateActivity {
 	public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
 	public EditText loc_code;
 	public EditText locCodeDest;
@@ -63,7 +64,7 @@ public class Pickup1 extends Activity {
 
 			// Get the URL from the properties
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
-
+			
 			AsyncTask<String, String, String> resr1 = new RequestTask()
 					.execute(URL + "/LocCodeList");
 			try {

@@ -34,7 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ListtestActivity extends Activity {
+public class ListtestActivity extends SenateActivity {
 
 	public EditText barcode;
 	public EditText count_text;
@@ -380,6 +380,13 @@ public class ListtestActivity extends Activity {
 		return true;
 	}
 
+ /*   @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }*/
+	
+	
 	public void okButton(View view) {
 		// create lists for summary activity
 		ArrayList<String> missingItems = new ArrayList<String>();// for saving
