@@ -58,7 +58,7 @@ public class ListActivity extends SenateActivity {
 					.toString();
 
 			AsyncTask<String, String, String> resr1 = new RequestTask()
-					.execute(URL + "/itemsList?loc_code=" + loc_code);
+					.execute(URL + "/ItemsList?loc_code=" + loc_code);
 			try {
 
 				String jsonString = resr1.get().trim().toString();

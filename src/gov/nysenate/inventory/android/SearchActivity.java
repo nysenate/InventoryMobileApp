@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,7 +59,7 @@ public class SearchActivity extends SenateActivity {
 		public void afterTextChanged(Editable s) {
 			if (barcode.getText().toString().length() >= 6) {
 				String barcode_num = barcode.getText().toString().trim();
-
+				Log.i("Activity Search afterTextChanged ","barcode_num "+barcode_num);
 				// check network connection
 				ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -68,9 +69,9 @@ public class SearchActivity extends SenateActivity {
 					// Get the URL from the properties
 					String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
 							.toString();
-
+					Log.i("Activity Search afterTextChanged ","URL "+URL);
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/search?barcode_num=" + barcode_num);
+							.execute(URL + "/Search?barcode_num=" + barcode_num);
 					try {
 						res = resr1.get().trim().toString();
 					} catch (InterruptedException e) {

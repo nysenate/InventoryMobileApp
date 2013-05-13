@@ -70,9 +70,8 @@ public class Pickup1 extends SenateActivity {
 			// Get the URL from the properties
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 			
-	        AsyncTask<String, String, String> resr1 = new RequestTask()
-	        .execute(URL + "/locCodeList");
-
+			AsyncTask<String, String, String> resr1 = new RequestTask()
+					.execute(URL + "/LocCodeList");
 			try {
 				res = resr1.get().trim().toString();
 				// code for JSON
@@ -222,7 +221,7 @@ public class Pickup1 extends SenateActivity {
 							.toString();
 
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/locationDetails?barcode_num="
+							.execute(URL + "/LocationDetails?barcode_num="
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
@@ -278,7 +277,7 @@ public class Pickup1 extends SenateActivity {
 					status = "yes";
 
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/locationDetails?barcode_num="
+							.execute(URL + "/LocationDetails?barcode_num="
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();

@@ -87,7 +87,7 @@ public class Verification_list extends Activity {
 							.toString();
 
 					AsyncTask<String, String, String> resr1 = new RequestTask()
-							.execute(URL + "/itemDetails?barcode_num="
+							.execute(URL + "/ItemDetails?barcode_num="
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
