@@ -216,6 +216,11 @@ public class Pickup2Activity extends SenateActivity {
 	
 	public void continueButton(View view){
 		// send the data to Pickup3 activity
+		int duration = Toast.LENGTH_SHORT;
+		Context context = getApplicationContext();
+		Toast toast = Toast.makeText(context, "Continue Button was clicked", duration);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();		
 		float alpha = 0.45f;
 		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
 		alphaUp.setFillAfter(true);

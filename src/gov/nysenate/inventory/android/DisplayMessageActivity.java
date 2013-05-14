@@ -14,6 +14,7 @@ import android.net.NetworkInfo;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class DisplayMessageActivity extends Activity {
 					// Get the URL from the properties
 					String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
 							.toString();
+					Log.i("Login test", URL + "/Login?user=" + user_name+ "&pwd=" + password);
 					AsyncTask<String, String, String> resr1 = new RequestTask()
 							.execute(URL + "/Login?user=" + user_name
 									+ "&pwd=" + password);
@@ -87,6 +89,7 @@ public class DisplayMessageActivity extends Activity {
 			textView.setTextSize(40);
 
 			// calling the menu activity after validation
+			System.out.println ("RES:"+res);
 			if (res.equals("VALID")) {
 				Intent intent2 = new Intent(this, MenuActivity.class);
 				startActivity(intent2);
