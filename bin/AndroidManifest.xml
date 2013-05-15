@@ -111,8 +111,12 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Move_pickup1"
+            android:parentActivityName="gov.nysenate.inventory.android.Move"
             android:label="@string/title_activity_move_pickup1"
             android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.Move" />            
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Move"
@@ -126,12 +130,20 @@
         <activity
             android:name="gov.nysenate.inventory.android.Pickup1"
             android:label="@string/title_activity_pickup1"
+            android:parentActivityName="gov.nysenate.inventory.android.Move"   
             android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.Move" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup2Activity"
+            android:parentActivityName="gov.nysenate.inventory.android.Pickup1"            
             android:label="@string/title_activity_pickup2"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.Pickup1" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Verification"
@@ -180,9 +192,13 @@
         <activity
             android:name="gov.nysenate.inventory.android.Pickup3"
             android:label="@string/title_activity_pickup3"
-            android:parentActivityName="gov.nysenate.inventory.android.Pickup2"
+            android:parentActivityName="gov.nysenate.inventory.android.Pickup2Activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gov.nysenate.inventory.android.Pickup2Activity" />
+
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Delivery1"

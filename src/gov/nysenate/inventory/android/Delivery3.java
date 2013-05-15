@@ -45,7 +45,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -73,9 +73,9 @@ public class Delivery3 extends SenateActivity {
     String requestTaskType = "";
     String employeeList = "";
     private String DECOMMENTS = null;
-    ImageButton btnDelivery3ClrSig;
-    ImageButton btnDelivery3Back;
-    ImageButton btnDelivery3Cont;
+    Button btnDelivery3ClrSig;
+    Button btnDelivery3Back;
+    Button btnDelivery3Cont;
     
     
 	public ArrayList<String> deliveryDetails = new ArrayList<String>();
@@ -98,9 +98,9 @@ public class Delivery3 extends SenateActivity {
 		//Get the barcode numbers from the server and set it to the listview
 		
 		// Configure Image Buttons
-	    btnDelivery3ClrSig = (ImageButton) findViewById(R.id.btnDelivery3ClrSig);
-	    btnDelivery3Back = (ImageButton) findViewById(R.id.btnDelivery3Back);
-	    btnDelivery3Cont = (ImageButton) findViewById(R.id.btnDelivery3Cont);
+	    btnDelivery3ClrSig = (Button) findViewById(R.id.btnDelivery3ClrSig);
+	    btnDelivery3Back = (Button) findViewById(R.id.btnDelivery3Back);
+	    btnDelivery3Cont = (Button) findViewById(R.id.btnDelivery3Cont);
 
 		
         // Setup the Signature Field (sign) and Delivery Comments (commentsEditText)

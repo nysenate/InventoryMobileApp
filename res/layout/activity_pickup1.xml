@@ -65,24 +65,39 @@
         android:hint="@string/select_dest_loc" >
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-    <ImageButton
-        android:id="@+id/buttonPickup1Continue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@null"
-        android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
+   
+<Button
+    android:id="@+id/btnPickup1Cont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="36dp"
+    android:background="@drawable/buttonshapeblue"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
 
-    <ImageButton
-        android:id="@+id/buttonPickup1Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
-
+<Button
+    android:id="@+id/btnPickup1Cancel"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignBaseline="@+id/btnPickup1Cont"
+    android:layout_alignBottom="@+id/btnPickup1Cont"
+    android:layout_alignParentLeft="true"
+    android:background="@drawable/buttonshapered"
+    android:onClick="cancelButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Cancel"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
+    
 </RelativeLayout>

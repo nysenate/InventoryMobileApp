@@ -72,16 +72,6 @@
         android:onClick="startCommentsSpeech"
         android:src="@drawable/speech2txt" />
 
-    <ImageButton
-        android:id="@+id/buttonPickup3Back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:onClick="backButton"
-        android:src="@drawable/bback" />
-
     <gov.nysenate.inventory.android.SignatureView
         android:id="@+id/blsignImageView"
         android:layout_width="500dp"
@@ -92,24 +82,53 @@
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
-    <ImageButton
-        android:id="@+id/btnPickup3Cont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:background="@null"
-        android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
+<Button
+    android:id="@+id/btnPickup3Cont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="36dp"
+    android:background="@drawable/buttonshapeblue"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
 
-    <ImageButton
+    <Button
         android:id="@+id/btnPickup3ClrSig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:layout_alignTop="@+id/btnPickup3Cont"
         android:layout_centerHorizontal="true"
-        android:background="@null"
+        android:background="@drawable/buttonshapegray"
         android:onClick="clearSignatureButton"
-        android:src="@drawable/bclearsignature" />
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Clear Signature"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/btnPickup3Back"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/btnPickup3ClrSig"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="backButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp" />
 
 </RelativeLayout>

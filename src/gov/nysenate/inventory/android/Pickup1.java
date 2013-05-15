@@ -28,8 +28,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -49,8 +50,8 @@ public class Pickup1 extends SenateActivity {
 	public String destinationLocation = null;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	String URL = "";
-	ImageButton buttonPickup1Continue;
-	ImageButton buttonPickup1Cancel;
+	Button btnPickup1Cont;
+	Button btnPickup1Cancel;
 	
 
 	@Override
@@ -88,8 +89,8 @@ public class Pickup1 extends SenateActivity {
 						android.R.layout.simple_dropdown_item_1line,
 						locCodeList);
 
-				buttonPickup1Continue =  (ImageButton) findViewById(R.id.buttonPickup1Continue);
-				buttonPickup1Cancel =  (ImageButton) findViewById(R.id.buttonPickup1Cancel);			
+				btnPickup1Cont =  (Button) findViewById(R.id.btnPickup1Cont);
+				btnPickup1Cancel =  (Button) findViewById(R.id.btnPickup1Cancel);			
 				// for origin dest code
 				autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 				autoCompleteTextView1.setThreshold(1);
@@ -183,6 +184,15 @@ public class Pickup1 extends SenateActivity {
 		locDetailsDest = (TextView) findViewById(R.id.textView3);
 
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
+		btnPickup1Cont.getBackground().setAlpha(255);  	  
+	    btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
+	    btnPickup1Cancel.getBackground().setAlpha(255);   	  
+	}	
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
@@ -306,7 +316,7 @@ public class Pickup1 extends SenateActivity {
 		float alpha = 0.45f;
 		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
 		alphaUp.setFillAfter(true);
-		buttonPickup1Continue.startAnimation(alphaUp);		
+		btnPickup1Cont.startAnimation(alphaUp);		
         int duration = Toast.LENGTH_SHORT;
         
         String currentFromLocation = this.autoCompleteTextView1.getText().toString();
@@ -384,7 +394,7 @@ public class Pickup1 extends SenateActivity {
 		
         alphaUp = new AlphaAnimation(1f, 1f);
 		alphaUp.setFillAfter(true);
-		buttonPickup1Continue.startAnimation(alphaUp);	        
+		btnPickup1Cont.startAnimation(alphaUp);	        
 	}
 
 	public void cancelButton(View view) {
@@ -392,13 +402,13 @@ public class Pickup1 extends SenateActivity {
 		float alpha = 0.45f;
 		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
 		alphaUp.setFillAfter(true);
-		buttonPickup1Cancel.startAnimation(alphaUp);		
+		btnPickup1Cancel.startAnimation(alphaUp);		
 		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
         alphaUp = new AlphaAnimation(1f, 1f);
 		alphaUp.setFillAfter(true);
-		buttonPickup1Cancel.startAnimation(alphaUp);        
+		btnPickup1Cancel.startAnimation(alphaUp);        
 
 	}
 

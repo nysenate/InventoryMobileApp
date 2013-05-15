@@ -33,6 +33,7 @@ public abstract class SenateActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-    }    
+    }
+
     
 }

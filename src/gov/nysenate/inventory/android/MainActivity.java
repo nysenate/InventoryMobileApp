@@ -18,6 +18,7 @@ import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -65,7 +66,7 @@ public class MainActivity extends Activity {
 	String URL = "";
 	public static Properties properties; // Since we want to refer to this in
 											// other activities
-	ImageButton buttonLogin;
+	Button buttonLogin;
 	ProgressBar progressBarLogin;
 	public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
 	public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
@@ -86,7 +87,7 @@ public class MainActivity extends Activity {
 		// we can modify this file and the URL will be changed
 		Resources resources = this.getResources();
 		progressBarLogin = (ProgressBar)findViewById(R.id.progressBarLogin);
-		buttonLogin = (ImageButton)findViewById(R.id.buttonLogin);
+		buttonLogin = (Button)findViewById(R.id.buttonLogin);
       /*  final ImageView v = (ImageView) findViewById(R.id.buttonLogin);
         
 
@@ -450,10 +451,7 @@ public class MainActivity extends Activity {
 
 	public void validate(View view) {
 		if (view.getId()==R.id.buttonLogin) {
-			float alpha = 0.45f;
-			AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-			alphaUp.setFillAfter(true);
-			buttonLogin.startAnimation(alphaUp);
+			buttonLogin.getBackground().setAlpha(70);
 			progressBarLogin.setVisibility(ProgressBar.VISIBLE);
 			Intent intent = new Intent(this, DisplayMessageActivity.class);
 			// Intent intent = new Intent(this, MenuActivity.class);
@@ -463,7 +461,6 @@ public class MainActivity extends Activity {
 			intent.putExtra(pwd_intent, pwd);
 			startActivity(intent);
 			overridePendingTransition(R.anim.in_right, R.anim.out_left);
-			((ImageView)view).setImageAlpha(255);
 		}
 	}
 

@@ -5,26 +5,6 @@
     android:paddingBottom="@dimen/pad20dp"
     tools:context=".Pickup2Activity" >
 
-    <ImageButton
-        android:id="@+id/buttonPickup2Cont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@null"
-        android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
-
-    <ImageButton
-        android:id="@+id/buttonPickup2Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
-
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -77,5 +57,39 @@
         android:ems="10"
         android:hint="@string/barcode_number"
         android:inputType="number" />
+    
+<Button
+    android:id="@+id/btnPickup2Cont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="36dp"
+    android:background="@drawable/buttonshapeblue"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
 
+<Button
+    android:id="@+id/btnPickup2Cancel"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignBaseline="@+id/btnPickup2Cont"
+    android:layout_alignBottom="@+id/btnPickup2Cont"
+    android:layout_alignParentLeft="true"
+    android:background="@drawable/buttonshapered"
+    android:onClick="cancelButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Cancel"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
+    
 </RelativeLayout>

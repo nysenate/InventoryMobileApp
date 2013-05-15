@@ -43,7 +43,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,9 +74,9 @@ public class Pickup3 extends SenateActivity {
 	private String DECOMMENTS = null;
 	public String status = null;
 	String URL;
-	ImageButton buttonPickup3Continue;
-	ImageButton buttonPickup3Back;
-	ImageButton buttonPickup3ClearSignature;
+	static Button btnPickup3Cont;
+	static Button btnPickup3Back;
+	static Button btnPickup3ClrSig;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +117,14 @@ public class Pickup3 extends SenateActivity {
       ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
     
       // Brian code starts
-  	  buttonPickup3Continue = (ImageButton)findViewById(R.id.btnPickup3Cont);
-  	  buttonPickup3Back = (ImageButton)findViewById(R.id.buttonPickup3Back);
-  	  buttonPickup3ClearSignature = (ImageButton)findViewById(R.id.btnPickup3ClrSig);      
+	  Pickup2Activity.btnPickup2Cont.getBackground().setAlpha(255);
+
+  	  btnPickup3Cont = (Button)findViewById(R.id.btnPickup3Cont);
+  	  btnPickup3Cont.getBackground().setAlpha(255);
+  	  btnPickup3Back = (Button)findViewById(R.id.btnPickup3Back);
+  	  btnPickup3Back.getBackground().setAlpha(255);  	  
+  	  btnPickup3ClrSig = (Button)findViewById(R.id.btnPickup3ClrSig);      
+  	  btnPickup3ClrSig.getBackground().setAlpha(255);  	  
       naemployeeView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
       naemployeeView.setClearMsg("Do you want to clear the name of the signer?");
       naemployeeView.showClearMsg(true);
@@ -248,6 +253,17 @@ public class Pickup3 extends SenateActivity {
 		});
 	}
 	
+	@Override
+	protected void onResume() {
+		  super.onResume();
+	  	  btnPickup3Cont = (Button)findViewById(R.id.btnPickup3Cont);
+	  	  btnPickup3Cont.getBackground().setAlpha(255);
+	  	  btnPickup3Back = (Button)findViewById(R.id.btnPickup3Back);
+	  	  btnPickup3Back.getBackground().setAlpha(255);  	  
+	  	  btnPickup3ClrSig = (Button)findViewById(R.id.btnPickup3ClrSig);      
+	  	  btnPickup3ClrSig.getBackground().setAlpha(255);  	  
+	}
+	
 	public int findEmployee(String employeeName) {
 		for (int x=0;x<employeeHiddenList.size();x++) {
 			if (employeeName.equals(employeeHiddenList.get(x).getEmployeeName())) {
@@ -294,10 +310,7 @@ public class Pickup3 extends SenateActivity {
    }    
    	  
 public void continueButton(View view){
-	float alpha = 0.45f;
-	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-	alphaUp.setFillAfter(true);
-	buttonPickup3Continue.startAnimation(alphaUp);		
+	   btnPickup3Cont.getBackground().setAlpha(45);		
 	   String employeePicked = naemployeeView.getEditableText().toString();
 	   if (employeePicked.trim().length()>0) {
 		   int foundEmployee = this.findEmployee(employeePicked);
@@ -461,30 +474,20 @@ public void continueButton(View view){
 		//Intent intent = new Intent(this, MenuActivity.class);
 		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
-        alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonPickup3Continue.startAnimation(alphaUp);	 
 	}
 
 public void backButton(View view){
 	float alpha = 0.45f;
 	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
 	alphaUp.setFillAfter(true);
-	buttonPickup3Back.startAnimation(alphaUp);		
+	btnPickup3Back.startAnimation(alphaUp);		
 	Intent intent = new Intent(this, Pickup2Activity.class);
 	startActivity(intent);
-    overridePendingTransition(R.anim.in_left, R.anim.out_right);
-    alphaUp = new AlphaAnimation(1f, 1f);
-	alphaUp.setFillAfter(true);
-	buttonPickup3Back.startAnimation(alphaUp);	        
+    overridePendingTransition(R.anim.in_left, R.anim.out_right);       
     }
 
 public void clearSignatureButton(View view) {
-	float alpha = 0.45f;
-	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-	alphaUp.setFillAfter(true);
-	buttonPickup3ClearSignature.startAnimation(alphaUp);	
+	btnPickup3ClrSig.getBackground().setAlpha(45);	
     Bitmap clearedSignature = BitmapFactory.decodeResource(getResources(), R.drawable.simplethinborder);
     if (clearedSignature==null) {
         Log.i("ClearSig", "Signature drawable was NULL");
@@ -492,10 +495,8 @@ public void clearSignatureButton(View view) {
     else {
         Log.i("ClearSig", "Signature size:"+clearedSignature.getWidth()+" x "+clearedSignature.getHeight());
     }
-	sign.clearSignature();
-    alphaUp = new AlphaAnimation(1f, 1f);
-	alphaUp.setFillAfter(true);
-	buttonPickup3ClearSignature.startAnimation(alphaUp);	        
+	sign.clearSignature();       
+	btnPickup3ClrSig.getBackground().setAlpha(255);	
 }
 
 

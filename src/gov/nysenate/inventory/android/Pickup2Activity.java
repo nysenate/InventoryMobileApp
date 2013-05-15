@@ -1,9 +1,7 @@
 package gov.nysenate.inventory.android;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +17,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,10 +40,10 @@ public class Pickup2Activity extends SenateActivity {
     public String originLocation=null;
     public String destinationLocation=null;
    // These 3 ArrayLists will be used to transfer data to next activity and to the server
-    ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
+    ArrayList<String> allScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
     ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location
-    ImageButton buttonPickup2Cont;
-    ImageButton buttonPickup2Cancel;
+    static Button btnPickup2Cont;
+    static Button btnPickup2Cancel;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +75,21 @@ public class Pickup2Activity extends SenateActivity {
 		barcode = (ClearableEditText) findViewById(R.id.barcode);
 		barcode.addTextChangedListener(filterTextWatcher);
 
-		// ImageButton Setup
-		buttonPickup2Cont = (ImageButton) findViewById(R.id.buttonPickup2Cont);
-	    buttonPickup2Cancel = (ImageButton) findViewById(R.id.buttonPickup2Cancel);
+		// Button Setup
+		btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
+		btnPickup2Cont.getBackground().setAlpha(255);  	  
+	    btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
+	    btnPickup2Cancel.getBackground().setAlpha(255);  	  
 		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
+		btnPickup2Cont.getBackground().setAlpha(255);  	  
+	    btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
+	    btnPickup2Cancel.getBackground().setAlpha(255);   	  
 	}
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -177,7 +186,7 @@ public class Pickup2Activity extends SenateActivity {
 					dispList.add(s_new); // this list will display the contents
 											// on screen
 					scannedItems.add(barcode_number);
-					AllScannedItems.add(s_new.toString());
+					allScannedItems.add(s_new.toString());
 					newItems.add(vl.NUSENATE + " " + vl.CDCATEGORY);// to keep
 																	// track of
 																	// (number+details)
@@ -195,24 +204,37 @@ public class Pickup2Activity extends SenateActivity {
 			}
 		}
 	};
+	
+	
+	// 3/15/13  Work in progress. Not fully implemented yet
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	  super.onSaveInstanceState(savedInstanceState);
+	  // Save UI state changes to the savedInstanceState.
+	  // This bundle will be passed to onCreate if the process is
+	  // killed and restarted.
+	  savedInstanceState.putString("savedOriginLoc", originLocation);
+	  savedInstanceState.putString("savedDestLoc", destinationLocation);
+	  savedInstanceState.putStringArrayList("savedScannedItems", scannedItems);
+	  savedInstanceState.putStringArrayList("savedallScannedItems", allScannedItems);
+	  savedInstanceState.putStringArrayList("savedNewItems", newItems);
+	}
     
-
-	/*	public void continueButton(View view) {
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonPickup1Continue.startAnimation(alphaUp);		
-		Intent intent = new Intent(this, Pickup2Activity.class);
-		intent.putExtra("originLocation", originLocation); 				// for origin code
-		intent.putExtra("destinationLocation", destinationLocation); 	// for
-																		// destination
-																		// code
-		startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
-        alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonPickup1Continue.startAnimation(alphaUp);	        
-	}*/
+	// 3/15/13  Work in progress. Not fully implemented yet
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	  super.onRestoreInstanceState(savedInstanceState);
+	  // Restore UI state from the savedInstanceState.
+	  // This bundle has also been passed to onCreate.
+	  originLocation = savedInstanceState.getString("savedOriginLoc");
+	  scannedItems = savedInstanceState.getStringArrayList("savedScannedItems");
+	  allScannedItems = savedInstanceState.getStringArrayList("savedallScannedItems");
+	  newItems = savedInstanceState.getStringArrayList("savedNewItems");
+	  TextView TextView2= (TextView) findViewById(R.id.textView2);
+	  TextView2.setText("Origin : "+ originLocation+"\n"
+		                 +"Destination : "+destinationLocation);
+	  
+	}	
 	
 	public void continueButton(View view){
 		// send the data to Pickup3 activity
@@ -221,35 +243,29 @@ public class Pickup2Activity extends SenateActivity {
 		Toast toast = Toast.makeText(context, "Continue Button was clicked", duration);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();		
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonPickup2Cont.startAnimation(alphaUp);		
+		btnPickup2Cont.getBackground().setAlpha(70);	
 		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("originLocation", originLocation);
 		intent.putExtra("destinationLocation", destinationLocation);
 		String countStr= Integer.toString(count);
 		intent.putExtra("count", countStr);
 		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
-		intent.putStringArrayListExtra("scannedList", AllScannedItems);//scanned items list
+		intent.putStringArrayListExtra("scannedList", allScannedItems);//scanned items list
+	
 		startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
-        alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonPickup2Cont.startAnimation(alphaUp);	        
 	}
 	
 	public void cancelButton(View view){
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonPickup2Cancel.startAnimation(alphaUp);		
+		int duration = Toast.LENGTH_SHORT;		
+		Context context = getApplicationContext();
+		Toast toast = Toast.makeText(context, "CANCEL Button was clicked", duration);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();		
+		btnPickup2Cancel.getBackground().setAlpha(70);		
 		Intent intent = new Intent(this, Pickup1.class);
 		startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonPickup2Cancel.startAnimation(alphaUp);	        
         }
 	
 	@Override
