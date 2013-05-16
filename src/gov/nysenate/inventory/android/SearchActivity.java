@@ -2,6 +2,10 @@ package gov.nysenate.inventory.android;
 
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 
 
 import android.app.Activity;
@@ -13,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,8 +25,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +37,13 @@ public class SearchActivity extends SenateActivity {
 	String res = null;
 	public String status = null;
 	TextView textView;
-	ImageButton buttonSearchBack;
+	TextView tvBarcode;
+	TextView tvDescription;
+	TextView tvLocation;
+	TextView tvCategory;
+	TextView tvDateIssue;
+	
+	static Button btnSrchBck;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +54,15 @@ public class SearchActivity extends SenateActivity {
 		barcode.addTextChangedListener(filterTextWatcher);// Adding Listener to
 															// barcode field
 		textView = (TextView) findViewById(R.id.textView1);
-		buttonSearchBack = (ImageButton)findViewById(R.id.buttonSearchBack);
+		//  Setup Textviews used to display Data...
+		tvBarcode = (TextView) findViewById(R.id.tvBarcode);
+		tvDescription  = (TextView) findViewById(R.id.tvDescription);
+		tvLocation  = (TextView) findViewById(R.id.tvLocation);
+		tvDateIssue = (TextView) findViewById(R.id.tvDateIssue);	
+		tvCategory = (TextView) findViewById(R.id.tvCategory);
+		
+		btnSrchBck = (Button)findViewById(R.id.btnSrchBck);
+		btnSrchBck.getBackground().setAlpha(255);
 		
 	}
 
@@ -86,7 +106,24 @@ public class SearchActivity extends SenateActivity {
 					// display error
 					status = "no";
 				}
-				textView.setText("\n" + res);
+				try {
+					JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+					tvBarcode.setText( object.getString("nusenate"));
+					tvDescription.setText( object.getString("decommodityf").replaceAll("&#34;", "\""));
+					tvCategory.setText( object.getString("cdcategory") );					
+					tvLocation.setText( object.getString("cdlocatto")+" ("+object.getString("cdloctypeto")+") "+object.getString("adstreet1to").replaceAll("&#34;", "\""));
+					tvDateIssue.setText( object.getString("dtissue") );	
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					tvDescription.setText( "!!ERROR: "+e.getMessage());
+					tvCategory.setText("Please contact STS/BAC.");	
+					tvLocation.setText("N/A");					
+					tvDateIssue.setText( "N/A" );	
+
+					e.printStackTrace();
+				}
+				//textView.setText("\n" + res);
 				barcode.setText("");
 			}
 		}
@@ -118,12 +155,8 @@ public class SearchActivity extends SenateActivity {
 	}*/
 
 	public void okButton(View view) {
-		if (view.getId()==R.id.buttonSearchBack) {
-			float alpha = 0.45f;
-			AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-			alphaUp.setFillAfter(true);
-			buttonSearchBack.startAnimation(alphaUp);
-		
+		if (view.getId()==R.id.btnSrchBck) {
+			btnSrchBck.getBackground().setAlpha(45);
 			//this.finish();// close the current activity
 			Intent intent = new Intent(this, MenuActivity.class);
 			startActivity(intent);

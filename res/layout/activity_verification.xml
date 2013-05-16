@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".Verification" >
 
-      <TextView
+    <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,20 +14,6 @@
         android:text="@string/verify_msg1"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="25dp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/autoCompleteTextView1"
-        android:layout_alignRight="@+id/autoCompleteTextView1"
-        android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="42dp"
-        android:background="@drawable/customshape"
-        android:hint="@string/details"
-        android:text="@string/details"
-        android:textSize="20dp" />
-
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
@@ -41,25 +27,136 @@
         android:ems="10"
         android:hint="@string/location_code" />
 
-    <ImageButton
-        android:id="@+id/buttonVerify1Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="23dp"
-        android:background="@null"
-        android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
 
-    <ImageButton
-        android:id="@+id/buttonVerify1Continue"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView2"
-        android:layout_alignTop="@+id/buttonVerify1Cancel"
-        android:background="@null"
-        android:onClick="okButton"
-        android:src="@drawable/bcontinue" />
+        android:layout_alignLeft="@+id/autoCompleteTextView1"
+        android:layout_below="@+id/autoCompleteTextView1"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/customshape" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvHeadDetails"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelLocCd"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:text="Location Code:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/tvLocCd"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOffice"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:text="Office:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/tvOffice"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescr"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:text="Description:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/tvDescript"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tbLabelCount"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:text="Item Count:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/tvCount"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+    </TableLayout>
+
+<Button
+    android:id="@+id/btnVerify1Cancel"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignBaseline="@+id/btnVerify1Cont"
+    android:layout_alignBottom="@+id/btnVerify1Cont"
+    android:layout_alignLeft="@+id/autoCompleteTextView1"
+    android:background="@drawable/buttonshapered"
+    android:onClick="cancelButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Cancel"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
+
+<Button
+    android:id="@+id/btnVerify1Cont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="32dp"
+    android:layout_marginRight="35dp"
+    android:background="@drawable/buttonshapegreen"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
 
 </RelativeLayout>

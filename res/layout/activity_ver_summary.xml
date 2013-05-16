@@ -4,18 +4,18 @@
     android:layout_height="match_parent"
     tools:context=".VerSummeryActivity" >
 
-       <TextView
-           android:id="@+id/textView1"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_alignParentLeft="true"
-           android:layout_alignParentRight="true"
-           android:layout_alignParentTop="true"
-           android:layout_marginLeft="21dp"
-           android:layout_marginTop="22dp"
-		   android:gravity="center"           
-           android:text="@string/ver_summary_title"
-           android:textSize="25dp"/>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="22dp"
+        android:gravity="center"
+        android:text="@string/ver_summary_title"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/textView2"
@@ -24,8 +24,8 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="46dp"
-        android:textSize="25dp"
-        android:text="Location Code" />
+        android:text="Location Code"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/textView3"
@@ -34,8 +34,8 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="16dp"
-        android:textSize="20dp"
-        android:text="Total Items" />
+        android:text="Total Items"
+        android:textSize="20dp" />
 
     <TabHost
         android:id="@android:id/tabhost"
@@ -45,7 +45,7 @@
         android:layout_alignLeft="@+id/textView3"
         android:layout_below="@+id/textView3"
         android:layout_marginTop="37dp" >
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="583dp"
@@ -71,20 +71,18 @@
                         android:id="@+id/listView1"
                         android:layout_width="match_parent"
                         android:layout_height="549dp" >
-
                     </ListView>
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
-                      <ListView
+
+                    <ListView
                         android:id="@+id/listView2"
                         android:layout_width="match_parent"
                         android:layout_height="549dp" >
-
                     </ListView>
                 </LinearLayout>
 
@@ -92,11 +90,11 @@
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
-                        <ListView
+
+                    <ListView
                         android:id="@+id/listView3"
                         android:layout_width="match_parent"
                         android:layout_height="549dp" >
-
                     </ListView>
                 </LinearLayout>
             </FrameLayout>
@@ -112,24 +110,40 @@
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
 
-    <ImageButton
-        android:id="@+id/buttonVerSumContinue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btnVerSumCont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@null"
+	    android:layout_marginLeft="35dp"
+        android:layout_marginBottom="33dp"
+        android:background="@drawable/buttonshapegreen"
         android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-    <ImageButton
-        android:id="@+id/buttonVerSumBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btnVerSumBack"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@null"
+    	android:layout_marginRight="35dp"
+        android:layout_marginBottom="33dp"
+        android:background="@drawable/buttonshapeblue"
         android:onClick="backButton"
-        android:src="@drawable/bback" />
-    
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
 </RelativeLayout>

@@ -2,11 +2,14 @@ package gov.nysenate.inventory.android;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,8 +26,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -39,9 +45,13 @@ public class Verification extends SenateActivity {
 	public String loc_code_str = null;
 	ClearableAutoCompleteTextView autoCompleteTextView1;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
-	ImageButton buttonVerify1Continue;
-	ImageButton buttonVerify1Cancel;
-
+	static Button btnVerify1Cont;
+	static Button btnVerify1Cancel;
+	TextView tvLocCd;
+	TextView tvDescript; 
+	TextView tvCount;
+	TextView tvOffice;
+	
 	String URL = "";
 
 	@Override
@@ -52,8 +62,17 @@ public class Verification extends SenateActivity {
 		loc_code = (EditText) findViewById(R.id.preferencePWD);
 		// code for the autocomplete arraylist of location
 
-		buttonVerify1Continue = (ImageButton) findViewById(R.id.buttonVerify1Continue);
-		buttonVerify1Cancel= (ImageButton) findViewById(R.id.buttonVerify1Cancel);;		
+		// Button Setup
+		btnVerify1Cont = (Button) findViewById(R.id.btnVerify1Cont);
+		btnVerify1Cont.getBackground().setAlpha(255);
+		btnVerify1Cancel= (Button) findViewById(R.id.btnVerify1Cancel);
+		btnVerify1Cancel.getBackground().setAlpha(255);
+		
+		// Data TextView Setup 	
+		tvLocCd= (TextView) findViewById(R.id.tvLocCd);
+		tvDescript= (TextView) findViewById(R.id.tvDescript);
+		tvCount= (TextView) findViewById(R.id.tvCount);
+		tvOffice= (TextView) findViewById(R.id.tvOffice);
 		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -76,8 +95,9 @@ public class Verification extends SenateActivity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					locCodeList.add(jsonArray.getString(i).toString());
 				}
-				System.out.println("**********LOCATION CODES COUNT:"
-						+ locCodeList.size());
+				Collections.sort(locCodeList);
+			//	System.out.println("**********LOCATION CODES COUNT:"
+			//			+ locCodeList.size());
 				//
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 						android.R.layout.simple_dropdown_item_1line,
@@ -108,6 +128,16 @@ public class Verification extends SenateActivity {
 		loc_code = (EditText) findViewById(R.id.preferencePWD);
 		// loc_code.addTextChangedListener(filterTextWatcher);
 		autoCompleteTextView1.addTextChangedListener(filterTextWatcher);
+		autoCompleteTextView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int duration = Toast.LENGTH_SHORT;
+                    	   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    	   imm.hideSoftInputFromWindow(
+                    			   autoCompleteTextView1.getWindowToken(), 0);   
+            }
+        });
+		
 		loc_details = (TextView) findViewById(R.id.textView2);
 
 	}
@@ -147,6 +177,23 @@ public class Verification extends SenateActivity {
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
+						try {
+							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+							tvOffice.setText(object.getString("cdrespctrhd") );
+							tvLocCd.setText( object.getString("cdlocat"));
+							tvDescript.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
+							tvCount.setText( object.getString("nucount"));
+
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							tvLocCd.setText( "!!ERROR: "+e.getMessage());
+							tvDescript.setText("Please contact STS/BAC.");	
+							tvCount.setText("N/A");					
+
+							e.printStackTrace();
+						}
+						
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -161,7 +208,7 @@ public class Verification extends SenateActivity {
 				}
 				System.out.println("RESPONSE FROM URL:" + res);
 
-				loc_details.setText(res);
+				//loc_details.setText(res);
 
 				// loc_details.append("\n"+loc_code.getText().toString());
 				// autoCompleteTextView1.setText(barcode_num);
@@ -195,34 +242,22 @@ public class Verification extends SenateActivity {
 		}
 	}
 
-	public void okButton(View view) {
+	public void continueButton(View view) {
 
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonVerify1Continue.startAnimation(alphaUp);
+		btnVerify1Cont.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, ListtestActivity.class);
 		intent.putExtra(loc_code_intent, loc_code_str);
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_right, R.anim.out_left);
-		alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonVerify1Continue.startAnimation(alphaUp);
 
 	}
 
 	public void cancelButton(View view) {
 
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonVerify1Cancel.startAnimation(alphaUp);
+		btnVerify1Cancel.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, MenuActivity.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);
-		alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonVerify1Cancel.startAnimation(alphaUp);
 
 	}
 

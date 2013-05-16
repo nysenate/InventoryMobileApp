@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -52,7 +54,14 @@ public class Pickup1 extends SenateActivity {
 	String URL = "";
 	Button btnPickup1Cont;
 	Button btnPickup1Cancel;
-	
+	TextView tvOffice1;
+	TextView tvLocCd1;
+	TextView tvDescript1;
+	TextView  tvCount1;
+	TextView tvOffice2;
+	TextView tvLocCd2;
+	TextView tvDescript2;
+	TextView  tvCount2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,17 @@ public class Pickup1 extends SenateActivity {
 
 		// loc_code = (EditText) findViewById(R.id.editText1);
 
+		// Setup Data Textviews
+		tvOffice1 = (TextView)this.findViewById(R.id.tvOffice1);
+		tvLocCd1 = (TextView)this.findViewById(R.id.tvLocCd1);
+		tvDescript1 = (TextView)this.findViewById(R.id.tvDescript1);
+		tvCount1 = (TextView)this.findViewById(R.id.tvCount1);
+
+		tvOffice2 = (TextView)this.findViewById(R.id.tvOffice2);
+		tvLocCd2 = (TextView)this.findViewById(R.id.tvLocCd2);
+		tvDescript2 = (TextView)this.findViewById(R.id.tvDescript2);
+		tvCount2 = (TextView)this.findViewById(R.id.tvCount2);
+		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -235,6 +255,22 @@ public class Pickup1 extends SenateActivity {
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
+						try {
+							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+							tvOffice1.setText(object.getString("cdrespctrhd") );
+							tvLocCd1.setText( object.getString("cdlocat"));
+							tvDescript1.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
+							tvCount1.setText( object.getString("nucount"));
+
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							tvLocCd1.setText( "!!ERROR: "+e.getMessage());
+							tvDescript1.setText("Please contact STS/BAC.");	
+							tvCount1.setText("N/A");					
+
+							e.printStackTrace();
+						}						
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -247,7 +283,7 @@ public class Pickup1 extends SenateActivity {
 					// display error
 					status = "no";
 				}
-				loc_details.setText(res);
+				//loc_details.setText(res);
 				// loc_details.append("\n"+loc_code.getText().toString());
 				// autoCompleteTextView1.setText(barcode_num);
 			}
@@ -291,6 +327,22 @@ public class Pickup1 extends SenateActivity {
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
+						try {
+							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+							tvOffice2.setText(object.getString("cdrespctrhd") );
+							tvLocCd2.setText( object.getString("cdlocat"));
+							tvDescript2.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
+							tvCount2.setText( object.getString("nucount"));
+
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							tvLocCd2.setText( "!!ERROR: "+e.getMessage());
+							tvDescript2.setText("Please contact STS/BAC.");	
+							tvCount2.setText("N/A");					
+
+							e.printStackTrace();
+						}												
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -303,7 +355,7 @@ public class Pickup1 extends SenateActivity {
 					// display error
 					status = "no";
 				}
-				locDetailsDest.setText(res);
+				//locDetailsDest.setText(res);
 				// locDetailsDest.append("\n"+loc_code.getText().toString());
 				// autoCompleteTextView1.setText(barcode_num);
 			}

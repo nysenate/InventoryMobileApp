@@ -89,7 +89,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentBottom="true"
     android:layout_marginBottom="36dp"
-    android:background="@drawable/buttonshapeblue"
+    android:background="@drawable/buttonshapegreen"
     android:onClick="continueButton"
     android:shadowColor="#000000"
     android:shadowDx="01"

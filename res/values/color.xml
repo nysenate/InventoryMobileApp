@@ -7,6 +7,7 @@
  <color name="black">#000000</color>
  <color name="gray">#999999</color>
  <color name="blue">#0066cc</color>
+ <color name="bluedark">#001877</color>
  <color name="bluelight">#aae0ff</color>
  <color name="blueverylight">#C9DAFF</color>
  <color name="blueveryverylight">#DBE6FF</color>

@@ -42,17 +42,183 @@
         android:layout_marginTop="21dp"
         android:hint="@string/details"
         android:text="@string/details" />
+    
+   <TableLayout
+        android:layout_width="500dp"
+        android:layout_height="200dp"
+        android:layout_alignLeft="@+id/autoCompleteTextView1"
+        android:layout_alignRight="@+id/autoCompleteTextView1"
+        android:layout_below="@+id/autoCompleteTextView1"
+        android:layout_marginTop="21dp"
+        android:background="@drawable/customshape" >
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvHeadDetails1"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelLocCd1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Location Code:" />
+
+            <TextView
+                android:id="@+id/tvLocCd1"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOffice1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Office:" />
+
+            <TextView
+                android:id="@+id/tvOffice1"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescr1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Description:" />
+
+            <TextView
+                android:id="@+id/tvDescript1"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tbLabelCount1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Item Count:"/>
+
+            <TextView
+                android:id="@+id/tvCount1"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+    </TableLayout>    
+   
+
+    
+   <TableLayout
+        android:layout_width="500dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompleteTextView2"
-        android:layout_alignRight="@+id/textView2"
+        android:layout_alignRight="@+id/autoCompleteTextView2"
         android:layout_below="@+id/autoCompleteTextView2"
-        android:layout_marginTop="44dp"
-        android:hint="@string/details"
-        android:text="@string/details" />
+        android:layout_marginTop="21dp"
+        android:background="@drawable/customshape" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvHeadDetails2"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelLocCd2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Location Code:" />
+
+            <TextView
+                android:id="@+id/tvLocCd2"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOffice2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Office:" />
+
+            <TextView
+                android:id="@+id/tvOffice2"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescr2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Description:" />
+
+            <TextView
+                android:id="@+id/tvDescript2"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tbLabelCount2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Item Count:"/>
+
+            <TextView
+                android:id="@+id/tvCount2"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+    </TableLayout>   
+    
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
@@ -64,24 +230,6 @@
         android:ems="10"
         android:hint="@string/select_dest_loc" >
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
-
-   
-<Button
-    android:id="@+id/btnPickup1Cont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginBottom="36dp"
-    android:background="@drawable/buttonshapeblue"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Continue"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
 
 <Button
     android:id="@+id/btnPickup1Cancel"
@@ -97,6 +245,24 @@
     android:shadowDy="1"
     android:shadowRadius="5"
     android:text="Cancel"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
+
+<Button
+    android:id="@+id/btnPickup1Cont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="36dp"
+    android:layout_marginRight="25dp"
+    android:background="@drawable/buttonshapegreen"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
     android:textColor="#FFFFFF"
     android:textSize="30sp" />
     

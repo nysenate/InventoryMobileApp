@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context=".ListtestActivity" >
 
-
-
     <EditText
         android:id="@+id/editText2"
         android:layout_width="wrap_content"
@@ -29,7 +27,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30sp" />
 
-    <gov.nysenate.inventory.andriod.ClearableEditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/preferencePWD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +42,7 @@
         android:textStyle="bold" >
 
         <requestFocus />
-    </gov.nysenate.inventory.andriod.ClearableEditText>
+    </gov.nysenate.inventory.android.ClearableEditText>
 
     <TextView
         android:id="@+id/textView2"
@@ -71,28 +69,44 @@
         android:layout_width="wrap_content"
         android:layout_height="670dp"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/buttonVerListContinue"
+        android:layout_above="@+id/btnVerListCont"
         android:layout_below="@+id/preferencePWD" >
     </ListView>
 
-    <ImageButton
-        android:id="@+id/buttonVerListContinue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="@null"
-        android:onClick="okButton"
-        android:src="@drawable/bcontinue" />
+<Button
+    android:id="@+id/btnVerListCancel"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:layout_marginBottom="15dp"
+    android:layout_marginLeft="19dp"
+    android:background="@drawable/buttonshapered"
+    android:onClick="cancelButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Cancel"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
 
-    <ImageButton
-        android:id="@+id/buttonVerListCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
-    
+<Button
+    android:id="@+id/btnVerListCont"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_alignBaseline="@+id/btnVerListCancel"
+    android:layout_alignBottom="@+id/btnVerListCancel"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="17dp"
+    android:background="@drawable/buttonshapegreen"
+    android:onClick="continueButton"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="Continue"
+    android:textColor="#FFFFFF"
+    android:textSize="30sp" />
+        
 </RelativeLayout>

@@ -28,6 +28,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
@@ -54,8 +55,8 @@ public class ListtestActivity extends SenateActivity {
 	ArrayList<String> dispType = new ArrayList<String>();
 	String currentSortValue = "Description";
 	public Spinner sortList;
-	ImageButton buttonVerListContinue;
-	ImageButton buttonVerListCancel;
+	static Button btnVerListCont;
+	static Button btnVerListCancel;
 	
 	String URL = ""; // this will be initialized once in onCreate() and used for
 						// all server calls.
@@ -89,9 +90,12 @@ public class ListtestActivity extends SenateActivity {
 		sortList = (Spinner) findViewById(R.id.sortList);
 		sortList.setOnItemSelectedListener(new SortChangedListener());
 	
-		buttonVerListContinue = (ImageButton) findViewById(R.id.buttonVerListContinue);
-		buttonVerListCancel = (ImageButton) findViewById(R.id.buttonVerListCancel);		
-	
+		// Setup Buttons
+		btnVerListCont = (Button) findViewById(R.id.btnVerListCont);
+		btnVerListCont.getBackground().setAlpha(255);
+		btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);		
+		btnVerListCancel.getBackground().setAlpha(255);
+
 
 		// check network connection
 
@@ -198,6 +202,18 @@ public class ListtestActivity extends SenateActivity {
 		// listView = (ListView) findViewById(R.id.listView1 );
 
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Setup Buttons
+		btnVerListCont = (Button) findViewById(R.id.btnVerListCont);
+		btnVerListCont.getBackground().setAlpha(255);
+		btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);		
+		btnVerListCancel.getBackground().setAlpha(255);
+	}
+	
+	
     private void startVoiceRecognitionActivity() {
         Intent intentSpeech = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intentSpeech.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -396,11 +412,8 @@ public class ListtestActivity extends SenateActivity {
     }*/
 	
 	
-	public void okButton(View view) {
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonVerListContinue.startAnimation(alphaUp);
+	public void continueButton(View view) {
+		btnVerListCont.getBackground().setAlpha(45);
 		
 		// create lists for summary activity
 		ArrayList<String> missingItems = new ArrayList<String>();// for saving
@@ -439,23 +452,14 @@ public class ListtestActivity extends SenateActivity {
 		intent.putStringArrayListExtra("newItems", newItems);// new items list
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_right, R.anim.out_left);		
-		alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonVerListContinue.startAnimation(alphaUp);
 		
 	}
 
 	public void cancelButton(View view) {
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		buttonVerListCancel.startAnimation(alphaUp);
+		btnVerListCancel.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, Verification.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);
-		alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);
-		buttonVerListCancel.startAnimation(alphaUp);
 	}
 
 
