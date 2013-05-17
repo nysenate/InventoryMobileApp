@@ -78,6 +78,7 @@ public class SearchActivity extends SenateActivity {
 
 		public void afterTextChanged(Editable s) {
 			if (barcode.getText().toString().length() >= 6) {
+		 	  try {
 				String barcode_num = barcode.getText().toString().trim();
 				Log.i("Activity Search afterTextChanged ","barcode_num "+barcode_num);
 				// check network connection
@@ -125,6 +126,14 @@ public class SearchActivity extends SenateActivity {
 				}
 				//textView.setText("\n" + res);
 				barcode.setText("");
+				}
+              catch (Exception e) {
+					tvDescription.setText( "!!ERROR: "+e.getMessage());
+					tvCategory.setText("Please contact STS/BAC.");	
+					tvLocation.setText("N/A");					
+					tvDateIssue.setText( "N/A" );	
+            	  
+              }
 			}
 		}
 	};

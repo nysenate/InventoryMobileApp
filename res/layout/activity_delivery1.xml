@@ -12,8 +12,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="22dp"
         android:layout_marginTop="24dp"
-        android:textSize="25dp"
-        android:text="@string/delivery1_msg" />
+        android:text="@string/delivery1_msg"
+        android:textSize="25dp" />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
@@ -29,35 +29,127 @@
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="500dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
+        android:layout_alignRight="@+id/autoCompleteTextView1"
         android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="72dp"
-        android:text="@string/details"
-        android:textSize="20dp" />
+        android:layout_marginTop="21dp"
+        android:background="@drawable/customshape" >
 
-    <ImageButton
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvHeadDetailsD"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelLocCdD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Location Code:" />
+
+            <TextView
+                android:id="@+id/tvLocCdD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOfficeD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Resp Center Hd:" />
+
+            <TextView
+                android:id="@+id/tvOfficeD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescrD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Description:" />
+
+            <TextView
+                android:id="@+id/tvDescriptD"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tbLabelCountD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:text="Item Count:" />
+
+            <TextView
+                android:id="@+id/tvCountD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="N/A" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
         android:id="@+id/btnDelivery1Cont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@null"
+        android:layout_marginBottom="34dp"
+        android:layout_marginRight="28dp"
+        android:background="@drawable/buttonshapegreen"
         android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-    <ImageButton
+    <Button
         android:id="@+id/btnDelivery1Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnDelivery1Cont"
+        android:layout_alignBottom="@+id/btnDelivery1Cont"
+        android:layout_alignLeft="@+id/tableLayout1"
+        android:background="@drawable/buttonshapered"
         android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>

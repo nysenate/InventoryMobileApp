@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -106,6 +107,7 @@ public class Pickup2Activity extends SenateActivity {
 			if (barcode.getText().toString().length() >= 6) {
 				String barcode_num = barcode.getText().toString().trim();
 				String barcode_number =barcode_num;
+				Log.i("test", "barcode_number:"+barcode_number);
 
 				int flag = 0;
 
@@ -142,8 +144,10 @@ public class Pickup2Activity extends SenateActivity {
 						AsyncTask<String, String, String> resr1 = new RequestTask()
 								.execute(URL+"/ItemDetails?barcode_num="
 										+ barcode_num);
+						 System.out.println("URL CALL:"+URL+"/ItemDetails?barcode_num="+ barcode_num);
 						try {
 							res = resr1.get().trim().toString();
+							 System.out.println("URL RESULT:"+res);
 
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block

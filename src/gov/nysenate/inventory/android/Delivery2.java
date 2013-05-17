@@ -24,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ public class Delivery2 extends SenateActivity {
 	String location ="";
 	Intent intent;
 	static ProgressBar progressBarDelivery2;
+	static Button btnDelivery2Cancel;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class Delivery2 extends SenateActivity {
 		//define progressBar
 		
 		progressBarDelivery2 = (ProgressBar) findViewById( R.id.progressBarDelivery2 );
+			
 		
 		
 		//define intent
@@ -134,7 +138,12 @@ public class Delivery2 extends SenateActivity {
 	}
 
 	
-
+	@Override
+	protected void onResume() {
+		super.onResume();  
+		btnDelivery2Cancel = (Button) findViewById(R.id.btnDelivery2Cancel);
+		btnDelivery2Cancel.getBackground().setAlpha(255);   	  
+	}		
 	
 	
 	
@@ -147,6 +156,7 @@ public class Delivery2 extends SenateActivity {
 
 	
 	public void cancelButton(View view) {
+		this.btnDelivery2Cancel.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, Delivery1.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);

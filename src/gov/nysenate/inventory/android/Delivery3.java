@@ -73,7 +73,7 @@ public class Delivery3 extends SenateActivity {
     String requestTaskType = "";
     String employeeList = "";
     private String DECOMMENTS = null;
-    Button btnDelivery3ClrSig;
+    Button btnDeliv3ClrSig;
     Button btnDelivery3Back;
     Button btnDelivery3Cont;
     
@@ -98,7 +98,7 @@ public class Delivery3 extends SenateActivity {
 		//Get the barcode numbers from the server and set it to the listview
 		
 		// Configure Image Buttons
-	    btnDelivery3ClrSig = (Button) findViewById(R.id.btnDelivery3ClrSig);
+		btnDeliv3ClrSig = (Button) findViewById(R.id.btnDeliv3ClrSig);
 	    btnDelivery3Back = (Button) findViewById(R.id.btnDelivery3Back);
 	    btnDelivery3Cont = (Button) findViewById(R.id.btnDelivery3Cont);
 
@@ -252,10 +252,7 @@ public class Delivery3 extends SenateActivity {
 	    // when ok button is pressed 
 	    // 1. First validate to ensure that an employee name was picked and the
 	    //    employee signed his name.
-		float alpha = 0.45f;
-		AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-		alphaUp.setFillAfter(true);
-		this.btnDelivery3Cont.startAnimation(alphaUp);		
+		this.btnDelivery3Cont.getBackground().setAlpha(45);
 	    
 	    String employeePicked = naemployeeView.getEditableText().toString();
 	    NAACCEPTBY = "";
@@ -402,9 +399,6 @@ public class Delivery3 extends SenateActivity {
 		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
-        alphaUp = new AlphaAnimation(1f, 1f);
-		alphaUp.setFillAfter(true);		
-		this.btnDelivery3Cont.startAnimation(alphaUp);		
 		
 	}
 	@Override
@@ -456,6 +450,7 @@ public class Delivery3 extends SenateActivity {
 	   
 	   
 		public void backButton(View view) {
+			this.btnDelivery3Back.getBackground().setAlpha(45);
 			this.finish();
 	        overridePendingTransition(R.anim.in_left, R.anim.out_right);
 		}

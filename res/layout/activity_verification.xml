@@ -74,7 +74,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
                 android:gravity="right"
-                android:text="Office:"
+                android:text="Resp Center Hd:"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView

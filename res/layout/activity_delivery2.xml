@@ -33,18 +33,7 @@
         android:layout_marginTop="27dp" >
 
     </ListView>
-
-    <ImageButton
-        android:id="@+id/btnPickup2Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/listView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp"
-        android:background="@null"
-        android:onClick="cancelButton"
-        android:src="@drawable/bcancel" />
-
+     
     <ProgressBar
         android:id="@+id/progressBarDelivery2"
         android:layout_width="wrap_content"
@@ -52,5 +41,21 @@
         android:layout_below="@+id/listView1"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnDelivery2Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/progressBarDelivery2"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>

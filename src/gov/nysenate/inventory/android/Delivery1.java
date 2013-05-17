@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,11 +39,23 @@ public class Delivery1 extends SenateActivity {
 	public String loc_code_str = null;
 	public TextView loc_details;
 	public String deliveryLocation = null;
+	static Button btnDelivery1Cont;
+	static Button btnDelivery1Cancel;
+	TextView tvOfficeD;
+	TextView tvLocCdD;
+	TextView tvDescriptD;
+	TextView  tvCountD;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_delivery1);
+		
+		// Setup Data Textviews
+		tvOfficeD = (TextView)this.findViewById(R.id.tvOfficeD);
+		tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
+		tvDescriptD = (TextView)this.findViewById(R.id.tvDescriptD);
+		tvCountD = (TextView)this.findViewById(R.id.tvCountD);		
 		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -113,6 +128,14 @@ public class Delivery1 extends SenateActivity {
 
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		btnDelivery1Cont = (Button) findViewById(R.id.btnDelivery1Cont);
+		btnDelivery1Cont.getBackground().setAlpha(255);  	  
+		btnDelivery1Cancel = (Button) findViewById(R.id.btnDelivery1Cancel);
+		btnDelivery1Cancel.getBackground().setAlpha(255);   	  
+	}		
 	
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
@@ -155,6 +178,24 @@ public class Delivery1 extends SenateActivity {
 									+ barcode_num);
 					try {
 						res = resr1.get().trim().toString();
+						try {
+							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+							tvOfficeD.setText(object.getString("cdrespctrhd") );
+							tvLocCdD.setText( object.getString("cdlocat"));
+							tvDescriptD.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
+							tvCountD.setText( object.getString("nucount"));
+
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							tvOfficeD.setText( "N/A");							
+							tvLocCdD.setText( "!!ERROR: "+e.getMessage());
+							tvDescriptD.setText("Please contact STS/BAC.");	
+							tvCountD.setText("N/A");					
+
+							e.printStackTrace();
+						}						
+						
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -167,7 +208,7 @@ public class Delivery1 extends SenateActivity {
 					// display error
 					status = "no";
 				}
-				loc_details.setText(res);
+				//loc_details.setText(res);
 				// loc_details.append("\n"+loc_code.getText().toString());
 				// autoCompleteTextView1.setText(barcode_num);
 			}
@@ -176,6 +217,7 @@ public class Delivery1 extends SenateActivity {
 	
 
 		public void continueButton(View view) {
+			this.btnDelivery1Cont.getBackground().setAlpha(45);
             int duration = Toast.LENGTH_SHORT;
             
             String currentLocation = this.autoCompleteTextView1.getText().toString();
@@ -210,6 +252,7 @@ public class Delivery1 extends SenateActivity {
 		}
 
 		public void cancelButton(View view) {
+			this.btnDelivery1Cancel.getBackground().setAlpha(45);
 			Intent intent = new Intent(this, Move.class);
 			startActivity(intent);
 	        overridePendingTransition(R.anim.in_left, R.anim.out_right);

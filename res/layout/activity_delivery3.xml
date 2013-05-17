@@ -30,8 +30,7 @@
         android:layout_height="300dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
-        android:layout_marginTop="66dp" 
-     >
+        android:layout_marginTop="66dp" >
     </ListView>
 
     <gov.nysenate.inventory.android.ClearableEditText
@@ -65,38 +64,6 @@
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
-    <ImageButton
-        android:id="@+id/btnDelivery3Cont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/btnDelivery3Back"
-        android:background="@null"
-        android:onClick="continueButton"
-        android:src="@drawable/bcontinue" />
-
-    <ImageButton
-        android:id="@+id/btnDelivery3Back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:onClick="backButton"
-        android:background="@null"
-        android:src="@drawable/bback" />
-
-    <ImageButton
-        android:id="@+id/btnDelivery3ClrSig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnDelivery3Back"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:onClick="clearSignatureButton"
-        android:background="@null"
-        android:src="@drawable/bclearsignature" />
-
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
         android:layout_width="wrap_content"
@@ -108,5 +75,54 @@
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
-    
+
+    <Button
+        android:id="@+id/btnDelivery3Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnDeliv3ClrSig"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/btnDelivery3Cont"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttonshapegray"
+        android:onClick="clearSignatureButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Clear Signature"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/btnDelivery3Back"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/btnDeliv3ClrSig"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="backButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp" />
+
 </RelativeLayout>
