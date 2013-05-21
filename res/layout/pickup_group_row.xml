@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlPickupGrpRow"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:id="@+id/pickupDateTime"
+        android:layout_width="165dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+       <TextView
+           android:id="@+id/pickupFrom"
+           android:layout_width="100dip"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_toRightOf="@+id/pickupDateTime"
+           android:gravity="center_vertical"
+           android:minHeight="?android:attr/listPreferredItemHeightSmall"
+           android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+           android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+           android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    
+     <TextView
+         android:id="@+id/pickupLocat"
+         android:layout_width="260dip"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_toRightOf="@+id/pickupFrom"
+         android:gravity="center_vertical"
+         android:minHeight="?android:attr/listPreferredItemHeightSmall"
+         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+     
+     <TextView
+         android:id="@+id/pickupCnt"
+         android:layout_width="75dip"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_toRightOf="@+id/pickupLocat"
+         android:gravity="center_vertical|center_horizontal"
+         android:minHeight="?android:attr/listPreferredItemHeightSmall"
+         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+      
+</RelativeLayout>

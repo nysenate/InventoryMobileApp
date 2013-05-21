@@ -89,8 +89,7 @@ public class Delivery3 extends SenateActivity {
 		// Get the data from previous activity
 		Intent intent = getIntent();
 		location = intent.getStringExtra("location");
-		nuxrpd = intent.getStringExtra("nuxrpickup").trim();
-
+		nuxrpd = intent.getStringExtra("nuxrpd").trim();
 		
 		// Set the location in textview
 		loc_details=(TextView)findViewById(R.id.textView2 );

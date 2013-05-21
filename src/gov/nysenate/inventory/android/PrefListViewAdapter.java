@@ -39,7 +39,7 @@ public class PrefListViewAdapter extends ArrayAdapter<InvItem> {
 			convertView = mInflater.inflate(R.layout.invlist_item, null);
 			holder = new ViewHolder();
 			holder.decommodityf = (TextView) convertView
-					.findViewById(R.id.invListItem);
+					.findViewById(R.id.invListDescr);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

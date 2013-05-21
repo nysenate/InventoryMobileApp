@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
  
 public class InvListViewAdapter extends ArrayAdapter<InvItem> {
@@ -28,8 +29,10 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
  
     /*private view holder class*/
     private class ViewHolder {
+     	RelativeLayout rlList;    	
     	ImageView speech2Txt;
-    	TextView decommodityf;
+    	TextView invListBarcode;    	    	
+    	TextView invListDescr;    	
     }
  
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -41,31 +44,41 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.invlist_item, null);
             holder = new ViewHolder();
+            holder.rlList = (RelativeLayout) convertView.findViewById(R.id.rllist);
             holder.speech2Txt  = (ImageView) convertView.findViewById(R.id.invListSpeech);
-            holder.decommodityf = (TextView) convertView.findViewById(R.id.invListItem);
+            holder.invListBarcode = (TextView) convertView.findViewById(R.id.invListBarcode);
+            holder.invListDescr = (TextView) convertView.findViewById(R.id.invListDescr);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
             }
-        
+     
         if (position%2>0) {
-        	holder.decommodityf.setBackgroundColor(context.getResources().getColor(R.color.white));
-        	holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.white));
-            holder.speech2Txt.setImageResource(R.drawable.speech2txt);
+        	holder.rlList.setBackgroundColor(context.getResources().getColor(R.color.white));
+        	//holder.invListDescr.setBackgroundColor(context.getResources().getColor(R.color.white));
+        	//holder.invListBarcode.setBackgroundColor(context.getResources().getColor(R.color.white));
+        	//holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.white));
+            //holder.speech2Txt.setImageResource(R.drawable.speech2txt);
                     }
         else {
-        	holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-        	holder.decommodityf.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-            holder.speech2Txt.setImageResource(-1);
+        	holder.rlList.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+        	//holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+        	//holder.invListBarcode.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));        	
+        	//holder.invListDescr.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+            //holder.speech2Txt.setImageResource(-1);
                     }
  
         if (rowItem.getType().equalsIgnoreCase("NEW")) {
-            holder.decommodityf.setText(rowItem.getNusenate()+" "+rowItem.getDecommodityf());
-        	holder.decommodityf.setTextColor( context.getResources().getColor(R.color.blue) ); //blue
+        	holder.invListBarcode.setText(rowItem.getNusenate());
+        	holder.invListBarcode.setTextColor( context.getResources().getColor(R.color.blue) ); //blue
+            holder.invListDescr.setText(rowItem.getDecommodityf());
+        	holder.invListDescr.setTextColor( context.getResources().getColor(R.color.blue) ); //blue
         }
         else {
-            holder.decommodityf.setText(rowItem.getNusenate()+" "+rowItem.getDecommodityf());
-        	holder.decommodityf.setTextColor( context.getResources().getColor(R.color.black) ); //black
+        	holder.invListBarcode.setText(rowItem.getNusenate());
+        	holder.invListBarcode.setTextColor( context.getResources().getColor(R.color.black) ); //blue
+            holder.invListDescr.setText(rowItem.getDecommodityf());
+        	holder.invListDescr.setTextColor( context.getResources().getColor(R.color.black) ); //black
         	
         }
         OnClickListener l = new OnClickListener() {
@@ -77,6 +90,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
 				
 			}
         };
+        
 		holder.speech2Txt.setOnClickListener(l); 
         return convertView;
     }

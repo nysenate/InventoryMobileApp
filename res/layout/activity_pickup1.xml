@@ -59,25 +59,10 @@
                 android:layout_gravity="center"
                 android:layout_span="2"
                 android:gravity="center"
-                android:text="Selected Location Information "
+                android:text="Pickup Location"
                 android:textColor="@color/bluedark" />
         </TableRow>
 
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tvLabelLocCd1"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Location Code:" />
-
-            <TextView
-                android:id="@+id/tvLocCd1"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
-        </TableRow>
 
         <TableRow>
 
@@ -148,25 +133,10 @@
                 android:layout_gravity="center"
                 android:layout_span="2"
                 android:gravity="center"
-                android:text="Selected Location Information "
+                android:text="Delivery Location"
                 android:textColor="@color/bluedark" />
         </TableRow>
 
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tvLabelLocCd2"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Location Code:" />
-
-            <TextView
-                android:id="@+id/tvLocCd2"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
-        </TableRow>
 
         <TableRow>
 

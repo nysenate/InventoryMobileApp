@@ -72,12 +72,12 @@ public class Pickup1 extends SenateActivity {
 
 		// Setup Data Textviews
 		tvOffice1 = (TextView)this.findViewById(R.id.tvOffice1);
-		tvLocCd1 = (TextView)this.findViewById(R.id.tvLocCd1);
+		//tvLocCd1 = (TextView)this.findViewById(R.id.tvLocCd1);
 		tvDescript1 = (TextView)this.findViewById(R.id.tvDescript1);
 		tvCount1 = (TextView)this.findViewById(R.id.tvCount1);
 
 		tvOffice2 = (TextView)this.findViewById(R.id.tvOffice2);
-		tvLocCd2 = (TextView)this.findViewById(R.id.tvLocCd2);
+		//tvLocCd2 = (TextView)this.findViewById(R.id.tvLocCd2);
 		tvDescript2 = (TextView)this.findViewById(R.id.tvDescript2);
 		tvCount2 = (TextView)this.findViewById(R.id.tvCount2);
 		
@@ -330,15 +330,15 @@ public class Pickup1 extends SenateActivity {
 						try {
 							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
 							tvOffice2.setText(object.getString("cdrespctrhd") );
-							tvLocCd2.setText( object.getString("cdlocat"));
+							//tvLocCd2.setText( object.getString("cdlocat"));
 							tvDescript2.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
 							tvCount2.setText( object.getString("nucount"));
 
 							
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							tvLocCd2.setText( "!!ERROR: "+e.getMessage());
-							tvDescript2.setText("Please contact STS/BAC.");	
+							tvDescript2.setText( "!!ERROR: "+e.getMessage());
+							tvOffice2.setText("Please contact STS/BAC.");	
 							tvCount2.setText("N/A");					
 
 							e.printStackTrace();

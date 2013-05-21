@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -35,6 +37,7 @@ public class Delivery2 extends SenateActivity {
 	String URL=null;
 	String res=null;
 	public ArrayList<String> deliveryList = new ArrayList<String>();
+	public ArrayList<PickupGroup> pickupGroups = new ArrayList<PickupGroup>();
 	public String locCode=null;
 	ListView listview;
 	String location ="";
@@ -84,16 +87,110 @@ public class Delivery2 extends SenateActivity {
 						res = resr1.get().trim().toString();
 						// code for JSON
 
-						String jsonString = resr1.get().trim().toString();
-						JSONArray jsonArray = new JSONArray(jsonString);
-
-						for (int i = 0; i < jsonArray.length(); i++) {
-							deliveryList.add(jsonArray.getString(i).toString());
+						
+						try {
+							JSONArray jsonArray = new JSONArray(res);
+							JSONObject object;
+							PickupGroup currentPickupGroup;
+							int nuxrpd = -1;
+							String pickupDateTime = "N/A";
+							String pickupFrom = "N/A";
+							String pickupRelBy = "N/A";
+							String pickupLocat = "N/A";
+							String pickupAdstreet1 = "N/A";
+							String pickupAdcity = "N/A";
+							String pickupAdstate = "N/A";
+							String pickupAdzipcode = "N/A";
+							int pickupItemCount = -1;
+							
+							for (int x=0;x<jsonArray.length();x++) {
+								nuxrpd = -1;
+								pickupDateTime = "N/A";
+								pickupFrom = "N/A";
+								pickupRelBy = "N/A";
+								pickupLocat = "N/A";
+								pickupAdstreet1 = "N/A";
+								pickupAdcity = "N/A";
+								pickupAdstate = "N/A";
+								pickupAdzipcode = "N/A";								
+								pickupItemCount = -1;
+								object = (JSONObject) jsonArray.getJSONObject(x);
+								try {
+									nuxrpd = object.getInt("nuxrpd");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupDateTime = object.getString("pickupDateTime");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupFrom = object.getString("pickupFrom");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupRelBy = object.getString("pickupRelBy");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupLocat = object.getString("pickupLocat");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupItemCount = object.getInt("pickupItemCount");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+								try {
+									pickupAdstreet1 = object.getString("pickupAdstreet1");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}								
+								try {
+									pickupAdcity = object.getString("pickupAdcity");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}		
+								try {
+									pickupAdstate = object.getString("pickupAdstate");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}		
+								try {
+									pickupAdzipcode = object.getString("pickupAdzipcode");
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}		
+								
+								
+								//Log.i("JSON VALUES "+x,  object.toString());
+								currentPickupGroup = new PickupGroup(nuxrpd,  pickupDateTime, pickupFrom, pickupRelBy, pickupLocat, pickupAdstreet1, pickupAdcity, pickupAdstate, pickupAdzipcode , pickupItemCount); 
+								//System.out.println(nuxrpd+" ,  "+pickupDateTime+" ,"+ pickupFrom+", "+pickupRelBy+" , "+pickupLocat+" , "+pickupItemCount);
+								pickupGroups.add(currentPickupGroup);
+							}
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block	
+							e.printStackTrace();
 						}
-
-						ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-								android.R.layout.simple_dropdown_item_1line,
-								deliveryList);
+						
+						System.out.println ("pickupGroups Count:"+pickupGroups.size());
+						PickupGroupViewAdapter adapter = new PickupGroupViewAdapter(this, R.layout.pickup_group_row, pickupGroups);
+						System.out.println ("Setup Listview with pickupGroups");
 						
 						listview	 = (ListView) findViewById(R.id.listView1);	
 						listview.setAdapter(adapter);
@@ -102,9 +199,6 @@ public class Delivery2 extends SenateActivity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -121,17 +215,17 @@ public class Delivery2 extends SenateActivity {
 					 public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 						 progressBarDelivery2.setVisibility(ProgressBar.VISIBLE);
 						 // this will go to the Delivery 3 activity with the data 
-                           String selectedPickup= deliveryList.get(position);
-                           String [] itemDetails=selectedPickup.split(":");
-                   		   String nuxrpickup=itemDetails[0];
+						   
+                           PickupGroup selectedPickup= pickupGroups.get(position);
+                           //String [] itemDetails=selectedPickup.split(":");
+                   		   String nuxrpd= Integer.toString(selectedPickup.getNuxrpd());
                    		
                            intent.putExtra("location", location); 
-                           intent.putExtra("nuxrpickup", nuxrpickup); 
+                           intent.putExtra("nuxrpd", nuxrpd); 
 
                            startActivity(intent);
                            overridePendingTransition(R.anim.in_right, R.anim.out_left);
-                   			Log.i("I am here","ListView"+position);
-						     }
+					     }
 					 
 				
 				});
