@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -148,7 +149,13 @@ public class Delivery1 extends SenateActivity {
 		}
 
 		public void afterTextChanged(Editable s) {
-			if (autoCompleteTextView1.getText().toString().length() >= 3) {
+			int textLength = autoCompleteTextView1.getText().toString().length();
+			if (textLength==0) {
+				tvOfficeD.setText(  "N/A");							
+				tvDescriptD.setText("N/A");	
+				tvCountD.setText("N/A");					
+			}
+			else if (textLength >= 3) {
 				// loc_details.setText(loc_code.getText().toString());
 				deliveryLocation = autoCompleteTextView1.getText().toString()
 						.trim();
@@ -177,13 +184,29 @@ public class Delivery1 extends SenateActivity {
 							.execute(URL + "/LocationDetails?barcode_num="
 									+ barcode_num);
 					try {
+						Log.i("Server URL return", URL + "/LocationDetails?barcode_num=" + barcode_num);
+						if (resr1==null) {
+							Log.i("Server returned nothing", "resr1 is null for "+URL + "/LocationDetails?barcode_num=" + barcode_num);
+						}
+						
+						else if (resr1.get()==null) {
+							Log.i("Server returned nothing", "resr1.get() is null for "+URL + "/LocationDetails?barcode_num=" + barcode_num);
+							
+						}
 						res = resr1.get().trim().toString();
 						try {
 							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
-							tvOfficeD.setText(object.getString("cdrespctrhd") );
-							//tvLocCdD.setText( object.getString("cdlocat"));
-							tvDescriptD.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
-							tvCountD.setText( object.getString("nucount"));
+							if (object.getString("delocat").equalsIgnoreCase("Does not exist in system") ){
+								tvOfficeD.setText("N/A");							
+								tvDescriptD.setText("N/A");	
+								tvCountD.setText("N/A");					
+							}
+							else {
+								tvOfficeD.setText(object.getString("cdrespctrhd") );
+								//tvLocCdD.setText( object.getString("cdlocat"));
+								tvDescriptD.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
+								tvCountD.setText( object.getString("nucount"));
+							}
 
 							
 						} catch (JSONException e) {
@@ -233,6 +256,7 @@ public class Delivery1 extends SenateActivity {
 				
 			}
 			else if (locCodeList.indexOf(currentLocation) ==-1) {
+				this.btnDelivery1Cont.getBackground().setAlpha(255);
 	            Toast toast = Toast
 	                    .makeText(
 	                            this.getApplicationContext(),

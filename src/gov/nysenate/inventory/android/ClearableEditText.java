@@ -79,7 +79,6 @@ public class ClearableEditText extends EditText {
                                     clearField = true;
                                     et.setText("");
                                     ClearableEditText.this.removeClearButton();
-                                    
                                 }
                                })
                               .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -96,6 +95,7 @@ public class ClearableEditText extends EditText {
                     if (clearField) {
                         et.setText("");
                         ClearableEditText.this.removeClearButton();
+                        
                     }
                 }
                 return false;
@@ -120,10 +120,12 @@ public class ClearableEditText extends EditText {
     }
 
     void manageClearButton() {
-        if (this.getText().toString().equals("") )
+        if (this.getText().toString().equals("") ) {
             removeClearButton();
-        else
+        }
+        else {
             addClearButton();
+        }
     }
 
     public void showClearMsg(boolean showClearMsg) {
@@ -154,5 +156,6 @@ public class ClearableEditText extends EditText {
                 null,
                 this.getCompoundDrawables()[3]);
     }
+        
 
 }

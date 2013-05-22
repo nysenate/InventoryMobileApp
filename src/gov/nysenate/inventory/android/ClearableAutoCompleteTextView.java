@@ -140,6 +140,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         else
             addClearButton();
     }
+       
     void addClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0], 
                 this.getCompoundDrawables()[1],
@@ -152,5 +153,5 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
                 null,
                 this.getCompoundDrawables()[3]);
     }
-
+    
 }

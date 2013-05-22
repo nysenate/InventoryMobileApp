@@ -6,10 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.method.KeyListener;
 import android.util.Log;
 
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -64,8 +67,8 @@ public class MainActivity extends Activity {
 	ClearableEditText user_name;
     ClearableEditText password;
 	String URL = "";
-	public static Properties properties; // Since we want to refer to this in
-											// other activities
+	public static Properties properties; // Since we want to refer to this in other activities
+
 	Button buttonLogin;
 	ProgressBar progressBarLogin;
 	public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
