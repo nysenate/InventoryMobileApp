@@ -55,11 +55,9 @@ public class Pickup1 extends SenateActivity {
 	Button btnPickup1Cont;
 	Button btnPickup1Cancel;
 	TextView tvOffice1;
-	TextView tvLocCd1;
 	TextView tvDescript1;
 	TextView  tvCount1;
 	TextView tvOffice2;
-	TextView tvLocCd2;
 	TextView tvDescript2;
 	TextView  tvCount2;
 
@@ -258,17 +256,18 @@ public class Pickup1 extends SenateActivity {
 						try {
 							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
 							tvOffice1.setText(object.getString("cdrespctrhd") );
-							tvLocCd1.setText( object.getString("cdlocat"));
+							//tvLocCd1.setText( object.getString("cdlocat"));
 							tvDescript1.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
 							tvCount1.setText( object.getString("nucount"));
 
 							
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							tvLocCd1.setText( "!!ERROR: "+e.getMessage());
-							tvDescript1.setText("Please contact STS/BAC.");	
-							tvCount1.setText("N/A");					
-
+							//tvLocCd1.setText( "!!ERROR: "+e.getMessage());
+							tvOffice1.setText( "!!ERROR: "+e.getMessage());	
+							tvDescript1.setText("Please contact STS/BAC.");					
+							tvCount1.setText("N/A");
+							
 							e.printStackTrace();
 						}						
 					} catch (InterruptedException e) {

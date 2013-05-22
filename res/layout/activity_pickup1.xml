@@ -60,7 +60,8 @@
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Pickup Location"
-                android:textColor="@color/bluedark" />
+                android:textColor="@color/bluedark"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
 
 
@@ -71,13 +72,16 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Resp Center Hd:" />
+                android:text="Resp Center Hd:"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView
                 android:id="@+id/tvOffice1"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
         </TableRow>
 
         <TableRow>
@@ -87,7 +91,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Description:" />
+                android:text="Description:"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView
                 android:id="@+id/tvDescript1"
@@ -95,7 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
 
         <TableRow>
@@ -105,13 +111,15 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Item Count:"/>
+                android:text="Item Count:"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/tvCount1"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
     </TableLayout>    
    
@@ -134,7 +142,8 @@
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Delivery Location"
-                android:textColor="@color/bluedark" />
+                android:textColor="@color/bluedark"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
 
 
@@ -145,13 +154,15 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Resp Center Hd:" />
+                android:text="Resp Center Hd:"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView
                 android:id="@+id/tvOffice2"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
 
         <TableRow>
@@ -161,7 +172,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Description:" />
+                android:text="Description:"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView
                 android:id="@+id/tvDescript2"
@@ -169,7 +181,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
 
         <TableRow>
@@ -179,13 +192,15 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Item Count:"/>
+                android:text="Item Count:"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/tvCount2"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A" />
+                android:text="N/A"
+                android:textAppearance="?android:attr/textAppearanceMedium"  />
         </TableRow>
     </TableLayout>   
     

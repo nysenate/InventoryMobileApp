@@ -242,11 +242,6 @@ public class Pickup2Activity extends SenateActivity {
 	
 	public void continueButton(View view){
 		// send the data to Pickup3 activity
-		int duration = Toast.LENGTH_SHORT;
-		Context context = getApplicationContext();
-		Toast toast = Toast.makeText(context, "Continue Button was clicked", duration);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();		
 		btnPickup2Cont.getBackground().setAlpha(70);	
 		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("originLocation", originLocation);
@@ -261,13 +256,9 @@ public class Pickup2Activity extends SenateActivity {
 	}
 	
 	public void cancelButton(View view){
-		int duration = Toast.LENGTH_SHORT;		
-		Context context = getApplicationContext();
-		Toast toast = Toast.makeText(context, "CANCEL Button was clicked", duration);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();		
+		// send back to the Move Menu		
 		btnPickup2Cancel.getBackground().setAlpha(70);		
-		Intent intent = new Intent(this, Pickup1.class);
+		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
         }

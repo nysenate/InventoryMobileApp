@@ -34,7 +34,7 @@
         android:layout_width="500dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
-        android:layout_alignRight="@+id/autoCompleteTextView1"
+        android:layout_alignRight="@+id/btnDelivery1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="21dp"
         android:background="@drawable/customshape" >
@@ -47,23 +47,8 @@
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Selected Location Information "
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/bluedark" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tvLabelLocCdD"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Location Code:" />
-
-            <TextView
-                android:id="@+id/tvLocCdD"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
         </TableRow>
 
         <TableRow>
@@ -73,12 +58,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Resp Center Hd:" />
 
             <TextView
                 android:id="@+id/tvOfficeD"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="N/A" />
         </TableRow>
 
@@ -89,6 +76,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Description:" />
 
             <TextView
@@ -97,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="N/A" />
         </TableRow>
 
@@ -107,12 +96,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Item Count:" />
 
             <TextView
                 android:id="@+id/tvCountD"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="N/A" />
         </TableRow>
     </TableLayout>

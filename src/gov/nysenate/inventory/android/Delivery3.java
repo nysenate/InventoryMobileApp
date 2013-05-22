@@ -233,7 +233,7 @@ public class Delivery3 extends SenateActivity {
         // for origin dest code
         naemployeeView.setThreshold(1);
         naemployeeView.setAdapter(adapter);
-		Delivery2.progressBarDelivery2.setVisibility(ProgressBar.INVISIBLE);
+		Delivery2.progBarDelivery2.setVisibility(ProgressBar.INVISIBLE);
 		
 		
 	}

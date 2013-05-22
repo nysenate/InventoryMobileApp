@@ -42,7 +42,7 @@ public class Delivery1 extends SenateActivity {
 	static Button btnDelivery1Cont;
 	static Button btnDelivery1Cancel;
 	TextView tvOfficeD;
-	TextView tvLocCdD;
+	//TextView tvLocCdD;
 	TextView tvDescriptD;
 	TextView  tvCountD;
 	
@@ -53,7 +53,7 @@ public class Delivery1 extends SenateActivity {
 		
 		// Setup Data Textviews
 		tvOfficeD = (TextView)this.findViewById(R.id.tvOfficeD);
-		tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
+		//tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
 		tvDescriptD = (TextView)this.findViewById(R.id.tvDescriptD);
 		tvCountD = (TextView)this.findViewById(R.id.tvCountD);		
 		
@@ -181,15 +181,15 @@ public class Delivery1 extends SenateActivity {
 						try {
 							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
 							tvOfficeD.setText(object.getString("cdrespctrhd") );
-							tvLocCdD.setText( object.getString("cdlocat"));
+							//tvLocCdD.setText( object.getString("cdlocat"));
 							tvDescriptD.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
 							tvCountD.setText( object.getString("nucount"));
 
 							
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							tvOfficeD.setText( "N/A");							
-							tvLocCdD.setText( "!!ERROR: "+e.getMessage());
+							tvOfficeD.setText(  "!!ERROR: "+e.getMessage());							
+							//tvLocCdD.setText( "!!ERROR: "+e.getMessage());
 							tvDescriptD.setText("Please contact STS/BAC.");	
 							tvCountD.setText("N/A");					
 

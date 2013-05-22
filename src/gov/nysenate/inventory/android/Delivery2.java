@@ -42,7 +42,7 @@ public class Delivery2 extends SenateActivity {
 	ListView listview;
 	String location ="";
 	Intent intent;
-	static ProgressBar progressBarDelivery2;
+	static ProgressBar progBarDelivery2;
 	static Button btnDelivery2Cancel;
 	
 	@Override
@@ -52,7 +52,7 @@ public class Delivery2 extends SenateActivity {
 		
 		//define progressBar
 		
-		progressBarDelivery2 = (ProgressBar) findViewById( R.id.progressBarDelivery2 );
+		progBarDelivery2 = (ProgressBar) findViewById( R.id.progBarDelivery2 );
 			
 		
 		
@@ -188,9 +188,9 @@ public class Delivery2 extends SenateActivity {
 							e.printStackTrace();
 						}
 						
-						System.out.println ("pickupGroups Count:"+pickupGroups.size());
+						//System.out.println ("pickupGroups Count:"+pickupGroups.size());
 						PickupGroupViewAdapter adapter = new PickupGroupViewAdapter(this, R.layout.pickup_group_row, pickupGroups);
-						System.out.println ("Setup Listview with pickupGroups");
+						//System.out.println ("Setup Listview with pickupGroups");
 						
 						listview	 = (ListView) findViewById(R.id.listView1);	
 						listview.setAdapter(adapter);
@@ -213,9 +213,8 @@ public class Delivery2 extends SenateActivity {
 
 				
 					 public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
-						 progressBarDelivery2.setVisibility(ProgressBar.VISIBLE);
-						 // this will go to the Delivery 3 activity with the data 
-						   
+						  progBarDelivery2.setVisibility(ProgressBar.VISIBLE);
+						 // this will go to the Delivery 3 activity with the data
                            PickupGroup selectedPickup= pickupGroups.get(position);
                            //String [] itemDetails=selectedPickup.split(":");
                    		   String nuxrpd= Integer.toString(selectedPickup.getNuxrpd());
@@ -251,7 +250,7 @@ public class Delivery2 extends SenateActivity {
 	
 	public void cancelButton(View view) {
 		this.btnDelivery2Cancel.getBackground().setAlpha(45);
-		Intent intent = new Intent(this, Delivery1.class);
+		Intent intent = new Intent(this, Move.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_left, R.anim.out_right);
 	}

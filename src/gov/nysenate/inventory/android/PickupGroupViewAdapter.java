@@ -40,7 +40,6 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         PickupGroup currentPickupGroup = pickupGroups.get(position);
-        Log.i("Pickup GetView", "currentPickupGroup#"+position);
         
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -60,11 +59,15 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
             }
      
         try {
-        if (position%2>0) {
-        	holder.rlPickupGrpRow.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+    	
+       	if (position%2>0) {
+        	//holder.rlPickupGrpRow.setBackgroundColor(context.getResources().getColor(R.color.white));
+       		holder.rlPickupGrpRow.setBackgroundResource(R.drawable.selector_1);
             }
         else {
-        	holder.rlPickupGrpRow.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+        	//holder.rlPickupGrpRow.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+       		holder.rlPickupGrpRow.setBackgroundResource(R.drawable.selector_2);
            }
         }
         catch (Exception e) {
