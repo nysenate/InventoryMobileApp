@@ -25,7 +25,9 @@
         android:layout_marginLeft="17dp"
         android:layout_marginRight="140dp"
         android:ems="10"
-        android:hint="@string/location_code" />
+        android:hint="@string/location_code" 
+        android:singleLine="true"
+        />
 
 
     <TableLayout

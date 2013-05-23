@@ -26,7 +26,8 @@
         android:layout_marginLeft="17dp"
         android:layout_marginRight="140dp"
         android:ems="10"
-        android:hint="@string/select_origin_loc" >
+        android:hint="@string/select_origin_loc"
+        android:singleLine="true"    >
 
         <requestFocus />
 
@@ -41,7 +42,8 @@
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="21dp"
         android:hint="@string/details"
-        android:text="@string/details" />
+        android:text="@string/details" 
+        android:singleLine="true"   />
     
    <TableLayout
         android:layout_width="500dp"

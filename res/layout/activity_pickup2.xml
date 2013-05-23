@@ -56,7 +56,8 @@
         android:layout_below="@+id/textView2"
         android:ems="10"
         android:hint="@string/barcode_number"
-        android:inputType="number" />
+        android:inputType="number"
+        android:singleLine="true"    />
     
 <Button
     android:id="@+id/btnPickup2Cont"

@@ -46,7 +46,8 @@
         android:layout_above="@+id/blsignImageView"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="@string/employee_list_hint" >
+        android:hint="@string/employee_list_hint" 
+        android:singleLine="true"   >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>

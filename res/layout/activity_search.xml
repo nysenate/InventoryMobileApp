@@ -26,7 +26,9 @@
         android:ems="10"
         android:hint="@string/barcode_number"
         android:inputType="number"
-        android:padding="4dip" >
+        android:padding="4dip"
+        android:singleLine="true"   
+                 >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>

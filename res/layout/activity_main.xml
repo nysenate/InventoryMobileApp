@@ -31,7 +31,9 @@
         android:layout_toLeftOf="@+id/pickupCommentsSpeechButton"
         android:ems="10"
         android:hint="@string/password_str"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:singleLine="true"
+         />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/user_name"
@@ -41,7 +43,9 @@
         android:layout_alignRight="@+id/password"
         android:layout_marginBottom="18dp"
         android:ems="10"
-        android:hint="@string/user_name_str" >
+        android:hint="@string/user_name_str"
+        android:singleLine="true"        
+         >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>

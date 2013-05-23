@@ -111,31 +111,12 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/btnVerSumCont"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-	    android:layout_marginLeft="35dp"
-        android:layout_marginBottom="33dp"
-        android:background="@drawable/buttonshapegreen"
-        android:onClick="continueButton"
-        android:shadowColor="#000000"
-        android:shadowDx="01"
-        android:shadowDy="1"
-        android:shadowRadius="5"
-        android:text="Continue"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
-
-    <Button
         android:id="@+id/btnVerSumBack"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-    	android:layout_marginRight="35dp"
-        android:layout_marginBottom="33dp"
+        android:layout_alignBaseline="@+id/btnVerSumCont"
+        android:layout_alignBottom="@+id/btnVerSumCont"
+        android:layout_alignLeft="@android:id/tabhost"
         android:background="@drawable/buttonshapeblue"
         android:onClick="backButton"
         android:shadowColor="#000000"
@@ -143,6 +124,23 @@
         android:shadowDy="1"
         android:shadowRadius="5"
         android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnVerSumCont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/progressVerSum"
+        android:layout_marginRight="18dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
 
