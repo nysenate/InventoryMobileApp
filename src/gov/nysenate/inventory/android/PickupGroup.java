@@ -12,8 +12,8 @@ public class PickupGroup {
 	  int pickupItemCount = 0;
 	  int nuxrpd = 0;
 	  
-	    public PickupGroup(int nuxrpd, String pickupDateTime, String pickupFrom, String pickupRelBy, String pickupLocat, String pickupAdstreet1, String pickupAdcity, String pickupAdstate, String pickupAdzipcode, int pickupItemCount) {
-              Nvl nvl = new Nvl();
+	   public PickupGroup(int nuxrpd, String pickupDateTime, String pickupFrom, String pickupRelBy, String pickupLocat, String pickupAdstreet1, String pickupAdcity, String pickupAdstate, String pickupAdzipcode, int pickupItemCount) {
+            Nvl nvl = new Nvl();
 	    	this.nuxrpd = nuxrpd;
 	        this.pickupDateTime = nvl.value( pickupDateTime, "N/A");
 	        this.pickupFrom = nvl.value(pickupFrom, "N/A");

@@ -124,5 +124,13 @@ public class Move extends SenateActivity implements OnItemClickListener {
 		overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(this, MenuActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.in_left, R.anim.out_right);
+		
+	}	
 
 }

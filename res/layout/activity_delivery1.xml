@@ -20,12 +20,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
-        android:layout_alignRight="@+id/textView1"
+        android:layout_alignRight="@+id/btnDelivery1Cont"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/delivery1_hint"
-        android:singleLine="true"    >
+        android:singleLine="true"
+        android:textSize="25sp"
+        android:textStyle="bold"   >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>

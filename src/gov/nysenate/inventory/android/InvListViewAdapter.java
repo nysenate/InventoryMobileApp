@@ -95,5 +95,30 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         return convertView;
     }
     
-    
+    public int removeBarCode (String barcode) {
+    	int itemsRemoved = 0;
+    	this.setNotifyOnChange(true);
+    	if (this.items!=null) {
+    		for (int x=this.items.size()-1;x>-1;x--) {
+    			if (this.items.get(x).getNusenate().equals(barcode)) {
+    				this.items.remove(x);
+    				itemsRemoved++;
+    			}
+    		}
+    	}
+		return itemsRemoved;
+    }
+
+    public int findTypePos(String type) {
+    	return findTypePos(type, 0);
+    }
+
+    public int findTypePos(String type, int startAt) {
+    	 for (int x = startAt;x<this.items.size();x++) {
+    		 if (this.items.get(x).getType().equals(type)) {
+    			 return x;
+    		 }
+    	 }
+    	return -1;
+    }
 }

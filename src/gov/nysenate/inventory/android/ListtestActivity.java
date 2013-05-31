@@ -20,14 +20,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Layout;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,7 +45,7 @@ import android.widget.Toast;
 public class ListtestActivity extends SenateActivity {
 
 	public ClearableEditText barcode;
-	public EditText count_text;
+	public TextView tvCounts;
 	public TextView loc_details;
 	public String res = null;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;	
@@ -48,13 +53,11 @@ public class ListtestActivity extends SenateActivity {
 	public ListView listView;
 	public String loc_code = null; // populate this from the location code from
 									// previous activity
-	ArrayList<String> scannedItems = new ArrayList<String>();
+	ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
 	ArrayList<verList> list = new ArrayList<verList>();
-	ArrayList<StringBuilder> dispList = new ArrayList<StringBuilder>();
 	ArrayList<InvItem> invList = new ArrayList<InvItem>();
-	ArrayList<String> dispType = new ArrayList<String>();
 	String currentSortValue = "Description";
-	public Spinner sortList;
+	public Spinner spinSortList;
 	static Button btnVerListCont;
 	static Button btnVerListCancel;
 	
@@ -65,16 +68,19 @@ public class ListtestActivity extends SenateActivity {
 	int numItems;
 	// These 3 ArrayLists will be used to transfer data to next activity and to
 	// the server
-	ArrayList<String> AllScannedItems = new ArrayList<String>();// for saving
+	ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();// for saving
 																// items which
 																// are not
 																// allocated to
 																// that location
 
-	ArrayList<String> newItems = new ArrayList<String>();// for saving items
+	ArrayList<InvItem> newItems = new ArrayList<InvItem>();// for saving items
 															// which are not
 															// allocated to that
 															// location
+	
+	String lastClickedTo = "";
+	int lastRowFound = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,15 +93,18 @@ public class ListtestActivity extends SenateActivity {
 
 		// ----------code from other activity starts
 		listView = (ListView) findViewById(R.id.preferenceList);
-		sortList = (Spinner) findViewById(R.id.sortList);
-		sortList.setOnItemSelectedListener(new SortChangedListener());
-	
+		spinSortList = (Spinner) findViewById(R.id.spinSortList);
+		spinSortList.setOnItemSelectedListener(new SortChangedListener());
+		String[] spinnerList = getResources().getStringArray(R.array.verify_sort);
+		ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, R.layout.spinner_item, spinnerList);
+		adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinSortList.setAdapter(adapterSpinner);	
+		
 		// Setup Buttons
 		btnVerListCont = (Button) findViewById(R.id.btnVerListCont);
 		btnVerListCont.getBackground().setAlpha(255);
 		btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);		
 		btnVerListCancel.getBackground().setAlpha(255);
-
 
 		// check network connection
 
@@ -140,10 +149,6 @@ public class ListtestActivity extends SenateActivity {
 					s.append(vl.DECOMMODITYF);
 					// dispList.add(s);
 
-					dispList.add(i, s); // this list will display the contents
-										// on screen
-					dispType.add(i, "EXISTING");
-
 					// 3/15/13 BH Coded below to use InvItem Objects to display
 					// the list.
 					InvItem invItem = new InvItem(
@@ -185,11 +190,45 @@ public class ListtestActivity extends SenateActivity {
 		 */
 
 		// display the count on screen
-		count_text = (EditText) findViewById(R.id.editText2);
+		tvCounts = (TextView) findViewById(R.id.tvCounts);
 
-		count_text.setText(Integer.toString(count));
+		tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
+		tvCounts.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+		    public boolean onTouch(View v, MotionEvent event) {
+			    Layout layout = ((TextView) v).getLayout();
+			    int x = (int)event.getX();
+			    int y = (int)event.getY();
+			    int plusPos = tvCounts.getText().toString().indexOf("+");
+			    int foundAt = -1;
+			    if (layout!=null){
+			        int line = layout.getLineForVertical(y);
+			        int offset = layout.getOffsetForHorizontal(line, x);
+			        if (offset<plusPos) {
+			        	if (!lastClickedTo.equals("NEW")) {
+			        		lastRowFound = -1;
+			        	}
+			        	lastClickedTo = "NEW";
+			        	foundAt = adapter.findTypePos("NEW", lastRowFound+1);
+			        }
+			        else if (offset>plusPos) {
+			        	if (lastClickedTo.equals("NEW")) {
+			        		lastRowFound = -1;
+			        	}
+			        	lastClickedTo = "EXISTING";
+			        	foundAt = adapter.findTypePos("EXISTING", lastRowFound+1);
+			        }
+		        	lastRowFound = foundAt;
+		        	listView.setSelection(lastRowFound);
+			        
+			        Log.v("index", ""+offset);
+			        }
+			    return true;
+			}
+		});
 		// populate the listview
 		listView.setAdapter(adapter);
+		
 	
 		// --code from other activity
 		// ends-----------------------------------------------------------------
@@ -211,6 +250,21 @@ public class ListtestActivity extends SenateActivity {
 		btnVerListCont.getBackground().setAlpha(255);
 		btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);		
 		btnVerListCancel.getBackground().setAlpha(255);
+	}
+	
+	public int countOf(ArrayList<InvItem> invList, String type) {
+		int count = 0;
+		for (int x=0;x<invList.size();x++) {
+			InvItem curInvItem = invList.get(x);
+			if (curInvItem!=null) {
+				if (curInvItem.getType().equalsIgnoreCase(type)) {
+					count++;
+				}
+			}
+			
+		}
+		return count;
+		
 	}
 	
 	
@@ -271,31 +325,52 @@ public class ListtestActivity extends SenateActivity {
 					toast.show();
 				}
 
-				for (int i = 0; i < list.size(); i++) {
+				for (int i = invList.size()-1; i >-1; i--) {
 					// this if will not remove the "New items" and previously
 					// scanned items
-					if ((list.get(i).NUSENATE.equals(barcode_number) )
+					InvItem curInvItem = invList.get(i);
+					
+					try {
+					    if (curInvItem == null) {
+							Log.i("NULL CHECK", "invList.get("+i+") IS NULL!!");
+					    	
+					    }
+					    else if (curInvItem.getNusenate() == null) {
+							Log.i("NULL CHECK", "invList.get("+i+").getNusenate() IS NULL!!");
+						}
+					    if (barcode_number==null) {
+							Log.i("NULL CHECK", "barcode_number IS NULL!! AS OF CHECKING INDEX#:"+i);
+					    }
+					    
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					if ((curInvItem.getNusenate().equals(barcode_number) )
 							&& (scannedItems.contains(barcode_number) == false)) {
-						list.remove(i);
+						adapter.removeBarCode(barcode_number);
 
 						// display toster
 						Context context = getApplicationContext();
-						CharSequence text = "Removed: " + dispList.get(i);
+						StringBuilder sb = new StringBuilder();
+						sb.append("Removed: ");
+						sb.append(curInvItem.getNusenate());
+						sb.append(" ");
+						sb.append(curInvItem.getType());
+						sb.append(" ");
+						sb.append(curInvItem.getDecommodityf());
+						
+						CharSequence text = sb.toString();
 						int duration = Toast.LENGTH_SHORT;
 
 						Toast toast = Toast.makeText(context, text, duration);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
-						AllScannedItems.add(dispList.get(i).toString());// to
-																		// keep
-																		// track
-																		// of
-																		// (number+details)
-																		// for
-																		// summery
+						AllScannedItems.add(curInvItem);// to keep track of (number+details)
+														// for summary
 						invList.remove(i);
-						dispList.remove(i);
-						scannedItems.add(barcode_number);// to keep track of all
+						scannedItems.add(curInvItem);// to keep track of all
 															// scanned items
 															// numbers for
 															// oracle table
@@ -341,9 +416,19 @@ public class ListtestActivity extends SenateActivity {
 
 					// add it to list and displist and scanned items
 					verList vl = new verList();
-					vl.NUSENATE = barcode_number;
-					vl.CDCATEGORY = res;
-					vl.DECOMMODITYF = " New Item";
+			//		vl.NUSENATE = barcode_number;
+			//		vl.CDCATEGORY = res;
+			//		vl.DECOMMODITYF = " New Item";
+					try {
+						Log.i("SERVER RESULTS", "RES:"+res);
+						JSONObject jo = new JSONObject(res);
+						vl.NUSENATE = jo.getString("nusenate");
+						vl.CDCATEGORY = jo.getString("cdcategory");
+						vl.DECOMMODITYF = jo.getString("decommodityf")+" New Item";
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}				
 
 					list.add(vl);
 					StringBuilder s_new = new StringBuilder();
@@ -364,10 +449,6 @@ public class ListtestActivity extends SenateActivity {
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 
-					dispList.add(s_new); // this list will display the contents
-											// on screen
-					dispType.add("NEW");
-
 					// 3/15/13 BH Coded below to use InvItem Objects to display
 					// the list.
 					InvItem invItem = new InvItem(
@@ -375,21 +456,22 @@ public class ListtestActivity extends SenateActivity {
 							"NEW", s_new.toString());
 					invList.add(invItem);
 
-					scannedItems.add(barcode_number);
-					AllScannedItems.add(s_new.toString());
-					newItems.add(vl.NUSENATE + " " + vl.CDCATEGORY);// to keep
-																	// track of
-																	// (number+details)
-																	// for
-																	// summary
+					scannedItems.add(invItem);
+					AllScannedItems.add(invItem);
+					newItems.add(invItem); // to keep track of (number+details)
+										   // for summary
 				}
 
 				// notify the adapter that the data in the list is changed and
 				// refresh the view
+				
+				//adapter = new InvListViewAdapter(getApplicationContext(), R.layout.invlist_item, invList);
+				//adapter.clear();
 				adapter.notifyDataSetChanged();
-				count = list.size();
-				count_text.setText(Integer.toString(count));
-				listView.setAdapter(adapter);
+				count = adapter.getCount();
+				tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
+				//listView.setAdapter(adapter);
+				Log.i("check", "listview updated");
 
 				barcode.setText("");
 			}
@@ -416,7 +498,7 @@ public class ListtestActivity extends SenateActivity {
 		btnVerListCont.getBackground().setAlpha(45);
 		
 		// create lists for summary activity
-		ArrayList<String> missingItems = new ArrayList<String>();// for saving
+		ArrayList<InvItem> missingItems = new ArrayList<InvItem>();// for saving
 																	// items
 																	// which are
 																	// not
@@ -425,8 +507,7 @@ public class ListtestActivity extends SenateActivity {
 																	// location
 		for (int i = 0; i < this.invList.size(); i++) {
 			if ((invList.get(i).getType().contains("New")) == false) {
-				missingItems.add(invList.get(i).getNusenate() + " "
-						+ invList.get(i).getDecommodityf()); // if the
+				missingItems.add(invList.get(i)); // if the
 																// description
 																// of dispList
 																// is not new
@@ -435,26 +516,39 @@ public class ListtestActivity extends SenateActivity {
 																// list
 			}
 		}
-		String summary = "Total items   : " + numItems + "\n"
-				+ "Scanned items(Existing+New) : " + AllScannedItems.size()
-				+ "\n" + "Missing items : " + missingItems.size() + "\n"
-				+ "New items     : " + newItems.size() + "\n";
+		String summary;
+		summary = "{\"nutotitems\":\""+numItems+"\",\"nuscanitems\":\""+AllScannedItems.size()+"\",\"numissitems\":\""+missingItems.size()+"\",\"nunewitems\":\""+newItems.size()+"\"}";
+		
 		Intent intent = new Intent(this, VerSummaryActivity.class);
 		intent.putExtra("loc_code", loc_code);
 		intent.putExtra("summary", summary);
-		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
-		intent.putStringArrayListExtra("scannedList", AllScannedItems);// scanned
+		intent.putStringArrayListExtra("scannedBarcodeNumbers", getJSONArrayList(scannedItems));
+		intent.putStringArrayListExtra("scannedList", getJSONArrayList(AllScannedItems));// scanned
 																		// items
 																		// list
-		intent.putStringArrayListExtra("missingList", missingItems);// missing
+		intent.putStringArrayListExtra("missingList",getJSONArrayList(missingItems));// missing
 																	// items
 																	// list
-		intent.putStringArrayListExtra("newItems", newItems);// new items list
+		intent.putStringArrayListExtra("newItems", getJSONArrayList(newItems));// new items list
+/*		if (1==1) { // Testing
+			return;
+		}*/
 		startActivity(intent);
 		overridePendingTransition(R.anim.in_right, R.anim.out_left);		
 		
 	}
 
+	public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
+		ArrayList<String> returnArray = new ArrayList<String>();
+		if (invList!=null) {
+			for (int x=0;x<invList.size();x++) {
+				returnArray.add(invList.get(x).toJSON());
+			}
+		}
+		
+		return returnArray;
+	}
+	
 	public void cancelButton(View view) {
 		btnVerListCancel.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, Verification.class);
@@ -472,7 +566,7 @@ public class ListtestActivity extends SenateActivity {
 		toast.show();
 	}
 
-	public class SortListComparator implements Comparator {
+	public class spinSortListComparator implements Comparator {
 
 		@Override
 		public int compare(Object lObject, Object rObject) {
@@ -508,7 +602,7 @@ public class ListtestActivity extends SenateActivity {
 		public void onItemSelected(AdapterView<?> parent, View view, int pos,
 				long id) {
 			currentSortValue = parent.getItemAtPosition(pos).toString();
-			Collections.sort(invList, new SortListComparator());
+			Collections.sort(invList, new spinSortListComparator());
 			adapter.notifyDataSetChanged();
 			// listView.setAdapter(adapter);
 

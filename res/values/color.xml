@@ -13,6 +13,8 @@
  <color name="blueverylight">#C9DAFF</color>
  <color name="blueveryverylight">#DBE6FF</color>
  <color name="gold">#e6b121</color>
+ <color name="green">#006600</color>
+ <color name="red">#660000</color>
  <color name="blueback">#99FFFF</color>
  <color name="articlecolor">#3399FF</color> 
  <color name="article_title">#3399FF</color> 

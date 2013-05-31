@@ -27,23 +27,112 @@
         android:text="Location Code"
         android:textSize="25dp" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TableLayout
+        android:id="@+id/tableLayout20"
+        android:layout_width="550dp"
+        android:layout_height="200dp"
         android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
-        android:layout_marginTop="16dp"
-        android:text="Total Items"
-        android:textSize="20dp" />
+        android:layout_marginTop="21dp"
+        android:background="@drawable/customshape" >
 
+        <TableRow>
+
+
+            <TextView
+                android:id="@+id/tvHeadVSum"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLblTotItemVSum"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Total Items:" />
+
+            <TextView
+                android:id="@+id/tvTotItemVSum"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLblTotScanVSum"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Scanned Items(Existing +New):" />
+
+            <TextView
+                android:id="@+id/tvTotScanVSum"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="N/A" />
+        </TableRow>
+                
+        <TableRow>
+            <TextView
+                android:id="@+id/tvLblMisItems"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Missing Items:" />
+
+            <TextView
+                android:id="@+id/tvMisItems"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="N/A" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvLblNewItems"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="New/Found Items:" />
+
+            <TextView
+                android:id="@+id/tvNewItems"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="N/A" />
+        </TableRow>
+        
+        
+    </TableLayout>
+    
+        
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/tableLayout20"
+        android:layout_below="@+id/tableLayout20"
+        android:layout_above="@+id/btnVerSumCont"
         android:layout_marginTop="37dp" >
 
         <LinearLayout
@@ -65,12 +154,12 @@
                 <LinearLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="310dp" >
 
                     <ListView
                         android:id="@+id/listView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="549dp" >
+                        android:layout_width="562dp"
+                        android:layout_height="278dp" >
                     </ListView>
                 </LinearLayout>
 

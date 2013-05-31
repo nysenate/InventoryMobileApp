@@ -2,6 +2,11 @@ package gov.nysenate.inventory.android;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -36,15 +41,19 @@ public class Pickup2Activity extends SenateActivity {
 	ArrayList<verList> list = new ArrayList<verList>();
 	ArrayList<StringBuilder> dispList = new ArrayList<StringBuilder>();
 	ArrayAdapter<StringBuilder> adapter ;
-    int count;	
+	ArrayList<InvItem> invList = new ArrayList<InvItem>();
+	int count;	
     int numItems;
     public String originLocation=null;
     public String destinationLocation=null;
+    public String cdlocatto=null;
+    public String cdlocatfrm=null;
    // These 3 ArrayLists will be used to transfer data to next activity and to the server
     ArrayList<String> allScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
     ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location
     static Button btnPickup2Cont;
     static Button btnPickup2Cancel;
+    
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +63,8 @@ public class Pickup2Activity extends SenateActivity {
 		Intent intent = getIntent();
 		originLocation = intent.getStringExtra("originLocation");
 		destinationLocation= intent.getStringExtra("destinationLocation");
+		cdlocatfrm = intent.getStringExtra("cdlocatfrm");
+		cdlocatto = intent.getStringExtra("cdlocatto");
 		
 		listView = (ListView) findViewById(R.id.listView1);
 		count = 0;// for initialization
@@ -123,6 +134,7 @@ public class Pickup2Activity extends SenateActivity {
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
+				verList vl = new verList();
 
 				// if it is not already scanned and does not exist in the
 				// list(location)
@@ -147,7 +159,24 @@ public class Pickup2Activity extends SenateActivity {
 						 System.out.println("URL CALL:"+URL+"/ItemDetails?barcode_num="+ barcode_num);
 						try {
 							res = resr1.get().trim().toString();
-							 System.out.println("URL RESULT:"+res);
+							System.out.println("URL RESULT:"+res);
+							
+							// add it to list and displist and scanned items
+							JSONObject object = null;
+							try {
+								object = (JSONObject) new JSONTokener( res).nextValue();
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							vl.NUSENATE = barcode_number;
+							vl.CDCATEGORY = object.getString("cdcategory");
+							vl.DECOMMODITYF =  object.getString("decommodityf").replaceAll("&#34;", "\"");
+							vl.CDLOCATTO = object.getString("cdlocatto");
+							vl.CDLOCTYPETO = object.getString("cdloctypeto");
+							vl.ADSTREET1 = object.getString("adstreet1to").replaceAll("&#34;", "\"");
+							vl.DTISSUE =  object.getString("dtissue");							 
 
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -155,19 +184,39 @@ public class Pickup2Activity extends SenateActivity {
 						} catch (ExecutionException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
+						
 						status = "yes1";
 					} else {
 						// display error
 						status = "no";
 					}
+					String invStatus;
+					
+					if (vl.CDLOCATTO==null||vl.CDLOCATTO.trim().length()==0) {
+						invStatus = "NOT IN SFMS";
+					}
+					// This is what should be expected. Trying to move the 
+					else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {  
+						invStatus = "UPDATE";
+					}
+					else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { // 
+						invStatus = "AT DESTINATION";
+					}
+					else {
+						invStatus = "LOCATED AT: "+vl.CDLOCATTO;
+					}
 
-					// add it to list and displist and scanned items
-					verList vl = new verList();
-					vl.NUSENATE = barcode_number;
-					vl.CDCATEGORY = res;
-					vl.DECOMMODITYF = "";
-
+					// 5/24/13 BH Coded below to use InvItem Objects to display
+					// the list.
+					InvItem invItem = new InvItem(
+							vl.NUSENATE, vl.CDCATEGORY,
+							invStatus, vl.DECOMMODITYF);
+					invList.add(invItem);					
+					
 					list.add(vl);
 					StringBuilder s_new = new StringBuilder();
 					// s_new.append(vl.NUSENATE); since the desc coming from
@@ -195,8 +244,8 @@ public class Pickup2Activity extends SenateActivity {
 																	// track of
 																	// (number+details)
 																	// for
-																	// summery
-				}
+																	// summary
+								}
 
 				// notify the adapter that the data in the list is changed and
 				// refresh the view
@@ -270,8 +319,12 @@ public class Pickup2Activity extends SenateActivity {
 		return true;
 	}
 	public class verList {
-    String NUSENATE;
-    String CDCATEGORY;
-    String DECOMMODITYF;
-}
+		String NUSENATE;
+		String CDCATEGORY;
+		String DECOMMODITYF;
+		String CDLOCATTO;
+		String CDLOCTYPETO;
+		String ADSTREET1;
+		String DTISSUE;   
+	}
 }

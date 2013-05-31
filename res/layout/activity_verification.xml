@@ -20,15 +20,14 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/btnVerify1Cont"
         android:layout_below="@+id/textView1"
         android:layout_marginLeft="17dp"
-        android:layout_marginRight="140dp"
         android:ems="10"
-        android:hint="@string/location_code" 
+        android:hint="@string/location_code"
         android:singleLine="true"
-        />
-
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <TableLayout
         android:layout_width="500dp"
@@ -51,23 +50,6 @@
                 android:textColor="@color/bluedark" />
         </TableRow>
 
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tvLabelLocCd"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                android:gravity="right"
-                android:text="Location Code:"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/tvLocCd"
-                android:layout_marginTop="20dp"
-                android:gravity="left"
-                android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </TableRow>
 
         <TableRow>
 

@@ -4,17 +4,18 @@
     android:layout_height="match_parent"
     tools:context=".ListtestActivity" >
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tvCounts"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/preferencePWD"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/preferencePWD"
-        android:layout_toRightOf="@+id/textView1"
-        android:ems="10"
+        android:layout_alignBottom="@+id/preferencePWD"
+        android:layout_toRightOf="@+id/preferencePWD"
+        android:gravity="right"
+        android:textAppearance="?android:attr/textAppearanceMedium"        
         android:hint="@string/count" >
-    </EditText>
+
+    </TextView>
 
     <TextView
         android:id="@+id/textView1"
@@ -45,26 +46,17 @@
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editText2"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignTop="@+id/sortList"
-        android:gravity="center"
-        android:text="Sort By"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Spinner
-        android:id="@+id/sortList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_toRightOf="@+id/textView2"
-        android:entries="@array/verify_sort"
-        android:gravity="center" />
-
+	<Spinner
+	    android:id="@+id/spinSortList"
+	    android:layout_width="410dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/textView1"
+	    android:layout_toRightOf="@+id/tvLblSortBy"
+	    android:entries="@array/verify_sort"
+	    android:gravity="center"
+	    android:textSize="25sp"
+	    android:textStyle="bold" />
+    
     <ListView
         android:id="@+id/preferenceList"
         android:layout_width="wrap_content"
@@ -109,5 +101,18 @@
     android:text="Continue"
     android:textColor="#FFFFFF"
     android:textSize="30sp" />
+
+<TextView
+    android:id="@+id/tvLblSortBy"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/btnVerListCancel"
+    android:layout_alignTop="@+id/tvLblSortBy"
+    android:layout_marginLeft="25dp"
+    android:layout_below="@+id/textView1"
+    android:layout_marginTop="3dp"
+    android:text="Sort By:"
+    android:textSize="25sp"
+    android:textStyle="bold" />
         
 </RelativeLayout>

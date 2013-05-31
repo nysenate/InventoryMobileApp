@@ -27,7 +27,10 @@
         android:hint="@string/barcode_number"
         android:inputType="number"
         android:padding="4dip"
-        android:singleLine="true"   
+        android:singleLine="true"  
+        android:maxWidth="10dp"
+        android:textSize="25sp"
+        android:textStyle="bold"         
                  >
 
         <requestFocus />

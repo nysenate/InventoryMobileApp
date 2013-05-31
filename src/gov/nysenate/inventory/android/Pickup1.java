@@ -433,8 +433,29 @@ public class Pickup1 extends SenateActivity {
 
 		}
 		else {
+			String cdlocatto = "";
+			String cdlocatfrm = "";
+			int nuStop = 0;
+			if (originLocation!=null) {
+				nuStop = originLocation.indexOf("-");
+				if (nuStop>-1) {
+					cdlocatfrm = originLocation.substring(0, nuStop);
+				}
+				else {
+					cdlocatfrm = originLocation;
+				}
+				nuStop = destinationLocation.indexOf("-");
+				if (nuStop>-1) {
+					cdlocatto = destinationLocation.substring(0, nuStop);
+				}
+				else {
+					cdlocatfrm = destinationLocation;
+				}
+			}
 		
 			Intent intent = new Intent(this, Pickup2Activity.class);
+			intent.putExtra("cdlocatfrm", cdlocatfrm);
+			intent.putExtra("cdlocatto", cdlocatto);
 			intent.putExtra("originLocation", originLocation); 				// for origin code
 			intent.putExtra("destinationLocation", destinationLocation); 	// for
 																		// destination

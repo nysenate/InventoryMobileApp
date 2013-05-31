@@ -27,7 +27,8 @@
         android:layout_marginRight="140dp"
         android:ems="10"
         android:hint="@string/select_origin_loc"
-        android:singleLine="true"    >
+        android:singleLine="true" 
+        android:textStyle="bold"     >
 
         <requestFocus />
 
@@ -215,7 +216,8 @@
         android:layout_alignRight="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:ems="10"
-        android:hint="@string/select_dest_loc" >
+        android:hint="@string/select_dest_loc"
+        android:textStyle="bold"   >
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
 <Button

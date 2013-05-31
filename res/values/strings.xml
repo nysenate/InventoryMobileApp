@@ -18,11 +18,11 @@
     <string name="button6">Pickup</string>
     <string name="button7">Delivery</string>
     <string name="button8">Verification </string>
-    <string name="menu_msg">Please select an option</string>
+    <string name="menu_msg">Select an option</string>
     <string name="title_activity_search">Search</string>
     <string name="title_activity_add_item">AddItemActivity</string>
     <string name="title_activity_location">LocationActivity</string>
-    <string name="SearchActivity_MSG">Please scan the item or enter the barcode number </string>
+    <string name="SearchActivity_MSG">Scan the item or enter the barcode number </string>
     <string name="barcode_number">Barcode number </string>
     <string name="scan_button">Scan </string>
     <string name="ok_button">OK </string>
@@ -30,7 +30,7 @@
     <string name="details">Details </string>
     <string name="title_activity_close">CloseActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>
-    <string name="add_item_activity">Please scan the location barcode or enter location code</string>
+    <string name="add_item_activity">Scan the location barcode or enter location code</string>
     <string name="location_code">Location code </string>
     <string name="title_activity_add_item_activity2">AddItemActivity2</string>
     <string name="title_activity_mov_pick1">MovPick1</string>
@@ -38,15 +38,15 @@
     <string name="title_activity_move_pickup1">Move_pickup1</string>
     <string name="title_activity_move">Move Menu</string>
     <string name="title_activity_pickup1">Pickup</string>
-    <string name="select_origin_loc">Please scan or enter origin location code</string>
-    <string name="select_dest_loc">Please enter destination location code</string>
+    <string name="select_origin_loc">Scan or enter origin location code</string>
+    <string name="select_dest_loc">Enter destination location code</string>
     <string name="select_dest_hint">Destination location code</string>
     <string name="title_activity_pickup2">Pickup</string>
     <string name="title_activity_verification">Verification</string>
-    <string name="verify_msg1">Please select/enter location for Verification:</string>
+    <string name="verify_msg1">Select/enter location for Verification:</string>
     <string name="title_activity_table">TableActivity</string>
     <string name="title_activity_verification2">Verification</string>
-    <string name="verify_msg2">Please scan items for Verification</string>
+    <string name="verify_msg2">Scan items for Verification</string>
     <string name="verify2_list">List of scanned items </string>
     <string name="title_activity_veri_list">VeriListActivity</string>
     <string name="title_activity_list">ListActivity</string>
@@ -60,18 +60,16 @@
     <string-array name="verify_sort">
         <item>Description</item>
         <item>Senate Tag#</item>
-        <item>Last Inventory Date</item>
-        <item>Last Inventory Date Descending</item>
     </string-array>
 
-    <string name="pickup2Msg">Please scan items for moving</string>
+    <string name="pickup2Msg">Scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
     <string name="title_activity_pickup3">Pickup</string>
     <string name="title_activity_delivery1">Delivery</string>
-    <string name="delivery1_msg">Please select location for delivery</string>
-    <string name="delivery1_hint">Please scan or enter location code</string>
+    <string name="delivery1_msg">Select Pickup for delivery to:</string>
+    <string name="delivery1_hint">Scan or enter location code</string>
     <string name="title_activity_delivery2">Delivery</string>
-    <string name="delivery2_msg">Please select one for delivery</string>
+    <string name="delivery2_msg">Select one for delivery</string>
     <string name="title_activity_delivery3">Delivery</string>
     <string name="delivery3_msg">Delivery confirmation</string>
     <string name="employee_list_hint">Name of Signer</string>

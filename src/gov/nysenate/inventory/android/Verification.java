@@ -43,11 +43,11 @@ public class Verification extends SenateActivity {
 	public String res = null;
 	public String status = null;
 	public String loc_code_str = null;
-	ClearableAutoCompleteTextView autoCompleteTextView1;
+	static ClearableAutoCompleteTextView autoCompleteTextView1;
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	static Button btnVerify1Cont;
 	static Button btnVerify1Cancel;
-	TextView tvLocCd;
+	//TextView tvLocCd;
 	TextView tvDescript; 
 	TextView tvCount;
 	TextView tvOffice;
@@ -69,7 +69,7 @@ public class Verification extends SenateActivity {
 		btnVerify1Cancel.getBackground().setAlpha(255);
 		
 		// Data TextView Setup 	
-		tvLocCd= (TextView) findViewById(R.id.tvLocCd);
+		//tvLocCd= (TextView) findViewById(R.id.tvLocCd);
 		tvDescript= (TextView) findViewById(R.id.tvDescript);
 		tvCount= (TextView) findViewById(R.id.tvCount);
 		tvOffice= (TextView) findViewById(R.id.tvOffice);
@@ -179,15 +179,16 @@ public class Verification extends SenateActivity {
 						res = resr1.get().trim().toString();
 						try {
 							JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+							//tvLocCd.setText( object.getString("cdlocat"));
 							tvOffice.setText(object.getString("cdrespctrhd") );
-							tvLocCd.setText( object.getString("cdlocat"));
 							tvDescript.setText( object.getString("adstreet1").replaceAll("&#34;", "\"")+" ,"+object.getString("adcity").replaceAll("&#34;", "\"")+", "+object.getString("adstate").replaceAll("&#34;", "\"")+" "+object.getString("adzipcode").replaceAll("&#34;", "\""));
 							tvCount.setText( object.getString("nucount"));
 
 							
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							tvLocCd.setText( "!!ERROR: "+e.getMessage());
+							//tvLocCd.setText( "!!ERROR: "+e.getMessage());
+							tvOffice.setText( "!!ERROR: "+e.getMessage());
 							tvDescript.setText("Please contact STS/BAC.");	
 							tvCount.setText("N/A");					
 

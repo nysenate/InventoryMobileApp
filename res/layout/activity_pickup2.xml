@@ -46,7 +46,8 @@
         android:layout_below="@+id/textView1"
         android:layout_marginTop="21dp"
         android:text="@string/pickup2Msg2"
-        android:textSize="18dp" />
+        android:textSize="18dp"
+        />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/barcode"
@@ -55,42 +56,48 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
         android:ems="10"
+        android:maxWidth="10dp"      
         android:hint="@string/barcode_number"
         android:inputType="number"
-        android:singleLine="true"    />
+        android:singleLine="true"
+        android:textSize="25sp"
+        android:textStyle="bold"  
+        />
     
-<Button
-    android:id="@+id/btnPickup2Cont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginBottom="36dp"
-    android:background="@drawable/buttonshapegreen"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Continue"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+	<Button
+    	android:id="@+id/btnPickup2Cont"
+    	android:layout_width="200dp"
+    	android:layout_height="50dp"
+    	android:layout_alignParentBottom="true"
+    	android:layout_alignParentRight="true"
+    	android:layout_marginBottom="36dp"
+    	android:background="@drawable/buttonshapegreen"
+    	android:onClick="continueButton"
+    	android:shadowColor="#000000"
+    	android:shadowDx="01"
+    	android:shadowDy="1"
+    	android:shadowRadius="5"
+    	android:text="Continue"
+    	android:textColor="#FFFFFF"
+    	android:textSize="30sp"
+    	/>
 
-<Button
-    android:id="@+id/btnPickup2Cancel"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignBaseline="@+id/btnPickup2Cont"
-    android:layout_alignBottom="@+id/btnPickup2Cont"
-    android:layout_alignParentLeft="true"
-    android:background="@drawable/buttonshapered"
-    android:onClick="cancelButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Cancel"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+	<Button
+    	android:id="@+id/btnPickup2Cancel"
+    	android:layout_width="200dp"
+    	android:layout_height="50dp"
+    	android:layout_alignBaseline="@+id/btnPickup2Cont"
+    	android:layout_alignBottom="@+id/btnPickup2Cont"
+    	android:layout_alignParentLeft="true"
+    	android:background="@drawable/buttonshapered"
+    	android:onClick="cancelButton"
+    	android:shadowColor="#000000"
+    	android:shadowDx="01"
+    	android:shadowDy="1"
+    	android:shadowRadius="5"
+    	android:text="Cancel"
+    	android:textColor="#FFFFFF"
+    	android:textSize="30sp"
+    	/>
     
 </RelativeLayout>
