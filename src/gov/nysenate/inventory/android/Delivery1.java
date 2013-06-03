@@ -32,7 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Delivery1 extends SenateActivity {
-	ClearableAutoCompleteTextView autoCompleteTextView1;// for location code
+	static ClearableAutoCompleteTextView autoCompleteTextView1;// for location code
 	public ArrayList<String> locCodeList = new ArrayList<String>();
 	String URL = "";
 	public String res = null;

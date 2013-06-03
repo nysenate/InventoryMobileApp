@@ -1,8 +1,5 @@
 package gov.nysenate.inventory.android;
 
-
-
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -19,6 +16,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -54,17 +52,21 @@ public class Delivery2 extends SenateActivity {
 		
 		progBarDelivery2 = (ProgressBar) findViewById( R.id.progBarDelivery2 );
 			
-		
-		
+	
 		//define intent
 		
 			
 		 intent = new Intent(this, Delivery3.class);
 		//1. Get the intent from Delivery1 activity and display it
+		 
+		 StringBuilder sb = new StringBuilder();
+		 sb.append("Please select pickup for delivery to<br/><b>");
+		 sb.append(Delivery1.autoCompleteTextView1.getText().toString());
+		 sb.append("</b>");
 		
 		location = getIntent().getStringExtra("location");
-		loc_details=(TextView)findViewById(R.id.textView2 );
-		loc_details.setText(location);
+		loc_details=(TextView)findViewById(R.id.textView1 );
+		loc_details.setText(Html.fromHtml(sb.toString()));
 	
 		// separate location code from the description
 		String locDesc[]=location.split("-");

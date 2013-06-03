@@ -80,7 +80,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Description:" />
+                android:text="Address:" />
 
             <TextView
                 android:id="@+id/tvDescriptD"

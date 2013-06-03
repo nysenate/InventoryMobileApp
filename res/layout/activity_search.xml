@@ -103,7 +103,7 @@
         	android:layout_marginRight="20dp"
         	android:layout_marginTop="20dp"
             android:gravity="right"
-	    	android:text="Description:"
+	    	android:text="Address:"
 	    	android:textAppearance="?android:attr/textAppearanceLarge"
 	    	android:textColor="@color/black" />
     

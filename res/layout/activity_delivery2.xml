@@ -9,26 +9,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
         android:layout_marginTop="19dp"
-        android:textSize="25dp"
-        android:text="@string/delivery2_msg" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="25dp"
-        android:text="@string/details" />
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/delivery2_msg"
+        android:textSize="25dp" />
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="wrap_content"
         android:layout_height="600dp"
-        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/tvLbDel2Dttime" >
 
     </ListView>
@@ -59,7 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/listView1"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="20dp"
         android:text="Date/Time"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />

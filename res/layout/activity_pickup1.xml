@@ -14,7 +14,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="17dp"
-        android:text="@string/select_origin_loc" />
+        android:text="@string/select_origin_loc"
+        android:textAppearance="?android:attr/textAppearanceMedium"  />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
@@ -94,7 +95,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Description:"
+                android:text="Address:"
                 android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView
@@ -175,7 +176,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Description:"
+                android:text="Address:"
                 android:textAppearance="?android:attr/textAppearanceMedium"  />
 
             <TextView

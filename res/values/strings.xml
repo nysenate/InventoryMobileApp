@@ -38,7 +38,7 @@
     <string name="title_activity_move_pickup1">Move_pickup1</string>
     <string name="title_activity_move">Move Menu</string>
     <string name="title_activity_pickup1">Pickup</string>
-    <string name="select_origin_loc">Scan or enter origin location code</string>
+    <string name="select_origin_loc">Scan or enter Origin and Destination Location Codes </string>
     <string name="select_dest_loc">Enter destination location code</string>
     <string name="select_dest_hint">Destination location code</string>
     <string name="title_activity_pickup2">Pickup</string>
@@ -69,7 +69,7 @@
     <string name="delivery1_msg">Select Pickup for delivery to:</string>
     <string name="delivery1_hint">Scan or enter location code</string>
     <string name="title_activity_delivery2">Delivery</string>
-    <string name="delivery2_msg">Select one for delivery</string>
+    <string name="delivery2_msg">Please select pickup for delivery to:</string>
     <string name="title_activity_delivery3">Delivery</string>
     <string name="delivery3_msg">Delivery confirmation</string>
     <string name="employee_list_hint">Name of Signer</string>

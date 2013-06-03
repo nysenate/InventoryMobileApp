@@ -12,7 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -304,6 +306,7 @@ public class ListtestActivity extends SenateActivity {
 
 		public void afterTextChanged(Editable s) {
 			if (barcode.getText().toString().length() >= 6) {
+				 Log.i("TESTING", " afterTextChanged:"+barcode.getText()+" ("+barcode.getText().length()+")");
 				// loc_details.setText(loc_code.getText().toString());
 				// listView.
 				String barcode_num = barcode.getText().toString().trim();
@@ -335,12 +338,17 @@ public class ListtestActivity extends SenateActivity {
 							Log.i("NULL CHECK", "invList.get("+i+") IS NULL!!");
 					    	
 					    }
+					    if (curInvItem.getNusenate()==null) {
+							Log.i("NULL CHECK", "invList.get("+i+").getNusenate() IS NULL!!");
+					    	
+					    }					    
 					    else if (curInvItem.getNusenate() == null) {
 							Log.i("NULL CHECK", "invList.get("+i+").getNusenate() IS NULL!!");
 						}
 					    if (barcode_number==null) {
 							Log.i("NULL CHECK", "barcode_number IS NULL!! AS OF CHECKING INDEX#:"+i);
 					    }
+
 					    
 					}
 					catch (Exception e) {
@@ -421,10 +429,33 @@ public class ListtestActivity extends SenateActivity {
 			//		vl.DECOMMODITYF = " New Item";
 					try {
 						Log.i("SERVER RESULTS", "RES:"+res);
-						JSONObject jo = new JSONObject(res);
-						vl.NUSENATE = jo.getString("nusenate");
-						vl.CDCATEGORY = jo.getString("cdcategory");
-						vl.DECOMMODITYF = jo.getString("decommodityf")+" New Item";
+						if (res.contains("Does not exist in system")) {
+							
+							//vl.NUSENATE = barcode_num;
+							//vl.CDCATEGORY = "";
+							//vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+							Log.i("TESTING", "A CALL barcodeDidNotExist");
+							barcodeDidNotExist(barcode_num);
+							return;
+							
+						}
+						else {
+							JSONObject jo = new JSONObject(res);
+							vl.NUSENATE = barcode_num;
+							vl.CDCATEGORY = jo.getString("cdcategory");
+							String nusenateReturned = jo.getString("nusenate");
+				
+							if (nusenateReturned==null) {
+								vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+								Log.i("TESTING", "B CALL barcodeDidNotExist");
+								barcodeDidNotExist(barcode_num);
+								return;
+							}
+							else {
+								//Log.i("TESTING", "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
+								vl.DECOMMODITYF = jo.getString("decommodityf")+" New Item";
+							}
+						}
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -453,7 +484,7 @@ public class ListtestActivity extends SenateActivity {
 					// the list.
 					InvItem invItem = new InvItem(
 							vl.NUSENATE, vl.CDCATEGORY,
-							"NEW", s_new.toString());
+							"NEW", vl.DECOMMODITYF);
 					invList.add(invItem);
 
 					scannedItems.add(invItem);
@@ -479,6 +510,85 @@ public class ListtestActivity extends SenateActivity {
 	};
 
 
+	public void barcodeDidNotExist(final String barcode_num) {
+		Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				this);
+ 
+			// set title
+			alertDialogBuilder.setTitle("Barcode#: "+barcode_num+" DOES NOT EXIST IN SFMS");
+ 
+			// set dialog message
+			alertDialogBuilder
+				.setMessage(Html.fromHtml("***WARNING: Barcode#: <b>"+barcode_num+"</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
+				.setCancelable(false)
+				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						verList vl = new verList();
+						vl.NUSENATE = barcode_num;
+						vl.CDCATEGORY = "";
+						vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+						list.add(vl);						
+						StringBuilder s_new = new StringBuilder();
+						// s_new.append(vl.NUSENATE); since the desc coming from
+						// server already contains barcode number we wont add it
+						// again
+						// s_new.append(" ");
+						s_new.append("DIALOG_YES: ");
+						s_new.append(vl.CDCATEGORY);
+						s_new.append(" ");
+						s_new.append(vl.DECOMMODITYF);
+						
+						InvItem invItem = new InvItem(
+								vl.NUSENATE, vl.CDCATEGORY,
+								"NEW", vl.DECOMMODITYF);
+						invList.add(invItem);
+
+						scannedItems.add(invItem);
+						AllScannedItems.add(invItem);
+						newItems.add(invItem); // to keep track of (number+details)
+
+						Context context = getApplicationContext();
+						CharSequence text = s_new;
+						int duration = Toast.LENGTH_SHORT;
+
+						Toast toast = Toast.makeText(context, text, duration);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+
+						adapter.notifyDataSetChanged();
+						count = adapter.getCount();
+						tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
+						barcode.setText("");
+						dialog.dismiss();
+					}
+				  })
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						Context context = getApplicationContext();
+						
+						CharSequence text = "Barcode#: "+barcode_num+" was NOT added";
+						int duration = Toast.LENGTH_SHORT;
+
+						Toast toast = Toast.makeText(context, text, duration);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+						
+						barcode.setText("");						
+						
+						dialog.dismiss();
+					}
+				});
+ 
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				// show it
+				alertDialog.show();		
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

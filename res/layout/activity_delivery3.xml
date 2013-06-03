@@ -13,16 +13,19 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="18dp"
-        android:text="@string/delivery3_msg" />
+        android:text="@string/delivery3_msg"
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/deliveryCommentsSpeechButton"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="18dp"
-        android:text="@string/details" />
+        android:text="@string/details"
+        android:textSize="25sp" />
 
     <ListView
         android:id="@+id/listView1"

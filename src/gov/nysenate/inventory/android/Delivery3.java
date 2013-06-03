@@ -39,6 +39,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -93,7 +94,7 @@ public class Delivery3 extends SenateActivity {
 		
 		// Set the location in textview
 		loc_details=(TextView)findViewById(R.id.textView2 );
-		loc_details.setText(location);	
+		loc_details.setText("Delivery to: "+location);	
 		//Get the barcode numbers from the server and set it to the listview
 		
 		// Configure Image Buttons
@@ -168,7 +169,19 @@ public class Delivery3 extends SenateActivity {
 			//	listview.setAdapter(adapter2);
 			
 				listview.setAdapter(new ArrayAdapter<String>(this,
-		                android.R.layout.simple_list_item_multiple_choice, deliveryDetails));
+		                android.R.layout.simple_list_item_multiple_choice, deliveryDetails) {
+					        public View getView(int position, View convertView, ViewGroup parent) {
+							      Context context = getApplicationContext();				    			
+				    			View view = super.getView(position, convertView, parent);
+					    	    if (position%2>0) {
+				    	        	view.setBackgroundColor(context.getResources().getColor(R.color.white));
+					    	        }
+				    	        else {
+				    	        	view.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
+				    	        	}
+								return view;					
+				    		}
+						});
                 // set everything as checked
 				 for(int i=0;i<deliveryDetails.size();i++){
 					 listview.setItemChecked(i, true);	 

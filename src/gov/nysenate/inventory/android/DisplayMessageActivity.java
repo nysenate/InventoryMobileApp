@@ -38,7 +38,6 @@ public class DisplayMessageActivity extends Activity {
 		String res = null;
 
 		try {
-
 			// check network connection
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -101,6 +100,13 @@ public class DisplayMessageActivity extends Activity {
 				startActivity(intent2);
 				overridePendingTransition(R.anim.slide_in_left,
 						R.anim.slide_out_left);
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(this,
+						"!!ERROR: Invalid Username and/or Password.", duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+
+				
 				finish();
 			}
 		} catch (Exception e) {
