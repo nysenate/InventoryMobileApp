@@ -37,10 +37,10 @@ public class Pickup2Activity extends SenateActivity {
 	public	String status=null;
 	public ListView listView;
 	public String loc_code=null; // populate this from the location code from previous activity
-    ArrayList<String> scannedItems= new ArrayList<String>();
+    ArrayList<InvItem> scannedItems= new ArrayList<InvItem>();
 	ArrayList<verList> list = new ArrayList<verList>();
-	ArrayList<StringBuilder> dispList = new ArrayList<StringBuilder>();
-	ArrayAdapter<StringBuilder> adapter ;
+	ArrayList<InvItem> dispList = new ArrayList<InvItem>();
+	ArrayAdapter<InvItem> adapter ;
 	ArrayList<InvItem> invList = new ArrayList<InvItem>();
 	int count;	
     int numItems;
@@ -49,8 +49,8 @@ public class Pickup2Activity extends SenateActivity {
     public String cdlocatto=null;
     public String cdlocatfrm=null;
    // These 3 ArrayLists will be used to transfer data to next activity and to the server
-    ArrayList<String> allScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
-    ArrayList<String> newItems=new ArrayList<String>();// for saving items which are not allocated to that location
+    ArrayList<InvItem> allScannedItems=new ArrayList<InvItem>();// for saving items which are not allocated to that location
+    ArrayList<InvItem> newItems=new ArrayList<InvItem>();// for saving items which are not allocated to that location
     static Button btnPickup2Cont;
     static Button btnPickup2Cancel;
     
@@ -68,8 +68,10 @@ public class Pickup2Activity extends SenateActivity {
 		
 		listView = (ListView) findViewById(R.id.listView1);
 		count = 0;// for initialization
-		adapter = new ArrayAdapter<StringBuilder>(this,
-				android.R.layout.simple_list_item_1, dispList);
+		/*adapter = new ArrayAdapter<StringBuilder>(this,
+				android.R.layout.simple_list_item_1, dispList);*/
+		adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
+		
 	
 		// Display the origin and destination 
 		TextView TextView2= (TextView) findViewById(R.id.textView2);
@@ -236,11 +238,11 @@ public class Pickup2Activity extends SenateActivity {
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 
-					dispList.add(s_new); // this list will display the contents
+					//dispList.add(s_new); // this list will display the contents
 											// on screen
-					scannedItems.add(barcode_number);
-					allScannedItems.add(s_new.toString());
-					newItems.add(vl.NUSENATE + " " + vl.CDCATEGORY);// to keep
+					scannedItems.add(invItem);
+					allScannedItems.add(invItem);
+					newItems.add(invItem);// to keep
 																	// track of
 																	// (number+details)
 																	// for
@@ -258,6 +260,34 @@ public class Pickup2Activity extends SenateActivity {
 		}
 	};
 	
+	public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
+		ArrayList<String> returnArray = new ArrayList<String>();
+		if (invList!=null) {
+			for (int x=0;x<invList.size();x++) {
+				returnArray.add(invList.get(x).toJSON());
+			}
+		}
+		
+		return returnArray;
+	}
+
+	
+	public ArrayList<InvItem> getInvItemArrayList(ArrayList<String> invList) {
+		ArrayList<InvItem> returnArray = new ArrayList<InvItem>();
+		if (invList!=null) {
+			for (int x=0;x<invList.size();x++) {
+				String curInvJson = invList.get(x);
+				InvItem currentInvItem = new InvItem();
+				currentInvItem.parseJSON(curInvJson);
+				returnArray.add(currentInvItem);
+			}
+		}
+		
+		return returnArray;
+	}
+	
+	
+	
 	
 	// 3/15/13  Work in progress. Not fully implemented yet
 	@Override
@@ -268,9 +298,9 @@ public class Pickup2Activity extends SenateActivity {
 	  // killed and restarted.
 	  savedInstanceState.putString("savedOriginLoc", originLocation);
 	  savedInstanceState.putString("savedDestLoc", destinationLocation);
-	  savedInstanceState.putStringArrayList("savedScannedItems", scannedItems);
-	  savedInstanceState.putStringArrayList("savedallScannedItems", allScannedItems);
-	  savedInstanceState.putStringArrayList("savedNewItems", newItems);
+	  savedInstanceState.putStringArrayList("savedScannedItems", getJSONArrayList(scannedItems));
+	  savedInstanceState.putStringArrayList("savedallScannedItems", getJSONArrayList(allScannedItems));
+	  savedInstanceState.putStringArrayList("savedNewItems", getJSONArrayList(newItems));
 	}
     
 	// 3/15/13  Work in progress. Not fully implemented yet
@@ -280,9 +310,9 @@ public class Pickup2Activity extends SenateActivity {
 	  // Restore UI state from the savedInstanceState.
 	  // This bundle has also been passed to onCreate.
 	  originLocation = savedInstanceState.getString("savedOriginLoc");
-	  scannedItems = savedInstanceState.getStringArrayList("savedScannedItems");
-	  allScannedItems = savedInstanceState.getStringArrayList("savedallScannedItems");
-	  newItems = savedInstanceState.getStringArrayList("savedNewItems");
+	  scannedItems = getInvItemArrayList(savedInstanceState.getStringArrayList("savedScannedItems"));
+	  allScannedItems = getInvItemArrayList(savedInstanceState.getStringArrayList("savedallScannedItems"));
+	  newItems = getInvItemArrayList(savedInstanceState.getStringArrayList("savedNewItems"));
 	  TextView TextView2= (TextView) findViewById(R.id.textView2);
 	  TextView2.setText("Origin : "+ originLocation+"\n"
 		                 +"Destination : "+destinationLocation);
@@ -297,8 +327,8 @@ public class Pickup2Activity extends SenateActivity {
 		intent.putExtra("destinationLocation", destinationLocation);
 		String countStr= Integer.toString(count);
 		intent.putExtra("count", countStr);
-		intent.putStringArrayListExtra("scannedBarcodeNumbers", scannedItems);
-		intent.putStringArrayListExtra("scannedList", allScannedItems);//scanned items list
+		intent.putStringArrayListExtra("scannedBarcodeNumbers", getJSONArrayList(scannedItems));
+		intent.putStringArrayListExtra("scannedList", getJSONArrayList(allScannedItems));//scanned items list
 	
 		startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);

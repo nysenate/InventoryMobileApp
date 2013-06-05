@@ -82,6 +82,44 @@ public class InvItem {
 	        }
 
 	    }	    
+
+	    
+	    public void parseJSON(String JSONString) {
+	    	
+	    	/*
+	    	 *  Add the Ability to convert Android Object from JSON without
+	    	 *  any external libraries.
+	    	 */
+
+	        try {
+		        JSONObject jsonObject= new JSONObject(JSONString);
+		        try {
+		        	this.setNusenate(jsonObject.getString("nusenate"));
+		        } catch (JSONException e2) {
+		            e2.printStackTrace();
+		        }		        	
+		        try {
+		        	this.setType(jsonObject.getString("type"));
+		        } catch (JSONException e2) {
+		            e2.printStackTrace();
+		        }		        	
+		        try {
+		        	this.setCdcategory(jsonObject.getString("cdcategory"));
+		        } catch (JSONException e2) {
+		            e2.printStackTrace();
+		        }		        	
+		        try {
+		        	this.setDecommodityf(jsonObject.getString("decommodityf"));
+		        } catch (JSONException e2) {
+		            e2.printStackTrace();
+		        }		        	
+                	            
+	        } catch (JSONException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	    }	    
 	    
 
 }
