@@ -33,6 +33,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,8 @@ public class Verification extends SenateActivity {
 	TextView tvOffice;
 	
 	String URL = "";
+	
+	public static ProgressBar progBarVerify;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,9 @@ public class Verification extends SenateActivity {
 		tvCount= (TextView) findViewById(R.id.tvCount);
 		tvOffice= (TextView) findViewById(R.id.tvOffice);
 		
+		// ProgressBar Setup
+		progBarVerify = (ProgressBar)this.findViewById(R.id.progBarVerify);		
+		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -81,6 +87,7 @@ public class Verification extends SenateActivity {
 			// fetch data
 			status = "yes";
 			// Get the URL from the properties
+			
 			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
 
 			AsyncTask<String, String, String> resr1 = new RequestTask()
@@ -245,7 +252,8 @@ public class Verification extends SenateActivity {
 
 	public void continueButton(View view) {
 
-		btnVerify1Cont.getBackground().setAlpha(45);
+	    progBarVerify.setVisibility(ProgressBar.VISIBLE);
+	    btnVerify1Cont.getBackground().setAlpha(45);
 		Intent intent = new Intent(this, ListtestActivity.class);
 		intent.putExtra(loc_code_intent, loc_code_str);
 		startActivity(intent);

@@ -46,14 +46,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class Pickup3 extends SenateActivity {
 	
-	ArrayList<String> AllScannedItems=new ArrayList<String>();// for saving items which are not allocated to that location
-	ArrayList<String> scannedBarcodeNumbers= new ArrayList<String>();	    
+	ArrayList<InvItem> AllScannedItems=new ArrayList<InvItem>();// for saving items which are not allocated to that location
+	ArrayList<InvItem> scannedBarcodeNumbers= new ArrayList<InvItem>();	    
 	public  String res=null;
 	String loc_code=null;
 	String originLocation=null;
@@ -92,11 +93,11 @@ public class Pickup3 extends SenateActivity {
       ListView  ListViewTab1 = (ListView) findViewById( R.id.listView1);  
       
       // get data from intent of  previous activity   
-      AllScannedItems = getIntent().getStringArrayListExtra("scannedList");
+      AllScannedItems = getInvItemArrayList(getIntent().getStringArrayListExtra("scannedList"));
       originLocation= getIntent().getStringExtra("originLocation");
       destinationLocation=getIntent().getStringExtra("destinationLocation");
       count=getIntent().getStringExtra("count");
-      scannedBarcodeNumbers=getIntent().getStringArrayListExtra("scannedBarcodeNumbers");
+      scannedBarcodeNumbers= getInvItemArrayList(getIntent().getStringArrayListExtra("scannedBarcodeNumbers"));
       loc_code=getIntent().getStringExtra("loc_code");
       String originLocationCodeArr[]=originLocation.split("-");
       originLocationCode=originLocationCodeArr[0];
@@ -104,17 +105,17 @@ public class Pickup3 extends SenateActivity {
       destinationLocationCode=destinationLocationCodeArr[0];
   
       // Create summary from the given information
-     	String summery="Origin Location      : "+ originLocation+"\n"+
+     	String summary="Origin Location      : "+ originLocation+"\n"+
 		       "Destination location : "+destinationLocation+"\n"+"\n"+
 		       "Total items          : "+count;
     
      	// Set the summary to the textview
-      TextView summeryView = (TextView)findViewById(R.id.textView3 );
-      summeryView.setText(summery);
-      Adapter  listAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, AllScannedItems);  
+      TextView summaryView = (TextView)findViewById(R.id.textView3 );
+      summaryView.setText(summary);
+      Adapter  listAdapter1 = new InvListViewAdapter(this, R.layout.invlist_item, AllScannedItems);  
       
       // Set the ArrayAdapter as the ListView's adapter.  
-      ListViewTab1.setAdapter( (ListAdapter) listAdapter1 ); 
+      ListViewTab1.setAdapter( (ListAdapter)listAdapter1 ); 
     
       // Brian code starts
 	  Pickup2Activity.btnPickup2Cont.getBackground().setAlpha(255);
@@ -251,6 +252,7 @@ public class Pickup3 extends SenateActivity {
 				nuxrefem = -1; 
 			}
 		});
+        Pickup2Activity.progBarPickup2.setVisibility(ProgressBar.INVISIBLE);		
 	}
 	
 	@Override
@@ -364,7 +366,7 @@ public void continueButton(View view){
            return;
        }	   
 	   
-		//new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
+		//new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
 		String jsonString=null;
 		String status=null;
 		JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
@@ -477,13 +479,14 @@ public void continueButton(View view){
 	}
 
 public void backButton(View view){
-	float alpha = 0.45f;
+    super.onBackPressed();
+    /*	float alpha = 0.45f;
 	AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
 	alphaUp.setFillAfter(true);
 	btnPickup3Back.startAnimation(alphaUp);		
 	Intent intent = new Intent(this, Pickup2Activity.class);
 	startActivity(intent);
-    overridePendingTransition(R.anim.in_left, R.anim.out_right);       
+    overridePendingTransition(R.anim.in_left, R.anim.out_right);       */
     }
 
 public void clearSignatureButton(View view) {
@@ -497,6 +500,32 @@ public void clearSignatureButton(View view) {
     }
 	sign.clearSignature();       
 	btnPickup3ClrSig.getBackground().setAlpha(255);	
+}
+
+public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
+    ArrayList<String> returnArray = new ArrayList<String>();
+    if (invList!=null) {
+        for (int x=0;x<invList.size();x++) {
+            returnArray.add(invList.get(x).toJSON());
+        }
+    }
+    
+    return returnArray;
+}
+
+
+public ArrayList<InvItem> getInvItemArrayList(ArrayList<String> invList) {
+    ArrayList<InvItem> returnArray = new ArrayList<InvItem>();
+    if (invList!=null) {
+        for (int x=0;x<invList.size();x++) {
+            String curInvJson = invList.get(x);
+            InvItem currentInvItem = new InvItem();
+            currentInvItem.parseJSON(curInvJson);
+            returnArray.add(currentInvItem);
+        }
+    }
+    
+    return returnArray;
 }
 
 

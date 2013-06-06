@@ -3,6 +3,7 @@ package gov.nysenate.inventory.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -64,11 +65,12 @@ public class MainActivity extends Activity {
 	String currentSSID = "";
     private ListView mList;
 	public static String nauser = null;
+    Resources resources = null;
 	ClearableEditText user_name;
     ClearableEditText password;
 	String URL = "";
 	public static Properties properties; // Since we want to refer to this in other activities
-
+    static AssetManager assetManager;
 	Button buttonLogin;
 	ProgressBar progressBarLogin;
 	public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
@@ -79,6 +81,7 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         //user_name.setClearMsg("Do you want to clear your username?");
         //user_name.showClearMsg(true);
@@ -88,7 +91,7 @@ public class MainActivity extends Activity {
 
 		// Read from the /assets directory for properties of the project
 		// we can modify this file and the URL will be changed
-		Resources resources = this.getResources();
+		//Resources resources = this.getResources();
 		progressBarLogin = (ProgressBar)findViewById(R.id.progressBarLogin);
 		buttonLogin = (Button)findViewById(R.id.buttonLogin);
       /*  final ImageView v = (ImageView) findViewById(R.id.buttonLogin);
@@ -441,6 +444,32 @@ public class MainActivity extends Activity {
 		// AppWifiChecker(this.getApplicationContext(), 1000);
 		// Thread checkWifi = new Thread(wifiChecker);
 		// checkWifi.start();
+	}
+	
+	public Properties getProperties() {
+	    if (properties==null) {
+            InputStream inputStream = null;
+            try {
+                inputStream = assetManager.open("invApp.properties");
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                MsgAlert msgAlert = new MsgAlert(getApplicationContext(), "Could not Open Properties File", "!!ERROR: The Inventory Mobile App could not open the Properties File. Please contact STS/BAC.");
+                
+                e1.printStackTrace();
+            }
+            properties = new Properties();
+            try {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                MsgAlert msgAlert = new MsgAlert(getApplicationContext(), "Could not Load Properties File", "!!ERROR: The Inventory Mobile App could not open the Properties File. Please contact STS/BAC.");
+                
+            } // we load the properties here and we
+                                            // use same object elsewhere in
+                                            // project
+	        
+	    }
+        return properties; 
+	    
 	}
 
 	@Override

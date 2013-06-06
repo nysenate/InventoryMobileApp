@@ -230,6 +230,8 @@ public class Delivery2 extends SenateActivity {
 					 
 				
 				});
+				Delivery1.progBarDelivery1.setVisibility(ProgressBar.VISIBLE);
+				
 	}
 
 	

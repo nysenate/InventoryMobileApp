@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.speech.RecognizerIntent;
@@ -24,6 +25,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	    
 	private ListView mList;
+	
+	public static ProgressBar progBarMenu;
 	    
 	public static final String[] titles = new String[] { "Search",
 			"Verification", "Move Items", "Logout" };
@@ -43,6 +46,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
+        //define progressBar
+        
+        progBarMenu = (ProgressBar) findViewById( R.id.progBarMenu );
+		
 		rowItems = new ArrayList<RowItem>();
 		for (int i = 0; i < titles.length; i++) {
 			RowItem item = new RowItem(images[i], titles[i]);
@@ -63,8 +70,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
 		if (curRow.getTitle().equalsIgnoreCase("Search")) {
 			this.search(view);
 		} else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
-			this.verify(view);
+            progBarMenu.setVisibility(ProgressBar.VISIBLE);
+            this.verify(view);
 		} else if (curRow.getTitle().equalsIgnoreCase("Move Items")) {
+            progBarMenu.setVisibility(ProgressBar.VISIBLE);		    
 			this.addItem(view);
 		} else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
 			this.logout(view);

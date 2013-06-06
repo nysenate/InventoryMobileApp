@@ -33,6 +33,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -60,6 +61,7 @@ public class Pickup1 extends SenateActivity {
 	TextView tvOffice2;
 	TextView tvDescript2;
 	TextView  tvCount2;
+	public static ProgressBar progBarPickup1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class Pickup1 extends SenateActivity {
 		//tvLocCd2 = (TextView)this.findViewById(R.id.tvLocCd2);
 		tvDescript2 = (TextView)this.findViewById(R.id.tvDescript2);
 		tvCount2 = (TextView)this.findViewById(R.id.tvCount2);
+		
+		progBarPickup1 = (ProgressBar)this.findViewById(R.id.progBarPickup1);
 		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -169,6 +173,7 @@ public class Pickup1 extends SenateActivity {
                         }
  		            }
 		        });
+		        MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);  
 
 				
 
@@ -200,6 +205,9 @@ public class Pickup1 extends SenateActivity {
 		// for destination code
 		autoCompleteTextView2.addTextChangedListener(filterTextWatcher2);
 		locDetailsDest = (TextView) findViewById(R.id.textView3);
+		
+		
+		Move.progBarMove.setVisibility(ProgressBar.INVISIBLE);
 
 	}
 	
@@ -452,6 +460,8 @@ public class Pickup1 extends SenateActivity {
 					cdlocatfrm = destinationLocation;
 				}
 			}
+			
+			progBarPickup1.setVisibility(ProgressBar.VISIBLE);
 		
 			Intent intent = new Intent(this, Pickup2Activity.class);
 			intent.putExtra("cdlocatfrm", cdlocatfrm);

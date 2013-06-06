@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
+		android:maxLength="6"        
         android:ems="10"
         android:maxWidth="10dp"      
         android:hint="@string/barcode_number"
@@ -68,6 +69,7 @@
     	android:id="@+id/btnPickup2Cont"
     	android:layout_width="200dp"
     	android:layout_height="50dp"
+    	android:layout_marginRight="18dp"
     	android:layout_alignParentBottom="true"
     	android:layout_alignParentRight="true"
     	android:layout_marginBottom="36dp"
@@ -89,6 +91,7 @@
     	android:layout_alignBaseline="@+id/btnPickup2Cont"
     	android:layout_alignBottom="@+id/btnPickup2Cont"
     	android:layout_alignParentLeft="true"
+    	android:layout_marginLeft="18dp"
     	android:background="@drawable/buttonshapered"
     	android:onClick="cancelButton"
     	android:shadowColor="#000000"
@@ -99,5 +102,15 @@
     	android:textColor="#FFFFFF"
     	android:textSize="30sp"
     	/>
+	
+   <ProgressBar
+        android:id="@+id/progBarPickup2"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />   	
     
 </RelativeLayout>

@@ -300,11 +300,17 @@ public class VerSummaryActivity extends SenateActivity {
 		// Display Toster 
  				Context context = getApplicationContext();
  				CharSequence text = res;
- 				if(res.length()==0){
+                int duration = Toast.LENGTH_LONG;
+ 				if (res==null) {
+                    text="!!!ERROR: NO RESPONSE FROM SERVER";
+ 				}
+ 				else if(res.length()==0){
 					text="Database not updated";
 				}
+ 				else {
+ 				   duration = Toast.LENGTH_SHORT; 				    
+ 				}
  				
-				int duration = Toast.LENGTH_SHORT;
 				Toast toast = Toast.makeText(context, text, duration);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();

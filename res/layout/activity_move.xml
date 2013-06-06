@@ -22,5 +22,15 @@
         android:layout_alignLeft="@+id/moveMenu2"
         android:layout_marginBottom="103dp"
         android:src="@drawable/invmovemenu2" />
+    
+   <ProgressBar
+        android:id="@+id/progBarMove"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />    
 
 </RelativeLayout>

@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,17 +47,22 @@ public class Delivery1 extends SenateActivity {
 	//TextView tvLocCdD;
 	TextView tvDescriptD;
 	TextView  tvCountD;
+	public static ProgressBar progBarDelivery1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_delivery1);
-		
+
 		// Setup Data Textviews
 		tvOfficeD = (TextView)this.findViewById(R.id.tvOfficeD);
 		//tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
 		tvDescriptD = (TextView)this.findViewById(R.id.tvDescriptD);
-		tvCountD = (TextView)this.findViewById(R.id.tvCountD);		
+		tvCountD = (TextView)this.findViewById(R.id.tvCountD);	
+		
+		// Setup ProgressBar
+		
+		progBarDelivery1 = (ProgressBar)this.findViewById(R.id.progBarDelivery1);
 		
 		// check network connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -126,7 +132,7 @@ public class Delivery1 extends SenateActivity {
 		// autoCompleteTextView2.addTextChangedListener(filterTextWatcher2);
 		loc_details = (TextView) findViewById(R.id.textView2);
 		// loc_details.findFocus(); we can use this to find focus
-
+        Move.progBarMove.setVisibility(ProgressBar.INVISIBLE);  
 	}
 
 	@Override
@@ -267,6 +273,7 @@ public class Delivery1 extends SenateActivity {
 				
 			}
 			else {
+			    progBarDelivery1.setVisibility(ProgressBar.VISIBLE);
 				Intent intent = new Intent(this, Delivery2.class);
 				intent.putExtra("location", deliveryLocation); // for location code of delivery
 				startActivity(intent);

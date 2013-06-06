@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -41,11 +42,14 @@ public class Move extends SenateActivity implements OnItemClickListener {
 
 	ListView listView;
 	List<RowItem> rowItems;    
+	
+	public static ProgressBar progBarMove;
     
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_move);
+		progBarMove = (ProgressBar) this.findViewById(R.id.progBarMove);
 		rowItems = new ArrayList<RowItem>();
 		for (int i = 0; i < titles.length; i++) {
 			RowItem item = new RowItem(images[i], titles[i]);
@@ -57,12 +61,14 @@ public class Move extends SenateActivity implements OnItemClickListener {
 				R.layout.list_item, rowItems);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);
+		
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		RowItem curRow = rowItems.get(position);
+        progBarMove.setVisibility(ProgressBar.VISIBLE);
 		if (curRow.getTitle().equalsIgnoreCase("Pickup")) {
 			this.pickup(view);
 		} else if (curRow.getTitle().equalsIgnoreCase("Delivery")) {

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.android.ListtestActivity.verList;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -8,13 +10,16 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +58,8 @@ public class Pickup2Activity extends SenateActivity {
     ArrayList<InvItem> allScannedItems=new ArrayList<InvItem>();// for saving items which are not allocated to that location
     ArrayList<InvItem> newItems=new ArrayList<InvItem>();// for saving items which are not allocated to that location
     static Button btnPickup2Cont;
-    static Button btnPickup2Cancel;
+    static Button btnPickup2Cancel;   
+    static ProgressBar progBarPickup2;
     
     
 	@Override
@@ -72,6 +79,7 @@ public class Pickup2Activity extends SenateActivity {
 				android.R.layout.simple_list_item_1, dispList);*/
 		adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
 		
+		progBarPickup2 = (ProgressBar) findViewById(R.id.progBarPickup2); 
 	
 		// Display the origin and destination 
 		TextView TextView2= (TextView) findViewById(R.id.textView2);
@@ -93,8 +101,9 @@ public class Pickup2Activity extends SenateActivity {
 		btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
 		btnPickup2Cont.getBackground().setAlpha(255);  	  
 	    btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
-	    btnPickup2Cancel.getBackground().setAlpha(255);  	  
-		
+	    btnPickup2Cancel.getBackground().setAlpha(255);  	 
+	    
+        Pickup1.progBarPickup1.setVisibility(ProgressBar.INVISIBLE);	
 	}
 	
 	@Override
@@ -123,11 +132,13 @@ public class Pickup2Activity extends SenateActivity {
 				Log.i("test", "barcode_number:"+barcode_number);
 
 				int flag = 0;
+				boolean barcodeFound = false;
 
 				// If the item is already scanned then display a
 				// toster"Already Scanned"
-				if (scannedItems.contains(barcode_number) == true) {
+				if (findBarcode(barcode_num)>-1) {
 					// display toster
+				    barcodeFound = true;
 					Context context = getApplicationContext();
 					CharSequence text = "Already Scanned  ";
 					int duration = Toast.LENGTH_SHORT;
@@ -142,7 +153,7 @@ public class Pickup2Activity extends SenateActivity {
 				// list(location)
 				// then add it to list and append new item to its description
 				if ((flag == 0)
-						&& (scannedItems.contains(barcode_number) == false)) {
+						&& (barcodeFound == false)) {
 
 					// check network connection
 					ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -163,22 +174,35 @@ public class Pickup2Activity extends SenateActivity {
 							res = resr1.get().trim().toString();
 							System.out.println("URL RESULT:"+res);
 							
+							
 							// add it to list and displist and scanned items
 							JSONObject object = null;
-							try {
-								object = (JSONObject) new JSONTokener( res).nextValue();
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							if (res==null) {
+                                Log.i("TESTING", "A CALL noServerResponse");						    
+							    noServerResponse(barcode_num);
+                                return;
 							}
+							else if (res.toUpperCase().contains("DOES NOT EXIST IN SYSTEM")) {
+	                            Log.i("TESTING", "A CALL barcodeDidNotExist");
+	                            barcodeDidNotExist(barcode_num);
+	                            return;
+							}
+							else {
+							    try {
+							        object = (JSONObject) new JSONTokener( res).nextValue();
+							    } catch (JSONException e) {
+							        // TODO Auto-generated catch block
+							        e.printStackTrace();
+							    }
 
-							vl.NUSENATE = barcode_number;
-							vl.CDCATEGORY = object.getString("cdcategory");
-							vl.DECOMMODITYF =  object.getString("decommodityf").replaceAll("&#34;", "\"");
-							vl.CDLOCATTO = object.getString("cdlocatto");
-							vl.CDLOCTYPETO = object.getString("cdloctypeto");
-							vl.ADSTREET1 = object.getString("adstreet1to").replaceAll("&#34;", "\"");
-							vl.DTISSUE =  object.getString("dtissue");							 
+							    vl.NUSENATE = barcode_number;
+							    vl.CDCATEGORY = object.getString("cdcategory");
+							    vl.DECOMMODITYF =  object.getString("decommodityf").replaceAll("&#34;", "\"");
+							    vl.CDLOCATTO = object.getString("cdlocatto");
+							    vl.CDLOCTYPETO = object.getString("cdloctypeto");
+							    vl.ADSTREET1 = object.getString("adstreet1to").replaceAll("&#34;", "\"");
+							    vl.DTISSUE =  object.getString("dtissue");							 
+							}
 
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -259,7 +283,137 @@ public class Pickup2Activity extends SenateActivity {
 			}
 		}
 	};
+
 	
+    public void barcodeDidNotExist(final String barcode_num) {
+        Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+ 
+            // set title
+            alertDialogBuilder.setTitle("Barcode#: "+barcode_num+" DOES NOT EXIST IN SFMS");
+ 
+            // set dialog message
+            alertDialogBuilder
+                .setMessage(Html.fromHtml("***WARNING: Barcode#: <b>"+barcode_num+"</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // 5/24/13 BH Coded below to use InvItem Objects to display
+                        // the list.
+                        verList vl = new verList();
+                        vl.NUSENATE = barcode_num;
+                        vl.CDCATEGORY = "";
+                        vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+                        
+                        InvItem invItem = new InvItem(
+                                vl.NUSENATE, vl.CDCATEGORY,
+                                "NEW", vl.DECOMMODITYF);
+                        invList.add(invItem);                   
+                        
+                        list.add(vl);
+                        StringBuilder s_new = new StringBuilder();
+                        // s_new.append(vl.NUSENATE); since the desc coming from
+                        // server already contains barcode number we wont add it
+                        // again
+                        // s_new.append(" ");
+                        s_new.append(vl.CDCATEGORY);
+                        s_new.append(" ");
+                        s_new.append(vl.DECOMMODITYF);
+
+                        // display toster
+                        Context context = getApplicationContext();
+                        CharSequence text = s_new;
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        //dispList.add(s_new); // this list will display the contents
+                                                // on screen
+                        scannedItems.add(invItem);
+                        allScannedItems.add(invItem);
+                        newItems.add(invItem);// to keep
+                        
+                        list.add(vl);                       
+                        barcode.setText("");
+                        dialog.dismiss();
+                    }
+                  })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+                        
+                        CharSequence text = "Barcode#: "+barcode_num+" was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        
+                        barcode.setText("");                        
+                        
+                        dialog.dismiss();
+                    }
+                });
+ 
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+                // show it
+                alertDialog.show();     
+    }
+    	
+
+    public void noServerResponse(final String barcode_num) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+ 
+            // set title
+            alertDialogBuilder.setTitle("Barcode#: "+barcode_num+" DOES NOT EXIST IN SFMS");
+ 
+            // set dialog message
+            alertDialogBuilder
+                .setMessage(Html.fromHtml("!!ERROR: There was no response from the Web Server  (Barcode#: <b>"+barcode_num+"</b>). <br/><br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+                        
+                        CharSequence text = "Barcode#: "+barcode_num+" was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        
+                        barcode.setText("");                        
+                        
+                        dialog.dismiss();
+                    }
+                });
+ 
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+                // show it
+                alertDialog.show();     
+    }
+    
+    public int findBarcode(String barcode_num) {
+        for (int x=0;x<invList.size();x++) {
+            if (invList.get(x).getNusenate().equals(barcode_num)) {
+                return x;
+            }
+        }
+        return -1;
+    }
+    
 	public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
 		ArrayList<String> returnArray = new ArrayList<String>();
 		if (invList!=null) {
@@ -321,6 +475,7 @@ public class Pickup2Activity extends SenateActivity {
 	
 	public void continueButton(View view){
 		// send the data to Pickup3 activity
+	    progBarPickup2.setVisibility(ProgressBar.VISIBLE);
 		btnPickup2Cont.getBackground().setAlpha(70);	
 		Intent intent = new Intent(this, Pickup3.class); 
 		intent.putExtra("originLocation", originLocation);

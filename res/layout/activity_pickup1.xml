@@ -255,5 +255,15 @@
     android:text="Continue"
     android:textColor="#FFFFFF"
     android:textSize="30sp" />
+
+   <ProgressBar
+        android:id="@+id/progBarPickup1"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />   
     
 </RelativeLayout>

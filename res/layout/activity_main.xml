@@ -52,15 +52,16 @@
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
-
+   
     <ProgressBar
         android:id="@+id/progressBarLogin"
+        style="?android:attr/progressBarStyleLarge"        
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/password"
-        android:layout_alignTop="@+id/password"
-        android:layout_marginTop="56dp"
-        android:visibility="invisible" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />    
 
 <Button
     android:id="@+id/buttonLogin"

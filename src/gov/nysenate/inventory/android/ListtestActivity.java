@@ -40,6 +40,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -241,6 +242,8 @@ public class ListtestActivity extends SenateActivity {
 		barcode.addTextChangedListener(filterTextWatcher);
 
 		// listView = (ListView) findViewById(R.id.listView1 );
+		
+      Verification.progBarVerify.setVisibility(ProgressBar.INVISIBLE);
 
 	}
 	
@@ -311,14 +314,17 @@ public class ListtestActivity extends SenateActivity {
 				// listView.
 				String barcode_num = barcode.getText().toString().trim();
 				String barcode_number = barcode_num;
+				
+				boolean barcodeFound = false;
 
 				// to delete an element from the list
 				int flag = 0;
 
 				// If the item is already scanned then display a
 				// toster"Already Scanned"
-				if (scannedItems.contains(barcode_number) == true) {
+				if (findBarcode(barcode_num)>-1) {
 					// display toster
+				    barcodeFound = true;
 					Context context = getApplicationContext();
 					CharSequence text = "Already Scanned  ";
 					int duration = Toast.LENGTH_SHORT;
@@ -356,8 +362,10 @@ public class ListtestActivity extends SenateActivity {
 					}
 					
 					if ((curInvItem.getNusenate().equals(barcode_number) )
-							&& (scannedItems.contains(barcode_number) == false)) {
+							&& (barcodeFound == false)) {
+					    Log.i("TEST", barcode_number+" BEFORE REMOVE BARCODE INVLIST SIZE:"+invList.size());
 						adapter.removeBarCode(barcode_number);
+                        Log.i("TEST", barcode_number+" AFTER REMOVE BARCODE INVLIST SIZE:"+invList.size());
 
 						// display toster
 						Context context = getApplicationContext();
@@ -377,6 +385,7 @@ public class ListtestActivity extends SenateActivity {
 						toast.show();
 						AllScannedItems.add(curInvItem);// to keep track of (number+details)
 														// for summary
+                        Log.i("TEST", barcode_number+" BEFORE REMOVE("+i+") INVLIST SIZE:"+invList.size()+"");
 						invList.remove(i);
 						scannedItems.add(curInvItem);// to keep track of all
 															// scanned items
@@ -429,7 +438,13 @@ public class ListtestActivity extends SenateActivity {
 			//		vl.DECOMMODITYF = " New Item";
 					try {
 						Log.i("SERVER RESULTS", "RES:"+res);
-						if (res.contains("Does not exist in system")) {
+                        if (res==null) {
+                            Log.i("TESTING", "A CALL noServerResponse");
+                            noServerResponse(barcode_num);
+                            return;
+                            
+                        }
+                        else if (res.contains("Does not exist in system")) {
 							
 							//vl.NUSENATE = barcode_num;
 							//vl.CDCATEGORY = "";
@@ -509,7 +524,54 @@ public class ListtestActivity extends SenateActivity {
 		}
 	};
 
+    public int findBarcode(String barcode_num) {
+        for (int x=0;x<invList.size();x++) {
+            if (invList.get(x).getNusenate().equals(barcode_num)) {
+                return x;
+            }
+        }
+        return -1;
+    }
+	
+	
+    public void noServerResponse(final String barcode_num) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+ 
+            // set title
+            alertDialogBuilder.setTitle("Barcode#: "+barcode_num+" DOES NOT EXIST IN SFMS");
+ 
+            // set dialog message
+            alertDialogBuilder
+                .setMessage(Html.fromHtml("!!ERROR: There was no response from the Web Server  (Barcode#: <b>"+barcode_num+"</b>). <br/><br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+                        
+                        CharSequence text = "Barcode#: "+barcode_num+" was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
 
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        
+                        barcode.setText("");                        
+                        
+                        dialog.dismiss();
+                    }
+                });
+ 
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+                // show it
+                alertDialog.show();     
+    }
+    	
+	
 	public void barcodeDidNotExist(final String barcode_num) {
 		Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
