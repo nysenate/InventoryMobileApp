@@ -18,22 +18,86 @@
         android:text="@string/ver_summary_title"
         android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="16dp"
-        android:text="Total Items"
-        android:textSize="20sp" />
+   
+   <TableLayout
+       android:id="@+id/tablelayout_header1_pickup3"       
+       android:layout_width="550dp"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/textView1"
+       android:layout_marginTop="18dp"
+       android:layout_centerHorizontal="true"
+       android:background="@drawable/customshape" >
+
+       <TableRow>
+
+           <TextView
+               android:id="@+id/tv_label_origin_pickup3"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Origin:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+
+           <TextView
+               android:id="@+id/tv_origin_pickup3"
+               android:gravity="left"
+               android:text="N/A"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" 
+              android:textStyle="bold" />
+       </TableRow>
+
+       <TableRow>
+
+           <TextView
+               android:id="@+id/tv_label_destination_pickup3"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Destination:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+
+           <TextView
+               android:id="@+id/tv_destination_pickup3"
+               android:gravity="left"
+               android:text="N/A"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+       		   android:textSize="20sp"		               
+               android:textStyle="bold" />
+
+       </TableRow>
+       
+   		<TableRow>
+        	<TextView
+               android:id="@+id/tv_label_count_pickup3"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Pickup Count:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+       		<TextView
+        		android:id="@+id/tv_count_pickup3"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentRight="true"
+        		android:ems="10"
+        		android:hint="@string/count" 
+				android:textAppearance="?android:attr/textAppearanceMedium"        		
+       			android:textSize="20sp"				
+        		android:textStyle="bold"  />
+        		
+   		</TableRow>    
+
+       
+   </TableLayout>    
+    
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/tablelayout_header1_pickup3"
         android:layout_marginTop="27dp"
 		android:background="@drawable/customshape" >
 

@@ -79,6 +79,10 @@ public class Pickup3 extends SenateActivity {
 	static Button btnPickup3Back;
 	static Button btnPickup3ClrSig;
 	
+    public TextView tv_count_pickup3;
+    public TextView tvOriginPickup3;
+    public TextView tvDestinationPickup3;	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,13 +109,23 @@ public class Pickup3 extends SenateActivity {
       destinationLocationCode=destinationLocationCodeArr[0];
   
       // Create summary from the given information
-     	String summary="Origin Location      : "+ originLocation+"\n"+
+     	/*String summary="Origin Location      : "+ originLocation+"\n"+
 		       "Destination location : "+destinationLocation+"\n"+"\n"+
-		       "Total items          : "+count;
+		       "Total items          : "+count;*/
     
      	// Set the summary to the textview
-      TextView summaryView = (TextView)findViewById(R.id.textView3 );
-      summaryView.setText(summary);
+      //TextView summaryView = (TextView)findViewById(R.id.textView3 );
+      //summaryView.setText(summary);
+
+      // Display the origin and destination 
+      tvOriginPickup3= (TextView) findViewById(R.id.tv_origin_pickup3);
+      tvDestinationPickup3= (TextView) findViewById(R.id.tv_destination_pickup3);
+      tvOriginPickup3.setText(originLocation);
+      tvDestinationPickup3.setText(destinationLocation);
+      // display the count on screen
+      tv_count_pickup3 = (TextView) findViewById(R.id.tv_count_pickup3);
+      tv_count_pickup3.setText(count);
+      
       Adapter  listAdapter1 = new InvListViewAdapter(this, R.layout.invlist_item, AllScannedItems);  
       
       // Set the ArrayAdapter as the ListView's adapter.  

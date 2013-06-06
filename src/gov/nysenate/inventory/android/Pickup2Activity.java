@@ -36,9 +36,11 @@ import android.widget.Toast;
 
 public class Pickup2Activity extends SenateActivity {
 	public ClearableEditText barcode;
-	public TextView pickupCounter;
+	public TextView tv_count_pickup2;
 	public TextView loc_details;
 	public TextView TextView2;
+	public TextView tvOriginPickup2;
+	public TextView tvDestinationPickup2;
 	public  String res=null;
 	public	String status=null;
 	public ListView listView;
@@ -82,13 +84,14 @@ public class Pickup2Activity extends SenateActivity {
 		progBarPickup2 = (ProgressBar) findViewById(R.id.progBarPickup2); 
 	
 		// Display the origin and destination 
-		TextView TextView2= (TextView) findViewById(R.id.textView2);
-		TextView2.setText("Origin : "+ originLocation+"\n"
-		                 +"Destination : "+destinationLocation);
+		tvOriginPickup2= (TextView) findViewById(R.id.tv_origin_pickup2);
+        tvDestinationPickup2= (TextView) findViewById(R.id.tv_destination_pickup2);
+        tvOriginPickup2.setText(originLocation);
+        tvDestinationPickup2.setText(destinationLocation);
 		// display the count on screen
-		pickupCounter = (TextView) findViewById(R.id.pickupCounter);
+		tv_count_pickup2 = (TextView) findViewById(R.id.tv_count_pickup2);
 
-		pickupCounter.setText(Integer.toString(count));
+		tv_count_pickup2.setText(Integer.toString(count));
 		// populate the listview
 		listView.setAdapter(adapter);
 
@@ -277,7 +280,7 @@ public class Pickup2Activity extends SenateActivity {
 				// refresh the view
 				adapter.notifyDataSetChanged();
 				count = list.size();
-				pickupCounter.setText(Integer.toString(count));
+				tv_count_pickup2.setText(Integer.toString(count));
 				listView.setAdapter(adapter);
 				barcode.setText("");
 			}

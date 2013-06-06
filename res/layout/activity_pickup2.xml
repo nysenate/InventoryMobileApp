@@ -4,57 +4,24 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/pad20dp"
     tools:context=".Pickup2Activity" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="22dp"
-        android:layout_marginTop="25dp"
-        android:text="@string/pickup2Msg"
-        android:textSize="25dp" />
-
-    <TextView
-        android:id="@+id/pickupCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/editText1"
-        android:layout_alignBottom="@+id/editText1"
-        android:layout_alignParentRight="true"
-        android:ems="10"
-        android:hint="@string/count" >
-
-        <requestFocus />
-    </TextView>
-
+ 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/tablelayout_header1_pickup2"
         android:layout_marginTop="87dp" >
     </ListView>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="21dp"
-        android:text="@string/pickup2Msg2"
-        android:textSize="18dp"
-        />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/tablelayout_header1_pickup2"
+        android:layout_marginTop="18dp"
 		android:maxLength="6"        
         android:ems="10"
         android:maxWidth="10dp"      
@@ -111,6 +78,78 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
-        android:visibility="invisible" />   	
+        android:visibility="invisible" />
+
+   <TableLayout
+       android:id="@+id/tablelayout_header1_pickup2"       
+       android:layout_width="550dp"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       android:layout_marginTop="18dp"
+       android:layout_centerHorizontal="true"
+       android:background="@drawable/customshape" >
+
+       <TableRow>
+
+           <TextView
+               android:id="@+id/tv_label_origin_pickup2"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Origin:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+
+           <TextView
+               android:id="@+id/tv_origin_pickup2"
+               android:gravity="left"
+               android:text="N/A"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" 
+              android:textStyle="bold" />
+       </TableRow>
+
+       <TableRow>
+
+           <TextView
+               android:id="@+id/tv_label_destination_pickup2"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Destination:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+
+           <TextView
+               android:id="@+id/tv_destination_pickup2"
+               android:gravity="left"
+               android:text="N/A"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+       		   android:textSize="20sp"		               
+               android:textStyle="bold" />
+
+       </TableRow>
+       
+   		<TableRow>
+        	<TextView
+               android:id="@+id/tv_label_count_pickup2"
+               android:layout_marginRight="10dp"
+               android:gravity="right"
+               android:text="Pickup Count:"
+       		   android:textSize="20sp"		               
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+       		<TextView
+        		android:id="@+id/tv_count_pickup2"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentRight="true"
+        		android:ems="10"
+        		android:hint="@string/count" 
+				android:textAppearance="?android:attr/textAppearanceMedium"        		
+       			android:textSize="20sp"				
+        		android:textStyle="bold"  />
+        		
+   		</TableRow>    
+
+       
+   </TableLayout>
     
 </RelativeLayout>
