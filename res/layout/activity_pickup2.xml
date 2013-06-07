@@ -11,12 +11,14 @@
         android:layout_height="500dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
+        android:layout_above="@+id/btnPickup2Cancel"
+        android:layout_marginBottom="18dp"
         android:layout_marginTop="87dp" >
     </ListView>
 
 
     <gov.nysenate.inventory.android.ClearableEditText
-        android:id="@+id/barcode"
+        android:id="@+id/et_pickup3_barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

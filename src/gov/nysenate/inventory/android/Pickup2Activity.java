@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Pickup2Activity extends SenateActivity {
-	public ClearableEditText barcode;
+	public ClearableEditText et_pickup3_barcode;
 	public TextView tv_count_pickup2;
 	public TextView loc_details;
 	public TextView TextView2;
@@ -97,8 +97,8 @@ public class Pickup2Activity extends SenateActivity {
 
 		// code for textwatcher
 
-		barcode = (ClearableEditText) findViewById(R.id.barcode);
-		barcode.addTextChangedListener(filterTextWatcher);
+		et_pickup3_barcode = (ClearableEditText) findViewById(R.id.et_pickup3_barcode);
+		et_pickup3_barcode.addTextChangedListener(filterTextWatcher);
 
 		// Button Setup
 		btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
@@ -129,8 +129,8 @@ public class Pickup2Activity extends SenateActivity {
 		}
 
 		public void afterTextChanged(Editable s) {
-			if (barcode.getText().toString().length() >= 6) {
-				String barcode_num = barcode.getText().toString().trim();
+			if (et_pickup3_barcode.getText().toString().length() >= 6) {
+				String barcode_num = et_pickup3_barcode.getText().toString().trim();
 				String barcode_number =barcode_num;
 				Log.i("test", "barcode_number:"+barcode_number);
 
@@ -282,7 +282,7 @@ public class Pickup2Activity extends SenateActivity {
 				count = list.size();
 				tv_count_pickup2.setText(Integer.toString(count));
 				listView.setAdapter(adapter);
-				barcode.setText("");
+				et_pickup3_barcode.setText("");
 			}
 		}
 	};
@@ -340,7 +340,7 @@ public class Pickup2Activity extends SenateActivity {
                         newItems.add(invItem);// to keep
                         
                         list.add(vl);                       
-                        barcode.setText("");
+                        et_pickup3_barcode.setText("");
                         dialog.dismiss();
                     }
                   })
@@ -357,7 +357,7 @@ public class Pickup2Activity extends SenateActivity {
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                         
-                        barcode.setText("");                        
+                        et_pickup3_barcode.setText("");                        
                         
                         dialog.dismiss();
                     }
@@ -395,7 +395,7 @@ public class Pickup2Activity extends SenateActivity {
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                         
-                        barcode.setText("");                        
+                        et_pickup3_barcode.setText("");                        
                         
                         dialog.dismiss();
                     }
