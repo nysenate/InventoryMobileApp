@@ -246,7 +246,7 @@ public class VerSummaryActivity extends SenateActivity {
 		String barcodeNum="" ;
 	  
 		for(int i=0;i<scannedBarcodeNumbers.size();i++){
-			barcodeNum=barcodeNum+scannedBarcodeNumbers.get(i).toString()+",";
+			barcodeNum=barcodeNum+scannedBarcodeNumbers.get(i).getNusenate()+",";
 		}
 		
 		// Create a JSON  string from the arraylist	
