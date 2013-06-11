@@ -17,4 +17,9 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+	<style name="NormalText">    
+ 		<item name="android:textSize">20sp</item>    
+ 		<item name="android:textStyle">normal</item>     
+	</style>    
+    
 </resources>

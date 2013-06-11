@@ -322,7 +322,7 @@ public class ListtestActivity extends SenateActivity {
 
 				// If the item is already scanned then display a
 				// toster"Already Scanned"
-				if (findBarcode(barcode_num)>-1) {
+				if (findBarcode(barcode_num, AllScannedItems)>-1) {
 					// display toster
 				    barcodeFound = true;
 					Context context = getApplicationContext();
@@ -525,6 +525,11 @@ public class ListtestActivity extends SenateActivity {
 	};
 
     public int findBarcode(String barcode_num) {
+    	return findBarcode(barcode_num, invList);
+    }
+	
+	
+    public int findBarcode(String barcode_num, ArrayList<InvItem> invList) {
         for (int x=0;x<invList.size();x++) {
             if (invList.get(x).getNusenate().equals(barcode_num)) {
                 return x;
