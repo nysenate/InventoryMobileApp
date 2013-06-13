@@ -26,7 +26,7 @@
         android:layout_marginTop="18dp"
         android:text="@string/verify_msg2"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp" />
+        style="@style/NormalText"    />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/preferencePWD"
@@ -40,7 +40,7 @@
         android:hint="@string/barcode_number"
         android:inputType="number"
         android:maxWidth="10dp"
-        android:textSize="25sp"
+        style="@style/NormalText"   
         android:textStyle="bold"
         android:singleLine="true"    >
 
@@ -55,7 +55,7 @@
 	    android:layout_toRightOf="@+id/tvLblSortBy"
 	    android:entries="@array/verify_sort"
 	    android:gravity="center"
-	    android:textSize="25sp"
+	    style="@style/NormalText"   
 	    android:textStyle="bold" />
     
     <ListView

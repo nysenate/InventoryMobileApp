@@ -91,7 +91,24 @@ public class Pickup1 extends SenateActivity {
 			status = "yes";
 
 			// Get the URL from the properties
-			URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+			try {
+				URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+			}
+			catch (NullPointerException e) {
+				MsgAlert msgAlert = new MsgAlert(this, "Properties cannot be loaded.", "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
+				if (MainActivity.properties==null) {
+					try {
+						
+					}
+					catch (Exception e2) {
+						e.printStackTrace();
+					}
+					
+				}
+				else {
+					
+				}
+			}
 			
 			AsyncTask<String, String, String> resr1 = new RequestTask()
 					.execute(URL + "/LocCodeList");

@@ -6,34 +6,15 @@
     android:paddingLeft="20dp"
     tools:context=".Pickup1" >
 
-    
     <TextView
         android:id="@+id/textView1"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="17dp"
-        android:text="@string/select_origin_loc"
-        android:textAppearance="?android:attr/textAppearanceMedium"  />
-
-    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
-        android:id="@+id/autoCompleteTextView1"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
-        android:layout_marginLeft="17dp"
-        android:layout_marginRight="140dp"
-        android:ems="10"
-        android:hint="@string/select_origin_loc"
-        android:singleLine="true" 
-        android:textStyle="bold"     >
-
-        <requestFocus />
-
-    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+        android:text="@string/select_origin_loc" />
 
     <TextView
         android:id="@+id/textView2"
@@ -44,98 +25,98 @@
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="21dp"
         android:hint="@string/details"
-        android:text="@string/details" 
-        android:singleLine="true"   />
-    
-   <TableLayout
-        android:layout_width="500dp"
+        android:singleLine="true"
+        style="@style/NormalText"
+        android:text="@string/details" />
+
+    <TableLayout
+        android:id="@+id/pickup_info1"        
+        android:layout_width="535dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
-        android:layout_alignRight="@+id/autoCompleteTextView1"
+        android:layout_alignRight="@+id/btnPickup1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/customshape" >
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tvHeadDetails1"
+                style="@style/NormalText"
                 android:layout_gravity="center"
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Pickup Location"
-                android:textColor="@color/bluedark"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:textColor="@color/bluedark" />
         </TableRow>
-
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tvLabelOffice1"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Resp Center Hd:"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:text="Resp Center Hd:" />
 
             <TextView
                 android:id="@+id/tvOffice1"
+                style="@style/NormalText"
+                android:layout_width="370dp"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
+                android:text="N/A" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tvLabelDescr1"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Address:"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:text="Address:" />
 
             <TextView
                 android:id="@+id/tvDescript1"
+                style="@style/NormalText"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:text="N/A" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tbLabelCount1"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:text="Item Count:"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="Item Count:" />
 
             <TextView
                 android:id="@+id/tvCount1"
+                style="@style/NormalText"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:text="N/A" />
         </TableRow>
-    </TableLayout>    
-   
+    </TableLayout>
 
-    
-   <TableLayout
-        android:layout_width="500dp"
+    <TableLayout
+        android:id="@+id/pickup_info2"
+        android:layout_width="538dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompleteTextView2"
         android:layout_alignRight="@+id/autoCompleteTextView2"
         android:layout_below="@+id/autoCompleteTextView2"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/customshape" >
 
         <TableRow>
@@ -146,10 +127,9 @@
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Delivery Location"
-                android:textColor="@color/bluedark"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                style="@style/NormalText"
+                android:textColor="@color/bluedark" />
         </TableRow>
-
 
         <TableRow>
 
@@ -159,14 +139,16 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 android:text="Resp Center Hd:"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                style="@style/NormalText" />
 
             <TextView
                 android:id="@+id/tvOffice2"
+                style="@style/NormalText"
+                android:layout_width="370dp"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                android:text="N/A" />
+
         </TableRow>
 
         <TableRow>
@@ -177,7 +159,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 android:text="Address:"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                style="@style/NormalText" />
 
             <TextView
                 android:id="@+id/tvDescript2"
@@ -186,7 +168,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="left"
                 android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                style="@style/NormalText" />
         </TableRow>
 
         <TableRow>
@@ -197,73 +179,94 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 android:text="Item Count:"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                style="@style/NormalText" />
 
             <TextView
                 android:id="@+id/tvCount2"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
                 android:text="N/A"
-                android:textAppearance="?android:attr/textAppearanceMedium"  />
+                style="@style/NormalText" />
         </TableRow>
-    </TableLayout>   
-    
+    </TableLayout>
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignRight="@+id/textView2"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/pickup_info1"
         android:ems="10"
         android:hint="@string/select_dest_loc"
-        android:textStyle="bold"   >
+ 		style="@style/NormalText"        
+        android:nextFocusDown="@+id/autoCompleteTextView1"
+        android:singleLine="true"
+        android:textStyle="bold" >
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-<Button
-    android:id="@+id/btnPickup1Cancel"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignBaseline="@+id/btnPickup1Cont"
-    android:layout_alignBottom="@+id/btnPickup1Cont"
-    android:layout_alignParentLeft="true"
-    android:background="@drawable/buttonshapered"
-    android:onClick="cancelButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Cancel"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnPickup1Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnPickup1Cont"
+        android:layout_alignBottom="@+id/btnPickup1Cont"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-<Button
-    android:id="@+id/btnPickup1Cont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginBottom="36dp"
-    android:layout_marginRight="25dp"
-    android:background="@drawable/buttonshapegreen"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Continue"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnPickup1Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="36dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-   <ProgressBar
+    <ProgressBar
         android:id="@+id/progBarPickup1"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
-        android:visibility="invisible" />   
-    
+        android:background="@drawable/shaperoundblue"
+        android:visibility="invisible" />
+
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+        android:id="@+id/autoCompleteTextView1"
+        style="@style/NormalText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/btnPickup1Cont"
+        android:layout_below="@+id/textView1"
+        android:ems="10"
+        android:hint="@string/select_origin_loc"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/autoCompleteTextView2"
+        android:textStyle="bold" >
+
+        <requestFocus />
+
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+
 </RelativeLayout>

@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/SearchActivity_MSG"
-        android:textSize="25sp" />
+        style="@style/NormalText"    />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/barcode"
@@ -29,7 +29,7 @@
         android:padding="4dip"
         android:singleLine="true"  
         android:maxWidth="10dp"
-        android:textSize="25sp"
+        style="@style/NormalText"   
         android:textStyle="bold"         
                  >
 
@@ -47,7 +47,7 @@
         android:padding="4dip"
         android:paddingTop="30dp"
         android:text="@string/details"
-        android:textSize="25sp" />    
+        style="@style/NormalText"    />    
 
     <TableLayout
         android:id="@+id/tableLayout1"
@@ -66,7 +66,7 @@
              	android:text="Details"
              	android:layout_gravity="center_horizontal"
                 android:layout_span="2"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:textColor="@color/bluedark" />
 
         </TableRow>
@@ -82,7 +82,7 @@
         	android:layout_marginTop="20dp"
             android:gravity="right"
         	android:text="Barcode:"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textStyle="bold" />
        
     	<TextView
@@ -91,7 +91,7 @@
         	android:layout_height="wrap_content"
         	android:layout_marginTop="20dp"
         	android:text="N/A"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textStyle="bold" />
 		</TableRow>    	
 
@@ -104,7 +104,7 @@
         	android:layout_marginTop="20dp"
             android:gravity="right"
 	    	android:text="Address:"
-	    	android:textAppearance="?android:attr/textAppearanceLarge"
+	    	style="@style/NormalText"   
 	    	android:textColor="@color/black" />
     
     	<TextView
@@ -113,7 +113,7 @@
         	android:layout_height="wrap_content"        	
         	android:layout_marginTop="20dp"
         	android:text="N/A"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textColor="@color/black" />
 		</TableRow>
     	<TableRow>	
@@ -125,7 +125,7 @@
         	android:layout_marginTop="20dp"
             android:gravity="right"
         	android:text="Category:"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textColor="@color/black" />
     
     	<TextView
@@ -134,7 +134,7 @@
         	android:layout_height="wrap_content"
         	android:layout_marginTop="20dp"
         	android:text="N/A"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textColor="@color/black" />
 		</TableRow>
 		<TableRow>
@@ -146,7 +146,7 @@
         	android:layout_marginTop="20dp"
             android:gravity="right"
         	android:text="Location:"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textColor="@color/black" />
     
     	<TextView
@@ -155,7 +155,7 @@
         	android:layout_height="wrap_content"
         	android:layout_marginTop="20dp"
         	android:text="N/A"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	style="@style/NormalText"   
         	android:textColor="@color/black" />
    		</TableRow> 
 		<TableRow>   	
@@ -166,7 +166,7 @@
         	android:layout_marginRight="20dp"
         	android:layout_marginTop="20dp"
         	android:text="Date Issued:"
-        	android:textAppearance="?android:attr/textAppearanceLarge" />
+        	style="@style/NormalText"    />
     
     	<TextView
         	android:id="@+id/tvDateIssue"
@@ -174,7 +174,7 @@
         	android:layout_height="wrap_content"
         	android:layout_marginTop="20dp"
         	android:text="N/A"
-        	android:textAppearance="?android:attr/textAppearanceLarge" />
+        	style="@style/NormalText"    />
 
 		</TableRow> 
   </TableLayout>

@@ -30,7 +30,7 @@
         android:hint="@string/barcode_number"
         android:inputType="number"
         android:singleLine="true"
-        android:textSize="25sp"
+        style="@style/NormalText"   
         android:textStyle="bold"  
         />
     
@@ -98,16 +98,16 @@
                android:layout_marginRight="10dp"
                android:gravity="right"
                android:text="Origin:"
-       		   android:textSize="20sp"		               
+       		   style="@style/NormalText"   		               
                android:textAppearance="?android:attr/textAppearanceMedium" />
 
            <TextView
                android:id="@+id/tv_origin_pickup2"
                android:gravity="left"
                android:text="N/A"
-       		   android:textSize="20sp"		               
+       		   style="@style/NormalText"   	               
                android:textAppearance="?android:attr/textAppearanceMedium" 
-              android:textStyle="bold" />
+               android:textStyle="bold" />
        </TableRow>
 
        <TableRow>
@@ -117,7 +117,7 @@
                android:layout_marginRight="10dp"
                android:gravity="right"
                android:text="Destination:"
-       		   android:textSize="20sp"		               
+       		   style="@style/NormalText"   		               
                android:textAppearance="?android:attr/textAppearanceMedium" />
 
            <TextView
@@ -125,7 +125,7 @@
                android:gravity="left"
                android:text="N/A"
                android:textAppearance="?android:attr/textAppearanceMedium"
-       		   android:textSize="20sp"		               
+       		   style="@style/NormalText"                  
                android:textStyle="bold" />
 
        </TableRow>
@@ -136,7 +136,7 @@
                android:layout_marginRight="10dp"
                android:gravity="right"
                android:text="Pickup Count:"
-       		   android:textSize="20sp"		               
+       		   style="@style/NormalText"   		               
                android:textAppearance="?android:attr/textAppearanceMedium" />
        		<TextView
         		android:id="@+id/tv_count_pickup2"
@@ -146,7 +146,7 @@
         		android:ems="10"
         		android:hint="@string/count" 
 				android:textAppearance="?android:attr/textAppearanceMedium"        		
-       			android:textSize="20sp"				
+       			style="@style/NormalText"   		
         		android:textStyle="bold"  />
         		
    		</TableRow>    

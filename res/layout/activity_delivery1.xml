@@ -13,7 +13,7 @@
         android:layout_marginLeft="22dp"
         android:layout_marginTop="24dp"
         android:text="@string/delivery1_msg"
-        android:textSize="25dp" />
+        style="@style/NormalText"   />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
@@ -26,7 +26,7 @@
         android:ems="10"
         android:hint="@string/delivery1_hint"
         android:singleLine="true"
-        android:textSize="25sp"
+ 		style="@style/NormalText"   
         android:textStyle="bold"   >
 
         <requestFocus />
@@ -50,7 +50,7 @@
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Selected Location Information "
-                android:textAppearance="?android:attr/textAppearanceLarge"
+ 				style="@style/NormalText"   
                 android:textColor="@color/bluedark" />
         </TableRow>
 
@@ -61,14 +61,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+ 				style="@style/NormalText"   
                 android:text="Resp Center Hd:" />
 
             <TextView
                 android:id="@+id/tvOfficeD"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
 
@@ -79,7 +79,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:text="Address:" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
 
@@ -99,14 +99,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:text="Item Count:" />
 
             <TextView
                 android:id="@+id/tvCountD"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
     </TableLayout>

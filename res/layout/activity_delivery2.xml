@@ -16,7 +16,7 @@
         android:layout_marginTop="19dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/delivery2_msg"
-        android:textSize="25dp" />
+        style="@style/NormalText"    />
 
     <ListView
         android:id="@+id/listView1"
