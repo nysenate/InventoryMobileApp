@@ -94,7 +94,21 @@ public class DisplayMessageActivity extends Activity {
 				startActivity(intent2);
 				overridePendingTransition(R.anim.slide_in_left,
 						R.anim.slide_out_left);
-			} else {
+			}
+			else if (res.trim().startsWith("!!ERROR :")) {
+				Intent intent2 = new Intent(this, MainActivity.class);
+				intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent2);
+				overridePendingTransition(R.anim.slide_in_left,
+						R.anim.slide_out_left);
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(this,
+						res.trim(), duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				
+			}
+			else {
 				Intent intent2 = new Intent(this, MainActivity.class);
 				intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent2);

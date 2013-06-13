@@ -100,14 +100,14 @@
                android:gravity="right"
                android:text="Origin:"
        		   style="@style/NormalText"   		               
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+               />
 
            <TextView
                android:id="@+id/tv_origin_pickup2"
                android:gravity="left"
                android:text="N/A"
+               android:layout_width="360dp"
        		   style="@style/NormalText"   	               
-               android:textAppearance="?android:attr/textAppearanceMedium" 
                android:textStyle="bold" />
        </TableRow>
 
@@ -119,13 +119,12 @@
                android:gravity="right"
                android:text="Destination:"
        		   style="@style/NormalText"   		               
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+               />
 
            <TextView
                android:id="@+id/tv_destination_pickup2"
                android:gravity="left"
                android:text="N/A"
-               android:textAppearance="?android:attr/textAppearanceMedium"
        		   style="@style/NormalText"                  
                android:textStyle="bold" />
 
@@ -138,7 +137,7 @@
                android:gravity="right"
                android:text="Pickup Count:"
        		   style="@style/NormalText"   		               
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+               />
        		<TextView
         		android:id="@+id/tv_count_pickup2"
         		android:layout_width="wrap_content"
@@ -146,7 +145,6 @@
         		android:layout_alignParentRight="true"
         		android:ems="10"
         		android:hint="@string/count" 
-				android:textAppearance="?android:attr/textAppearanceMedium"        		
        			style="@style/NormalText"   		
         		android:textStyle="bold"  />
         		

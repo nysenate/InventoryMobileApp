@@ -64,7 +64,7 @@
             <TextView
                 android:id="@+id/tvOffice1"
                 style="@style/NormalText"
-                android:layout_width="370dp"
+                android:layout_width="fill_parent"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
                 android:text="N/A" />
@@ -83,8 +83,8 @@
             <TextView
                 android:id="@+id/tvDescript1"
                 style="@style/NormalText"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="370dp"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
                 android:text="N/A" />
