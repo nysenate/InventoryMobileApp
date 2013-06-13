@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="17dp"
-        android:text="@string/select_origin_loc" />
+        android:text="@string/pickup1_header_text" />
 
     <TextView
         android:id="@+id/textView2"

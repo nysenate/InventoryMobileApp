@@ -24,6 +24,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
         android:layout_marginTop="18dp"
+		android:digits="0123456789"
 		android:maxLength="6"        
         android:ems="10"
         android:maxWidth="10dp"      
