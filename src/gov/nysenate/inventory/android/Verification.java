@@ -251,13 +251,42 @@ public class Verification extends SenateActivity {
 	}
 
 	public void continueButton(View view) {
-
-	    progBarVerify.setVisibility(ProgressBar.VISIBLE);
-	    btnVerify1Cont.getBackground().setAlpha(45);
-		Intent intent = new Intent(this, ListtestActivity.class);
-		intent.putExtra(loc_code_intent, loc_code_str);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		String currentLocation = this.autoCompleteTextView1.getText().toString();
+        int duration = Toast.LENGTH_SHORT;
+		if (currentLocation.trim().length()==0) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: You must first pick a location.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);                              	
+			
+		}
+		else if (locCodeList.indexOf(currentLocation) ==-1) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: Location Code \""+currentLocation+"\" is invalid.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);                              	
+			
+		}
+		else {
+			progBarVerify.setVisibility(ProgressBar.VISIBLE);
+			btnVerify1Cont.getBackground().setAlpha(45);
+			Intent intent = new Intent(this, ListtestActivity.class);
+			intent.putExtra(loc_code_intent, loc_code_str);
+			startActivity(intent);
+			overridePendingTransition(R.anim.in_right, R.anim.out_left);
+		}
 
 	}
 

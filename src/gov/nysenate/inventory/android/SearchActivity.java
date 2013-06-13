@@ -95,6 +95,8 @@ public class SearchActivity extends SenateActivity {
 							.execute(URL + "/Search?barcode_num=" + barcode_num);
 					try {
 						res = resr1.get().trim().toString();
+						Log.i("Search res ","res:"+res);
+
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -107,22 +109,36 @@ public class SearchActivity extends SenateActivity {
 					// display error
 					status = "no";
 				}
-				try {
-					JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
-					tvBarcode.setText( object.getString("nusenate"));
-					tvDescription.setText( object.getString("decommodityf").replaceAll("&#34;", "\""));
-					tvCategory.setText( object.getString("cdcategory") );					
-					tvLocation.setText( object.getString("cdlocatto")+" ("+object.getString("cdloctypeto")+") "+object.getString("adstreet1to").replaceAll("&#34;", "\""));
-					tvDateIssue.setText( object.getString("dtissue") );	
+				if (res.toUpperCase().contains("DOES NOT EXIST IN SYSTEM")) {
+					tvBarcode.setText( barcode.getText().toString()+" - !!ERROR: DOES NOT EXIST.");
+					int color = Integer.parseInt("bb0000", 16)+0xFF000000;
+					tvBarcode.setTextColor(color);
+					tvDescription.setText("N/A");
+					tvCategory.setText("N/A");					
+					tvLocation.setText("N/A");
+					tvDateIssue.setText("N/A");	
+									
+				}
+				else {
+					int color = Integer.parseInt("000000", 16)+0xFF000000;
+					tvBarcode.setTextColor(color);
+					try {
+						JSONObject object = (JSONObject) new JSONTokener( res).nextValue();
+						tvBarcode.setText( object.getString("nusenate"));
+						tvDescription.setText( object.getString("decommodityf").replaceAll("&#34;", "\""));
+						tvCategory.setText( object.getString("cdcategory") );					
+						tvLocation.setText( object.getString("cdlocatto")+" ("+object.getString("cdloctypeto")+") "+object.getString("adstreet1to").replaceAll("&#34;", "\""));
+						tvDateIssue.setText( object.getString("dtissue") );	
 					
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					tvDescription.setText( "!!ERROR: "+e.getMessage());
-					tvCategory.setText("Please contact STS/BAC.");	
-					tvLocation.setText("N/A");					
-					tvDateIssue.setText( "N/A" );	
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						tvDescription.setText( "!!ERROR: "+e.getMessage());
+						tvCategory.setText("Please contact STS/BAC.");	
+						tvLocation.setText("N/A");					
+						tvDateIssue.setText( "N/A" );	
 
-					e.printStackTrace();
+						e.printStackTrace();
+					}
 				}
 				//textView.setText("\n" + res);
 				barcode.setText("");
