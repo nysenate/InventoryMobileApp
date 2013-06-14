@@ -36,14 +36,15 @@
                android:gravity="right"
                android:text="Origin:"
        		   style="@style/NormalText"   	               
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+			 />
 
            <TextView
                android:id="@+id/tv_origin_pickup3"
                android:gravity="left"
                android:text="N/A"
+               android:layout_width="364dp"
+               android:layout_height="wrap_content"               
        		   style="@style/NormalText"   	               
-               android:textAppearance="?android:attr/textAppearanceMedium" 
               android:textStyle="bold" />
        </TableRow>
 
@@ -55,13 +56,14 @@
                android:gravity="right"
                android:text="Destination:"
        		   style="@style/NormalText"                  
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+       		    />
 
            <TextView
                android:id="@+id/tv_destination_pickup3"
                android:gravity="left"
                android:text="N/A"
-               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:layout_width="364dp"
+               android:layout_height="wrap_content"               
        		   style="@style/NormalText"   		               
                android:textStyle="bold" />
 
@@ -74,15 +76,14 @@
                android:gravity="right"
                android:text="Pickup Count:"
        		   style="@style/NormalText"   	               
-               android:textAppearance="?android:attr/textAppearanceMedium" />
+			 />
        		<TextView
         		android:id="@+id/tv_count_pickup3"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
+                android:layout_width="364dp"
+                android:layout_height="wrap_content"               
         		android:layout_alignParentRight="true"
         		android:ems="10"
         		android:hint="@string/count" 
-				android:textAppearance="?android:attr/textAppearanceMedium"        		
        			style="@style/NormalText"   		
         		android:textStyle="bold"  />
         		
@@ -95,7 +96,7 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="260dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup3"
         android:layout_marginTop="27dp"

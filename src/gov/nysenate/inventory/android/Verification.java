@@ -142,6 +142,7 @@ public class Verification extends SenateActivity {
                     	   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     	   imm.hideSoftInputFromWindow(
                     			   autoCompleteTextView1.getWindowToken(), 0);   
+                    	   autoCompleteTextView1.setSelection(0);
             }
         });
 		

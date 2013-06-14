@@ -40,8 +40,8 @@
     <string name="title_activity_pickup1">Pickup</string>
     <string name="pickup1_header_text">Scan or enter Origin and Destination Location Codes</string>
     <string name="select_origin_loc">Enter Origin Location Code</string>
-    <string name="select_dest_loc">Enter destination location code</string>
-    <string name="select_dest_hint">Destination location code</string>
+    <string name="select_dest_loc">Enter Destination Location Code</string>
+    <string name="select_dest_hint">Destination Location Code</string>
     <string name="title_activity_pickup2">Pickup</string>
     <string name="title_activity_verification">Verification</string>
     <string name="verify_msg1">Select/enter location for Verification:</string>

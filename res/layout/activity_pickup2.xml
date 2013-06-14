@@ -106,7 +106,8 @@
                android:id="@+id/tv_origin_pickup2"
                android:gravity="left"
                android:text="N/A"
-               android:layout_width="360dp"
+               android:layout_width="350dp"
+               android:layout_height="wrap_content"
        		   style="@style/NormalText"   	               
                android:textStyle="bold" />
        </TableRow>
@@ -125,6 +126,8 @@
                android:id="@+id/tv_destination_pickup2"
                android:gravity="left"
                android:text="N/A"
+               android:layout_width="350dp"
+               android:layout_height="wrap_content"
        		   style="@style/NormalText"                  
                android:textStyle="bold" />
 
