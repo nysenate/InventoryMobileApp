@@ -76,5 +76,7 @@
     <string name="employee_list_hint">Name of Signer</string>
     <string name="title_activity_user_action">Current Activity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_update_app">UpdateAppActivity</string>
+    <string name="title_activity_upgrade">UpgradeActivity</string>
 
 </resources>

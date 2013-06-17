@@ -3,45 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Delivery3" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:id="@+id/delivery_info3"        
+        android:layout_width="560dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="18dp"
-        android:text="@string/delivery3_msg"
-        style="@style/NormalText"    />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignRight="@+id/deliveryCommentsSpeechButton"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="18dp"
-        android:text="@string/details"
-        style="@style/NormalText"    />
-
+        android:background="@drawable/customshape" >
+    		<TableRow>
+    			<TextView
+       		 		android:id="@+id/textView1"
+        			android:layout_width="wrap_content"
+       	 			android:layout_height="wrap_content"
+        			android:layout_alignParentLeft="true"
+        			android:layout_alignParentTop="true"
+        			android:layout_marginLeft="18dp"
+        			android:layout_marginTop="18dp"
+        			android:text="@string/delivery3_msg"
+        			style="@style/NormalText"    />
+		 	</TableRow>
+    	  	<TableRow>
+    	  		<TextView
+        			android:id="@+id/textView2"
+        			android:layout_width="wrap_content"
+        			android:layout_height="wrap_content"
+        			android:layout_marginTop="10dp"
+        			android:layout_alignParentLeft="true"
+        			android:layout_alignParentTop="true"
+        			android:text="@string/details"
+        			style="@style/NormalText"    />
+		 	</TableRow>
+    </TableLayout>		
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="66dp" >
+        android:layout_below="@+id/delivery_info3"
+        android:layout_marginTop="29dp" >
     </ListView>
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/deliveryCommentsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/blacceptsignImageView"
-        android:layout_alignRight="@+id/blacceptsignImageView"
+        android:layout_alignLeft="@+id/sv_accept_sign_delivery3"
+        android:layout_alignRight="@+id/sv_accept_sign_delivery3"
         android:layout_below="@+id/listView1"
         android:ems="10"
         android:hint="Delivery Comments Here"
@@ -58,7 +67,7 @@
         android:src="@drawable/speech2txt" />
 
     <gov.nysenate.inventory.android.SignatureView
-        android:id="@+id/blacceptsignImageView"
+        android:id="@+id/sv_accept_sign_delivery3"
         android:layout_width="500dp"
         android:layout_height="100dp"
         android:layout_above="@+id/btnDelivery3Cont"
@@ -71,7 +80,7 @@
         android:id="@+id/naemployee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/blacceptsignImageView"
+        android:layout_above="@+id/sv_accept_sign_delivery3"
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="@string/employee_list_hint"

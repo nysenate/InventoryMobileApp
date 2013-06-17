@@ -104,7 +104,7 @@ public class Delivery3 extends SenateActivity {
 
 		
         // Setup the Signature Field (sign) and Delivery Comments (commentsEditText)
-        sign = (SignatureView) findViewById(R.id.blacceptsignImageView);
+        sign = (SignatureView) findViewById(R.id.sv_accept_sign_delivery3);
         sign.setMinDimensions(200, 100);
         commentsEditText = (ClearableEditText) findViewById(R.id.deliveryCommentsEditText);
         commentsEditText.setClearMsg("Do you want to clear the Delivery Comments?");
@@ -160,7 +160,7 @@ public class Delivery3 extends SenateActivity {
 						R.layout.delivery_row,
 						deliveryList);   
 			*/	
-				listview	 = (ListView) findViewById(R.id.listView1);
+				listview = (ListView) findViewById(R.id.listView1);
 				listview.setItemsCanFocus(false);
 				listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 				 

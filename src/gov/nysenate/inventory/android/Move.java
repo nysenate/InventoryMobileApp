@@ -30,15 +30,16 @@ public class Move extends SenateActivity implements OnItemClickListener {
 	private ListView mList;
     
 	public static final String[] titles = new String[] { "Pickup",
-			"Delivery"};/*, "Pickup/Deliver Log"*/
+			"Delivery", "Main Menu"};/*, "Pickup/Deliver Log"*/
 
 	public static final String[] descriptions = new String[] {
 			"Pickup items from initial location",
-			"Deliver items that have been picked up to a new location"}; /*,
+			"Deliver items that have been picked up to a new location",
+			"Return to the Main Menu"}; /*,
 			"Show History on Pickup/Delivered items"*/
 
 	public static final Integer[] images = { R.drawable.pickup3,
-			R.drawable.delivery2}; /*, R.drawable.log*/
+			R.drawable.delivery2, R.drawable.mainmenu}; /*, R.drawable.log*/
 
 	ListView listView;
 	List<RowItem> rowItems;    
@@ -75,6 +76,9 @@ public class Move extends SenateActivity implements OnItemClickListener {
 			this.delivery(view);
 		} else if (curRow.getTitle().equalsIgnoreCase("Pickup/Deliver Log")) {
 				// TODO
+		} else if (curRow.getTitle().equalsIgnoreCase("Main Menu")) {
+			this.onBackPressed();
+	        progBarMove.setVisibility(ProgressBar.INVISIBLE);
 		}
 
 		/*

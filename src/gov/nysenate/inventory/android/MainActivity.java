@@ -495,6 +495,14 @@ public class MainActivity extends Activity {
 			overridePendingTransition(R.anim.in_right, R.anim.out_left);
 		}
 	}
+	
+	public void startUpdate(View View) {
+		Intent intent = new Intent(this, UpgradeActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.in_down, R.anim.out_down);
+		
+	}
+	
 
 	// our code ends
 

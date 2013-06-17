@@ -33,9 +33,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -296,6 +298,22 @@ public class Pickup3 extends SenateActivity {
 		return true;
 	}
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            backButton(this.getCurrentFocus());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }  	
+	
 
     /**
      * Fire an intent to start the speech recognition activity.

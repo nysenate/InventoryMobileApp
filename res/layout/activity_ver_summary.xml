@@ -30,7 +30,7 @@
     <TableLayout
         android:id="@+id/tableLayout20"
         android:layout_width="550dp"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
         android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="21dp"
