@@ -70,7 +70,9 @@ public class UpgradeActivity extends Activity {
 		  //check of internet is available before making a web service request
 		  if(isNetworkAvailable(this)){
 		   Intent msgIntent = new Intent(this, InvWebService.class);
-		   msgIntent.putExtra(InvWebService.REQUEST_STRING, "http://10.26.3.74:8080/InventoryWebApp/CheckAppVersion");
+			String URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+		   msgIntent.putExtra(InvWebService.REQUEST_STRING, URL+"/CheckAppVersion?appName=InventoryMobileApp.apk");
 		   startService(msgIntent);
 		  }
 		 
