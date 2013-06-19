@@ -48,7 +48,9 @@ import android.widget.Toast;
 public class ListtestActivity extends SenateActivity {
 
 	public ClearableEditText barcode;
-	public TextView tvCounts;
+	public TextView tv_counts_new;
+	public TextView tv_counts_existing;
+	public TextView tv_counts_total;
 	public TextView loc_details;
 	public String res = null;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;	
@@ -193,16 +195,20 @@ public class ListtestActivity extends SenateActivity {
 		 */
 
 		// display the count on screen
-		tvCounts = (TextView) findViewById(R.id.tvCounts);
+		tv_counts_new = (TextView) findViewById(R.id.tv_counts_new);
+		tv_counts_existing = (TextView) findViewById(R.id.tv_counts_existing);
+		tv_counts_total = (TextView) findViewById(R.id.tv_counts_total);
 
-		tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
-		tvCounts.setOnTouchListener(new View.OnTouchListener() {
+		tv_counts_new.setText( Html.fromHtml("<b>New</b><br/>"+countOf(invList, "NEW")));	
+		tv_counts_new.setOnTouchListener(new View.OnTouchListener() {
+
+			
 			@Override
 		    public boolean onTouch(View v, MotionEvent event) {
 			    Layout layout = ((TextView) v).getLayout();
 			    int x = (int)event.getX();
 			    int y = (int)event.getY();
-			    int plusPos = tvCounts.getText().toString().indexOf("+");
+			    int plusPos = tv_counts_new.getText().toString().indexOf("+");
 			    int foundAt = -1;
 			    if (layout!=null){
 			        int line = layout.getLineForVertical(y);
@@ -229,6 +235,46 @@ public class ListtestActivity extends SenateActivity {
 			    return true;
 			}
 		});
+
+
+		tv_counts_existing.setText( Html.fromHtml("<b>Existing</b><br/>"+countOf(invList, "EXISTING")));	
+		tv_counts_existing.setOnTouchListener(new View.OnTouchListener() {
+
+			
+			@Override
+		    public boolean onTouch(View v, MotionEvent event) {
+			    Layout layout = ((TextView) v).getLayout();
+			    int x = (int)event.getX();
+			    int y = (int)event.getY();
+			    int plusPos = tv_counts_new.getText().toString().indexOf("+");
+			    int foundAt = -1;
+			    if (layout!=null){
+			        int line = layout.getLineForVertical(y);
+			        int offset = layout.getOffsetForHorizontal(line, x);
+			        if (offset<plusPos) {
+			        	if (!lastClickedTo.equals("NEW")) {
+			        		lastRowFound = -1;
+			        	}
+			        	lastClickedTo = "NEW";
+			        	foundAt = adapter.findTypePos("NEW", lastRowFound+1);
+			        }
+			        else if (offset>plusPos) {
+			        	if (lastClickedTo.equals("NEW")) {
+			        		lastRowFound = -1;
+			        	}
+			        	lastClickedTo = "EXISTING";
+			        	foundAt = adapter.findTypePos("EXISTING", lastRowFound+1);
+			        }
+		        	lastRowFound = foundAt;
+		        	listView.setSelection(lastRowFound);
+			        
+			        Log.v("index", ""+offset);
+			        }
+			    return true;
+			}
+		});
+		tv_counts_total.setText( Html.fromHtml("<b>Total</b><br />"+Integer.toString(count)));	
+		
 		// populate the listview
 		listView.setAdapter(adapter);
 		
@@ -515,7 +561,9 @@ public class ListtestActivity extends SenateActivity {
 				//adapter.clear();
 				adapter.notifyDataSetChanged();
 				count = adapter.getCount();
-				tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
+				tv_counts_new.setText( Html.fromHtml("<b>New</b><br/>"+countOf(invList, "NEW")));	
+				tv_counts_existing.setText( Html.fromHtml("<b>Existing</b><br/>"+countOf(invList, "EXISTING")));	
+				tv_counts_total.setText( Html.fromHtml("<b>Total</b><br />"+Integer.toString(count)));	
 				//listView.setAdapter(adapter);
 				Log.i("check", "listview updated");
 
@@ -625,7 +673,9 @@ public class ListtestActivity extends SenateActivity {
 
 						adapter.notifyDataSetChanged();
 						count = adapter.getCount();
-						tvCounts.setText( Html.fromHtml("New: <b>"+countOf(invList, "NEW")+"</b> + "+"Existing: <b>"+countOf(invList, "EXISTING")+"</b> = <b>"+Integer.toString(count)+"</b>"));
+						tv_counts_new.setText( Html.fromHtml("New<br/><b>"+countOf(invList, "NEW")+"</b>"));	
+						tv_counts_existing.setText( Html.fromHtml("Existing<br/><b>"+countOf(invList, "EXISTING")+"</b>"));	
+						tv_counts_total.setText( Html.fromHtml("Total<br /><b>"+Integer.toString(count)+"</b>"));	
 						barcode.setText("");
 						dialog.dismiss();
 					}

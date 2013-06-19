@@ -28,13 +28,13 @@ import android.view.Menu;
 import android.widget.TextView;
 
 public class UpgradeActivity extends Activity {
- private static final String LOG_TAG = "AppUpgrade";
- private MyWebReceiver receiver;
- private int versionCode = 0;
- String appURI = "";
+	private static final String LOG_TAG = "AppUpgrade";
+	private MyWebReceiver receiver;
+	private int versionCode = 0;
+	String appURI = "";
 	 
-	 private DownloadManager downloadManager;
-	 private long downloadReference;
+	private DownloadManager downloadManager;
+	private long downloadReference;
 	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

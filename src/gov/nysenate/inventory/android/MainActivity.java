@@ -2,11 +2,15 @@ package gov.nysenate.inventory.android;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.method.KeyListener;
@@ -31,16 +35,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import gov.nysenate.inventory.android.UpgradeActivity.MyWebReceiver;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 //   WIFI Code Added Below
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -76,6 +90,16 @@ public class MainActivity extends Activity {
 	public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
 	public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
 
+	private static final String LOG_TAG = "AppUpgrade";
+	private MyWebReceiver receiver;
+	private int versionCode = 0;
+	String appURI = "";
+	static String latestVersionName;
+	static int latestVersion;
+	 
+	private DownloadManager downloadManager;
+	private long downloadReference;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -83,68 +107,14 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
-        //user_name.setClearMsg("Do you want to clear your username?");
-        //user_name.showClearMsg(true);
         password = (ClearableEditText) findViewById(R.id.password);
-        //password.setClearMsg("Do you want to clear your password?");
-        //password.showClearMsg(true);
 
 		// Read from the /assets directory for properties of the project
 		// we can modify this file and the URL will be changed
 		//Resources resources = this.getResources();
 		progressBarLogin = (ProgressBar)findViewById(R.id.progressBarLogin);
 		buttonLogin = (Button)findViewById(R.id.buttonLogin);
-      /*  final ImageView v = (ImageView) findViewById(R.id.buttonLogin);
-        
 
-        
-        v.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				if (arg0.getId()==R.id.buttonLogin) {
-
-					Context context = getApplicationContext();
-					int duration = Toast.LENGTH_SHORT;
-
-					Toast toast = Toast
-							.makeText(
-									context,
-									"In Login Button Press",
-									3000);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
-					
-				switch (arg1.getAction())
-                {
-                    case MotionEvent.ACTION_DOWN:
-                    {
-                        ((ImageView)v).setImageAlpha(200);
-                        validate(v);
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP:
-                    {
-                        ((ImageView)v).setImageAlpha(255);
-                    }
-                }
-				
-				}
-				else {
-					Context context = getApplicationContext();
-					int duration = Toast.LENGTH_SHORT;
-
-					Toast toast = Toast
-							.makeText(
-									context,
-									"In OTHER Press",
-									3000);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();					
-				}
-				return false;
-			}
-        });        */
 		AssetManager assetManager = resources.getAssets();
 		try {
 			InputStream inputStream = assetManager.open("invApp.properties");
@@ -165,16 +135,6 @@ public class MainActivity extends Activity {
 			boolean enablingWifi = false;
 			long startTime = System.currentTimeMillis();
 			mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-
-			/*
-			 * if (!mainWifi.isWifiEnabled()) { Thread t = new Thread() {
-			 * 
-			 * @Override public void run() { try { //check if connected! while
-			 * (mainWifi.isWifiEnabled()) { //Wait to connect
-			 * Thread.sleep(1000); }
-			 * 
-			 * } catch (Exception e) { } } }; t.start(); Thread.yield(); }
-			 */
 
 			while (!mainWifi.isWifiEnabled()
 					|| System.currentTimeMillis() - startTime > 3000) {
@@ -237,17 +197,6 @@ public class MainActivity extends Activity {
 				}
 			}
 
-/*			if (senateWifiFound > -1) {
-				wifiMessage = "YES!";
-				// wifiMessage =
-				// "Great news!!! NY Senate Wireless Network was found. You should have access to information needed for this app.";
-			} else if (senateVisitorWifiFound > -1) {
-				wifiMessage = "OK!";
-			} else if (wifiList.size() > 0) {
-				wifiMessage = "Okay news!!! Wireless Networks were found but none of them are NY Senate Wireless Networks. You *might* have access to information needed for this app if you can connect to one of these networks.";
-			} else {
-				wifiMessage = "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app.";
-			}*/
 
 			if (connectedTo == -1) {
 				// wifiMessage = wifiMessage +
@@ -440,11 +389,71 @@ public class MainActivity extends Activity {
 			t.setTextColor(Color.RED);
 
 		}
-		// AppWifiChecker wifiChecker = new
-		// AppWifiChecker(this.getApplicationContext(), 1000);
-		// Thread checkWifi = new Thread(wifiChecker);
-		// checkWifi.start();
+		 //Overall information about the contents of a package 
+		  //This corresponds to all of the information collected from AndroidManifest.xml.
+		  PackageInfo pInfo = null;
+		  try {
+		   pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+		  } 
+		  catch (NameNotFoundException e) {
+		   e.printStackTrace();
+		  }
+		  //get the app version Name for display
+		  String version = pInfo.versionName;
+		  //get the app version Code for checking
+		  versionCode = pInfo.versionCode;
+		  Log.i("onCreate VERSION CODE", "versionCode:"+versionCode);
+		  //display the current version in a TextView
+		 
+		  //Broadcast receiver for our Web Request 
+		  IntentFilter filter = new IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
+		  filter.addCategory(Intent.CATEGORY_DEFAULT);
+		  receiver = new MyWebReceiver();
+		  registerReceiver(receiver, filter);
+		 
+		  //Broadcast receiver for the download manager
+		  filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+		  registerReceiver(downloadReceiver, filter);
+		 
+		  //check of internet is available before making a web service request
+		  if(isNetworkAvailable(this)){
+		   Intent msgIntent = new Intent(this, InvWebService.class);
+			String URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+		   msgIntent.putExtra(InvWebService.REQUEST_STRING, URL+"/CheckAppVersion?appName=InventoryMobileApp.apk");
+		   startService(msgIntent);
+		  }
+		
+		
+
 	}
+
+	 @Override
+	 public void onDestroy() {
+	  //unregister your receivers
+	  this.unregisterReceiver(receiver);
+	  this.unregisterReceiver(downloadReceiver);
+	  super.onDestroy();
+	 }
+	 	
+	 
+	 //check for internet connection
+	 private boolean isNetworkAvailable(Context context) {
+	  ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	  if (connectivity != null) {
+	   NetworkInfo[] info = connectivity.getAllNetworkInfo();
+	   if (info != null) {
+	    for (int i = 0; i < info.length; i++) {
+	     Log.v(LOG_TAG,String.valueOf(i));
+	     if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+	      Log.v(LOG_TAG, "connected!");
+	      return true;
+	     }
+	    }
+	   }
+	  }
+	  return false;
+	 }
 	
 	public Properties getProperties() {
 	    if (properties==null) {
@@ -483,16 +492,21 @@ public class MainActivity extends Activity {
 
 	public void validate(View view) {
 		if (view.getId()==R.id.buttonLogin) {
-			buttonLogin.getBackground().setAlpha(70);
-			progressBarLogin.setVisibility(ProgressBar.VISIBLE);
-			Intent intent = new Intent(this, DisplayMessageActivity.class);
-			// Intent intent = new Intent(this, MenuActivity.class);
-			String u_name = user_name.getText().toString();
-			String pwd = password.getText().toString();
-			intent.putExtra(u_name_intent, u_name);
-			intent.putExtra(pwd_intent, pwd);
-			startActivity(intent);
-			overridePendingTransition(R.anim.in_right, R.anim.out_left);
+			if (buttonLogin.getText().toString().equalsIgnoreCase("Close")) {
+				finish();
+			}
+			else {
+				buttonLogin.getBackground().setAlpha(70);
+				progressBarLogin.setVisibility(ProgressBar.VISIBLE);
+				Intent intent = new Intent(this, DisplayMessageActivity.class);
+				// Intent intent = new Intent(this, MenuActivity.class);
+				String u_name = user_name.getText().toString();
+				String pwd = password.getText().toString();
+				intent.putExtra(u_name_intent, u_name);
+				intent.putExtra(pwd_intent, pwd);
+				startActivity(intent);
+				overridePendingTransition(R.anim.in_right, R.anim.out_left);
+			}
 		}
 	}
 	
@@ -504,6 +518,96 @@ public class MainActivity extends Activity {
 	}
 	
 
+	 //broadcast receiver to get notification when the web request finishes
+	 public class MyWebReceiver extends BroadcastReceiver{
+	 
+	  public static final String PROCESS_RESPONSE = "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
+	 
+	  @Override
+	  public void onReceive(Context context, Intent intent) {
+	 
+	   String reponseMessage = intent.getStringExtra(InvWebService.RESPONSE_MESSAGE);
+	   Log.v(LOG_TAG, reponseMessage);
+	 
+	   //parse the JSON response
+	   JSONObject responseObj;
+	   try {
+	    responseObj = new JSONObject(reponseMessage);
+	    boolean success = responseObj.getBoolean("success");
+	    //if the reponse was successful check further
+	    if(success){
+	     //get the latest version from the JSON string
+	     latestVersion = responseObj.getInt("latestVersion");
+	     //get the lastest application URI from the JSON string
+	     appURI = responseObj.getString("appURI");
+	     latestVersionName = responseObj.getString("latestVersionName");
+	     Log.i(LOG_TAG, "latestVersion:"+latestVersion+" > versionCode:"+versionCode);
+	     //check if we need to upgrade?
+	     if(latestVersion > versionCode){
+	      user_name.setVisibility(View.INVISIBLE);
+	      password.setVisibility(View.INVISIBLE);
+	      buttonLogin.setText("Close");
+	      progressBarLogin.setVisibility(ProgressBar.VISIBLE);
+	      
+	      //oh yeah we do need an upgrade, let the user know send an alert message
+	      AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+	      builder.setMessage("There is newer version ("+latestVersionName+":"+latestVersion+") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?")
+	      .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	       //if the user agrees to upgrade
+	       public void onClick(DialogInterface dialog, int id) {
+	        //start downloading the file using the download manager
+	        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+	        Uri Download_Uri = Uri.parse(appURI);
+	        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+	        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+	        request.setAllowedOverRoaming(false);
+	        request.setTitle("My Andorid App Download");
+	        request.setDestinationInExternalFilesDir(MainActivity.this,Environment.DIRECTORY_DOWNLOADS,"InventoryMobileApp.apk");
+	        downloadReference = downloadManager.enqueue(request);
+	       }
+	      })
+	      .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
+	       public void onClick(DialogInterface dialog, int id) {
+	        // User cancelled the dialog
+	    	   //finish();
+	       }
+	      });
+	      //show the alert message
+	      builder.create().show();
+	     }
+	 
+	    }
+	   } catch (JSONException e) {
+	    e.printStackTrace();
+	   }
+	 
+	  }
+	 
+	 }
+	 
+	 //broadcast receiver to get notification about ongoing downloads
+	 private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
+	 
+	  @Override
+	  public void onReceive(Context context, Intent intent) {
+	 
+	   //check if the broadcast message is for our Enqueued download
+	   long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+	   if(downloadReference == referenceId){
+	 
+	    Log.v(LOG_TAG, "Downloading of the new app version complete");
+	    //start the installation of the latest version
+	    Intent installIntent = new Intent(Intent.ACTION_VIEW);
+	    installIntent.setDataAndType(downloadManager.getUriForDownloadedFile(downloadReference), 
+	        "application/vnd.android.package-archive");
+	    installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	    startActivity(installIntent); 
+  	    TextView t = (TextView) findViewById(R.id.textView1);
+    	t.setText("There is newer version ("+latestVersionName+":"+latestVersion+") of this application available. In order to use this app, you MUST upgrade!!!! Next time click OK then INSTALL!!");
+	     
+	   }
+	  }
+	 }; 	
 	// our code ends
 
 }

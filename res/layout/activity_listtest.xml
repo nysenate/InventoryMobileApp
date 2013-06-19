@@ -3,20 +3,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ListtestActivity" >
-
-    <TextView
-        android:id="@+id/tvCounts"
+    <TableLayout
+        android:id="@+id/tableLayout1"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/preferencePWD"
         android:layout_toRightOf="@+id/preferencePWD"
-        android:gravity="right"
-        android:textAppearance="?android:attr/textAppearanceMedium"        
-        android:hint="@string/count" >
+        android:paddingBottom="7dp"
+        >
+  		<TableRow>
+    
+		    <TextView
+       			android:id="@+id/tv_counts_new"
+        		android:layout_width="100dp"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentTop="true"
+        		android:gravity="center"
+        		android:textAppearance="?android:attr/textAppearanceMedium"        
+        		android:hint="@string/count" >
 
-    </TextView>
+    		</TextView>
+    		<TextView
+        		android:id="@+id/tv_counts_existing"
+        		android:layout_width="100dp"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentTop="true"
+        		android:gravity="center"
+        		android:textAppearance="?android:attr/textAppearanceMedium"        
+        		android:hint="@string/count" >
 
+    		</TextView>
+    		<TextView
+        		android:id="@+id/tv_counts_total"
+        		android:layout_width="100dp"
+        		android:layout_height="wrap_content"
+        		android:layout_alignParentTop="true"
+        		android:gravity="center"
+        		android:textAppearance="?android:attr/textAppearanceMedium"        
+        		android:hint="@string/count" >
+    		</TextView>
+   		</TableRow>
+    </TableLayout>	
+    
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -50,7 +79,7 @@
 
 	<Spinner
 	    android:id="@+id/spinSortList"
-	    android:layout_width="410dp"
+	    android:layout_width="190dp"
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/textView1"
 	    android:layout_toRightOf="@+id/tvLblSortBy"
@@ -110,7 +139,7 @@
     android:layout_height="wrap_content"
     android:layout_alignLeft="@+id/btnVerListCancel"
     android:layout_alignTop="@+id/tvLblSortBy"
-    android:layout_marginLeft="25dp"
+    android:layout_marginLeft="145dp"
     android:layout_below="@+id/textView1"
     android:layout_marginTop="3dp"
     android:text="Sort By:"
