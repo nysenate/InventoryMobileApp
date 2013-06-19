@@ -569,7 +569,7 @@ public class MainActivity extends Activity {
 	      .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
 	       public void onClick(DialogInterface dialog, int id) {
 	        // User cancelled the dialog
-	    	   //finish();
+	    	   finish();
 	       }
 	      });
 	      //show the alert message
