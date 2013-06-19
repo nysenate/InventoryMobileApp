@@ -208,12 +208,12 @@ public class ListtestActivity extends SenateActivity {
 			    Layout layout = ((TextView) v).getLayout();
 			    int x = (int)event.getX();
 			    int y = (int)event.getY();
-			    int plusPos = tv_counts_new.getText().toString().indexOf("+");
+			    //int plusPos = tv_counts_new.getText().toString().indexOf("+");
 			    int foundAt = -1;
 			    if (layout!=null){
 			        int line = layout.getLineForVertical(y);
 			        int offset = layout.getOffsetForHorizontal(line, x);
-			        if (offset<plusPos) {
+			        /*if (offset<plusPos) {
 			        	if (!lastClickedTo.equals("NEW")) {
 			        		lastRowFound = -1;
 			        	}
@@ -226,9 +226,14 @@ public class ListtestActivity extends SenateActivity {
 			        	}
 			        	lastClickedTo = "EXISTING";
 			        	foundAt = adapter.findTypePos("EXISTING", lastRowFound+1);
-			        }
+			        }*/
+		        	if (lastClickedTo.equals("EXISTING")) {
+		        		lastRowFound = -1;
+		        	}
+			        foundAt = adapter.findTypePos("NEW", lastRowFound+1);
 		        	lastRowFound = foundAt;
 		        	listView.setSelection(lastRowFound);
+		        	lastClickedTo = "v";
 			        
 			        Log.v("index", ""+offset);
 			        }
@@ -246,12 +251,12 @@ public class ListtestActivity extends SenateActivity {
 			    Layout layout = ((TextView) v).getLayout();
 			    int x = (int)event.getX();
 			    int y = (int)event.getY();
-			    int plusPos = tv_counts_new.getText().toString().indexOf("+");
+			    //int plusPos = tv_counts_new.getText().toString().indexOf("+");
 			    int foundAt = -1;
 			    if (layout!=null){
 			        int line = layout.getLineForVertical(y);
 			        int offset = layout.getOffsetForHorizontal(line, x);
-			        if (offset<plusPos) {
+			        /*if (offset<plusPos) {
 			        	if (!lastClickedTo.equals("NEW")) {
 			        		lastRowFound = -1;
 			        	}
@@ -264,9 +269,14 @@ public class ListtestActivity extends SenateActivity {
 			        	}
 			        	lastClickedTo = "EXISTING";
 			        	foundAt = adapter.findTypePos("EXISTING", lastRowFound+1);
-			        }
+			        }*/
+		        	if (lastClickedTo.equals("NEW")) {
+		        		lastRowFound = -1;
+		        	}
+			        foundAt = adapter.findTypePos("EXISTING", lastRowFound+1);
 		        	lastRowFound = foundAt;
 		        	listView.setSelection(lastRowFound);
+		        	lastClickedTo = "EXISTING";
 			        
 			        Log.v("index", ""+offset);
 			        }

@@ -10,7 +10,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/preferencePWD"
         android:layout_toRightOf="@+id/preferencePWD"
-        android:paddingBottom="7dp"
         >
   		<TableRow>
     
