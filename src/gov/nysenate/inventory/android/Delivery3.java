@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.android.ListtestActivity.verList;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,13 +34,13 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -441,6 +439,22 @@ public class Delivery3 extends SenateActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            this.onBackPressed();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_delivery3, menu);
@@ -492,9 +506,6 @@ public class Delivery3 extends SenateActivity
 
     public void backButton(View view) {
         super.onBackPressed();
-/*        this.btnDelivery3Back.getBackground().setAlpha(45);
-        this.finish();
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);*/
     }
 
     // class for connecting to internet and sending HTTP request to server
