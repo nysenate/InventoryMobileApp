@@ -42,7 +42,7 @@ public class ListtestActivity extends SenateActivity
     public ClearableEditText barcode;
     public TextView tv_counts_new;
     public TextView tv_counts_existing;
-    public TextView tv_counts_total;
+    public TextView tv_counts_scanned;
     public TextView loc_details;
     public String res = null;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -57,6 +57,7 @@ public class ListtestActivity extends SenateActivity
     public Spinner spinSortList;
     static Button btnVerListCont;
     static Button btnVerListCancel;
+    int cntScanned = 0;
 
     String URL = ""; // this will be initialized once in onCreate() and used for
                      // all server calls.
@@ -193,7 +194,7 @@ public class ListtestActivity extends SenateActivity
         // display the count on screen
         tv_counts_new = (TextView) findViewById(R.id.tv_counts_new);
         tv_counts_existing = (TextView) findViewById(R.id.tv_counts_existing);
-        tv_counts_total = (TextView) findViewById(R.id.tv_counts_total);
+        tv_counts_scanned = (TextView) findViewById(R.id.tv_counts_scanned);
 
         tv_counts_new.setText(Html.fromHtml("<b>New</b><br/>"
                 + countOf(invList, "NEW")));
@@ -232,9 +233,10 @@ public class ListtestActivity extends SenateActivity
                 return true;
             }
         });
-
+        int cntExisting = countOf(invList, "EXISTING");
+        int cntNew = countOf(invList, "NEW");
         tv_counts_existing.setText(Html.fromHtml("<b>Existing</b><br/>"
-                + countOf(invList, "EXISTING")));
+                + cntExisting));
         tv_counts_existing.setOnTouchListener(new View.OnTouchListener()
         {
 
@@ -270,8 +272,8 @@ public class ListtestActivity extends SenateActivity
                 return true;
             }
         });
-        tv_counts_total.setText(Html.fromHtml("<b>Total</b><br />"
-                + Integer.toString(count)));
+        tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
+                + cntScanned));
 
         // populate the listview
         listView.setAdapter(adapter);
@@ -450,6 +452,7 @@ public class ListtestActivity extends SenateActivity
                                                      // scanned items
                                                      // numbers for
                                                      // oracle table
+                        cntScanned++;
 
                         flag = 1;
                     }
@@ -557,6 +560,7 @@ public class ListtestActivity extends SenateActivity
                     InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
                             "NEW", vl.DECOMMODITYF);
                     invList.add(invItem);
+                    cntScanned++;
 
                     scannedItems.add(invItem);
                     AllScannedItems.add(invItem);
@@ -572,12 +576,14 @@ public class ListtestActivity extends SenateActivity
                 // adapter.clear();
                 adapter.notifyDataSetChanged();
                 count = adapter.getCount();
+                int cntExisting =  countOf(invList, "EXISTING");
+                int cntNew = countOf(invList, "NEW");
                 tv_counts_new.setText(Html.fromHtml("<b>New</b><br/>"
-                        + countOf(invList, "NEW")));
+                        + cntNew));
                 tv_counts_existing.setText(Html.fromHtml("<b>Existing</b><br/>"
-                        + countOf(invList, "EXISTING")));
-                tv_counts_total.setText(Html.fromHtml("<b>Total</b><br />"
-                        + Integer.toString(count)));
+                        +cntExisting));
+                tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
+                        +cntScanned));
                 // listView.setAdapter(adapter);
                 Log.i("check", "listview updated");
 
@@ -695,13 +701,16 @@ public class ListtestActivity extends SenateActivity
 
                         adapter.notifyDataSetChanged();
                         count = adapter.getCount();
+                        cntScanned++;
+                        int cntExisting =  countOf(invList, "EXISTING");
+                        int cntNew = countOf(invList, "NEW");                      
                         tv_counts_new.setText(Html.fromHtml("New<br/><b>"
-                                + countOf(invList, "NEW") + "</b>"));
+                                + cntNew + "</b>"));
                         tv_counts_existing.setText(Html
                                 .fromHtml("Existing<br/><b>"
-                                        + countOf(invList, "EXISTING") + "</b>"));
-                        tv_counts_total.setText(Html.fromHtml("Total<br /><b>"
-                                + Integer.toString(count) + "</b>"));
+                                        + cntExisting + "</b>"));
+                        tv_counts_scanned.setText(Html.fromHtml("Scanned<br /><b>"
+                                + cntScanned + "</b>"));
                         barcode.setText("");
                         dialog.dismiss();
                     }

@@ -12,16 +12,25 @@
         android:layout_toRightOf="@+id/preferencePWD"
         >
   		<TableRow>
-    
+
+    		<TextView
+    		    android:id="@+id/tv_counts_scanned"
+    		    android:layout_width="100dp"
+    		    android:layout_height="wrap_content"
+    		    android:layout_alignParentTop="true"
+    		    android:gravity="center"
+    		    android:hint="@string/count"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+
+    		</TextView>  		    
 		    <TextView
        			android:id="@+id/tv_counts_new"
         		android:layout_width="100dp"
         		android:layout_height="wrap_content"
         		android:layout_alignParentTop="true"
         		android:gravity="center"
-        		android:textAppearance="?android:attr/textAppearanceMedium"        
-        		android:hint="@string/count" >
-
+        		android:hint="@string/count"
+       		 	android:textAppearance="?android:attr/textAppearanceMedium" >
     		</TextView>
     		<TextView
         		android:id="@+id/tv_counts_existing"
@@ -29,18 +38,8 @@
         		android:layout_height="wrap_content"
         		android:layout_alignParentTop="true"
         		android:gravity="center"
-        		android:textAppearance="?android:attr/textAppearanceMedium"        
-        		android:hint="@string/count" >
-
-    		</TextView>
-    		<TextView
-        		android:id="@+id/tv_counts_total"
-        		android:layout_width="100dp"
-        		android:layout_height="wrap_content"
-        		android:layout_alignParentTop="true"
-        		android:gravity="center"
-        		android:textAppearance="?android:attr/textAppearanceMedium"        
-        		android:hint="@string/count" >
+        		android:hint="@string/count"
+        		android:textAppearance="?android:attr/textAppearanceMedium" >
     		</TextView>
    		</TableRow>
     </TableLayout>	
