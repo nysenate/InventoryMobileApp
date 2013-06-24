@@ -78,7 +78,7 @@
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/sv_accept_sign_delivery3"
         android:layout_centerHorizontal="true"

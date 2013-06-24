@@ -54,7 +54,7 @@
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="555dp"
-        android:layout_height="350dp"
+        android:layout_height="380dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="80dp"
@@ -153,7 +153,7 @@
     
     	<TextView
         	android:id="@+id/tvLocation"
-        	android:layout_width="fill_parent"
+        	android:layout_width="390dp"
         	android:layout_height="wrap_content"
         	android:layout_marginTop="20dp"
         	android:text="N/A"
@@ -187,7 +187,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/tableLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="87dp"
+        android:layout_marginTop="67dp"
         android:background="@drawable/buttonshapeblue"
         android:onClick="okButton"
         android:shadowColor="#000000"

@@ -61,17 +61,9 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         if (position % 2 > 0) {
             holder.rlList.setBackgroundColor(context.getResources().getColor(
                     R.color.white));
-            // holder.invListDescr.setBackgroundColor(context.getResources().getColor(R.color.white));
-            // holder.invListBarcode.setBackgroundColor(context.getResources().getColor(R.color.white));
-            // holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.white));
-            // holder.speech2Txt.setImageResource(R.drawable.speech2txt);
         } else {
             holder.rlList.setBackgroundColor(context.getResources().getColor(
                     R.color.blueveryverylight));
-            // holder.speech2Txt.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-            // holder.invListBarcode.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-            // holder.invListDescr.setBackgroundColor(context.getResources().getColor(R.color.blueveryverylight));
-            // holder.speech2Txt.setImageResource(-1);
         }
 
         if (rowItem.getType().equalsIgnoreCase("NEW")) {
