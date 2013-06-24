@@ -1,16 +1,16 @@
 package gov.nysenate.inventory.android;
 
-public class Nvl {
-    
-    public String value (String val, String returnIfNull) {
-        if (val==null) {
-            return returnIfNull;    
+public class Nvl
+{
+
+    public String value(String val, String returnIfNull) {
+        if (val == null) {
+            return returnIfNull;
+        } else {
+            return val;
+
         }
-        else {
-            return val;    
-            
-        }
-        
+
     }
-    
+
 }

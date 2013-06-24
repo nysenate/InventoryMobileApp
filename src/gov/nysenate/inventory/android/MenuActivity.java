@@ -7,250 +7,261 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.speech.RecognizerIntent;
 
-public class MenuActivity extends SenateActivity implements OnItemClickListener {
-	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-	    
-	private ListView mList;
-	
-	public static ProgressBar progBarMenu;
-	    
-	public static final String[] titles = new String[] { "Search",
-			"Verification", "Move Items", "Logout" };
+public class MenuActivity extends SenateActivity implements OnItemClickListener
+{
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-	public static final String[] descriptions = new String[] {
-			"Scan an item and show information",
-			"Perform Inventory Verification for a Senate Location",
-			"Move Items from one location to another", "Logout of this UserID" };
+    private ListView mList;
 
-	public static final Integer[] images = { R.drawable.ssearch,
-			R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
+    public static ProgressBar progBarMenu;
 
-	ListView listView;
-	List<RowItem> rowItems;
+    public static final String[] titles = new String[] { "Search",
+            "Verification", "Move Items", "Logout" };
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_menu);
-        //define progressBar
-        
-        progBarMenu = (ProgressBar) findViewById( R.id.progBarMenu );
-		
-		rowItems = new ArrayList<RowItem>();
-		for (int i = 0; i < titles.length; i++) {
-			RowItem item = new RowItem(images[i], titles[i]);
-			rowItems.add(item);
-		}
+    public static final String[] descriptions = new String[] {
+            "Scan an item and show information",
+            "Perform Inventory Verification for a Senate Location",
+            "Move Items from one location to another", "Logout of this UserID" };
 
-		listView = (ListView) findViewById(R.id.list);
-		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
-				R.layout.list_item, rowItems);
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(this);
-	}
+    public static final Integer[] images = { R.drawable.ssearch,
+            R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		RowItem curRow = rowItems.get(position);
-		if (curRow.getTitle().equalsIgnoreCase("Search")) {
-			this.search(view);
-		} else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
-            progBarMenu.setVisibility(ProgressBar.VISIBLE);
+    ListView listView;
+    List<RowItem> rowItems;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_menu);
+        registerBaseActivityReceiver();
+        // define progressBar
+
+        progBarMenu = (ProgressBar) findViewById(R.id.progBarMenu);
+
+        rowItems = new ArrayList<RowItem>();
+        for (int i = 0; i < titles.length; i++) {
+            RowItem item = new RowItem(images[i], titles[i]);
+            rowItems.add(item);
+        }
+
+        listView = (ListView) findViewById(R.id.list);
+        CustomListViewAdapter adapter = new CustomListViewAdapter(this,
+                R.layout.list_item, rowItems);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id) {
+        RowItem curRow = rowItems.get(position);
+        if (curRow.getTitle().equalsIgnoreCase("Search")) {
+            this.search(view);
+        } else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
+            progBarMenu.setVisibility(View.VISIBLE);
             this.verify(view);
-		} else if (curRow.getTitle().equalsIgnoreCase("Move Items")) {
-            progBarMenu.setVisibility(ProgressBar.VISIBLE);		    
-			this.addItem(view);
-		} else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
-			this.logout(view);
-		}
+        } else if (curRow.getTitle().equalsIgnoreCase("Move Items")) {
+            progBarMenu.setVisibility(View.VISIBLE);
+            this.addItem(view);
+        } else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
+            this.logout(view);
+        }
 
-		/*
-		 * Toast toast = Toast.makeText(getApplicationContext(), "TEST Item " +
-		 * (position + 1) + ": " + rowItems.get(position), Toast.LENGTH_SHORT);
-		 * toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
-		 * toast.show();
-		 */
-	}
+        /*
+         * Toast toast = Toast.makeText(getApplicationContext(), "TEST Item " +
+         * (position + 1) + ": " + rowItems.get(position), Toast.LENGTH_SHORT);
+         * toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+         * toast.show();
+         */
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_menu, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activity_menu, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			final Activity currentActivity = this;
-			// 1. Instantiate an AlertDialog.Builder with its constructor
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            final Activity currentActivity = this;
+            // 1. Instantiate an AlertDialog.Builder with its constructor
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-			// 2. Chain together various setter methods to set the dialog
-			// characteristics
-			builder.setMessage("Do you really want to log out?").setTitle(
-					"Log out");
-			// Add the buttons
-			builder.setPositiveButton("Yes",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							backToParent();
-						}
-					});
-			builder.setNegativeButton("No",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							// User cancelled the dialog
-						}
-					});
+            // 2. Chain together various setter methods to set the dialog
+            // characteristics
+            builder.setMessage("Do you really want to log out?").setTitle(
+                    "Log out");
+            // Add the buttons
+            builder.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            backToParent();
+                        }
+                    });
+            builder.setNegativeButton("No",
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
 
-			// 3. Get the AlertDialog from create()
-			AlertDialog dialog = builder.create();
-			dialog.show();
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
-	public void backToParent() {
-		Toast toast = Toast.makeText(getApplicationContext(), "Logging Out",
-				Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-		NavUtils.navigateUpFromSameTask(this);
-		finish();
+    public void backToParent() {
+        Toast toast = Toast.makeText(getApplicationContext(), "Logging Out",
+                Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+        NavUtils.navigateUpFromSameTask(this);
+        finish();
 
-		overridePendingTransition(R.anim.in_left, R.anim.out_right);
-	}
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }
 
-	public void backButtonPressed() {
-		super.onBackPressed();
-		finish();
-		//overridePendingTransition(R.anim.in_left, R.anim.out_right);
-	}
+    public void backButtonPressed() {
+        super.onBackPressed();
+        finish();
+        // overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }
 
-	public void search(View view) {
+    public void search(View view) {
 
-		Intent intent = new Intent(this, SearchActivity.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
-		// overridePendingTransition(R.anim.slide_in_left,
-		// R.anim.slide_out_left);
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        // overridePendingTransition(R.anim.slide_in_left,
+        // R.anim.slide_out_left);
 
-	}
+    }
 
-	public void addItem(View view) {
-		Intent intent = new Intent(this, Move.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+    public void addItem(View view) {
+        Intent intent = new Intent(this, Move.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
-		// overridePendingTransition(R.anim.slide_in_left,
-		// R.anim.slide_out_left);
-	}
+        // overridePendingTransition(R.anim.slide_in_left,
+        // R.anim.slide_out_left);
+    }
 
-	public void verify(View view) {
-		Intent intent = new Intent(this, Verification.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
-		// overridePendingTransition(R.anim.slide_in_left,
-		// R.anim.slide_out_left);
+    public void verify(View view) {
+        Intent intent = new Intent(this, Verification.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        // overridePendingTransition(R.anim.slide_in_left,
+        // R.anim.slide_out_left);
 
-	}
+    }
 
-	public void location(View view) {
-		Intent intent = new Intent(this, LocationActivity.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.in_right, R.anim.out_left);
+    public void location(View view) {
+        Intent intent = new Intent(this, LocationActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
-		// overridePendingTransition(R.anim.slide_in_left,
-		// R.anim.slide_out_left);
-		// we are passing the intent to the activity again ,
-		// see instead if we can restart the activity to
-		// avoid the data being passed to the login activity
-	}
+        // overridePendingTransition(R.anim.slide_in_left,
+        // R.anim.slide_out_left);
+        // we are passing the intent to the activity again ,
+        // see instead if we can restart the activity to
+        // avoid the data being passed to the login activity
+    }
 
-	public void logout(View view) {
-		final Intent intent = new Intent(this, MainActivity.class);
+    public void logout(View view) {
+        final Intent intent = new Intent(this, MainActivity.class);
 
-		// 1. Instantiate an AlertDialog.Builder with its constructor
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		// 2. Chain together various setter methods to set the dialog
-		// characteristics
-		builder.setMessage("Do you really want to log out?")
-				.setTitle("Log out");
-		// Add the buttons
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				finish();
-				overridePendingTransition(R.anim.in_left, R.anim.out_right);
-				Toast toast = Toast.makeText(getApplicationContext(),
-						"logging out", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-			}
-		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				// User cancelled the dialog
-			}
-		});
+        // 2. Chain together various setter methods to set the dialog
+        // characteristics
+        builder.setMessage("Do you really want to log out?")
+                .setTitle("Log out");
+        // Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.in_left, R.anim.out_right);
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "logging out", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
 
-		// 3. Get the AlertDialog from create()
-		AlertDialog dialog = builder.create();
-		dialog.show();
-	}
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
-	@Override
-	public void onBackPressed() {
-		final Activity currentActivity = this;
-		// 1. Instantiate an AlertDialog.Builder with its constructor
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    @Override
+    public void onBackPressed() {
+        final Activity currentActivity = this;
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		// 2. Chain together various setter methods to set the dialog
-		// characteristics
-		builder.setMessage("Do you really want to log out?")
-				.setTitle("Log out");
-		// Add the buttons
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				backToParent();
-			}
-		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				// User cancelled the dialog
-			}
-		});
+        // 2. Chain together various setter methods to set the dialog
+        // characteristics
+        builder.setMessage("Do you really want to log out?")
+                .setTitle("Log out");
+        // Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                backToParent();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
 
-		// 3. Get the AlertDialog from create()
-		AlertDialog dialog = builder.create();
-		dialog.show();
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-	}
-	
-	
+    }
 
     /**
      * Fire an intent to start the speech recognition activity.
@@ -259,8 +270,9 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                "Speech recognition demo");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
-    }	
+    }
 
 }
