@@ -192,6 +192,7 @@
         <activity
             android:name="gov.nysenate.inventory.android.VerSummaryActivity"
             android:label="@string/title_activity_ver_summary"
+             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" >
         </activity>
         <activity

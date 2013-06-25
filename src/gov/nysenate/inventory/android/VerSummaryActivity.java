@@ -233,11 +233,12 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void backButton(View view) {
-
-        VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45);
+        this.onBackPressed();
+/*        VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45);
         Intent intent = new Intent(this, ListtestActivity.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);*/
+        
 
     }
 

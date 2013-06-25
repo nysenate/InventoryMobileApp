@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -300,6 +301,31 @@ public class ListtestActivity extends SenateActivity
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
+        
+        
+        // Force Keyboard to Popup
+        
+        if (barcode==null) {
+            barcode = (ClearableEditText) findViewById(R.id.preferencePWD);
+            barcode.addTextChangedListener(filterTextWatcher);            
+        }
+        
+        barcode.requestFocus();
+        barcode.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(barcode, InputMethodManager.SHOW_FORCED);
+            }   
+        }, 100);
+/*        barcode.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                          Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(barcode.getWindowToken(), 0);
+            }   
+        }, 200);        */
     }
 
     public int countOf(ArrayList<InvItem> invList, String type) {

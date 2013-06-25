@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-               style="@style/NormalText"   
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
                 
@@ -95,14 +95,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-               style="@style/NormalText"   
+                style="@style/NormalText"   
                 android:text="Missing Items:" />
 
             <TextView
                 android:id="@+id/tvMisItems"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-               style="@style/NormalText"   
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
         <TableRow>
@@ -111,14 +111,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-               style="@style/NormalText"   
+                style="@style/NormalText"   
                 android:text="New/Found Items:" />
 
             <TextView
                 android:id="@+id/tvNewItems"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-               style="@style/NormalText"   
+                style="@style/NormalText"   
                 android:text="N/A" />
         </TableRow>
         
@@ -133,7 +133,8 @@
         android:layout_alignLeft="@+id/tableLayout20"
         android:layout_below="@+id/tableLayout20"
         android:layout_above="@+id/btnVerSumCont"
-        android:layout_marginTop="37dp" >
+        android:layout_marginTop="37dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -143,7 +144,7 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"  >
             </TabWidget>
 
             <FrameLayout
@@ -229,8 +230,8 @@
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
-        android:text="Continue"
+        android:text="Submit Verification"
         android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+        android:textSize="22sp" />
 
 </RelativeLayout>
