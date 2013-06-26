@@ -153,17 +153,19 @@ public class Delivery3 extends SenateActivity
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
+                        
                     JSONObject jo = new JSONObject();
                     jo = jsonArray.getJSONObject(i);
+                    System.out.println(i+":"+jo.toString());
                     String nusenate = jo.getString("nusenate");
                     String cdcategory = jo.getString("cdcategory");
                     String decommodityf = jo.getString("decommodityf");                   
-                    
+                    String cdlocat = jo.getString("cdlocat");                   
 
                     // 3/15/13 BH Coded below to use InvItem Objects to display
                     // the list.
                     InvItem invItem = new InvItem(nusenate, cdcategory,
-                            "EXISTING", decommodityf);
+                            "EXISTING", decommodityf, cdlocat);
                     invList.add(invItem);
                     // invItem = null;
 

@@ -78,7 +78,7 @@ public class VerSummaryActivity extends SenateActivity
         spec1.setIndicator("Scanned");
 
         TabSpec spec2 = tabHost.newTabSpec("Tab 2");
-        spec2.setIndicator("Missing");
+        spec2.setIndicator("Unscanned");
         spec2.setContent(R.id.tab2);
 
         TabSpec spec3 = tabHost.newTabSpec("Tab 3");

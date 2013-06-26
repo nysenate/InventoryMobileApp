@@ -222,7 +222,18 @@ public class Pickup2Activity extends SenateActivity
                                 vl.ADSTREET1 = object.getString("adstreet1to")
                                         .replaceAll("&#34;", "\"");
                                 vl.DTISSUE = object.getString("dtissue");
-                            }
+                                vl.CDLOCAT = object.getString("cdlocatto");
+                                if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
+                                    vl.CONDITION = "EXISTING";
+                                }
+                                else if (cdlocatto.equalsIgnoreCase(vl.CDLOCAT)) {
+                                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: " + vl.CDLOCAT;
+                                }
+                                else {
+                                    vl.CONDITION = "DIFFERENT LOCATION";
+                                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Found in: " + vl.CDLOCAT;
+                                }
+                                                           }
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -248,17 +259,17 @@ public class Pickup2Activity extends SenateActivity
                     }
                     // This is what should be expected. Trying to move the
                     else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {
-                        invStatus = "UPDATE";
+                        invStatus =  vl.CONDITION;
                     } else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { //
                         invStatus = "AT DESTINATION";
                     } else {
-                        invStatus = "LOCATED AT: " + vl.CDLOCATTO;
+                        invStatus = "Found in: " + vl.CDLOCATTO;
                     }
 
                     // 5/24/13 BH Coded below to use InvItem Objects to display
                     // the list.
                     InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            invStatus, vl.DECOMMODITYF);
+                            invStatus, vl.DECOMMODITYF, vl.CDLOCAT);
                     invList.add(invItem);
 
                     list.add(vl);
@@ -331,7 +342,7 @@ public class Pickup2Activity extends SenateActivity
                         vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
 
                         InvItem invItem = new InvItem(vl.NUSENATE,
-                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF);
+                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
                         invList.add(invItem);
 
                         list.add(vl);
@@ -549,5 +560,7 @@ public class Pickup2Activity extends SenateActivity
         String CDLOCTYPETO;
         String ADSTREET1;
         String DTISSUE;
+        String CDLOCAT;
+        String CONDITION;
     }
 }

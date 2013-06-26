@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.os.AsyncTask;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -46,6 +49,27 @@ public abstract class SenateActivity extends Activity
     protected void onDestroy() {
         super.onDestroy();
         unRegisterBaseActivityReceiver();
+    }
+    
+    // Quick shortcut for playing a single sound.
+    public void playSound(int sound) {
+        int[] sounds = new int[1];
+        sounds[0] = sound;
+        playSounds(sounds);
+    }
+    
+    public void playSounds(int[] sounds) {
+       // void for now.. Might return error msgs, or completion result in future.
+        Object[] soundParams = new Object[sounds.length+1];
+        soundParams[0] = getApplicationContext();
+        for (int x=0;x<sounds.length;x++) {
+            soundParams[x+1]=new Integer(sounds[x]);
+        }
+        
+        AsyncTask<Object, Integer, String> soundResults = new SoundAlert()
+        .execute(soundParams);
+        
+        
     }
 
     private static IntentFilter createIntentFilter() {

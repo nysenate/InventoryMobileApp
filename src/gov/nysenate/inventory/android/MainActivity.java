@@ -20,6 +20,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -81,6 +82,7 @@ public class MainActivity extends SenateActivity
 
     private DownloadManager downloadManager;
     private long downloadReference;
+    AudioManager audio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,8 @@ public class MainActivity extends SenateActivity
         // Resources resources = this.getResources();
         progressBarLogin = (ProgressBar) findViewById(R.id.progressBarLogin);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        
+
 
         AssetManager assetManager = resources.getAssets();
         try {
@@ -417,6 +421,72 @@ public class MainActivity extends SenateActivity
             startService(msgIntent);
         }
 
+        try {
+            audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+            final int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            String msg = null;
+            String title = null;
+            boolean showAudioMsg = false;
+
+            if (currentVolume==0) {
+               msg = "***WARNING: The volume is currently <font color='RED'><b>OFF</b></font>. You will not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
+               showAudioMsg = true;
+            }
+            else if (currentVolume<.4*maxVolume) {
+                msg = "***WARNING: The volume is currently is <font color='RED'><b>LOW</b></font>. You might not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
+                showAudioMsg = true;
+            }
+
+            final int duration = Toast.LENGTH_LONG;
+
+            
+            
+          if (showAudioMsg) {
+              AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                      this);
+
+              // set title
+              alertDialogBuilder.setTitle("");
+
+              // set dialog message
+              alertDialogBuilder.setMessage(Html.fromHtml(msg))
+                      .setCancelable(false)
+                      .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                          public void onClick(DialogInterface dialog,int id) {
+                              audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+                              Toast toast = Toast.makeText(getApplicationContext(),
+                                      "Sound has been turned on to Maximum Volume.", duration);
+                              toast.setGravity(Gravity.CENTER, 0, 0);
+                              toast.show();
+                             
+                              dialog.dismiss();
+                          }
+                      })
+                  .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "Sound Volume was NOT changed.", duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        dialog.dismiss();
+                    }
+                  });
+                      
+              // create alert dialog
+              AlertDialog alertDialog = alertDialogBuilder.create();
+
+              // show it
+              alertDialog.show();
+             
+          }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }        
+        
     }
 
     @Override

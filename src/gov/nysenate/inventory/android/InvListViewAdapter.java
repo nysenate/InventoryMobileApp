@@ -69,17 +69,32 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         if (rowItem.getType().equalsIgnoreCase("NEW")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
-                    R.color.blue)); // blue
+                    R.color.red)); // blue
             holder.invListDescr.setText(rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
-                    R.color.blue)); // blue
-        } else {
+                    R.color.red)); // blue
+        } else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.black)); // blue
             holder.invListDescr.setText(rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.black)); // black
+        } else if (rowItem.getType().equalsIgnoreCase("AT DESTINATION")) {
+            holder.invListBarcode.setText(rowItem.getNusenate());
+            holder.invListBarcode.setTextColor(context.getResources().getColor(
+                    R.color.graydark)); // blue
+            holder.invListDescr.setText(rowItem.getDecommodityf());
+            holder.invListDescr.setTextColor(context.getResources().getColor(
+                    R.color.graydark)); // black
+        
+        } else {
+            holder.invListBarcode.setText(rowItem.getNusenate());
+            holder.invListBarcode.setTextColor(context.getResources().getColor(
+                    R.color.blue)); // blue
+            holder.invListDescr.setText(rowItem.getDecommodityf());
+            holder.invListDescr.setTextColor(context.getResources().getColor(
+                    R.color.blue)); // blue            
 
         }
         OnClickListener l = new OnClickListener()

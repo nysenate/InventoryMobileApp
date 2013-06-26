@@ -144,6 +144,7 @@ public class ListtestActivity extends SenateActivity
                     vl.NUSENATE = jo.getString("NUSENATE");
                     vl.CDCATEGORY = jo.getString("CDCATEGORY");
                     vl.DECOMMODITYF = jo.getString("DECOMMODITYF");
+                    vl.CDLOCAT = jo.getString("CDLOCATTO");
 
                     list.add(vl);
                     StringBuilder s = new StringBuilder();
@@ -157,7 +158,7 @@ public class ListtestActivity extends SenateActivity
                     // 3/15/13 BH Coded below to use InvItem Objects to display
                     // the list.
                     InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            "EXISTING", vl.DECOMMODITYF);
+                            "EXISTING", vl.DECOMMODITYF, vl.CDLOCAT);
                     invList.add(invItem);
                     // invItem = null;
 
@@ -318,14 +319,7 @@ public class ListtestActivity extends SenateActivity
                 imm.showSoftInput(barcode, InputMethodManager.SHOW_FORCED);
             }   
         }, 100);
-/*        barcode.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager)getSystemService(
-                          Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(barcode.getWindowToken(), 0);
-            }   
-        }, 200);        */
+
     }
 
     public int countOf(ArrayList<InvItem> invList, String type) {
@@ -411,6 +405,8 @@ public class ListtestActivity extends SenateActivity
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
+                    barcode.setText("");
+                    return;
                 }
 
                 for (int i = invList.size() - 1; i > -1; i--) {
@@ -479,6 +475,7 @@ public class ListtestActivity extends SenateActivity
                                                      // numbers for
                                                      // oracle table
                         cntScanned++;
+                        playSound(R.raw.ok);        
 
                         flag = 1;
                     }
@@ -544,18 +541,22 @@ public class ListtestActivity extends SenateActivity
                             JSONObject jo = new JSONObject(res);
                             vl.NUSENATE = barcode_num;
                             vl.CDCATEGORY = jo.getString("cdcategory");
+                            vl.CDLOCAT = jo.getString("cdlocatto");
                             String nusenateReturned = jo.getString("nusenate");
+                            
 
                             if (nusenateReturned == null) {
                                 vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                                Log.i("TESTING", "B CALL barcodeDidNotExist");
+                                vl.CONDITION = "NEW";
                                 barcodeDidNotExist(barcode_num);
                                 return;
                             } else {
                                 // Log.i("TESTING",
                                 // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
                                 vl.DECOMMODITYF = jo.getString("decommodityf")
-                                        + " New Item";
+                                        + " \n***Found in: "+vl.CDLOCAT;
+                                vl.CONDITION = "DIFFERENT LOCATION";
+                                playSound(R.raw.warning);        
                             }
                         }
                     } catch (Exception e) {
@@ -580,11 +581,12 @@ public class ListtestActivity extends SenateActivity
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
+                    String invStatus;
 
                     // 3/15/13 BH Coded below to use InvItem Objects to display
                     // the list.
                     InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            "NEW", vl.DECOMMODITYF);
+                            vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
                     invList.add(invItem);
                     cntScanned++;
 
@@ -676,6 +678,7 @@ public class ListtestActivity extends SenateActivity
 
     public void barcodeDidNotExist(final String barcode_num) {
         Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
+        playSound(R.raw.error);        
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
@@ -697,6 +700,7 @@ public class ListtestActivity extends SenateActivity
                         vl.NUSENATE = barcode_num;
                         vl.CDCATEGORY = "";
                         vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+                        vl.CDLOCAT = "";
                         list.add(vl);
                         StringBuilder s_new = new StringBuilder();
                         // s_new.append(vl.NUSENATE); since the desc coming from
@@ -709,7 +713,7 @@ public class ListtestActivity extends SenateActivity
                         s_new.append(vl.DECOMMODITYF);
 
                         InvItem invItem = new InvItem(vl.NUSENATE,
-                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF);
+                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
                         invList.add(invItem);
 
                         scannedItems.add(invItem);
@@ -794,7 +798,7 @@ public class ListtestActivity extends SenateActivity
                                                                    // to that
                                                                    // location
         for (int i = 0; i < this.invList.size(); i++) {
-            if ((invList.get(i).getType().contains("New")) == false) {
+            if ((invList.get(i).getType().equalsIgnoreCase("EXISTING")) == true) {
                 missingItems.add(invList.get(i)); // if the
                                                   // description
                                                   // of dispList
@@ -804,6 +808,8 @@ public class ListtestActivity extends SenateActivity
                                                   // list
             }
         }
+        Log.i("MISSING ITEMS COUNT", "MISSING ITEMS:"+missingItems.size());
+        
         String summary;
         summary = "{\"nutotitems\":\"" + numItems + "\",\"nuscanitems\":\""
                 + AllScannedItems.size() + "\",\"numissitems\":\""
@@ -918,5 +924,7 @@ public class ListtestActivity extends SenateActivity
         String NUSENATE;
         String CDCATEGORY;
         String DECOMMODITYF;
+        String CDLOCAT;
+        String CONDITION;
     }
 }

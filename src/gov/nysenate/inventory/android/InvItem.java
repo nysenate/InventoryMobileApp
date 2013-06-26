@@ -9,6 +9,7 @@ public class InvItem
     String type = "blah";
     String nusenate = "blah";
     String cdcategory = "blah";
+    String cdlocat = "blah";
     
     boolean selected = false;
     
@@ -19,11 +20,12 @@ public class InvItem
     final int SELECTED = -105;   
 
     public InvItem(String nusenate, String cdcategory, String type,
-            String decommodityf) {
+            String decommodityf, String cdlocat) {
         this.nusenate = nusenate;
         this.cdcategory = cdcategory;
         this.type = type;
         this.decommodityf = decommodityf;
+        this.cdlocat = cdlocat;
     }
 
     public InvItem() {
@@ -52,6 +54,14 @@ public class InvItem
 
     public void setCdcategory(String cdcategory) {
         this.cdcategory = cdcategory;
+    }
+    
+    public String getCdlocat() {
+        return cdlocat;
+    }
+    
+    public void setCdlocat(String cdlocat) {
+        this.cdlocat = cdlocat;
     }
 
     public String getType() {
@@ -88,6 +98,7 @@ public class InvItem
             jsonObject.put("type", getType());
             jsonObject.put("cdcategory", getCdcategory());
             jsonObject.put("decommodityf", getDecommodityf());
+            jsonObject.put("cdlocat", getCdlocat());
             jsonObject.put("selected", getSelected());
 
             // Log.i("InvItem ToJSON", jsonObject.toString());
@@ -131,6 +142,12 @@ public class InvItem
                 e2.printStackTrace();
             }
 
+            try {
+                this.setCdlocat(jsonObject.getString("cdlocat"));
+            } catch (JSONException e2) {
+                e2.printStackTrace();
+            }
+            
             try {
                 if (jsonObject.getString("selected").trim().toUpperCase()
                         .startsWith("T")) {

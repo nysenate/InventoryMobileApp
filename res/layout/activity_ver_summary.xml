@@ -77,7 +77,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 style="@style/NormalText"   
-                android:text="Scanned Items(Existing +New):" />
+                android:text="Scanned Items:" />
 
             <TextView
                 android:id="@+id/tvTotScanVSum"
@@ -96,7 +96,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 style="@style/NormalText"   
-                android:text="Missing Items:" />
+                android:text="Scanned Items:" />
 
             <TextView
                 android:id="@+id/tvMisItems"
@@ -167,24 +167,24 @@
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="310dp" >
 
                     <ListView
                         android:id="@+id/listView2"
                         android:layout_width="match_parent"
-                        android:layout_height="549dp" >
+                        android:layout_height="278dp" >
                     </ListView>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="310dp" >
 
                     <ListView
                         android:id="@+id/listView3"
                         android:layout_width="match_parent"
-                        android:layout_height="549dp" >
+                        android:layout_height="278dp" >
                     </ListView>
                 </LinearLayout>
             </FrameLayout>
