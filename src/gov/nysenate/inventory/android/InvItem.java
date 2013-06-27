@@ -10,6 +10,7 @@ public class InvItem
     String nusenate = "blah";
     String cdcategory = "blah";
     String cdlocat = "blah";
+    String cdintransit = "N";
     
     boolean selected = false;
     
@@ -18,6 +19,7 @@ public class InvItem
     final int NUSENATE = -103;
     final int CDCATEGORY = -104;
     final int SELECTED = -105;   
+    final int INTRANSIT = -106;
 
     public InvItem(String nusenate, String cdcategory, String type,
             String decommodityf, String cdlocat) {
@@ -64,6 +66,14 @@ public class InvItem
         this.cdlocat = cdlocat;
     }
 
+    public String getCdintransit() {
+        return cdintransit;
+    }
+    
+    public void setCdintransit(String cdlocat) {
+        this.cdintransit = cdintransit;
+    }
+    
     public String getType() {
         return type;
     }
@@ -99,6 +109,7 @@ public class InvItem
             jsonObject.put("cdcategory", getCdcategory());
             jsonObject.put("decommodityf", getDecommodityf());
             jsonObject.put("cdlocat", getCdlocat());
+            jsonObject.put("cdintransit", getCdintransit());
             jsonObject.put("selected", getSelected());
 
             // Log.i("InvItem ToJSON", jsonObject.toString());
@@ -144,6 +155,12 @@ public class InvItem
 
             try {
                 this.setCdlocat(jsonObject.getString("cdlocat"));
+            } catch (JSONException e2) {
+                e2.printStackTrace();
+            }
+
+            try {
+                this.setCdintransit(jsonObject.getString("cdintransit"));
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }

@@ -6,9 +6,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.text.Html;
 
-public class MsgAlert
+public class MsgAlert 
 {
     Context context;
+    AlertDialog dialog;
 
     public MsgAlert(Context context) {
         this.context = context;
@@ -49,10 +50,10 @@ public class MsgAlert
         alertDialogBuilder.setMessage(Html.fromHtml(message))
                 .setCancelable(false).setPositiveButton("Ok", onClickListener);
         // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        dialog = alertDialogBuilder.create();
 
         // show it
-        alertDialog.show();
+        dialog.show();
     }
 
 }
