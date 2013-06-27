@@ -96,7 +96,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="right"
                 style="@style/NormalText"   
-                android:text="Scanned Items:" />
+                android:text="Unscanned Items:" />
 
             <TextView
                 android:id="@+id/tvMisItems"
