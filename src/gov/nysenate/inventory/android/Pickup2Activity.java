@@ -194,12 +194,12 @@ public class Pickup2Activity extends SenateActivity
                             // add it to list and displist and scanned items
                             JSONObject object = null;
                             if (res == null) {
-                                Log.i("TESTING", "A CALL noServerResponse");
+                                //Log.i("TESTING", "A CALL noServerResponse");
                                 noServerResponse(barcode_num);
                                 return;
                             } else if (res.toUpperCase().contains(
                                     "DOES NOT EXIST IN SYSTEM")) {
-                                Log.i("TESTING", "A CALL barcodeDidNotExist");
+                                //Log.i("TESTING", "A CALL barcodeDidNotExist");
                                 barcodeDidNotExist(barcode_num);
                                 return;
                             } else {
@@ -225,11 +225,14 @@ public class Pickup2Activity extends SenateActivity
                                 vl.CDLOCAT = object.getString("cdlocatto");
                                 if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
                                     vl.CONDITION = "EXISTING";
+                                    playSound(R.raw.ok);
                                 }
                                 else if (cdlocatto.equalsIgnoreCase(vl.CDLOCAT)) {
+                                    playSound(R.raw.honk);
                                     vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: " + vl.CDLOCAT;
                                 }
                                 else {
+                                    playSound(R.raw.warning);
                                     vl.CONDITION = "DIFFERENT LOCATION";
                                     vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Found in: " + vl.CDLOCAT;
                                 }
@@ -322,6 +325,7 @@ public class Pickup2Activity extends SenateActivity
         alertDialogBuilder.setTitle("Barcode#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
+        playSound(R.raw.error);    
         // set dialog message
         alertDialogBuilder
                 .setMessage(
@@ -411,7 +415,7 @@ public class Pickup2Activity extends SenateActivity
         // set title
         alertDialogBuilder.setTitle("Barcode#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
-
+        playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
                 .setMessage(

@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -122,7 +123,19 @@ public class SearchActivity extends SenateActivity
                         try {
                             JSONObject object = (JSONObject) new JSONTokener(
                                     res).nextValue();
-                            tvBarcode.setText(object.getString("nusenate"));
+                            StringBuilder nusenateMsg = new StringBuilder();
+                            nusenateMsg.append(object.getString("nusenate"));
+                            String cdstatus = object.getString("cdstatus");
+                            Log.i("TEST", "CDSTATUS:("+cdstatus+")");
+                            if (cdstatus.equalsIgnoreCase("I")) {
+                                nusenateMsg.append(" <font color='RED'>(INACTIVE) ");
+                                nusenateMsg.append(object.getString("deadjust"));
+                                Log.i("TEST", "INACTIVE CDSTATUS:("+cdstatus+")");
+                            }
+                            
+                            Log.i("TEST", "BARCODE:"+nusenateMsg);
+                            tvBarcode.setText(Html.fromHtml(nusenateMsg.toString()));                            
+                            
                             tvDescription.setText(object.getString(
                                     "decommodityf").replaceAll("&#34;", "\""));
                             tvCategory.setText(object.getString("cdcategory"));
