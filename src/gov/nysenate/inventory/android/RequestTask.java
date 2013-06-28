@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class RequestTask extends AsyncTask<String, String, String>
 {
@@ -31,14 +32,19 @@ public class RequestTask extends AsyncTask<String, String, String>
                 responseString = out.toString();
             } else {
                 // Closes the connection.
+                Log.w("HTTP1:",statusLine.getReasonPhrase());
                 response.getEntity().getContent().close();
                 throw new IOException(statusLine.getReasonPhrase());
             }
         } catch (ClientProtocolException e) {
             // TODO Handle problems..
+            Log.w("HTTP2:",e );
         } catch (IOException e) {
             // TODO Handle problems..
-        }
+            Log.w("HTTP3:",e );
+        } catch (Exception e) {
+            Log.w("HTTP4:",e );
+        }        
         res = responseString;
         return responseString;
 

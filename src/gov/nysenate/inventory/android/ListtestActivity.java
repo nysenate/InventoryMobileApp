@@ -132,7 +132,18 @@ public class ListtestActivity extends SenateActivity
             try {
 
                 // code for JSON
-                res = resr1.get().trim().toString();
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }                    
+                }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
                 if (this.testResNull) {  // Testing Purposes Only
                     resr1 = null;
                 }
@@ -514,11 +525,15 @@ public class ListtestActivity extends SenateActivity
                                         + barcode_num);
                         try {
                             if (testResNull) {  // Testing Purposes Only
-                                res = null;
                                 resr1 = null;
                                 Log.i("TEST RESNULL", "RES SET TO NULL");
                             } 
+                            res = null;
                             res = resr1.get().trim().toString();
+                            if (res==null) {
+                                noServerResponse();
+                                return;
+                            }                            
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -527,7 +542,8 @@ public class ListtestActivity extends SenateActivity
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         } catch (NullPointerException e) {
-                            
+                            noServerResponse(barcode_num);
+                            return;
                         }
                         
                         status = "yes1";
@@ -652,20 +668,39 @@ public class ListtestActivity extends SenateActivity
         }
         return -1;
     }
+    
+    public void noServerResponse() {
+        noServerResponse(null);
+        
+    }
 
     public void noServerResponse(final String barcode_num) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        
+        StringBuilder title = new StringBuilder();
+        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+            title.append("Barcode#: ");
+            title.append(barcode_num);
+            title.append(" ");
+        }
+        title.append("NO SERVER RESPONSE");
+        
+        StringBuilder msg = new StringBuilder();
+        msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
+        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+            msg.append(" Barcode#:<b>");
+            msg.append(barcode_num);
+            msg.append("</b> will be <b>IGNORED</b>.");
+        }
+        msg.append("<br/> Please contact STS/BAC.");
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
-                + " NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(title.toString());
 
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Barcode#:<b>"
-                                + barcode_num
-                                + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
+                        Html.fromHtml(msg.toString()))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -673,15 +708,17 @@ public class ListtestActivity extends SenateActivity
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
-                        Context context = getApplicationContext();
+                        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+                            Context context = getApplicationContext();
+                        
+                            CharSequence text = "Barcode#: " + barcode_num
+                                    + " was NOT added";
+                            int duration = Toast.LENGTH_SHORT;
 
-                        CharSequence text = "Barcode#: " + barcode_num
-                                + " was NOT added";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
 
                         barcode.setText("");
 

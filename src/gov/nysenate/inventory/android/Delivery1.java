@@ -9,13 +9,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -77,7 +80,18 @@ public class Delivery1 extends SenateActivity
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/LocCodeList?NATYPE=DELIVERY");
             try {
-                res = resr1.get().trim().toString();
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }
+                    }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                 }    
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -214,7 +228,19 @@ public class Delivery1 extends SenateActivity
                                             + barcode_num);
 
                         }
-                        res = resr1.get().trim().toString();
+                        try {
+                            res = null;
+                            res = resr1.get().trim().toString();
+                            if (res==null) {
+                                noServerResponse();
+                                return;
+                            }
+                            
+                        }
+                        catch (NullPointerException e) {
+                            noServerResponse();
+                            return;
+                        }
                         try {
                             JSONObject object = (JSONObject) new JSONTokener(
                                     res).nextValue();
@@ -270,6 +296,45 @@ public class Delivery1 extends SenateActivity
             }
         }
     };
+    
+    public void noServerResponse() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+    
 
     public void continueButton(View view) {
         Delivery1.btnDelivery1Cont.getBackground().setAlpha(45);

@@ -24,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +36,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.v4.app.NavUtils;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -45,6 +47,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +79,7 @@ public class Delivery3 extends SenateActivity
     Button btnDelivery3Cont;
     InvItem invItem;
     InvSelListViewAdapter invAdapter;
+    public static ProgressBar progBarDelivery3;
     
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
@@ -103,6 +107,9 @@ public class Delivery3 extends SenateActivity
         btnDeliv3ClrSig = (Button) findViewById(R.id.btnDeliv3ClrSig);
         btnDelivery3Back = (Button) findViewById(R.id.btnDelivery3Back);
         btnDelivery3Cont = (Button) findViewById(R.id.btnDelivery3Cont);
+        
+        // Setup ProgressBar
+        progBarDelivery3 = (ProgressBar) findViewById(R.id.progBarDelivery3);
 
         // Setup the Signature Field (sign) and Delivery Comments
         // (commentsEditText)
@@ -145,7 +152,19 @@ public class Delivery3 extends SenateActivity
                             + "/DeliveryDetails?NUXRPD=" + nuxrpd);
 
             try {
-                res = resr1.get().trim().toString();
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }
+                    
+                }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }  
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -280,6 +299,44 @@ public class Delivery3 extends SenateActivity
 
     }
 
+    public void noServerResponse() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }    
+
     public int findEmployee(String employeeName) {
         for (int x = 0; x < employeeHiddenList.size(); x++) {
             if (employeeName
@@ -294,6 +351,7 @@ public class Delivery3 extends SenateActivity
         // when ok button is pressed
         // 1. First validate to ensure that an employee name was picked and the
         // employee signed his name.
+        progBarDelivery3.setVisibility(ProgressBar.VISIBLE);
         this.btnDelivery3Cont.getBackground().setAlpha(45);
 
         String employeePicked = naemployeeView.getEditableText().toString();
@@ -403,7 +461,18 @@ public class Delivery3 extends SenateActivity
                         + "&NAACCEPTBY=" + NAACCEPTBY + "&deliveryItemsStr="
                         + deliveryItemsStr + "&checkedStr=" + checkedStr);
 
-                res = resr1.get().trim().toString();
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }
+                }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }  
                 Log.i("Confirm Response", "res:"+res);
 
             } catch (InterruptedException e) {

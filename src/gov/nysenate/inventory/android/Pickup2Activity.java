@@ -205,6 +205,7 @@ public class Pickup2Activity extends SenateActivity
                         System.out.println("URL CALL:" + URL
                                 + "/ItemDetails?barcode_num=" + barcode_num);
                         try {
+                            res = null;
                             res = resr1.get().trim().toString();
                             if (testResNull) {  // Testing Purposes Only
                                 res = null;
@@ -454,9 +455,9 @@ public class Pickup2Activity extends SenateActivity
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was no response from the Web Server  (Barcode#: <b>"
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Barcode#:<b>"
                                 + barcode_num
-                                + "</b>). <br/><br/> Please contact STS/BAC."))
+                                + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {

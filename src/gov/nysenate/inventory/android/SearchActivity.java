@@ -6,7 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,10 +18,12 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SearchActivity extends SenateActivity
 {
@@ -92,8 +96,13 @@ public class SearchActivity extends SenateActivity
                                 .execute(URL + "/Search?barcode_num="
                                         + barcode_num);
                         try {
+                            res = null;
                             res = resr1.get().trim().toString();
                             Log.i("Search res ", "res:" + res);
+                            if (res==null) {
+                                noServerResponse();
+                                return;
+                            }                            
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -101,7 +110,10 @@ public class SearchActivity extends SenateActivity
                         } catch (ExecutionException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
-                        }
+                        }  catch (NullPointerException e) {
+                            noServerResponse();
+                            return;
+                        }  
                         status = "yes1";
                     } else {
                         // display error
@@ -169,6 +181,44 @@ public class SearchActivity extends SenateActivity
             }
         }
     };
+    
+    public void noServerResponse() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }            
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
