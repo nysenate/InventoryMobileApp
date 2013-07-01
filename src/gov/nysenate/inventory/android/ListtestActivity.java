@@ -237,7 +237,7 @@ public class ListtestActivity extends SenateActivity
         });
         int cntExisting = countOf(invList, "EXISTING");
         int cntNew = countOf(invList, "NEW");
-        tv_counts_existing.setText(Html.fromHtml("<b>Existing</b><br/>"
+        tv_counts_existing.setText(Html.fromHtml("<b>Unscanned</b><br/>"
                 + cntExisting));
         tv_counts_existing.setOnTouchListener(new View.OnTouchListener()
         {
@@ -608,8 +608,8 @@ public class ListtestActivity extends SenateActivity
                 int cntNew = countOf(invList, "NEW");
                 tv_counts_new.setText(Html.fromHtml("<b>New</b><br/>"
                         + cntNew));
-                tv_counts_existing.setText(Html.fromHtml("<b>Existing</b><br/>"
-                        +cntExisting));
+                tv_counts_existing.setText(Html.fromHtml("<b>Unscanned</b><br/>"
+                        + cntExisting));
                 tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
                         +cntScanned));
                 // listView.setAdapter(adapter);
@@ -737,7 +737,7 @@ public class ListtestActivity extends SenateActivity
                         tv_counts_new.setText(Html.fromHtml("New<br/><b>"
                                 + cntNew + "</b>"));
                         tv_counts_existing.setText(Html
-                                .fromHtml("Existing<br/><b>"
+                                .fromHtml("Unscanned<br/><b>"
                                         + cntExisting + "</b>"));
                         tv_counts_scanned.setText(Html.fromHtml("Scanned<br /><b>"
                                 + cntScanned + "</b>"));
