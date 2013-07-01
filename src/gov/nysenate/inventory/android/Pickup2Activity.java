@@ -21,6 +21,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,10 +41,11 @@ public class Pickup2Activity extends SenateActivity
     public String res = null;
     public String status = null;
     public ListView listView;
+    boolean testResNull = false;
     public String loc_code = null; // populate this from the location code from
                                    // previous activity
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
-    ArrayList<verList> list = new ArrayList<verList>();
+    ArrayList<VerList> list = new ArrayList<VerList>();
     ArrayList<InvItem> dispList = new ArrayList<InvItem>();
     ArrayAdapter<InvItem> adapter;
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
@@ -125,6 +127,20 @@ public class Pickup2Activity extends SenateActivity
         btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
         btnPickup2Cancel.getBackground().setAlpha(255);
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.menu_test_null:
+            item.setChecked(!item.isChecked());
+            testResNull = item.isChecked();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }    
+       
 
     private TextWatcher filterTextWatcher = new TextWatcher()
     {
@@ -138,6 +154,7 @@ public class Pickup2Activity extends SenateActivity
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
         }
+
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -163,7 +180,7 @@ public class Pickup2Activity extends SenateActivity
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
-                verList vl = new verList();
+                VerList vl = new VerList();
 
                 // if it is not already scanned and does not exist in the
                 // list(location)
@@ -188,8 +205,13 @@ public class Pickup2Activity extends SenateActivity
                         System.out.println("URL CALL:" + URL
                                 + "/ItemDetails?barcode_num=" + barcode_num);
                         try {
+                            res = null;
                             res = resr1.get().trim().toString();
-                            System.out.println("URL RESULT:" + res);
+                            if (testResNull) {  // Testing Purposes Only
+                                res = null;
+                                resr1 = null;
+                                Log.i("TEST RESNULL", "RES SET TO NULL");
+                            }                            System.out.println("URL RESULT:" + res);
 
                             // add it to list and displist and scanned items
                             JSONObject object = null;
@@ -223,6 +245,13 @@ public class Pickup2Activity extends SenateActivity
                                         .replaceAll("&#34;", "\"");
                                 vl.DTISSUE = object.getString("dtissue");
                                 vl.CDLOCAT = object.getString("cdlocatto");
+                                vl.CDINTRANSIT = object.getString("cdintransit");
+                                
+                                if (vl.CDINTRANSIT != null && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
+                                    barcodeIntransit(vl);
+                                    return;
+                                }
+                                
                                 if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
                                     vl.CONDITION = "EXISTING";
                                     playSound(R.raw.ok);
@@ -340,10 +369,11 @@ public class Pickup2Activity extends SenateActivity
                         // 5/24/13 BH Coded below to use InvItem Objects to
                         // display
                         // the list.
-                        verList vl = new verList();
+                        VerList vl = new VerList();
                         vl.NUSENATE = barcode_num;
                         vl.CDCATEGORY = "";
                         vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+                        vl.CDINTRANSIT = "";
 
                         InvItem invItem = new InvItem(vl.NUSENATE,
                                 vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
@@ -409,6 +439,12 @@ public class Pickup2Activity extends SenateActivity
         alertDialog.show();
     }
 
+    public void barcodeIntransit(final VerList vl) {
+        playSound(R.raw.error);
+        new MsgAlert(this, "Barcode#: " + vl.NUSENATE+ " IS ALREADY IN TRANSIT", "Barcode#: <b>" + vl.NUSENATE+ "   "+vl.DECOMMODITYF+"</b> has  already been picked up and was marked as <font color='RED'><b>IN TRANSIT</b></font> and cannot be picked up.");
+        et_pickup3_barcode.setText("");
+    }    
+    
     public void noServerResponse(final String barcode_num) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -419,9 +455,9 @@ public class Pickup2Activity extends SenateActivity
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was no response from the Web Server  (Barcode#: <b>"
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Barcode#:<b>"
                                 + barcode_num
-                                + "</b>). <br/><br/> Please contact STS/BAC."))
+                                + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -555,7 +591,7 @@ public class Pickup2Activity extends SenateActivity
         return true;
     }
 
-    public class verList
+    public class VerList
     {
         String NUSENATE;
         String CDCATEGORY;
@@ -565,6 +601,7 @@ public class Pickup2Activity extends SenateActivity
         String ADSTREET1;
         String DTISSUE;
         String CDLOCAT;
+        String CDINTRANSIT;
         String CONDITION;
     }
 }

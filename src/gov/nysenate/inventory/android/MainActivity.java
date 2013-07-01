@@ -420,6 +420,9 @@ public class MainActivity extends SenateActivity
                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
             startService(msgIntent);
         }
+        
+        // Check Tablet Audio Volume. If it is too low or turned off, ask user
+        // if they would like to turn it up or on in a dialog
 
         try {
             audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

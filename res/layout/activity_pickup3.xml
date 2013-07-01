@@ -161,7 +161,7 @@
     android:shadowDx="01"
     android:shadowDy="1"
     android:shadowRadius="5"
-    android:text="Continue"
+    android:text="Pickup Items"
     android:textColor="#FFFFFF"
     android:textSize="30sp" />
 
@@ -195,6 +195,17 @@
         android:shadowRadius="5"
         android:text="Back"
         android:textColor="#FFFFFF"
-        android:textSize="28sp" />
+        android:textSize="30sp" />
+    
+   <ProgressBar
+        android:id="@+id/progBarPickup3"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+    
 
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.android.Pickup2Activity.VerList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +27,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +49,7 @@ public class ListtestActivity extends SenateActivity
     public TextView tv_counts_scanned;
     public TextView loc_details;
     public String res = null;
+    boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
     public String status = null;
     public ListView listView;
@@ -128,8 +132,27 @@ public class ListtestActivity extends SenateActivity
             try {
 
                 // code for JSON
-                res = resr1.get().trim().toString();
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }                    
+                }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                if (this.testResNull) {  // Testing Purposes Only
+                    resr1 = null;
+                }
                 String jsonString = resr1.get().trim().toString();
+                if (this.testResNull) {  // Testing Purposes Only
+                    res = null;
+                    resr1 = null;
+                    Log.i("TEST RESNULL", "RES SET TO NULL");
+                }
 
                 JSONArray jsonArray = new JSONArray(jsonString);
                 count = jsonArray.length();
@@ -501,7 +524,16 @@ public class ListtestActivity extends SenateActivity
                                 .execute(URL + "/ItemDetails?barcode_num="
                                         + barcode_num);
                         try {
+                            if (testResNull) {  // Testing Purposes Only
+                                resr1 = null;
+                                Log.i("TEST RESNULL", "RES SET TO NULL");
+                            } 
+                            res = null;
                             res = resr1.get().trim().toString();
+                            if (res==null) {
+                                noServerResponse();
+                                return;
+                            }                            
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -509,7 +541,11 @@ public class ListtestActivity extends SenateActivity
                         } catch (ExecutionException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            noServerResponse(barcode_num);
+                            return;
                         }
+                        
                         status = "yes1";
                     } else {
                         // display error
@@ -632,20 +668,39 @@ public class ListtestActivity extends SenateActivity
         }
         return -1;
     }
+    
+    public void noServerResponse() {
+        noServerResponse(null);
+        
+    }
 
     public void noServerResponse(final String barcode_num) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        
+        StringBuilder title = new StringBuilder();
+        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+            title.append("Barcode#: ");
+            title.append(barcode_num);
+            title.append(" ");
+        }
+        title.append("NO SERVER RESPONSE");
+        
+        StringBuilder msg = new StringBuilder();
+        msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
+        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+            msg.append(" Barcode#:<b>");
+            msg.append(barcode_num);
+            msg.append("</b> will be <b>IGNORED</b>.");
+        }
+        msg.append("<br/> Please contact STS/BAC.");
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS");
+        alertDialogBuilder.setTitle(title.toString());
 
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was no response from the Web Server  (Barcode#: <b>"
-                                + barcode_num
-                                + "</b>). <br/><br/> Please contact STS/BAC."))
+                        Html.fromHtml(msg.toString()))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -653,15 +708,17 @@ public class ListtestActivity extends SenateActivity
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
-                        Context context = getApplicationContext();
+                        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+                            Context context = getApplicationContext();
+                        
+                            CharSequence text = "Barcode#: " + barcode_num
+                                    + " was NOT added";
+                            int duration = Toast.LENGTH_SHORT;
 
-                        CharSequence text = "Barcode#: " + barcode_num
-                                + " was NOT added";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
 
                         barcode.setText("");
 
@@ -839,6 +896,19 @@ public class ListtestActivity extends SenateActivity
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.menu_test_null:
+            item.setChecked(!item.isChecked());
+            testResNull = item.isChecked();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }    
 
     public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
         ArrayList<String> returnArray = new ArrayList<String>();
@@ -866,6 +936,7 @@ public class ListtestActivity extends SenateActivity
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
+    
 
     public class spinSortListComparator implements Comparator
     {

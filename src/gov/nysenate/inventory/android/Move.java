@@ -19,11 +19,8 @@ import android.widget.Toast;
 public class Move extends SenateActivity implements OnItemClickListener
 {
 
-    private String res = null;
     public String URL = null;
     TextView pickupDeliveryStats;
-
-    private ListView mList;
 
     public static final String[] titles = new String[] { "Pickup", "Delivery",
             "Main Menu" };/* , "Pickup/Deliver Log" */
@@ -62,6 +59,12 @@ public class Move extends SenateActivity implements OnItemClickListener
                 R.layout.list_item, rowItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        if (Delivery3.progBarDelivery3 != null) {
+            Delivery3.progBarDelivery3.setVisibility(ProgressBar.INVISIBLE);
+        }
+        if (Pickup3.progBarPickup3 != null) {
+            Pickup3.progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+        }            
 
     }
 
