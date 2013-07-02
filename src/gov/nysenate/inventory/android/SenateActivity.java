@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -100,5 +101,13 @@ public abstract class SenateActivity extends Activity
     protected void closeAllActivities() {
         sendBroadcast(new Intent(FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION));
     }
+
+    protected void onResume(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onResume();
+        
+    }
+
+
 
 }

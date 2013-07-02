@@ -35,7 +35,7 @@ public class SearchActivity extends SenateActivity
     TextView tvDescription;
     TextView tvLocation;
     TextView tvCategory;
-    TextView tvDateIssue;
+    TextView tvDateInvntry;
 
     static Button btnSrchBck;
 
@@ -54,7 +54,7 @@ public class SearchActivity extends SenateActivity
         tvBarcode = (TextView) findViewById(R.id.tvBarcode);
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         tvLocation = (TextView) findViewById(R.id.tvLocation);
-        tvDateIssue = (TextView) findViewById(R.id.tvDateIssue);
+        tvDateInvntry = (TextView) findViewById(R.id.tvDateInvntry);
         tvCategory = (TextView) findViewById(R.id.tvCategory);
 
         btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
@@ -127,7 +127,7 @@ public class SearchActivity extends SenateActivity
                         tvDescription.setText("N/A");
                         tvCategory.setText("N/A");
                         tvLocation.setText("N/A");
-                        tvDateIssue.setText("N/A");
+                        tvDateInvntry.setText("N/A");
 
                     } else {
                         int color = Integer.parseInt("000000", 16) + 0xFF000000;
@@ -157,14 +157,14 @@ public class SearchActivity extends SenateActivity
                                     + ") "
                                     + object.getString("adstreet1to")
                                             .replaceAll("&#34;", "\""));
-                            tvDateIssue.setText(object.getString("dtissue"));
+                            tvDateInvntry.setText(object.getString("dtlstinvntry"));
 
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             tvDescription.setText("!!ERROR: " + e.getMessage());
                             tvCategory.setText("Please contact STS/BAC.");
                             tvLocation.setText("N/A");
-                            tvDateIssue.setText("N/A");
+                            tvDateInvntry.setText("N/A");
 
                             e.printStackTrace();
                         }
@@ -175,7 +175,7 @@ public class SearchActivity extends SenateActivity
                     tvDescription.setText("!!ERROR: " + e.getMessage());
                     tvCategory.setText("Please contact STS/BAC.");
                     tvLocation.setText("N/A");
-                    tvDateIssue.setText("N/A");
+                    tvDateInvntry.setText("N/A");
 
                 }
             }
