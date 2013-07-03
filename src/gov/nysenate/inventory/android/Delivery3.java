@@ -613,8 +613,20 @@ public class Delivery3 extends SenateActivity
                     imageInByte = bs.toByteArray();
                     System.out.println("*************imageInByte:"
                             + imageInByte.length);
-
-                    URL url = new URL(uri[0]);
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[0].trim());
+                    if (uri[0].indexOf("?")>-1) {
+                        if (!uri[0].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    }
+                    else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(MainActivity.nauser);
+                    
+                    URL url = new URL(urls.toString());
 
                     HttpURLConnection conn = (HttpURLConnection) url
                             .openConnection();
@@ -657,8 +669,19 @@ public class Delivery3 extends SenateActivity
                 }
 
                 try {
-                    
-                    response = httpclient.execute(new HttpGet(uri[1]
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[1].trim());
+                    if (uri[1].indexOf("?")>-1) {
+                        if (!uri[1].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    }
+                    else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(MainActivity.nauser);                    
+                    response = httpclient.execute(new HttpGet(urls.toString()
                             + "&NUXRACCPTSIGN=" + NUXRACCPTSIGN
                             + "&DECOMMENTS=" + DECOMMENTS));
 
@@ -688,7 +711,19 @@ public class Delivery3 extends SenateActivity
                 // Get List of Employees for the Signing Employee Dropdown
 
                 try {
-                    response = httpclient.execute(new HttpGet(uri[0]));
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[0].trim());
+                    if (uri[0].indexOf("?")>-1) {
+                        if (!uri[0].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    }
+                    else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(MainActivity.nauser);                    
+                    response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -709,7 +744,7 @@ public class Delivery3 extends SenateActivity
                 }
 
                 try {
-                    response = httpclient.execute(new HttpGet(uri[1]));
+                    response = httpclient.execute(new HttpGet(uri[1]+"&userFallback="+MainActivity.nauser));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();

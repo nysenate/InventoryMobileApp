@@ -36,15 +36,13 @@ public class RequestTask extends AsyncTask<String, String, String>
             }
         }
         else {
-            url.append("&");
+            url.append("?");
         }
-        url.append("user=");
+        url.append("userFallback=");
         url.append(MainActivity.nauser);
-        url.append("&pwd=");
-        url.append(MainActivity.password.getText().toString());
         
         try {
-            response = httpclient.execute(new HttpGet(uri[0]));
+            response = httpclient.execute(new HttpGet(url.toString()));
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();

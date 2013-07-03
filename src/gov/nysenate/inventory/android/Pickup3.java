@@ -670,7 +670,21 @@ public class Pickup3 extends SenateActivity
                 imageInByte = bs.toByteArray();
                 String responseString = "";
                 try {
-                    URL url = new URL(uri[0]);
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[0].trim());
+                    if (uri[0].indexOf("?")>-1) {
+                        if (!uri[0].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    }
+                    else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(MainActivity.nauser);
+                    
+                    
+                    URL url = new URL(urls.toString());
 
                     HttpURLConnection conn = (HttpURLConnection) url
                             .openConnection();
@@ -718,7 +732,7 @@ public class Pickup3 extends SenateActivity
                 try {
 
                     String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
-                            + "&DECOMMENTS=" + DECOMMENTS;
+                            + "&DECOMMENTS=" + DECOMMENTS+"&userFallback="+MainActivity.nauser;
                     System.out.println("pickupURL:" + pickupURL);
                     response = httpclient.execute(new HttpGet(pickupURL));
                     StatusLine statusLine = response.getStatusLine();
@@ -744,7 +758,19 @@ public class Pickup3 extends SenateActivity
                 HttpResponse response;
                 String responseString = null;
                 try {
-                    response = httpclient.execute(new HttpGet(uri[0]));
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[0].trim());
+                    if (uri[0].indexOf("?")>-1) {
+                        if (!uri[0].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    }
+                    else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(MainActivity.nauser);                    
+                    response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
