@@ -585,7 +585,7 @@ public class Delivery3 extends SenateActivity
 
         @Override
         protected String doInBackground(String... uri) {
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = MainActivity.httpClient;
             HttpResponse response;
             String responseString = null;
             Log.i("WEBRECEIVE", "requestTaskType:" + requestTaskType);

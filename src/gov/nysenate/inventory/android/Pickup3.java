@@ -712,7 +712,7 @@ public class Pickup3 extends SenateActivity
                 }
 
                 // Then post the rest of the information along with the NUXRSIGN
-                HttpClient httpclient = new DefaultHttpClient();
+                HttpClient httpclient = MainActivity.httpClient;
                 HttpResponse response;
                 responseString = null;
                 try {
@@ -740,7 +740,7 @@ public class Pickup3 extends SenateActivity
                 res = responseString;
                 return responseString;
             } else if (requestTaskType.equalsIgnoreCase("EmployeeList")) {
-                HttpClient httpclient = new DefaultHttpClient();
+                HttpClient httpclient = MainActivity.httpClient;
                 HttpResponse response;
                 String responseString = null;
                 try {

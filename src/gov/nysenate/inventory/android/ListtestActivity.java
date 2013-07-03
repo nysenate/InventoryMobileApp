@@ -498,8 +498,35 @@ public class ListtestActivity extends SenateActivity
                                                      // numbers for
                                                      // oracle table
                         cntScanned++;
-                        playSound(R.raw.ok);        
+                        playSound(R.raw.ok);     
+                        try {
+                            StringBuffer values = new StringBuffer();
+                            values.append(curInvItem.getNusenate());
+                            values.append("|");
+                            values.append(curInvItem.getType());
+                            values.append("|");
+                            values.append(curInvItem.getCdcategory());
+                            values.append("|");
+                            values.append(curInvItem.getCdintransit());
+                            values.append("|");
+                            values.append("-1");
+                            values.append("|");
+                            values.append(curInvItem.getDecommodityf());
+                            values.append("|");
+                            values.append(curInvItem.getCdlocat());
+                            values.append("|now|");
+                            values.append(MainActivity.nauser);
+                            values.append("|now|");
+                            values.append(MainActivity.nauser);
+                            
+                            long rowsInserted = MenuActivity.db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
+                                    values.toString());
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
 
+ 
                         flag = 1;
                     }
 

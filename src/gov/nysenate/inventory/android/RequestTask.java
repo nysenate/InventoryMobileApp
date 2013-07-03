@@ -19,9 +19,30 @@ public class RequestTask extends AsyncTask<String, String, String>
     @Override
     public String doInBackground(String... uri) {
         String res = "";
-        HttpClient httpclient = new DefaultHttpClient();
+        //HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = MainActivity.httpClient;
+        if (httpclient==null) {
+            Log.i(RequestTask.class.getName(), "MainActivity.httpClient was null so it is being reset");
+            MainActivity.httpClient = new DefaultHttpClient();
+            httpclient = MainActivity.httpClient;
+        }
         HttpResponse response;
         String responseString = null;
+        StringBuilder url = new StringBuilder();
+        url.append(uri[0].trim());
+        if (uri[0].indexOf("?")>-1) {
+            if (!uri[0].trim().endsWith("?")) {
+                url.append("&");
+            }
+        }
+        else {
+            url.append("&");
+        }
+        url.append("user=");
+        url.append(MainActivity.nauser);
+        url.append("&pwd=");
+        url.append(MainActivity.password.getText().toString());
+        
         try {
             response = httpclient.execute(new HttpGet(uri[0]));
             StatusLine statusLine = response.getStatusLine();

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +21,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -28,12 +31,14 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -62,8 +67,8 @@ public class MainActivity extends SenateActivity
     private ListView mList;
     public static String nauser = null;
     Resources resources = null;
-    ClearableEditText user_name;
-    ClearableEditText password;
+    static ClearableEditText user_name;
+    static ClearableEditText password;
     String URL = "";
     public static Properties properties; // Since we want to refer to this in
                                          // other activities
@@ -83,14 +88,17 @@ public class MainActivity extends SenateActivity
     private DownloadManager downloadManager;
     private long downloadReference;
     AudioManager audio;
-
+    
+    public static DefaultHttpClient httpClient;
+    
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         registerBaseActivityReceiver();
-
+        Log.i("MAIN", "!!!!MAINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
@@ -491,7 +499,13 @@ public class MainActivity extends SenateActivity
         }        
         
     }
-
+    
+    @Override
+    protected void onResume(Bundle savedInstanceState) {
+        super.onResume(savedInstanceState);
+        httpClient  = new DefaultHttpClient();        
+    }
+    
     @Override
     public void onDestroy() {
         // unregister your receivers
@@ -577,6 +591,72 @@ public class MainActivity extends SenateActivity
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
         }
+    }
+
+    public void testSessions(View view) {
+        AsyncTask<String, String, String> resr1 = new RequestTask()
+        .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");
+        
+        String res1;
+        try {
+            res1 = resr1.get().toString();
+            System.out.println ("resr1:"+res1);
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (ExecutionException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        AsyncTask<String, String, String> resr2 = new RequestTask()
+        .execute("http://10.26.3.74:8080/WebApplication1/GetSessionServlet");
+        
+        String res2;
+        try {
+            res2 = resr2.get().toString();
+            System.out.println ("resr2:"+res2);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+    
+    
+    public void testSQLlite(View view) {
+        testSQLlite();
+    }
+
+    public void testSQLlite() {
+        InvDB db = new InvDB(this);
+        try {
+            //db.resetDB();
+            //db.truncateTable("ad12verinv");
+/*            long rowsInserted = db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
+                                       "111111|NEW|TEST|Y|99999999|THIS IS THE FIRST TEST|AAAA|NOW|HEITNER|NOW|HEITNER");
+            
+            Log.i(MainActivity.class.getName(), "ROWS INSERTED:"+rowsInserted);*/
+            
+            Cursor mCursor = db.rawQuery("SELECT * FROM ad12verinv", null);
+            
+            if (mCursor != null ) {
+                if  (mCursor.moveToFirst()) {
+                      do {
+                       String nusenate = mCursor.getString(mCursor.getColumnIndex("nusenate"));
+                       String decommodityf = mCursor.getString(mCursor.getColumnIndex("decommodityf"));
+                       Log.i(MainActivity.class.getName(), nusenate+": "+decommodityf);
+                      }while (mCursor.moveToNext());
+                } 
+           }            
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    
     }
 
     public void startUpdate(View View) {
@@ -682,6 +762,18 @@ public class MainActivity extends SenateActivity
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.menu_sqllite:
+            testSQLlite();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }        
+    
     // broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
     {
