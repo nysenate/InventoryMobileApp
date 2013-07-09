@@ -284,19 +284,38 @@ public class VerSummaryActivity extends SenateActivity
     }        
 
     public void continueButton(View view) {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setTitle("Verification Confirmation");
+        confirmDialog.setMessage("Are you sure you want to submit this verification?");
+        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                positiveDialog();
+            }
+        });
 
+        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Continue in same activity.
+            }
+        });
+
+        AlertDialog dialog = confirmDialog.create();
+        dialog.show();
+    }
+
+    private void positiveDialog() {
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
         // new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
-        String jsonString = null;
+        //String jsonString = null;
         String status = null;
-        JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
+        //JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
         String barcodeNum = "";
-
         for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-            barcodeNum = barcodeNum
-                    + scannedBarcodeNumbers.get(i).getNusenate() + ",";
+            barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
         }
 
         // Create a JSON string from the arraylist
@@ -376,7 +395,6 @@ public class VerSummaryActivity extends SenateActivity
         Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
-
     }
 
 }

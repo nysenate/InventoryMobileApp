@@ -348,12 +348,6 @@ public class Delivery3 extends SenateActivity
     }
 
     public void continueButton(View view) {
-        // when ok button is pressed
-        // 1. First validate to ensure that an employee name was picked and the
-        // employee signed his name.
-        progBarDelivery3.setVisibility(ProgressBar.VISIBLE);
-        this.btnDelivery3Cont.getBackground().setAlpha(45);
-
         String employeePicked = naemployeeView.getEditableText().toString();
         NAACCEPTBY = "";
         if (employeePicked.trim().length() > 0) {
@@ -386,9 +380,7 @@ public class Delivery3 extends SenateActivity
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
-
             return;
-
         }
 
         if (!sign.isSigned()) {
@@ -401,6 +393,31 @@ public class Delivery3 extends SenateActivity
             return;
         }
 
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setTitle("Delivery Confirmation");
+        confirmDialog.setMessage("Are you sure you want to deliver these " + invList.size() + " items?");
+        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                positiveDialog();
+            }
+        });
+
+        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Continue in same activity.
+            }
+        });
+
+        AlertDialog dialog = confirmDialog.create();
+        dialog.show();
+    }
+
+    private void positiveDialog() {
+        progBarDelivery3.setVisibility(ProgressBar.VISIBLE);
+        this.btnDelivery3Cont.getBackground().setAlpha(45);
+
         try {
             NAACCEPTBY = URLEncoder.encode(this.naemployeeView.getText()
                     .toString(), "UTF-8");
@@ -410,9 +427,9 @@ public class Delivery3 extends SenateActivity
         }
 
         // 1. create a list of all checked items (barcodes only no description)
-
         //ArrayList<InvItem> checkedItems = adapter.getAllItems();
         //ArrayList<InvItem> deliveryItemsBarcodes = adapter.getSelectedItems(true);
+
         StringBuilder deliveryItemsStr = new StringBuilder();
         StringBuilder checkedStr = new StringBuilder();
         if (this.invAdapter==null) {
@@ -421,7 +438,7 @@ public class Delivery3 extends SenateActivity
         int NUSENATE = new InvItem().NUSENATE;
         deliveryItemsStr.append(this.invAdapter.getAllItemsAsString(NUSENATE, ","));
         checkedStr.append(this.invAdapter.getSelectedItemsAsString(true, NUSENATE, ","));
-        
+
         // int checkedItems = listview.getCheckedItemCount();
         // Log.i("checkedItems", "onItemSelected- checkedItems" + checkedItems);
         //long checkedI[] = listview.getCheckedItemIds();
@@ -506,7 +523,6 @@ public class Delivery3 extends SenateActivity
         Intent intent = new Intent(this, Move.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
-
     }
 
     @Override
