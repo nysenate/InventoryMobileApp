@@ -6,7 +6,7 @@ import org.json.JSONObject;
 public class InvItem
 {
     String decommodityf = "blah blah blah";
-    String type = "blah";
+    String type = "blah"; // set to NEW if entered/saved from inside app.
     String nusenate = "blah";
     String cdcategory = "blah";
     String cdlocat = "blah";

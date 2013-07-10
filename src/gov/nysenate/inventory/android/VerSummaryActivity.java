@@ -3,7 +3,6 @@ package gov.nysenate.inventory.android;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,21 +29,9 @@ import android.widget.Toast;
 
 public class VerSummaryActivity extends SenateActivity
 {
-    ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();// for saving
-                                                                  // items which
-                                                                  // are not
-                                                                  // allocated
-                                                                  // to that
-                                                                  // location
-    ArrayList<InvItem> missingItems = new ArrayList<InvItem>();// for saving
-                                                               // items which
-                                                               // are not
-                                                               // allocated to
-                                                               // that location
-    ArrayList<InvItem> newItems = new ArrayList<InvItem>();// for saving items
-                                                           // which are not
-                                                           // allocated to that
-                                                           // location
+    ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();
+    ArrayList<InvItem> missingItems = new ArrayList<InvItem>(); // Items in the location which have not been verified.
+    ArrayList<InvItem> newItems = new ArrayList<InvItem>(); // Items in the location but listed elsewhere in the database.
     ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
     TextView tvTotItemVSum;
     TextView tvTotScanVSum;
@@ -121,28 +108,33 @@ public class VerSummaryActivity extends SenateActivity
             try {
                 tvTotItemVSum.setText(jsonObject.getString("nutotitems"));
 
-            } catch (Exception e2) {
+            }
+            catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvTotScanVSum.setText(jsonObject.getString("nuscanitems"));
 
-            } catch (Exception e2) {
+            }
+            catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvMisItems.setText(jsonObject.getString("numissitems"));
 
-            } catch (Exception e2) {
+            }
+            catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvNewItems.setText(jsonObject.getString("nunewitems"));
 
-            } catch (Exception e2) {
+            }
+            catch (Exception e2) {
                 e2.printStackTrace();
             }
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
 
         }
 
@@ -183,29 +175,34 @@ public class VerSummaryActivity extends SenateActivity
                     try {
                         curInvItem
                                 .setNusenate(jsonObject.getString("nusenate"));
-                    } catch (Exception e2) {
+                    }
+                    catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setCdcategory(jsonObject
                                 .getString("cdcategory"));
-                    } catch (Exception e2) {
+                    }
+                    catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setType(jsonObject.getString("type"));
-                    } catch (Exception e2) {
+                    }
+                    catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setDecommodityf(jsonObject
                                 .getString("decommodityf"));
-                    } catch (Exception e2) {
+                    }
+                    catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     returnList.add(curInvItem);
 
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     // TODO Auto-generated catch block
                     Log.i("System.err",
                             "ERROR CONVERTING FROM ARRAYLIST OF JSON" + x + ":"
@@ -237,11 +234,12 @@ public class VerSummaryActivity extends SenateActivity
 
     public void backButton(View view) {
         this.onBackPressed();
-/*        VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45);
-        Intent intent = new Intent(this, ListtestActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);*/
-        
+        /*
+         * VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45);
+         * Intent intent = new Intent(this, ListtestActivity.class);
+         * startActivity(intent);
+         * overridePendingTransition(R.anim.in_left, R.anim.out_right);
+         */
 
     }
 
@@ -271,7 +269,6 @@ public class VerSummaryActivity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -281,12 +278,12 @@ public class VerSummaryActivity extends SenateActivity
 
         // show it
         alertDialog.show();
-    }        
+    }
 
     public void continueButton(View view) {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Verification Confirmation");
-        confirmDialog.setMessage("Are you sure you want to submit this verification?");
+        confirmDialog.setMessage(Html.fromHtml(createAlertMessage()));
         confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -305,13 +302,45 @@ public class VerSummaryActivity extends SenateActivity
         dialog.show();
     }
 
+    private String createAlertMessage() {
+        String message = "";
+        if (newItemsScanned()) {
+            message += "<font color='RED'><b>WARNING:</font> The " + numNewItems() + " NEW Items scanned will " +
+                    "<font color='RED'>NOT</font> be tagged to location: " + loc_code + ".</b><br><br>" +
+                    " Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>";
+        }
+        message += "Are you sure you want to submit this verification?";
+        return message;
+    }
+
+    private boolean newItemsScanned() {
+        boolean exist = false;
+        for (InvItem item : newItems) {
+            if (item.getType().equalsIgnoreCase("NEW")) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
+    }
+
+    private int numNewItems() {
+        int numNewItems = 0;
+        for (InvItem item : newItems) {
+            if (item.getType().equalsIgnoreCase("NEW")) {
+                numNewItems++;
+            }
+        }
+        return numNewItems;
+    }
+
     private void positiveDialog() {
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
         // new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
-        //String jsonString = null;
+        // String jsonString = null;
         String status = null;
-        //JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
+        // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
         String barcodeNum = "";
         for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
@@ -351,26 +380,28 @@ public class VerSummaryActivity extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
-                    }                    
+                    }
                 }
                 catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                }  
+                }
 
-
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (ExecutionException e) {
+            }
+            catch (ExecutionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             status = "yes1";
-        } else {
+        }
+        else {
             // display error
             status = "no";
         }
@@ -381,9 +412,11 @@ public class VerSummaryActivity extends SenateActivity
         int duration = Toast.LENGTH_LONG;
         if (res == null) {
             text = "!!!ERROR: NO RESPONSE FROM SERVER";
-        } else if (res.length() == 0) {
+        }
+        else if (res.length() == 0) {
             text = "Database not updated";
-        } else {
+        }
+        else {
             duration = Toast.LENGTH_SHORT;
         }
 
