@@ -74,6 +74,8 @@ public class Pickup3 extends SenateActivity
     Intent intent = getIntent();
     String originLocationCode = "";
     String destinationLocationCode = "";
+    String cdloctypeto = "";
+    String cdloctypefrm = "";
     public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
     public ArrayList<String> employeeNameList = new ArrayList<String>();
     ClearableAutoCompleteTextView naemployeeView;
@@ -120,8 +122,10 @@ public class Pickup3 extends SenateActivity
         loc_code = getIntent().getStringExtra("loc_code");
         String originLocationCodeArr[] = originLocation.split("-");
         originLocationCode = originLocationCodeArr[0];
+        cdloctypefrm = getIntent().getStringExtra("cdloctypefrm");
         String destinationLocationCodeArr[] = destinationLocation.split("-");
         destinationLocationCode = destinationLocationCodeArr[0];
+        cdloctypeto = getIntent().getStringExtra("cdloctypeto");
 
         // Create summary from the given information
         /*
@@ -508,7 +512,9 @@ public class Pickup3 extends SenateActivity
                         + "/Pickup?originLocation=" + originLocationCode
                         + "&destinationLocation=" + destinationLocationCode
                         + "&barcodes=" + barcodeNum + "&NAPICKUPBY="
-                        + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY);
+                        + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
+                        + "&cdloctypeto=" + cdloctypeto 
+                        + "&cdloctypefrm=" + cdloctypefrm);
 
                 try {
                     res = null;

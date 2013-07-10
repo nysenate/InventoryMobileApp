@@ -417,9 +417,9 @@ public class ListtestActivity extends SenateActivity
                 int flag = 0;
 
                 // If the item is already scanned then display a
-                // toster"Already Scanned"
+                // toaster "Already Scanned"
                 if (findBarcode(barcode_num, AllScannedItems) > -1) {
-                    // display toster
+                    // display toaster
                     barcodeFound = true;
                     Context context = getApplicationContext();
                     CharSequence text = "Already Scanned  ";
@@ -605,14 +605,19 @@ public class ListtestActivity extends SenateActivity
                             vl.NUSENATE = barcode_num;
                             vl.CDCATEGORY = jo.getString("cdcategory");
                             vl.CDLOCAT = jo.getString("cdlocatto");
-                            String nusenateReturned = jo.getString("nusenate");
-                            
+                            vl.CDSTATUS = jo.getString("cdstatus");
+                            String nusenateReturned = jo.getString("nusenate");                           
 
                             if (nusenateReturned == null) {
                                 vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
                                 vl.CONDITION = "NEW";
                                 barcodeDidNotExist(barcode_num);
                                 return;
+                            } else if (vl.CDSTATUS.equalsIgnoreCase("I") ) {
+                                vl.DECOMMODITYF = jo.getString("decommodityf");
+                                errorMessage(barcode_num, "!!ERROR: Senate#: " + barcode_num+ " has been Inactivated.", "The <b>\""+vl.DECOMMODITYF+"\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                                return;
+                                
                             } else {
                                 // Log.i("TESTING",
                                 // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
@@ -857,6 +862,48 @@ public class ListtestActivity extends SenateActivity
         // show it
         alertDialog.show();
     }
+    public void errorMessage(final String barcode_num, final String title, final String message) {
+        Log.i("TESTING", "****errorMessgae MESSAGE");
+        playSound(R.raw.error);        
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle(title);
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml(message))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Barcode#: " + barcode_num
+                                + " was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        barcode.setText("");
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1024,5 +1071,6 @@ public class ListtestActivity extends SenateActivity
         String DECOMMODITYF;
         String CDLOCAT;
         String CONDITION;
+        String CDSTATUS;
     }
 }

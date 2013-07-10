@@ -55,6 +55,8 @@ public class Pickup2Activity extends SenateActivity
     public String destinationLocation = null;
     public String cdlocatto = null;
     public String cdlocatfrm = null;
+    public String cdloctypeto = null;
+    public String cdloctypefrm = null;
     // These 3 ArrayLists will be used to transfer data to next activity and to
     // the server
     ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();// for saving
@@ -81,7 +83,9 @@ public class Pickup2Activity extends SenateActivity
         originLocation = intent.getStringExtra("originLocation");
         destinationLocation = intent.getStringExtra("destinationLocation");
         cdlocatfrm = intent.getStringExtra("cdlocatfrm");
+        cdloctypefrm = intent.getStringExtra("cdloctypefrm");
         cdlocatto = intent.getStringExtra("cdlocatto");
+        cdloctypeto = intent.getStringExtra("cdloctypeto");
 
         listView = (ListView) findViewById(R.id.listView1);
         count = 0;// for initialization
@@ -565,6 +569,8 @@ public class Pickup2Activity extends SenateActivity
         Intent intent = new Intent(this, Pickup3.class);
         intent.putExtra("originLocation", originLocation);
         intent.putExtra("destinationLocation", destinationLocation);
+        intent.putExtra("cdloctypefrm", cdloctypefrm);
+        intent.putExtra("cdloctypeto", cdloctypeto);
         String countStr = Integer.toString(count);
         intent.putExtra("count", countStr);
         intent.putStringArrayListExtra("scannedBarcodeNumbers",
