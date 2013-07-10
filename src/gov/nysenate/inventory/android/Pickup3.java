@@ -382,8 +382,6 @@ public class Pickup3 extends SenateActivity
     }
 
     public void continueButton(View view) {
-        progBarPickup3.setVisibility(ProgressBar.VISIBLE);
-        btnPickup3Cont.getBackground().setAlpha(45);
         String employeePicked = naemployeeView.getEditableText().toString();
         if (employeePicked.trim().length() > 0) {
             int foundEmployee = this.findEmployee(employeePicked);
@@ -430,133 +428,27 @@ public class Pickup3 extends SenateActivity
             return;
         }
 
-        // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
-        String jsonString = null;
-        String status = null;
-        JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
-        String barcodeNum = "";
-
-        for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-            barcodeNum = barcodeNum
-                    + scannedBarcodeNumbers.get(i).getNusenate() + ",";
-        }
-
-        // Create a JSON string from the arraylist
-        /*
-         * WORK ON IT LATER (SENDING THE STRING AS JSON) JSONObject jo=new
-         * JSONObject();// =jsArray.toJSONObject("number"); try {
-         * 
-         * //jo.putOpt("barcodes",scannedBarcodeNumbers.toString());
-         * jsonString=jsArray.toString(); } catch (Exception e) { // TODO
-         * Auto-generated catch block e.printStackTrace(); }
-         */
-
-        // call the servlet image upload and return the nuxrsign
-
-        String NAPICKUPBY = MainActivity.nauser;
-        String NUXREFEM = Integer.toString(nuxrefem);
-        String NUXRRELSIGN = "1111";
-        /*
-         * changes VP String
-         * RELEASEBY=this.naemployeeView.getText().toString().replace(",", " ");
-         * 
-         * String NARELEASEBY= URLEncoder.encode(RELEASEBY);
-         */
-        String NARELEASEBY = null;
-        DECOMMENTS = null;
-        /*
-         * String NADELIVERBY= ""; String NAACCEPTBY = ""; String
-         * NUXRACCPTSIGN="";
-         */
-
-        try {
-            NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText()
-                    .toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        try {
-            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
-                    .toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        // Send it to the server
-
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-            requestTaskType = "Pickup";
-            AsyncTask<String, String, String> resr1;
-            try {
-                // Get the URL from the properties
-
-                String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                // System.out.println("("+MainActivity.nauser+")");
-
-                // resr1 = new
-                // RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem,
-                // URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
-
-                resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, URL
-                        + "/Pickup?originLocation=" + originLocationCode
-                        + "&destinationLocation=" + destinationLocationCode
-                        + "&barcodes=" + barcodeNum + "&NAPICKUPBY="
-                        + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                        + "&cdloctypeto=" + cdloctypeto 
-                        + "&cdloctypefrm=" + cdloctypefrm);
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res==null) {
-                        noServerResponse();
-                        return;
-                    }                    
-                }
-                catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }  
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setTitle("Pickup Confirmation");
+        confirmDialog.setMessage("Are you sure you want to pickup these " + scannedBarcodeNumbers.size() + " items?");
+        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                positiveDialog();
             }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
+        });
 
-        // Display Toster
-        Context context = getApplicationContext();
-        CharSequence text = res;
-        if (res.length() == 0) {
-            text = "Database not updated";
-        }
+        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Continue in same activity.
+            }
+        });
 
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
+        AlertDialog dialog = confirmDialog.create();
+        dialog.show();
 
-        // ===================ends
-        // Intent intent = new Intent(this, MenuActivity.class);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
     }
 
     public void noServerResponse() {
@@ -801,6 +693,137 @@ public class Pickup3 extends SenateActivity
                 return "!!ERROR: Invalid requestTypeTask:" + requestTaskType;
             }
         }
+    }
+
+    private void positiveDialog() {
+        progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+        btnPickup3Cont.getBackground().setAlpha(45);
+        // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
+        //String jsonString = null;
+        String status = null;
+        //JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
+
+        String barcodeNum = "";
+
+        for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
+            barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
+        }
+
+        // Create a JSON string from the arraylist
+        /*
+         * WORK ON IT LATER (SENDING THE STRING AS JSON) JSONObject jo=new
+         * JSONObject();// =jsArray.toJSONObject("number"); try {
+         * 
+         * //jo.putOpt("barcodes",scannedBarcodeNumbers.toString());
+         * jsonString=jsArray.toString(); } catch (Exception e) { // TODO
+         * Auto-generated catch block e.printStackTrace(); }
+         */
+
+        // call the servlet image upload and return the nuxrsign
+
+        String NAPICKUPBY = MainActivity.nauser;
+        String NUXREFEM = Integer.toString(nuxrefem);
+        String NUXRRELSIGN = "1111";
+        /*
+         * changes VP String
+         * RELEASEBY=this.naemployeeView.getText().toString().replace(",", " ");
+         * 
+         * String NARELEASEBY= URLEncoder.encode(RELEASEBY);
+         */
+        String NARELEASEBY = null;
+        DECOMMENTS = null;
+        /*
+         * String NADELIVERBY= ""; String NAACCEPTBY = ""; String
+         * NUXRACCPTSIGN="";
+         */
+
+        try {
+            NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText()
+                    .toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        try {
+            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
+                    .toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        // Send it to the server
+
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+            requestTaskType = "Pickup";
+            AsyncTask<String, String, String> resr1;
+            try {
+                // Get the URL from the properties
+
+                String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+                // System.out.println("("+MainActivity.nauser+")");
+
+                // resr1 = new
+                // RequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem,
+                // URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
+
+                resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
+                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, URL
+                        + "/Pickup?originLocation=" + originLocationCode
+                        + "&destinationLocation=" + destinationLocationCode
+                        + "&barcodes=" + barcodeNum + "&NAPICKUPBY="
+                        + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
+                        + "&cdloctypeto=" + cdloctypeto 
+                        + "&cdloctypefrm=" + cdloctypefrm);
+
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res==null) {
+                        noServerResponse();
+                        return;
+                    }
+                }
+                catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+
+        // Display Toster
+        Context context = getApplicationContext();
+        CharSequence text = res;
+        if (res.length() == 0) {
+            text = "Database not updated";
+        }
+
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+
+        // ===================ends
+        // Intent intent = new Intent(this, MenuActivity.class);
+        Intent intent = new Intent(this, Move.class);
+        startActivity(intent);
     }
 
 }
