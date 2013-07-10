@@ -250,6 +250,12 @@ public class Pickup2Activity extends SenateActivity
                                 vl.DTISSUE = object.getString("dtissue");
                                 vl.CDLOCAT = object.getString("cdlocatto");
                                 vl.CDINTRANSIT = object.getString("cdintransit");
+                                vl.CDSTATUS = object.getString("cdstatus");
+                                
+                                if (vl.CDSTATUS.equalsIgnoreCase("I") ) {
+                                    errorMessage(barcode_num, "!!ERROR: Senate#: " + barcode_num+ " has been Inactivated.", "The <b>\""+vl.DECOMMODITYF+"\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                                    return;
+                                }
                                 
                                 if (vl.CDINTRANSIT != null && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
                                     barcodeIntransit(vl);
@@ -492,6 +498,49 @@ public class Pickup2Activity extends SenateActivity
         alertDialog.show();
     }
 
+    public void errorMessage(final String barcode_num, final String title, final String message) {
+        Log.i("TESTING", "****errorMessgae MESSAGE");
+        playSound(R.raw.error);        
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle(title);
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml(message))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Barcode#: " + barcode_num
+                                + " was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        et_pickup3_barcode.setText("");
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+        
+    
     public int findBarcode(String barcode_num) {
         for (int x = 0; x < invList.size(); x++) {
             if (invList.get(x).getNusenate().equals(barcode_num)) {
@@ -609,5 +658,6 @@ public class Pickup2Activity extends SenateActivity
         String CDLOCAT;
         String CDINTRANSIT;
         String CONDITION;
+        String CDSTATUS;
     }
 }
