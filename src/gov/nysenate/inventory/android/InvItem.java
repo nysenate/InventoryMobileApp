@@ -11,14 +11,14 @@ public class InvItem
     String cdcategory = "blah";
     String cdlocat = "blah";
     String cdintransit = "N";
-    
+
     boolean selected = false;
-    
+
     final int DECOMMODITYF = -101;
     final int TYPE = -102;
     final int NUSENATE = -103;
     final int CDCATEGORY = -104;
-    final int SELECTED = -105;   
+    final int SELECTED = -105;
     final int INTRANSIT = -106;
 
     public InvItem(String nusenate, String cdcategory, String type,
@@ -57,11 +57,11 @@ public class InvItem
     public void setCdcategory(String cdcategory) {
         this.cdcategory = cdcategory;
     }
-    
+
     public String getCdlocat() {
         return cdlocat;
     }
-    
+
     public void setCdlocat(String cdlocat) {
         this.cdlocat = cdlocat;
     }
@@ -69,11 +69,11 @@ public class InvItem
     public String getCdintransit() {
         return cdintransit;
     }
-    
+
     public void setCdintransit(String cdlocat) {
         this.cdintransit = cdintransit;
     }
-    
+
     public String getType() {
         return type;
     }
@@ -115,7 +115,8 @@ public class InvItem
             // Log.i("InvItem ToJSON", jsonObject.toString());
 
             return jsonObject.toString();
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return "";
@@ -134,49 +135,58 @@ public class InvItem
             JSONObject jsonObject = new JSONObject(JSONString);
             try {
                 this.setNusenate(jsonObject.getString("nusenate"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setType(jsonObject.getString("type"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setCdcategory(jsonObject.getString("cdcategory"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setDecommodityf(jsonObject.getString("decommodityf"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
 
             try {
                 this.setCdlocat(jsonObject.getString("cdlocat"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
 
             try {
                 this.setCdintransit(jsonObject.getString("cdintransit"));
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 e2.printStackTrace();
             }
-            
+
             try {
                 if (jsonObject.getString("selected").trim().toUpperCase()
                         .startsWith("T")) {
                     this.setSelected(true);
-                } else {
+                }
+                else {
                     this.setSelected(false);
                 }
-            } catch (JSONException e2) {
+            }
+            catch (JSONException e2) {
                 this.setSelected(false);
             }
 
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

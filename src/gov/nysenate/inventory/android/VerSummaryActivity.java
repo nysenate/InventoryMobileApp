@@ -281,20 +281,90 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void continueButton(View view) {
+        // Since AlertDialogs are asynchronous, need logic to display one at a time.
+        if (foundItemsScanned()) {
+            displayFoundItemsDialog();
+        }
+        else if (newItemsScanned()) {
+            displayNewItemsDialog();
+        }
+        else {
+            displayVerificationDialog();
+        }
+    }
+
+    private void displayFoundItemsDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Warning");
+        dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numFoundItems() +
+                " Item/s found in OTHER</b> locations will be moved to the current location: <b>" + loc_code + "</b>. <br><br>" +
+                "Continued with Verification Submission (Y/N)?"));
+        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (newItemsScanned()) {
+                    displayNewItemsDialog();
+                }
+                else {
+                    displayVerificationDialog();
+                }
+            }
+        });
+
+        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void displayNewItemsDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Warning");
+        dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numNewItems() +
+                " NEW Items scanned will " + "NOT be tagged to location: " + loc_code + ".</b><br><br>" +
+                "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>" +
+                "Continued with Verification Submission (Y/N)?"));
+        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                displayVerificationDialog();
+            }
+        });
+
+        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void displayVerificationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Verification Confirmation");
-        confirmDialog.setMessage(Html.fromHtml(createAlertMessage()));
+        confirmDialog.setMessage("Are you sure you want to submit this verification?");
         confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                positiveDialog();
+                dialog.dismiss();
+                submitVerification();
             }
         });
 
         confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Continue in same activity.
+                dialog.dismiss();
             }
         });
 
@@ -302,21 +372,21 @@ public class VerSummaryActivity extends SenateActivity
         dialog.show();
     }
 
-    private String createAlertMessage() {
-        String message = "";
-        if (newItemsScanned()) {
-            message += "<font color='RED'><b>WARNING:</font> The " + numNewItems() + " NEW Items scanned will " +
-                    "<font color='RED'>NOT</font> be tagged to location: " + loc_code + ".</b><br><br>" +
-                    " Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>";
-        }
-        message += "Are you sure you want to submit this verification?";
-        return message;
-    }
-
     private boolean newItemsScanned() {
         boolean exist = false;
         for (InvItem item : newItems) {
             if (item.getType().equalsIgnoreCase("NEW")) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
+    }
+
+    private boolean foundItemsScanned() {
+        boolean exist = false;
+        for (InvItem item : newItems) {
+            if (!item.getType().equalsIgnoreCase("NEW")) {
                 exist = true;
                 break;
             }
@@ -334,7 +404,11 @@ public class VerSummaryActivity extends SenateActivity
         return numNewItems;
     }
 
-    private void positiveDialog() {
+    private int numFoundItems() {
+        return newItems.size() - numNewItems();
+    }
+
+    private void submitVerification() {
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
         // new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
