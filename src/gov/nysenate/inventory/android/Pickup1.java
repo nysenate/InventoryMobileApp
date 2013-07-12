@@ -573,8 +573,8 @@ public class Pickup1 extends SenateActivity
                 nuStop = destinationLocation.indexOf("-");
                 if (nuStop > -1) {
                     cdlocatto = destinationLocation.substring(0, nuStop);
-                    nuStop2 = originLocation.indexOf(":", nuStop);
-                    cdloctypeto = originLocation.substring(nuStop+1, nuStop2);
+                    nuStop2 = destinationLocation.indexOf(":", nuStop);
+                    cdloctypeto = destinationLocation.substring(nuStop + 1, nuStop2);
                 } else {
                     cdlocatfrm = destinationLocation;
                 }
