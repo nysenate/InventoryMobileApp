@@ -48,6 +48,7 @@ public class ListtestActivity extends SenateActivity
     public TextView tv_counts_existing;
     public TextView tv_counts_scanned;
     public TextView loc_details;
+    public TextView tvCdlocat;
     public String res = null;
     boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -114,6 +115,10 @@ public class ListtestActivity extends SenateActivity
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
+        
+        // Setup TextViews       
+        tvCdlocat = (TextView) findViewById(R.id.tvCdlocat);
+        tvCdlocat.setText("At: "+loc_code);
 
         // check network connection
 
