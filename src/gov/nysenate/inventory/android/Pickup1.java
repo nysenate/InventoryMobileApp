@@ -390,9 +390,6 @@ public class Pickup1 extends SenateActivity
                     // display error
                     status = "no";
                 }
-                // loc_details.setText(res);
-                // loc_details.append("\n"+loc_code.getText().toString());
-                // autoCompleteTextView1.setText(barcode_num);
             }
         }
     };
