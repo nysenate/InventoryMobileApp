@@ -150,8 +150,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dp"
     android:layout_alignTop="@+id/textView1"
     android:background="@drawable/customshape"
-    android:text="At:" />
+    android:text="" />
         
 </RelativeLayout>

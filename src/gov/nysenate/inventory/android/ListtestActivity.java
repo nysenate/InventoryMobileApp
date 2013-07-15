@@ -118,7 +118,7 @@ public class ListtestActivity extends SenateActivity
         
         // Setup TextViews       
         tvCdlocat = (TextView) findViewById(R.id.tvCdlocat);
-        tvCdlocat.setText("At: "+loc_code);
+        tvCdlocat.setText(loc_code);
 
         // check network connection
 

@@ -608,8 +608,8 @@ public class Pickup3 extends SenateActivity
                     }
                     temp = null;
                     in.close();
-                    // System.out.println("Server response:\n'" + responseString
-                    // + "'");
+                     System.out.println("Server response:\n'" + responseString
+                     + "'");
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
