@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -64,6 +65,7 @@ public class ListtestActivity extends SenateActivity
     static Button btnVerListCont;
     static Button btnVerListCancel;
     int cntScanned = 0;
+    Activity currentActivity;
 
     String URL = ""; // this will be initialized once in onCreate() and used for
                      // all server calls.
@@ -93,6 +95,7 @@ public class ListtestActivity extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listtest);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // Get the location code from the previous activity
         Intent intent = getIntent();
@@ -143,7 +146,22 @@ public class ListtestActivity extends SenateActivity
                     if (res==null) {
                         noServerResponse();
                         return;
-                    }                    
+                    }     
+                    else if (res.indexOf("Session timed out")>0) {
+                        Intent intentTimeout = new Intent(this, LoginActivity.class);
+                        startActivityForResult(intentTimeout, 1);
+                        URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+                        resr1 = new RequestTask()
+                                .execute(URL + "/ItemsList?loc_code=" + loc_code);
+                        res = null;
+                        res = resr1.get().trim().toString();
+                        if (res==null) {
+                            noServerResponse();
+                            return;
+                        }     
+
+                    }
                 }
                 catch (NullPointerException e) {
                     noServerResponse();
@@ -434,7 +452,27 @@ public class ListtestActivity extends SenateActivity
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     barcode.setText("");
-                    return;
+                    
+                    // Simply contact the Web Server to keep the Session Alive, to help minimize
+                    // issues with Session Timeouts                    
+                    AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/KeepSessionAlive");
+
+                     try {
+
+                           try {
+                               res = null;
+                               res = resr1.get().trim().toString();
+                           }
+                           catch (Exception e) {
+        
+                           }
+                      }
+                       catch (Exception ex) {
+                           
+                       }
+                          
+                               
                 }
 
                 for (int i = invList.size() - 1; i > -1; i--) {
@@ -503,7 +541,27 @@ public class ListtestActivity extends SenateActivity
                                                      // numbers for
                                                      // oracle table
                         cntScanned++;
-                        playSound(R.raw.ok);     
+                        playSound(R.raw.ok);   
+                        // Simply contact the Web Server to keep the Session Alive, to help minimize
+                        // issues with Session Timeouts
+                        AsyncTask<String, String, String> resr1 = new RequestTask()
+                        .execute(URL + "/KeepSessionAlive");
+
+                         try {
+
+                               try {
+                                   res = null;
+                                   res = resr1.get().trim().toString();
+                               }
+                               catch (Exception e) {
+            
+                               }
+                          }
+                           catch (Exception ex) {
+                               
+                           }
+                              
+                        
                         try {
                             StringBuffer values = new StringBuffer();
                             values.append(curInvItem.getNusenate());
@@ -565,6 +623,22 @@ public class ListtestActivity extends SenateActivity
                             if (res==null) {
                                 noServerResponse();
                                 return;
+                            }    
+                            else if (res.indexOf("Session timed out")>0) {
+                                Intent intentTimeout = new Intent(currentActivity, LoginActivity.class);
+                                startActivityForResult(intentTimeout, 1);
+                                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+                                resr1 = new RequestTask()
+                                        .execute(URL +"/ItemDetails?barcode_num="
+                                                + barcode_num);
+                                res = null;
+                                res = resr1.get().trim().toString();
+                                if (res==null) {
+                                    noServerResponse();
+                                    return;
+                                }     
+
                             }                            
 
                         } catch (InterruptedException e) {
@@ -968,6 +1042,8 @@ public class ListtestActivity extends SenateActivity
         intent.putStringArrayListExtra("newItems", getJSONArrayList(newItems));// new
                                                                                // items
                                                                                // list
+        
+       
         /*
          * if (1==1) { // Testing return; }
          */

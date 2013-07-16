@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,12 +46,14 @@ public class VerSummaryActivity extends SenateActivity
     static Button btnVerSumCont;
     ProgressBar progressVerSum;
     boolean positiveButtonPressed = false;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_summary);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // Summary Fields
 

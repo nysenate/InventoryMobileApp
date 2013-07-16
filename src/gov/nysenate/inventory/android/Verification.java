@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,6 +51,7 @@ public class Verification extends SenateActivity
     TextView tvDescript;
     TextView tvCount;
     TextView tvOffice;
+    Activity currentActivity;
 
     String URL = "";
 
@@ -60,6 +62,7 @@ public class Verification extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         loc_code = (EditText) findViewById(R.id.preferencePWD);
         // code for the autocomplete arraylist of location

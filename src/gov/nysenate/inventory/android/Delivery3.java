@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -81,6 +82,7 @@ public class Delivery3 extends SenateActivity
     InvSelListViewAdapter invAdapter;
     public static ProgressBar progBarDelivery3;
     boolean positiveButtonPressed = false;
+    Activity currentActivity;
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
 
@@ -92,6 +94,7 @@ public class Delivery3 extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery3);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // Get the data from previous activity
         Intent intent = getIntent();

@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,12 +39,14 @@ public class SearchActivity extends SenateActivity
     TextView tvDateInvntry;
 
     static Button btnSrchBck;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         barcode = (ClearableEditText) findViewById(R.id.barcode);
         barcode.addTextChangedListener(filterTextWatcher);// Adding Listener

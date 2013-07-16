@@ -10,6 +10,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -49,7 +50,6 @@ import android.widget.Toast;
 
 public class LoginActivity extends SenateActivity
 {
-
     // WIFI Code Added Below
     WifiManager mainWifi;
     // WifiReceiver receiverWifi;
@@ -88,6 +88,8 @@ public class LoginActivity extends SenateActivity
     private DownloadManager downloadManager;
     private long downloadReference;
     AudioManager audio;
+    Activity currentActivity;
+    String status = "no";
     
     public static DefaultHttpClient httpClient;
     
@@ -98,6 +100,7 @@ public class LoginActivity extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
+        currentActivity = this;
         Log.i("MAIN", "!!!!MAINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
@@ -108,8 +111,6 @@ public class LoginActivity extends SenateActivity
         // Resources resources = this.getResources();
         progressBarLogin = (ProgressBar) findViewById(R.id.progressBarLogin);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        
-
 
         AssetManager assetManager = resources.getAssets();
         try {
@@ -500,6 +501,131 @@ public class LoginActivity extends SenateActivity
         
     }
     
+    private void login(String user_name, String password) {
+        try {
+            // check network connection
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            String res = null;
+            
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // fetch data
+                status = "yes";
+                try {
+                    // Get the URL from the properties
+                    String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                            .toString();
+                    Log.i("Login test", URL + "/Login?user=" + user_name
+                            + "&pwd=" + password);
+                    AsyncTask<String, String, String> resr1 = new RequestTask()
+                            .execute(URL + "/Login?user=" + user_name + "&pwd="
+                                    + password);
+                    try {
+                        res = resr1.get().trim().toString();
+                        if (res==null) {
+                            noServerResponse();
+                            }
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        // TODO Auto-generated catch block
+                        noServerResponse();
+                        }
+                } catch (Exception e) {
+
+                }
+                status = "yes1";
+                if (user_name == null || user_name.trim().length() == 0) { // TESTING
+                                                                           // PURPOSE
+                                                                           // ONLY!!!
+                    user_name = "height";
+                }
+                LoginActivity.nauser = user_name;
+                System.out.println("NAUSER NOW SET TO " + user_name);
+            } else {
+                // display error
+                status = "no";
+                LoginActivity.nauser = null;
+                System.out.println("NAUSER NULL!!");
+            }
+
+            // Create the text view
+            TextView textView = new TextView(this);
+            textView.setTextSize(40);
+
+            // calling the menu activity after validation
+            System.out.println("RES:" + res);
+            if (res.equals("VALID")) {
+                Intent intent2 = new Intent(this, MenuActivity.class);
+                startActivity(intent2);
+                overridePendingTransition(R.anim.slide_in_left,
+                        R.anim.slide_out_left);
+            } else if (res.trim().startsWith("!!ERROR :")) {
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(this, res.trim(), duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
+            } else {
+                overridePendingTransition(R.anim.slide_in_left,
+                        R.anim.slide_out_left);
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(this,
+                        "!!ERROR: Invalid Username and/or Password.", duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+        } catch (Exception e) {
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(this,
+                    "Problem connecting to Mobile App Server. Please contact STSBAC.("
+                            + e.getMessage() + ")", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+    }     
+    
+    public void noServerResponse() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }         
     @Override
     protected void onResume(Bundle savedInstanceState) {
         super.onResume(savedInstanceState);

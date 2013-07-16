@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,12 +42,14 @@ public class Delivery2 extends SenateActivity
     Intent intent;
     static ProgressBar progBarDelivery2;
     static Button btnDelivery2Cancel;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery2);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // define progressBar
 

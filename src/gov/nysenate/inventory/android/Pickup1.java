@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -60,6 +61,7 @@ public class Pickup1 extends SenateActivity
     TextView tvOffice2;
     TextView tvDescript2;
     TextView tvCount2;
+    Activity currentActivity;
     public static ProgressBar progBarPickup1;
 
     @Override
@@ -67,6 +69,7 @@ public class Pickup1 extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup1);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // loc_code = (EditText) findViewById(R.id.editText1);
 

@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,12 +51,14 @@ public class Delivery1 extends SenateActivity
     TextView tvDescriptD;
     TextView tvCountD;
     public static ProgressBar progBarDelivery1;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery1);
         registerBaseActivityReceiver();
+        currentActivity = this;
 
         // Setup Data Textviews
         tvOfficeD = (TextView) this.findViewById(R.id.tvOfficeD);

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -72,12 +73,15 @@ public class Pickup2Activity extends SenateActivity
     static Button btnPickup2Cont;
     static Button btnPickup2Cancel;
     static ProgressBar progBarPickup2;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
+        currentActivity = this;
+        
         // Get the origin and destination location from the previous activity
         Intent intent = getIntent();
         originLocation = intent.getStringExtra("originLocation");

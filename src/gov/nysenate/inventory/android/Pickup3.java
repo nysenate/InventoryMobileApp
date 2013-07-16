@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -96,12 +97,15 @@ public class Pickup3 extends SenateActivity
     
     public static ProgressBar progBarPickup3;
     boolean positiveButtonPressed = false;
+    Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup3);
         registerBaseActivityReceiver();
+        currentActivity = this;
+        
         sign = (SignatureView) findViewById(R.id.blsignImageView);
         sign.setMinDimensions(200, 100);
         commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
@@ -810,6 +814,10 @@ public class Pickup3 extends SenateActivity
                     if (res==null) {
                         noServerResponse();
                         return;
+                    }
+                    else if (res.indexOf("Session timed out")>-1) {
+                        
+                        
                     }
                 }
                 catch (NullPointerException e) {
