@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -19,7 +20,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -392,10 +392,11 @@ public class Delivery3 extends SenateActivity
             toast.show();
             return;
         }
-
+        
+        int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delivery Confirmation");
-        confirmDialog.setMessage("Are you sure you want to deliver these " + invList.size() + " items?");
+        confirmDialog.setMessage("Are you sure you want to deliver these " + numItemsDelivered + " items?");
         confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -426,25 +427,10 @@ public class Delivery3 extends SenateActivity
             e1.printStackTrace();
         }
 
-        // 1. create a list of all checked items (barcodes only no description)
-        //ArrayList<InvItem> checkedItems = adapter.getAllItems();
-        //ArrayList<InvItem> deliveryItemsBarcodes = adapter.getSelectedItems(true);
-
-        StringBuilder deliveryItemsStr = new StringBuilder();
-        StringBuilder checkedStr = new StringBuilder();
         if (this.invAdapter==null) {
             this.invAdapter = (InvSelListViewAdapter)this.listview.getAdapter();
         }
         int NUSENATE = new InvItem().NUSENATE;
-        deliveryItemsStr.append(this.invAdapter.getAllItemsAsString(NUSENATE, ","));
-        checkedStr.append(this.invAdapter.getSelectedItemsAsString(true, NUSENATE, ","));
-
-        // int checkedItems = listview.getCheckedItemCount();
-        // Log.i("checkedItems", "onItemSelected- checkedItems" + checkedItems);
-        //long checkedI[] = listview.getCheckedItemIds();
-
-        //long[] checkedItemsId = listview.getCheckItemIds();// to get position of
-                                                           // all checked items
         DECOMMENTS = null;
         try {
             DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
@@ -453,9 +439,6 @@ public class Delivery3 extends SenateActivity
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
-        // 2. send both the lists to the server (
-        // nuxrpd,deliveryList,checkedItemsId)
 
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -470,13 +453,12 @@ public class Delivery3 extends SenateActivity
                 String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
                 this.requestTaskType = "Delivery";
+                String deliveryURL = URL + "/DeliveryConfirmation?NUXRPD=" + nuxrpd + "&NADELIVERBY=" + MainActivity.nauser
+                        + "&NAACCEPTBY=" + NAACCEPTBY + generateGetArray("deliveryItemsStr[]", this.invAdapter.getAllItems())
+                        + generateGetArray("checkedStr[]", this.invAdapter.getSelectedItems(true));
+
                 resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, 
-                        URL
-                        + "/DeliveryConfirmation?NUXRPD=" + nuxrpd
-                        + "&NADELIVERBY=" + MainActivity.nauser
-                        + "&NAACCEPTBY=" + NAACCEPTBY + "&deliveryItemsStr="
-                        + deliveryItemsStr + "&checkedStr=" + checkedStr);
+                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, deliveryURL);
 
                 try {
                     res = null;
@@ -593,6 +575,28 @@ public class Delivery3 extends SenateActivity
 
     public void backButton(View view) {
         super.onBackPressed();
+    }
+
+    private String generateGetArray(String parameterName, List<InvItem> invItems) {
+        ArrayList<String> nusenateStrings = new ArrayList<String>();
+        for (InvItem aValue : invItems) {
+            nusenateStrings.add(aValue.getNusenate());
+        }
+        String[] s = nusenateStrings.toArray(new String[nusenateStrings.size()]);
+        return generateGetArray(parameterName, s);
+    }
+
+    /**
+     * @param parameterName Name of get request parameter associated with this array.
+     * @param values String array to convert into get request form.
+     * @return string array formatted for a get request. example: &parameterName=value1&parameterName=value2&parameterName=value3...
+     */
+    private String generateGetArray(String parameterName, String[] values) {
+        String getString = "";
+        for (String value : values) {
+            getString += "&" + parameterName + "=" + value;
+        }
+        return getString;
     }
 
     // class for connecting to internet and sending HTTP request to server

@@ -160,7 +160,6 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         notifyDataSetChanged();
     }
 
-    
     public ArrayList<InvItem> getSelectedItems(boolean selected) {
         ArrayList<InvItem> returnItems = new ArrayList<InvItem>();
         for (int x=0;x<items.size();x++) {
@@ -172,10 +171,23 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         
     } 
 
+    public String getSelectedItems(String delimiter) {
+        StringBuffer itemList = new StringBuffer();
+        if (this.items.size() > 0) {
+            for (InvItem selection : this.items) {
+                itemList.append(selection.getNusenate() + delimiter);
+            }
+            // Delete the last delimiter.
+            itemList.deleteCharAt(itemList.length() - 1);
+        }
+        return itemList.toString();
+    }
+
     public String getSelectedItemsAsString(boolean selected, int field) {
         return getSelectedItemsAsString(selected, field, "|");
     }
-    
+
+    // TODO: only used for NUSENATE, do we need?
     public String getSelectedItemsAsString(boolean selected, int field, String delimeter) {
         
         StringBuffer returnItems = new StringBuffer();
@@ -231,7 +243,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         return returnItems.toString();
         
     } 
-    
+
     public ArrayList<InvItem> getAllItems() {
            return (ArrayList<InvItem>)items;
     }
