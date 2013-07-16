@@ -51,7 +51,7 @@ public class ListActivity extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
 
             AsyncTask<String, String, String> resr1 = new RequestTask()

@@ -143,5 +143,16 @@
     android:text="Sort By:"
     android:textSize="25sp"
     android:textStyle="bold" />
+
+<TextView
+    android:id="@+id/tvCdlocat"
+    style="@style/NormalText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dp"
+    android:layout_alignTop="@+id/textView1"
+    android:background="@drawable/customshape"
+    android:text="" />
         
 </RelativeLayout>

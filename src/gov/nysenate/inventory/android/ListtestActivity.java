@@ -48,6 +48,7 @@ public class ListtestActivity extends SenateActivity
     public TextView tv_counts_existing;
     public TextView tv_counts_scanned;
     public TextView loc_details;
+    public TextView tvCdlocat;
     public String res = null;
     boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -114,6 +115,10 @@ public class ListtestActivity extends SenateActivity
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
+        
+        // Setup TextViews       
+        tvCdlocat = (TextView) findViewById(R.id.tvCdlocat);
+        tvCdlocat.setText(loc_code);
 
         // check network connection
 
@@ -124,7 +129,7 @@ public class ListtestActivity extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/ItemsList?loc_code=" + loc_code);
@@ -515,9 +520,9 @@ public class ListtestActivity extends SenateActivity
                             values.append("|");
                             values.append(curInvItem.getCdlocat());
                             values.append("|now|");
-                            values.append(MainActivity.nauser);
+                            values.append(LoginActivity.nauser);
                             values.append("|now|");
-                            values.append(MainActivity.nauser);
+                            values.append(LoginActivity.nauser);
                             
                             long rowsInserted = MenuActivity.db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
                                     values.toString());

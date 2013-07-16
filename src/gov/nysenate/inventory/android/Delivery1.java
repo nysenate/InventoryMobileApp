@@ -76,7 +76,7 @@ public class Delivery1 extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/LocCodeList?NATYPE=DELIVERY");
             try {
@@ -205,7 +205,7 @@ public class Delivery1 extends SenateActivity
                     status = "yes";
 
                     // Get the URL from the properties
-                    URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                    URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                             .toString();
 
                     AsyncTask<String, String, String> resr1 = new RequestTask()

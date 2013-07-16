@@ -44,6 +44,7 @@ public class VerSummaryActivity extends SenateActivity
     static Button btnVerSumBack;
     static Button btnVerSumCont;
     ProgressBar progressVerSum;
+    boolean positiveButtonPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,6 +225,7 @@ public class VerSummaryActivity extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
+        positiveButtonPressed = false;                
         // Setup Buttons and Progress Bar
         this.progressVerSum = (ProgressBar) findViewById(R.id.progressVerSum);
         VerSummaryActivity.btnVerSumBack = (Button) findViewById(R.id.btnVerSumBack);
@@ -357,7 +359,20 @@ public class VerSummaryActivity extends SenateActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                submitVerification();
+
+                if (positiveButtonPressed) {
+                    /* Context context = getApplicationContext();
+                     int duration = Toast.LENGTH_SHORT;
+
+                     Toast toast = Toast.makeText(context,
+                             "Button was already been pressed.", Toast.LENGTH_SHORT);
+                     toast.setGravity(Gravity.CENTER, 0, 0);
+                     toast.show();*/
+                 }
+                 else {
+                    positiveButtonPressed = true;
+                    submitVerification();
+                 }                
             }
         });
 
@@ -443,7 +458,7 @@ public class VerSummaryActivity extends SenateActivity
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
                 System.out.println(URL + "/VerificationReports?loc_code="
                         + loc_code + "&barcodes=" + barcodeNum);
