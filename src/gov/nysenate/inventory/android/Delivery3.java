@@ -80,7 +80,7 @@ public class Delivery3 extends SenateActivity
     InvItem invItem;
     InvSelListViewAdapter invAdapter;
     public static ProgressBar progBarDelivery3;
-    
+    boolean positiveButtonPressed = false;
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
 
@@ -144,7 +144,7 @@ public class Delivery3 extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
             this.requestTaskType = "EmployeeDeliveryList";
             AsyncTask<String, String, String> resr1 = new RequestTask()
@@ -298,6 +298,13 @@ public class Delivery3 extends SenateActivity
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        positiveButtonPressed = false;
+    }
+    
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -399,7 +406,27 @@ public class Delivery3 extends SenateActivity
         confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                positiveDialog();
+                /*
+                 * Prevent Multiple clicks on button, which will cause
+                 * issues witn the database inserting multiple nuxrpds
+                 * for the same pickup.
+                 */
+               
+                if (positiveButtonPressed) {
+                   /* Context context = getApplicationContext();
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context,
+                            "Button was already been pressed.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();*/
+                    
+                }
+                else {
+                   positiveButtonPressed = true;
+                   positiveDialog();
+                }
+
             }
         });
 
@@ -467,14 +494,14 @@ public class Delivery3 extends SenateActivity
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
                 this.requestTaskType = "Delivery";
                 resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, 
+                        + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, 
                         URL
                         + "/DeliveryConfirmation?NUXRPD=" + nuxrpd
-                        + "&NADELIVERBY=" + MainActivity.nauser
+                        + "&NADELIVERBY=" + LoginActivity.nauser
                         + "&NAACCEPTBY=" + NAACCEPTBY + "&deliveryItemsStr="
                         + deliveryItemsStr + "&checkedStr=" + checkedStr);
 
@@ -601,7 +628,7 @@ public class Delivery3 extends SenateActivity
 
         @Override
         protected String doInBackground(String... uri) {
-            HttpClient httpclient = MainActivity.httpClient;
+            HttpClient httpclient = LoginActivity.httpClient;
             HttpResponse response;
             String responseString = null;
             Log.i("WEBRECEIVE", "requestTaskType:" + requestTaskType);
@@ -640,7 +667,7 @@ public class Delivery3 extends SenateActivity
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(MainActivity.nauser);
+                    urls.append(LoginActivity.nauser);
                     
                     URL url = new URL(urls.toString());
 
@@ -696,7 +723,7 @@ public class Delivery3 extends SenateActivity
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(MainActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);                    
                     response = httpclient.execute(new HttpGet(urls.toString()
                             + "&NUXRACCPTSIGN=" + NUXRACCPTSIGN
                             + "&DECOMMENTS=" + DECOMMENTS));
@@ -738,7 +765,7 @@ public class Delivery3 extends SenateActivity
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(MainActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);                    
                     response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -760,7 +787,7 @@ public class Delivery3 extends SenateActivity
                 }
 
                 try {
-                    response = httpclient.execute(new HttpGet(uri[1]+"&userFallback="+MainActivity.nauser));
+                    response = httpclient.execute(new HttpGet(uri[1]+"&userFallback="+LoginActivity.nauser));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();

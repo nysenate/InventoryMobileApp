@@ -92,13 +92,13 @@ public class Pickup1 extends SenateActivity
 
             // Get the URL from the properties
             try {
-                URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             } catch (NullPointerException e) {
                 MsgAlert msgAlert = new MsgAlert(
                         this,
                         "Properties cannot be loaded.",
                         "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
-                if (MainActivity.properties == null) {
+                if (LoginActivity.properties == null) {
                     try {
 
                     } catch (Exception e2) {
@@ -332,7 +332,7 @@ public class Pickup1 extends SenateActivity
                     status = "yes";
 
                     // Get the URL from the properties
-                    URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                    URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                             .toString();
 
                     AsyncTask<String, String, String> resr1 = new RequestTask()

@@ -66,7 +66,7 @@ public class UpgradeActivity extends Activity
         // check of internet is available before making a web service request
         if (isNetworkAvailable(this)) {
             Intent msgIntent = new Intent(this, InvWebService.class);
-            String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
 
             msgIntent.putExtra(InvWebService.REQUEST_STRING, URL

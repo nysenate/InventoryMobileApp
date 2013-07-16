@@ -47,7 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 //   WIFI Code Added Below
 
-public class MainActivity extends SenateActivity
+public class LoginActivity extends SenateActivity
 {
 
     // WIFI Code Added Below
@@ -96,7 +96,7 @@ public class MainActivity extends SenateActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
         Log.i("MAIN", "!!!!MAINACTIVITY onCreate");
         resources = this.getResources();
@@ -421,7 +421,7 @@ public class MainActivity extends SenateActivity
         // check of internet is available before making a web service request
         if (isNetworkAvailable(this)) {
             Intent msgIntent = new Intent(this, InvWebService.class);
-            String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
 
             msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
@@ -648,7 +648,7 @@ public class MainActivity extends SenateActivity
                       do {
                        String nusenate = mCursor.getString(mCursor.getColumnIndex("nusenate"));
                        String decommodityf = mCursor.getString(mCursor.getColumnIndex("decommodityf"));
-                       Log.i(MainActivity.class.getName(), nusenate+": "+decommodityf);
+                       Log.i(LoginActivity.class.getName(), nusenate+": "+decommodityf);
                       }while (mCursor.moveToNext());
                 } 
            }            
@@ -704,7 +704,7 @@ public class MainActivity extends SenateActivity
                         // oh yeah we do need an upgrade, let the user know send
                         // an alert message
                         AlertDialog.Builder builder = new AlertDialog.Builder(
-                                MainActivity.this);
+                                LoginActivity.this);
                         builder.setMessage(
                                 "There is newer version ("
                                         + latestVersionName
@@ -730,7 +730,7 @@ public class MainActivity extends SenateActivity
                                                 request.setAllowedOverRoaming(false);
                                                 request.setTitle("My Andorid App Download");
                                                 request.setDestinationInExternalFilesDir(
-                                                        MainActivity.this,
+                                                        LoginActivity.this,
                                                         Environment.DIRECTORY_DOWNLOADS,
                                                         "InventoryMobileApp.apk");
                                                 downloadReference = downloadManager

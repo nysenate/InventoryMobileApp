@@ -34,7 +34,7 @@ public class ImageTextListViewActivity extends Activity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         rowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {

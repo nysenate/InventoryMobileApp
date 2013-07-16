@@ -32,8 +32,8 @@ public class DisplayMessageActivity extends Activity
 
         // Get the message from the intent
         Intent intent = getIntent();
-        String user_name = intent.getStringExtra(MainActivity.u_name_intent);
-        String password = intent.getStringExtra(MainActivity.pwd_intent);
+        String user_name = intent.getStringExtra(LoginActivity.u_name_intent);
+        String password = intent.getStringExtra(LoginActivity.pwd_intent);
         String res = null;
 
         try {
@@ -45,7 +45,7 @@ public class DisplayMessageActivity extends Activity
                 status = "yes";
                 try {
                     // Get the URL from the properties
-                    String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                    String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                             .toString();
                     Log.i("Login test", URL + "/Login?user=" + user_name
                             + "&pwd=" + password);
@@ -57,7 +57,7 @@ public class DisplayMessageActivity extends Activity
                         res = resr1.get().trim().toString();
                         if (res==null) {
                             noServerResponse();
-                            Intent intent2 = new Intent(this, MainActivity.class);
+                            Intent intent2 = new Intent(this, LoginActivity.class);
                             intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_left,
@@ -73,7 +73,7 @@ public class DisplayMessageActivity extends Activity
                     } catch (NullPointerException e) {
                         // TODO Auto-generated catch block
                         noServerResponse();
-                        Intent intent2 = new Intent(this, MainActivity.class);
+                        Intent intent2 = new Intent(this, LoginActivity.class);
                         intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent2);
                         overridePendingTransition(R.anim.slide_in_left,
@@ -82,7 +82,7 @@ public class DisplayMessageActivity extends Activity
                         }
                 } catch (Exception e) {
 
-                    Intent intent2 = new Intent(this, MainActivity.class);
+                    Intent intent2 = new Intent(this, LoginActivity.class);
                     intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent2);
                     overridePendingTransition(R.anim.slide_in_left,
@@ -95,12 +95,12 @@ public class DisplayMessageActivity extends Activity
                                                                            // ONLY!!!
                     user_name = "height";
                 }
-                MainActivity.nauser = user_name;
+                LoginActivity.nauser = user_name;
                 System.out.println("NAUSER NOW SET TO " + user_name);
             } else {
                 // display error
                 status = "no";
-                MainActivity.nauser = null;
+                LoginActivity.nauser = null;
                 System.out.println("NAUSER NULL!!");
             }
 
@@ -116,7 +116,7 @@ public class DisplayMessageActivity extends Activity
                 overridePendingTransition(R.anim.slide_in_left,
                         R.anim.slide_out_left);
             } else if (res.trim().startsWith("!!ERROR :")) {
-                Intent intent2 = new Intent(this, MainActivity.class);
+                Intent intent2 = new Intent(this, LoginActivity.class);
                 intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_left,
@@ -127,7 +127,7 @@ public class DisplayMessageActivity extends Activity
                 toast.show();
 
             } else {
-                Intent intent2 = new Intent(this, MainActivity.class);
+                Intent intent2 = new Intent(this, LoginActivity.class);
                 intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_left,
@@ -148,7 +148,7 @@ public class DisplayMessageActivity extends Activity
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
 
-            Intent intent2 = new Intent(this, MainActivity.class);
+            Intent intent2 = new Intent(this, LoginActivity.class);
             intent2.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent2);
             finish();

@@ -199,7 +199,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     }
 
     public void logout(View view) {
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, LoginActivity.class);
 
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

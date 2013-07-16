@@ -95,6 +95,7 @@ public class Pickup3 extends SenateActivity
     public TextView tvDestinationPickup3;
     
     public static ProgressBar progBarPickup3;
+    boolean positiveButtonPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +192,7 @@ public class Pickup3 extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             requestTaskType = "EmployeeList";
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/EmployeeList");
@@ -309,6 +310,7 @@ public class Pickup3 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
+        positiveButtonPressed = false;
         btnPickup3Cont = (Button) findViewById(R.id.btnPickup3Cont);
         btnPickup3Cont.getBackground().setAlpha(255);
         btnPickup3Back = (Button) findViewById(R.id.btnPickup3Back);
@@ -435,7 +437,26 @@ public class Pickup3 extends SenateActivity
         confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                positiveDialog();
+                 /*
+                  * Prevent Multiple clicks on button, which will cause
+                  * issues witn the database inserting multiple nuxrpds
+                  * for the same pickup.
+                  */
+                
+                 if (positiveButtonPressed) {
+                    /* Context context = getApplicationContext();
+                     int duration = Toast.LENGTH_SHORT;
+
+                     Toast toast = Toast.makeText(context,
+                             "Button was already been pressed.", Toast.LENGTH_SHORT);
+                     toast.setGravity(Gravity.CENTER, 0, 0);
+                     toast.show();*/
+                     
+                 }
+                 else {
+                    positiveButtonPressed = true;
+                    positiveDialog();
+                 }
             }
         });
 
@@ -579,7 +600,7 @@ public class Pickup3 extends SenateActivity
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(MainActivity.nauser);
+                    urls.append(LoginActivity.nauser);
                     
                     
                     URL url = new URL(urls.toString());
@@ -624,13 +645,13 @@ public class Pickup3 extends SenateActivity
                 }
 
                 // Then post the rest of the information along with the NUXRSIGN
-                HttpClient httpclient = MainActivity.httpClient;
+                HttpClient httpclient = LoginActivity.httpClient;
                 HttpResponse response;
                 responseString = null;
                 try {
 
                     String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
-                            + "&DECOMMENTS=" + DECOMMENTS+"&userFallback="+MainActivity.nauser;
+                            + "&DECOMMENTS=" + DECOMMENTS+"&userFallback="+LoginActivity.nauser;
                     System.out.println("pickupURL:" + pickupURL);
                     response = httpclient.execute(new HttpGet(pickupURL));
                     StatusLine statusLine = response.getStatusLine();
@@ -652,7 +673,7 @@ public class Pickup3 extends SenateActivity
                 res = responseString;
                 return responseString;
             } else if (requestTaskType.equalsIgnoreCase("EmployeeList")) {
-                HttpClient httpclient = MainActivity.httpClient;
+                HttpClient httpclient = LoginActivity.httpClient;
                 HttpResponse response;
                 String responseString = null;
                 try {
@@ -667,7 +688,7 @@ public class Pickup3 extends SenateActivity
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(MainActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);                    
                     response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -721,7 +742,7 @@ public class Pickup3 extends SenateActivity
 
         // call the servlet image upload and return the nuxrsign
 
-        String NAPICKUPBY = MainActivity.nauser;
+        String NAPICKUPBY = LoginActivity.nauser;
         String NUXREFEM = Integer.toString(nuxrefem);
         String NUXRRELSIGN = "1111";
         /*
@@ -766,7 +787,7 @@ public class Pickup3 extends SenateActivity
             try {
                 // Get the URL from the properties
 
-                String URL = MainActivity.properties.get("WEBAPP_BASE_URL")
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
                 // System.out.println("("+MainActivity.nauser+")");
 
@@ -775,7 +796,7 @@ public class Pickup3 extends SenateActivity
                 // URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
 
                 resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + MainActivity.nauser + "&nuxrefem=" + nuxrefem, URL
+                        + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, URL
                         + "/Pickup?originLocation=" + originLocationCode
                         + "&destinationLocation=" + destinationLocationCode
                         + "&barcodes=" + barcodeNum + "&NAPICKUPBY="

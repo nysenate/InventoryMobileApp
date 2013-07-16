@@ -22,12 +22,12 @@ public class RequestTask extends AsyncTask<String, String, String>
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING");
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING FOR:"+uri[0]);
         //HttpClient httpclient = new DefaultHttpClient();
-        HttpClient httpclient = MainActivity.httpClient;
+        HttpClient httpclient = LoginActivity.httpClient;
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING 2");
         if (httpclient==null) {
             Log.i(RequestTask.class.getName(), "MainActivity.httpClient was null so it is being reset");
-            MainActivity.httpClient = new DefaultHttpClient();
-            httpclient = MainActivity.httpClient;
+            LoginActivity.httpClient = new DefaultHttpClient();
+            httpclient = LoginActivity.httpClient;
         }
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING 3");
         HttpResponse response;
@@ -45,7 +45,7 @@ public class RequestTask extends AsyncTask<String, String, String>
         }
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING 15");
         url.append("userFallback=");
-        url.append(MainActivity.nauser);
+        url.append(LoginActivity.nauser);
         
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING 17");
         try {

@@ -79,7 +79,7 @@ public class Delivery2 extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/DeliveryList?loc_code=" + locCode);

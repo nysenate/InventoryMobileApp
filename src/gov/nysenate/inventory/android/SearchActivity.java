@@ -89,7 +89,7 @@ public class SearchActivity extends SenateActivity
                         // fetch data
                         status = "yes";
                         // Get the URL from the properties
-                        String URL = MainActivity.properties.get(
+                        String URL = LoginActivity.properties.get(
                                 "WEBAPP_BASE_URL").toString();
                         Log.i("Activity Search afterTextChanged ", "URL " + URL);
                         AsyncTask<String, String, String> resr1 = new RequestTask()

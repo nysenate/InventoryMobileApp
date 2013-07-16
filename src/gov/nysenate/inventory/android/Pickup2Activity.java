@@ -200,7 +200,7 @@ public class Pickup2Activity extends SenateActivity
                         // int barcode= Integer.parseInt(barcode_num);
                         // scannedItems.add(barcode);
                         // Get the URL from the properties
-                        String URL = MainActivity.properties.get(
+                        String URL = LoginActivity.properties.get(
                                 "WEBAPP_BASE_URL").toString();
 
                         AsyncTask<String, String, String> resr1 = new RequestTask()

@@ -129,7 +129,7 @@ public class ListtestActivity extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = MainActivity.properties.get("WEBAPP_BASE_URL").toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/ItemsList?loc_code=" + loc_code);
@@ -520,9 +520,9 @@ public class ListtestActivity extends SenateActivity
                             values.append("|");
                             values.append(curInvItem.getCdlocat());
                             values.append("|now|");
-                            values.append(MainActivity.nauser);
+                            values.append(LoginActivity.nauser);
                             values.append("|now|");
-                            values.append(MainActivity.nauser);
+                            values.append(LoginActivity.nauser);
                             
                             long rowsInserted = MenuActivity.db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
                                     values.toString());
