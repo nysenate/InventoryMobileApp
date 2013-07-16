@@ -213,26 +213,6 @@ public class Delivery3 extends SenateActivity
                 // listview.setAdapter(adapter2);
                 invAdapter = new InvSelListViewAdapter(getApplicationContext(), R.layout.invlist_sel_item, invList);
                 listview.setAdapter(invAdapter);               
-/*                listview.setAdapter(new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_multiple_choice,
-                        deliveryDetails)
-                {
-                    @Override
-                    public View getView(int position, View convertView,
-                            ViewGroup parent) {
-                        Context context = getApplicationContext();
-                        View view = super
-                                .getView(position, convertView, parent);
-                        if (position % 2 > 0) {
-                            view.setBackgroundColor(context.getResources()
-                                    .getColor(R.color.white));
-                        } else {
-                            view.setBackgroundColor(context.getResources()
-                                    .getColor(R.color.blueveryverylight));
-                        }
-                        return view;
-                    }
-                });*/
                 // set everything as checked
                 invAdapter.setAllSelected(true);
                 invAdapter.setNotifyOnChange(true);
