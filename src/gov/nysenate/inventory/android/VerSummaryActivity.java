@@ -303,7 +303,7 @@ public class VerSummaryActivity extends SenateActivity
         dialogBuilder.setTitle("Warning");
         dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numFoundItems() +
                 " Item/s found in OTHER</b> locations will be moved to the current location: <b>" + loc_code + "</b>. <br><br>" +
-                "Continued with Verification Submission (Y/N)?"));
+                "Continue with Verification Submission (Y/N)?"));
         dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -334,7 +334,7 @@ public class VerSummaryActivity extends SenateActivity
         dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numNewItems() +
                 " NEW Items scanned will " + "NOT be tagged to location: " + loc_code + ".</b><br><br>" +
                 "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>" +
-                "Continued with Verification Submission (Y/N)?"));
+                "Continue with Verification Submission (Y/N)?"));
         dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
