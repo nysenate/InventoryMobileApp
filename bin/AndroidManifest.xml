@@ -51,7 +51,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MainActivity" />
+                android:value="gov.nysenate.inventory.android.LoginActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.HttpExampleActivity"
@@ -65,7 +65,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MainActivity" />
+                android:value="gov.nysenate.inventory.android.LoginActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.SearchActivity"
@@ -237,7 +237,7 @@
             android:parentActivityName="gov.nysenate.inventory.android.LoginActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MainActivity" />
+                android:value="gov.nysenate.inventory.android.LoginActivity" />
             <intent-filter>
                <category android:name="android.intent.category.LAUNCHER" /> 
             </intent-filter>
