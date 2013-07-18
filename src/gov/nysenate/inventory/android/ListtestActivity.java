@@ -494,8 +494,7 @@ public class ListtestActivity extends SenateActivity
                        catch (Exception ex) {
                            
                        }
-                          
-                               
+                    return;
                 }
 
                 for (int i = invList.size() - 1; i > -1; i--) {
