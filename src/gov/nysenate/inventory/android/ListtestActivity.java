@@ -60,15 +60,19 @@ public class ListtestActivity extends SenateActivity
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
+    
+    public final int ITEMLIST_TIMEOUT = -101, LOCATIONDETAILS_TIMEOUT = -102; 
     String currentSortValue = "Description";
     public Spinner spinSortList;
     static Button btnVerListCont;
     static Button btnVerListCancel;
     int cntScanned = 0;
     Activity currentActivity;
+    final int ITEMDETAILS_TIMEOUT = -101;
 
     String URL = ""; // this will be initialized once in onCreate() and used for
                      // all server calls.
+    String timeoutFrom = "VERIFICATIONLIST";
     InvListViewAdapter adapter;
     int count;
     int numItems;
@@ -148,19 +152,8 @@ public class ListtestActivity extends SenateActivity
                         return;
                     }     
                     else if (res.indexOf("Session timed out")>0) {
-                        Intent intentTimeout = new Intent(this, LoginActivity.class);
-                        startActivityForResult(intentTimeout, 1);
-                        URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
-                        resr1 = new RequestTask()
-                                .execute(URL + "/ItemsList?loc_code=" + loc_code);
-                        res = null;
-                        res = resr1.get().trim().toString();
-                        if (res==null) {
-                            noServerResponse();
-                            return;
-                        }     
-
+                        itemListTimeout();
+                        return;
                     }
                 }
                 catch (NullPointerException e) {
@@ -199,20 +192,12 @@ public class ListtestActivity extends SenateActivity
                     s.append(vl.CDCATEGORY);
                     s.append(" ");
                     s.append(vl.DECOMMODITYF);
-                    // dispList.add(s);
 
                     // 3/15/13 BH Coded below to use InvItem Objects to display
                     // the list.
                     InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
                             "EXISTING", vl.DECOMMODITYF, vl.CDLOCAT);
                     invList.add(invItem);
-                    // invItem = null;
-
-                    // String s =
-                    // vl.NUSENATE+" "+vl.CDCATEGORY+" "+vl.DECOMMODITYF;
-                    // dispList.add(s);
-                    // number= dispList.size();
-                    // list.add((verList) jsonArray.getJSONObject(i));
                 }
                 // code for JSON ends
             } catch (InterruptedException e) {
@@ -393,24 +378,62 @@ public class ListtestActivity extends SenateActivity
         startActivityForResult(intentSpeech, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
-    /**
-     * Handle the results from the recognition activity.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE
-                && resultCode == RESULT_OK) {
-            // Fill the list view with the strings the recognizer thought it
-            // could have heard
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            TextView t = (TextView) findViewById(R.id.textView2);
-            t.setText(matches.get(0));
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
+    public void itemListTimeout() {
+        Intent intentTimeout = new Intent(ListtestActivity.this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, ITEMLIST_TIMEOUT);
     }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch(requestCode) {
+        /**
+         * Handle the results from the recognition activity.
+         */
+        case VOICE_RECOGNITION_REQUEST_CODE:
+             if (resultCode == RESULT_OK) {
+                 // Fill the list view with the strings the recognizer thought it
+                 // could have heard
+                 ArrayList<String> matches = data
+                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                 TextView t = (TextView) findViewById(R.id.textView2);
+                 t.setText(matches.get(0));                 
+             }
+            
+        case ITEMDETAILS_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                System.out.println("TIME OUT SCREEN INTENT DONE");
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+                AsyncTask<String, String, String> resr1 = new RequestTask()
+                .execute(URL + "/LocCodeList");                
 
+                System.out.println("TRY AFTER TIME OUT SCREEN");
+                resr1 = new RequestTask()
+                        .execute(URL + "/LocCodeList");
+                res = null;
+                System.out.println("TRY AFTER TIME OUT SCREEN");
+                try {
+                    res = resr1.get().trim().toString();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (res==null) {
+                    noServerResponse();
+                    return;
+                }     
+
+                
+                break;
+            }
+           }
+        super.onActivityResult(requestCode, resultCode, data);        
+    }   
+        
+    
     private TextWatcher filterTextWatcher = new TextWatcher()
     {
 
@@ -624,21 +647,9 @@ public class ListtestActivity extends SenateActivity
                                 noServerResponse();
                                 return;
                             }    
-                            else if (res.indexOf("Session timed out")>0) {
-                                Intent intentTimeout = new Intent(currentActivity, LoginActivity.class);
-                                startActivityForResult(intentTimeout, 1);
-                                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
-                                resr1 = new RequestTask()
-                                        .execute(URL +"/ItemDetails?barcode_num="
-                                                + barcode_num);
-                                res = null;
-                                res = resr1.get().trim().toString();
-                                if (res==null) {
-                                    noServerResponse();
-                                    return;
-                                }     
-
+                            else if (res.indexOf("Session timed out")>-1) {
+                               itemListTimeout();
+                               return;
                             }                            
 
                         } catch (InterruptedException e) {
@@ -860,7 +871,7 @@ public class ListtestActivity extends SenateActivity
                                 + barcode_num
                                 + "</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+ /*               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -912,8 +923,8 @@ public class ListtestActivity extends SenateActivity
                         barcode.setText("");
                         dialog.dismiss();
                     }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                })*/
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -1124,6 +1135,9 @@ public class ListtestActivity extends SenateActivity
         }
 
     }
+    
+   
+    
 
     public class SortChangedListener implements OnItemSelectedListener
     {

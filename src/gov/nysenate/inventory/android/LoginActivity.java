@@ -90,6 +90,8 @@ public class LoginActivity extends SenateActivity
     AudioManager audio;
     Activity currentActivity;
     String status = "no";
+    boolean timeoutActivity = false;
+    String timeoutFrom = null;
     
     public static DefaultHttpClient httpClient;
     
@@ -100,11 +102,35 @@ public class LoginActivity extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
+        // See if there is a Parent Activity, if there was one, then it must have timed out.
+        Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
+        try {
+            Intent fromIntent = getIntent();
+            timeoutFrom = fromIntent.getStringExtra("TIMEOUTFROM");
+            Log.i("MAIN", "TIMEOUTFROM:"+timeoutFrom);
+        }
+        catch (Exception e) {
+            timeoutFrom = null;
+            Log.i("MAIN","TIMEOUTFROM WILL BE NULL");
+        }
+        
+        if (timeoutFrom!=null) {
+            Log.i("MAIN","THIS is going to be treated as a Timeout Activity");
+            timeoutActivity = true;
+        }
+                
         currentActivity = this;
-        Log.i("MAIN", "!!!!MAINACTIVITY onCreate");
+        Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
+        
+        if (timeoutActivity) {
+            user_name.setKeyListener(null);
+            user_name.setText(nauser);
+            user_name.removeClearButton();
+            user_name.setBackgroundResource(R.drawable.customshape);
+        }
 
         // Read from the /assets directory for properties of the project
         // we can modify this file and the URL will be changed
@@ -549,6 +575,8 @@ public class LoginActivity extends SenateActivity
             } else {
                 // display error
                 status = "no";
+                buttonLogin.getBackground().setAlpha(255);
+                progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.nauser = null;
                 System.out.println("NAUSER NULL!!");
             }
@@ -560,24 +588,39 @@ public class LoginActivity extends SenateActivity
             // calling the menu activity after validation
             System.out.println("RES:" + res);
             if (res.equals("VALID")) {
-                Intent intent2 = new Intent(this, MenuActivity.class);
-                startActivity(intent2);
-                overridePendingTransition(R.anim.slide_in_left,
-                        R.anim.slide_out_left);
+                // If LoginActivity was called because the App Timed Out.., 
+                // Go back to the activity of the timeout.
+                // If it is not an Application Timed Out, go to the App main menu
+                //
+                
+                if (timeoutActivity) {
+                    Intent i = getIntent();
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+                else {
+                    Intent intent2 = new Intent(this, MenuActivity.class);
+                    startActivity(intent2);
+                    overridePendingTransition(R.anim.slide_in_left,
+                            R.anim.slide_out_left);
+                }
             } else if (res.trim().startsWith("!!ERROR :")) {
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(this, res.trim(), duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+                buttonLogin.getBackground().setAlpha(255);
+                progressBarLogin.setVisibility(View.INVISIBLE);
 
             } else {
-                overridePendingTransition(R.anim.slide_in_left,
-                        R.anim.slide_out_left);
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(this,
                         "!!ERROR: Invalid Username and/or Password.", duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+                buttonLogin.getBackground().setAlpha(255);
+                progressBarLogin.setVisibility(View.INVISIBLE);
+                this.password.setText("");
             }
         } catch (Exception e) {
             int duration = Toast.LENGTH_LONG;
@@ -614,8 +657,8 @@ public class LoginActivity extends SenateActivity
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
-
-
+                        progressBarLogin.setVisibility(progressBarLogin.INVISIBLE);
+                        buttonLogin.getBackground().setAlpha(255);
                         dialog.dismiss();
                     }
                 });
@@ -707,6 +750,10 @@ public class LoginActivity extends SenateActivity
             } else {
                 buttonLogin.getBackground().setAlpha(70);
                 progressBarLogin.setVisibility(View.VISIBLE);
+                String u_name = user_name.getText().toString();
+                String pwd = password.getText().toString();
+                this.login(u_name, pwd);
+                /*
                 Intent intent = new Intent(this, DisplayMessageActivity.class);
                 // Intent intent = new Intent(this, MenuActivity.class);
                 String u_name = user_name.getText().toString();
@@ -714,7 +761,7 @@ public class LoginActivity extends SenateActivity
                 intent.putExtra(u_name_intent, u_name);
                 intent.putExtra(pwd_intent, pwd);
                 startActivity(intent);
-                overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                overridePendingTransition(R.anim.in_right, R.anim.out_left);*/
             }
         }
     }

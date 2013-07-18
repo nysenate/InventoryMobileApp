@@ -78,5 +78,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_update_app">UpdateAppActivity</string>
     <string name="title_activity_upgrade">UpgradeActivity</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

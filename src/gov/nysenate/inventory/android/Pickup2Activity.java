@@ -376,14 +376,14 @@ public class Pickup2Activity extends SenateActivity
                                 + barcode_num
                                 + "</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // 5/24/13 BH Coded below to use InvItem Objects to
                         // display
                         // the list.
-                        VerList vl = new VerList();
+                     /*   VerList vl = new VerList();
                         vl.NUSENATE = barcode_num;
                         vl.CDCATEGORY = "";
                         vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
@@ -421,10 +421,26 @@ public class Pickup2Activity extends SenateActivity
 
                         list.add(vl);
                         et_pickup3_barcode.setText("");
+                        dialog.dismiss();*/
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Barcode#: " + barcode_num
+                                + " was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        et_pickup3_barcode.setText("");
+
                         dialog.dismiss();
+                        
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+          /*      .setNegativeButton("No", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -444,7 +460,7 @@ public class Pickup2Activity extends SenateActivity
 
                         dialog.dismiss();
                     }
-                });
+                })*/;
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();

@@ -47,6 +47,7 @@ public class VerSummaryActivity extends SenateActivity
     ProgressBar progressVerSum;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
+    String timeoutFrom = "VERIFICATIONSUMMARY";   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

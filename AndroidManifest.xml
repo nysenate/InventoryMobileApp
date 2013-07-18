@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name= "android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -37,21 +37,12 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-               <category android:name="android.intent.category.LAUNCHER" /> 
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
-        </activity>
-        <activity
-            android:name="gov.nysenate.inventory.android.DisplayMessageActivity"
-            android:label="@string/title_activity_display_message"
-            android:parentActivityName="gov.nysenate.inventory.android.LoginActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MainActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.HttpExampleActivity"
@@ -193,8 +184,8 @@
         <activity
             android:name="gov.nysenate.inventory.android.VerSummaryActivity"
             android:label="@string/title_activity_ver_summary"
-             android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.Pickup3"
@@ -238,17 +229,24 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gov.nysenate.inventory.android.MainActivity" />
+
             <intent-filter>
-               <category android:name="android.intent.category.LAUNCHER" /> 
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.UpgradeActivity"
             android:label="@string/title_activity_upgrade" >
         </activity>
+
         <service
-            android:name=".InvWebService"
-            android:exported="false"/>        
+            android:name="gov.nysenate.inventory.android.InvWebService"
+            android:exported="false" />
+
+        <activity
+            android:name="gov.nysenate.inventory.android.MainActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
     </application>
 
 </manifest>

@@ -38,6 +38,7 @@ import android.widget.Toast;
 public class Verification extends SenateActivity
 {
     public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
+    public final static String timeout_intent = "gov.nysenate.inventory.android.timeoutFrom";    
     public EditText loc_code;
     public TextView loc_details;
     public String res = null;
@@ -52,6 +53,9 @@ public class Verification extends SenateActivity
     TextView tvCount;
     TextView tvOffice;
     Activity currentActivity;
+    String timeoutFrom = "verification";
+    
+    public final int LOCCODELIST_TIMEOUT = -101, LOCATIONDETAILS_TIMEOUT = -102; 
 
     String URL = "";
 
@@ -101,7 +105,11 @@ public class Verification extends SenateActivity
                     if (res==null) {
                         noServerResponse();
                         return;
-                    }                    
+                    }  else if (res.indexOf("Session timed out")>-1) {
+                        locCodeListTimeout();
+                        return;
+                    }                            
+               
                 }
                 catch (NullPointerException e) {
                     noServerResponse();
@@ -202,7 +210,8 @@ public class Verification extends SenateActivity
 
         // show it
         alertDialog.show();
-    }        
+    }       
+       
     
     private TextWatcher filterTextWatcher = new TextWatcher()
     {
@@ -245,10 +254,16 @@ public class Verification extends SenateActivity
                         try {
                             res = null;
                             res = resr1.get().trim().toString();
+                            System.out.println("FOUND:"+res.indexOf("Session timed out")+" Verification RES1:"+res);
                             if (res==null) {
                                 noServerResponse();
                                 return;
-                            }                            
+                            }  else if (res.indexOf("Session timed out")>-1) {
+                                    locationDetailTimeout();
+                                    return;
+                                }                            
+
+                            
                         }
                         catch (NullPointerException e) {
                             noServerResponse();
@@ -304,6 +319,96 @@ public class Verification extends SenateActivity
         }
     };
 
+    public void locationDetailTimeout() {
+        System.out.println("TIME OUT SCREEN");
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, LOCATIONDETAILS_TIMEOUT);
+    }
+    
+    public void locCodeListTimeout() {
+        System.out.println("TIME OUT SCREEN");
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        System.out.println("TIME OUT SCREEN INTENT");
+        startActivityForResult(intentTimeout, LOCCODELIST_TIMEOUT);
+
+    }    
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch(requestCode) {
+        case LOCCODELIST_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                System.out.println("TIME OUT SCREEN INTENT DONE");
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+                AsyncTask<String, String, String> resr1 = new RequestTask()
+                .execute(URL + "/LocCodeList");                
+
+                System.out.println("TRY AFTER TIME OUT SCREEN");
+                resr1 = new RequestTask()
+                        .execute(URL + "/LocCodeList");
+                res = null;
+                System.out.println("TRY AFTER TIME OUT SCREEN");
+                try {
+                    res = resr1.get().trim().toString();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (res==null) {
+                    noServerResponse();
+                    return;
+                }     
+
+                
+                break;
+            }
+         case LOCATIONDETAILS_TIMEOUT:
+             if (resultCode == RESULT_OK) {
+                 String barcodeNumberDetails[] = autoCompleteTextView1.getText()
+                         .toString().trim().split("-");
+                 String barcode_num = barcodeNumberDetails[0];// this will be
+                                                              // passed to the
+                                                              // server
+                 loc_code_str = barcodeNumberDetails[0];// this will be passed to
+                                                        // next activity with
+                                                        // intent                 
+                 URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+                 AsyncTask<String, String, String> resr1 = new RequestTask()
+                 .execute(URL + "/LocationDetails?barcode_num="
+                         + barcode_num);
+                 System.out.println("TRY AFTER TIME OUT SCREEN");
+                 resr1 = new RequestTask()
+                         .execute(URL + "/LocationDetails?barcode_num="
+                                 + barcode_num);
+                 res = null;
+                 System.out.println("TRY AFTER TIME OUT SCREEN");
+                 try {
+                    res = resr1.get().trim().toString();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                 if (res==null) {
+                     noServerResponse();
+                     return;
+                 }     
+
+                 
+                 break;
+             }
+           }
+    }   
+    
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
