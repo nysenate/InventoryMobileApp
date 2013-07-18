@@ -859,54 +859,67 @@ public class ListtestActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml("***WARNING: Barcode#: <b>"
-                                + barcode_num
-                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
-                .setCancelable(false)
-                /*
-                 * .setPositiveButton("Yes", new
-                 * DialogInterface.OnClickListener() {
-                 * 
-                 * @Override public void onClick(DialogInterface dialog, int id)
-                 * { verList vl = new verList(); vl.NUSENATE = barcode_num;
-                 * vl.CDCATEGORY = ""; vl.DECOMMODITYF =
-                 * " ***NOT IN SFMS***  New Item"; vl.CDLOCAT = "";
-                 * list.add(vl); StringBuilder s_new = new StringBuilder(); //
-                 * s_new.append(vl.NUSENATE); since the desc coming from //
-                 * server already contains barcode number we wont add it //
-                 * again // s_new.append(" "); s_new.append("DIALOG_YES: ");
-                 * s_new.append(vl.CDCATEGORY); s_new.append(" ");
-                 * s_new.append(vl.DECOMMODITYF);
-                 * 
-                 * InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                 * "NEW", vl.DECOMMODITYF, vl.CDLOCAT); invList.add(invItem);
-                 * 
-                 * scannedItems.add(invItem); AllScannedItems.add(invItem);
-                 * newItems.add(invItem); // to keep track of //
-                 * (number+details)
-                 * 
-                 * Context context = getApplicationContext(); CharSequence text
-                 * = s_new; int duration = Toast.LENGTH_SHORT;
-                 * 
-                 * Toast toast = Toast.makeText(context, text, duration);
-                 * toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
-                 * 
-                 * adapter.notifyDataSetChanged(); count = adapter.getCount();
-                 * cntScanned++; int cntExisting = countOf(invList, "EXISTING");
-                 * int cntNew = countOf(invList, "NEW");
-                 * tv_counts_new.setText(Html.fromHtml("New<br/><b>" + cntNew +
-                 * "</b>")); tv_counts_existing.setText(Html
-                 * .fromHtml("Unscanned<br/><b>" + cntExisting + "</b>"));
-                 * tv_counts_scanned.setText(Html.fromHtml("Scanned<br /><b>" +
-                 * cntScanned + "</b>")); barcode.setText(""); dialog.dismiss();
-                 * } })
-                 */
+        alertDialogBuilder.setMessage(Html.fromHtml("!!ERROR: Tag #: <b>" + barcode_num + "</b> does not exist in SFMS.<br><br>"
+                + "This should not occur when entering/scanning a Senate Tag #. "
+                + "Please report Location, Senate Tag # and Item Description to Inventory Control Management."));
+        alertDialogBuilder.setCancelable(false)
+ /*               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        verList vl = new verList();
+                        vl.NUSENATE = barcode_num;
+                        vl.CDCATEGORY = "";
+                        vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+                        vl.CDLOCAT = "";
+                        list.add(vl);
+                        StringBuilder s_new = new StringBuilder();
+                        // s_new.append(vl.NUSENATE); since the desc coming from
+                        // server already contains barcode number we wont add it
+                        // again
+                        // s_new.append(" ");
+                        s_new.append("DIALOG_YES: ");
+                        s_new.append(vl.CDCATEGORY);
+                        s_new.append(" ");
+                        s_new.append(vl.DECOMMODITYF);
+
+                        InvItem invItem = new InvItem(vl.NUSENATE,
+                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
+                        invList.add(invItem);
+
+                        scannedItems.add(invItem);
+                        AllScannedItems.add(invItem);
+                        newItems.add(invItem); // to keep track of
+                                               // (number+details)
+
+                        Context context = getApplicationContext();
+                        CharSequence text = s_new;
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        adapter.notifyDataSetChanged();
+                        count = adapter.getCount();
+                        cntScanned++;
+                        int cntExisting =  countOf(invList, "EXISTING");
+                        int cntNew = countOf(invList, "NEW");                      
+                        tv_counts_new.setText(Html.fromHtml("New<br/><b>"
+                                + cntNew + "</b>"));
+                        tv_counts_existing.setText(Html
+                                .fromHtml("Unscanned<br/><b>"
+                                        + cntExisting + "</b>"));
+                        tv_counts_scanned.setText(Html.fromHtml("Scanned<br /><b>"
+                                + cntScanned + "</b>"));
+                        barcode.setText("");
+                        dialog.dismiss();
+                    }
+                })*/
                 .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override

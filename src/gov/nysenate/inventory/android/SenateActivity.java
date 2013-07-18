@@ -161,10 +161,10 @@ public abstract class SenateActivity extends Activity
                     context = getApplicationContext();
                 }
                 duration = Toast.LENGTH_SHORT;
-                toast = Toast.makeText(context, "Inventory App checking Internet Connection. Please be patient..",
+/*                toast = Toast.makeText(context, "Inventory App checking Internet Connection. Please be patient..",
                         duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                toast.show();*/
                 
                 SenateActivity.this.context = context;
                 ConnectivityManager cm = ((ConnectivityManager) context
