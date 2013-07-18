@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.text.Html;
 
-public class MsgAlert 
+public class MsgAlert
 {
     Context context;
     AlertDialog dialog;

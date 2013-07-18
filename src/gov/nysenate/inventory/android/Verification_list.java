@@ -88,8 +88,8 @@ public class Verification_list extends Activity
                     scannedItems.add(barcode);
 
                     // Get the URL from the properties
-                    String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                            .toString();
+                    String URL = LoginActivity.properties
+                            .get("WEBAPP_BASE_URL").toString();
 
                     AsyncTask<String, String, String> resr1 = new RequestTask()
                             .execute(URL + "/ItemDetails?barcode_num="

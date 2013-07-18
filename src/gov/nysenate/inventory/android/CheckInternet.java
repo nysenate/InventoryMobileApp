@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -30,15 +31,19 @@ public class CheckInternet extends BroadcastReceiver
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!InvApplication.isActivityVisible()) {
+             Log.i("CheckInternet", "Invapp is invisible"); 
+             return;
+        }
         int duration = Toast.LENGTH_SHORT;
         Toast toast;
-        if (context==null) {
-            System.out.println ("CheckInternet CONTEXT IS NULL");
+        if (context == null) {
+            System.out.println("CheckInternet CONTEXT IS NULL");
         }
         this.context = context;
         ConnectivityManager cm = ((ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE));
-        
+
         try {
             if (cm == null)
                 return;
@@ -68,19 +73,15 @@ public class CheckInternet extends BroadcastReceiver
                         prevConnected = false;
                     }
                 } else {
-                    /*
-                     * toast = Toast.makeText(context,
-                     * "YOU IDIOT. YOU DISCONNECTED YOUR WIFI.", duration);
-                     * toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
-                     */
+                    // check if connected! (will not work in a service)
+                    // wifiAlert("WIFI IS CURRENTLY TURNED OFF",
+                    // "***WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
 
-                    // check if connected!  (will not work in a service)
-                    //wifiAlert("WIFI IS CURRENTLY TURNED OFF", "***WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
-                    
                     // so using turnwifi on directly
                     turnWifiOn();
                 }
-            };
+            }
+            ;
 
         } catch (Exception e0) {
             toast = Toast.makeText(context,
@@ -102,18 +103,16 @@ public class CheckInternet extends BroadcastReceiver
          * builder.create(); dialog.show();
          */
     }
-    
+
     public void wifiAlert(String title, String msg) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
 
         // set title
         alertDialogBuilder.setTitle(title);
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml(msg))
-                .setCancelable(false)
+        alertDialogBuilder.setMessage(Html.fromHtml(msg)).setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -122,10 +121,10 @@ public class CheckInternet extends BroadcastReceiver
                         // the dialog box and do nothing
 
                         turnWifiOn();
-                        
+
                         dialog.dismiss();
                     }
-                    
+
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener()
                 {
@@ -141,11 +140,10 @@ public class CheckInternet extends BroadcastReceiver
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
-                   
-             });
+
+                });
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -153,41 +151,37 @@ public class CheckInternet extends BroadcastReceiver
         // show it
         alertDialog.show();
     }
-    
- public void turnWifiOn() {
-     int duration = Toast.LENGTH_SHORT;
 
-     Toast toast = null;
-     
-    try {
-        while (!mainWifi.isWifiEnabled()) {
-            if (!enablingWifi) {
-                mainWifi.setWifiEnabled(true);
-                enablingWifi = true;
+    public void turnWifiOn() {
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = null;
+
+        try {
+            while (!mainWifi.isWifiEnabled()) {
+                if (!enablingWifi) {
+                    mainWifi.setWifiEnabled(true);
+                    enablingWifi = true;
+                }
+                // Wait to connect
+                Thread.sleep(1000);
             }
-            // Wait to connect
-            Thread.sleep(1000);
-        }
-        if (mainWifi.isWifiEnabled()) {
-            toast = Toast
-                    .makeText(
-                            context,
-                            "Wifi has been turned back on.",
-                            duration);
+            if (mainWifi.isWifiEnabled()) {
+                toast = Toast.makeText(context,
+                        "(Inventory App) Wifi has been turned back on.", duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            } else {
+                new MsgAlert(context, "WIFI could not be turned back on",
+                        "***WARNING: (Inventory App) Unable to turn Wifi on. Please turn it on manually.");
+            }
+
+        } catch (Exception e) {
+            toast = Toast.makeText(context,
+                    "(Inventory App) (EXCEPTION1) Check Internet:" + e.getMessage(), duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-        } else {
-            new MsgAlert(context, "WIFI could not be turned back on", "***WARNING: Unable to turn Wifi on. Please turn it on manually.");
         }
-
-    } catch (Exception e) {
-        toast = Toast.makeText(context,
-                "(EXCEPTION1)Check Internet:" + e.getMessage(),
-                duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }    
- }
-        
+    }
 
 }

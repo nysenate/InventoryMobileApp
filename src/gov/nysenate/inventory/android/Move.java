@@ -64,7 +64,7 @@ public class Move extends SenateActivity implements OnItemClickListener
         }
         if (Pickup3.progBarPickup3 != null) {
             Pickup3.progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
-        }            
+        }
 
     }
 

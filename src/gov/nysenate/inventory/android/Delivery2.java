@@ -87,17 +87,14 @@ public class Delivery2 extends SenateActivity
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/DeliveryList?loc_code=" + locCode);
             try {
-                 try {
-                     res = null;
-                     res = resr1.get().trim().toString();
-                 }
-                 catch (NullPointerException e) {
-                     this.noServerResponse();
-                     return;
-                 }
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                } catch (NullPointerException e) {
+                    this.noServerResponse();
+                    return;
+                }
                 // code for JSON
-                
-                
 
                 try {
                     JSONArray jsonArray = new JSONArray(res);
@@ -240,6 +237,7 @@ public class Delivery2 extends SenateActivity
         Delivery1.progBarDelivery1.setVisibility(View.VISIBLE);
 
     }
+
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -266,7 +264,6 @@ public class Delivery2 extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -277,7 +274,6 @@ public class Delivery2 extends SenateActivity
         // show it
         alertDialog.show();
     }
-
 
     @Override
     protected void onResume() {

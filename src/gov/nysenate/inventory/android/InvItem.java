@@ -115,8 +115,7 @@ public class InvItem
             // Log.i("InvItem ToJSON", jsonObject.toString());
 
             return jsonObject.toString();
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return "";
@@ -135,40 +134,34 @@ public class InvItem
             JSONObject jsonObject = new JSONObject(JSONString);
             try {
                 this.setNusenate(jsonObject.getString("nusenate"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setType(jsonObject.getString("type"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setCdcategory(jsonObject.getString("cdcategory"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
             try {
                 this.setDecommodityf(jsonObject.getString("decommodityf"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
 
             try {
                 this.setCdlocat(jsonObject.getString("cdlocat"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
 
             try {
                 this.setCdintransit(jsonObject.getString("cdintransit"));
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 e2.printStackTrace();
             }
 
@@ -176,17 +169,14 @@ public class InvItem
                 if (jsonObject.getString("selected").trim().toUpperCase()
                         .startsWith("T")) {
                     this.setSelected(true);
-                }
-                else {
+                } else {
                     this.setSelected(false);
                 }
-            }
-            catch (JSONException e2) {
+            } catch (JSONException e2) {
                 this.setSelected(false);
             }
 
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

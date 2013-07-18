@@ -102,10 +102,10 @@ public class SearchActivity extends SenateActivity
                             res = null;
                             res = resr1.get().trim().toString();
                             Log.i("Search res ", "res:" + res);
-                            if (res==null) {
+                            if (res == null) {
                                 noServerResponse();
                                 return;
-                            }                            
+                            }
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -113,10 +113,10 @@ public class SearchActivity extends SenateActivity
                         } catch (ExecutionException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
-                        }  catch (NullPointerException e) {
+                        } catch (NullPointerException e) {
                             noServerResponse();
                             return;
-                        }  
+                        }
                         status = "yes1";
                     } else {
                         // display error
@@ -141,16 +141,20 @@ public class SearchActivity extends SenateActivity
                             StringBuilder nusenateMsg = new StringBuilder();
                             nusenateMsg.append(object.getString("nusenate"));
                             String cdstatus = object.getString("cdstatus");
-                            Log.i("TEST", "CDSTATUS:("+cdstatus+")");
+                            Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
                             if (cdstatus.equalsIgnoreCase("I")) {
-                                nusenateMsg.append(" <font color='RED'>(INACTIVE) ");
-                                nusenateMsg.append(object.getString("deadjust"));
-                                Log.i("TEST", "INACTIVE CDSTATUS:("+cdstatus+")");
+                                nusenateMsg
+                                        .append(" <font color='RED'>(INACTIVE) ");
+                                nusenateMsg
+                                        .append(object.getString("deadjust"));
+                                Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus
+                                        + ")");
                             }
-                            
-                            Log.i("TEST", "BARCODE:"+nusenateMsg);
-                            tvBarcode.setText(Html.fromHtml(nusenateMsg.toString()));                            
-                            
+
+                            Log.i("TEST", "BARCODE:" + nusenateMsg);
+                            tvBarcode.setText(Html.fromHtml(nusenateMsg
+                                    .toString()));
+
                             tvDescription.setText(object.getString(
                                     "decommodityf").replaceAll("&#34;", "\""));
                             tvCategory.setText(object.getString("cdcategory"));
@@ -160,7 +164,8 @@ public class SearchActivity extends SenateActivity
                                     + ") "
                                     + object.getString("adstreet1to")
                                             .replaceAll("&#34;", "\""));
-                            tvDateInvntry.setText(object.getString("dtlstinvntry"));
+                            tvDateInvntry.setText(object
+                                    .getString("dtlstinvntry"));
 
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -184,7 +189,7 @@ public class SearchActivity extends SenateActivity
             }
         }
     };
-    
+
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -211,7 +216,6 @@ public class SearchActivity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -221,7 +225,7 @@ public class SearchActivity extends SenateActivity
 
         // show it
         alertDialog.show();
-    }            
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

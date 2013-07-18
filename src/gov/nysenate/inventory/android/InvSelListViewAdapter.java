@@ -57,16 +57,16 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
             holder.invSelListBarcode = (TextView) convertView
                     .findViewById(R.id.invSelListBarcode);
             holder.invSelListDescr = (TextView) convertView
-                    .findViewById(R.id.invSelListDescr);            
-            holder.invSelListSelected = (CheckBox)convertView
+                    .findViewById(R.id.invSelListDescr);
+            holder.invSelListSelected = (CheckBox) convertView
                     .findViewById(R.id.invSelListSelected);
             convertView.setTag(holder);
-            holder.invSelListSelected.setTag(items.get(position));            
+            holder.invSelListSelected.setTag(items.get(position));
         } else {
             holder = (ViewHolder) convertView.getTag();
-                 
+
         }
-        
+
         holder.invSelListSelected.setChecked(rowItem.getSelected());
 
         if (position % 2 > 0) {
@@ -76,42 +76,44 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
             holder.rslList.setBackgroundColor(context.getResources().getColor(
                     R.color.blueveryverylight));
         }
-        
+
         holder.invSelListSelected.setSelected(rowItem.getSelected());
 
         if (rowItem.getType().equalsIgnoreCase("NEW")) {
             holder.invSelListBarcode.setText(rowItem.getNusenate());
-            holder.invSelListBarcode.setTextColor(context.getResources().getColor(
-                    R.color.blue)); // blue
+            holder.invSelListBarcode.setTextColor(context.getResources()
+                    .getColor(R.color.blue)); // blue
             holder.invSelListDescr.setText(rowItem.getDecommodityf());
-            holder.invSelListDescr.setTextColor(context.getResources().getColor(
-                    R.color.blue)); // blue
+            holder.invSelListDescr.setTextColor(context.getResources()
+                    .getColor(R.color.blue)); // blue
         } else {
             holder.invSelListBarcode.setText(rowItem.getNusenate());
-            holder.invSelListBarcode.setTextColor(context.getResources().getColor(
-                    R.color.black)); // blue
+            holder.invSelListBarcode.setTextColor(context.getResources()
+                    .getColor(R.color.black)); // blue
             holder.invSelListDescr.setText(rowItem.getDecommodityf());
-            holder.invSelListDescr.setTextColor(context.getResources().getColor(
-                    R.color.black)); // black
+            holder.invSelListDescr.setTextColor(context.getResources()
+                    .getColor(R.color.black)); // black
 
         }
         final ViewHolder finalHolder = holder;
         final int pos = position;
-        int id = Resources.getSystem().getIdentifier("btn_check_holo_light", "drawable", "android");        
+        int id = Resources.getSystem().getIdentifier("btn_check_holo_light",
+                "drawable", "android");
         holder.invSelListSelected.setButtonDrawable(id);
-        holder.invSelListSelected.setOnClickListener(new OnClickListener() {
+        holder.invSelListSelected.setOnClickListener(new OnClickListener()
+        {
 
             @Override
             public void onClick(View arg0) {
-                CheckBox cb = (CheckBox) arg0;   
-                //InvItem curInvItem = (InvItem) cb.getTag();  
+                CheckBox cb = (CheckBox) arg0;
+                // InvItem curInvItem = (InvItem) cb.getTag(); 
                 items.get(pos).setSelected(cb.isChecked());
-                
+
                 notifyDataSetChanged();
             }
-            
+
         });
-        
+
         OnClickListener l = new OnClickListener()
         {
             @Override
@@ -140,19 +142,19 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         }
         return itemsRemoved;
     }
-    
+
     public void setAllSelected(boolean selected) {
-        if (items==null) {
+        if (items == null) {
             return;
         }
-        for (int x=0;x<items.size();x++) {
+        for (int x = 0; x < items.size(); x++) {
             items.get(x).setSelected(selected);
         }
         notifyDataSetChanged();
     }
 
     public void setSelected(int row, boolean selected) {
-        if (items==null||row>items.size()-1) {
+        if (items == null || row > items.size() - 1) {
             return;
         }
         this.setNotifyOnChange(true);
@@ -162,14 +164,14 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
 
     public ArrayList<InvItem> getSelectedItems(boolean selected) {
         ArrayList<InvItem> returnItems = new ArrayList<InvItem>();
-        for (int x=0;x<items.size();x++) {
-            if (items.get(x).getSelected()==selected) {
+        for (int x = 0; x < items.size(); x++) {
+            if (items.get(x).getSelected() == selected) {
                 returnItems.add(items.get(x));
             }
         }
         return returnItems;
-        
-    } 
+
+    }
 
     public String getSelectedItems(String delimiter) {
         StringBuffer itemList = new StringBuffer();
@@ -188,66 +190,67 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
     }
 
     // TODO: only used for NUSENATE, do we need?
-    public String getSelectedItemsAsString(boolean selected, int field, String delimeter) {
-        
+    public String getSelectedItemsAsString(boolean selected, int field,
+            String delimeter) {
+
         StringBuffer returnItems = new StringBuffer();
         InvItem curInvItem = null;
         final int DECOMMODITYF = -101;
         final int TYPE = -102;
         final int NUSENATE = -103;
         final int CDCATEGORY = -104;
-        final int SELECTED = -105;   
+        final int SELECTED = -105;
 
-        for (int x=0;x<items.size();x++) {
+        for (int x = 0; x < items.size(); x++) {
             curInvItem = items.get(x);
-            if (curInvItem.getSelected()==selected) {
+            if (curInvItem.getSelected() == selected) {
                 switch (field) {
-                    case DECOMMODITYF:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getDecommodityf());
-                        break;
-                    case TYPE:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getType());
-                        break;
-                    case NUSENATE:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getNusenate());
-                        break;
-                    case CDCATEGORY:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getCdcategory());
-                        break;
-                    case SELECTED:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getSelected());
-                        break;
-                    default:
-                        return "!!ERROR: InvItem Field Name not found.";
+                case DECOMMODITYF:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getDecommodityf());
+                    break;
+                case TYPE:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getType());
+                    break;
+                case NUSENATE:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getNusenate());
+                    break;
+                case CDCATEGORY:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getCdcategory());
+                    break;
+                case SELECTED:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getSelected());
+                    break;
+                default:
+                    return "!!ERROR: InvItem Field Name not found.";
                 }
-                        
-                }
-                
+
             }
-        
+
+        }
+
         return returnItems.toString();
-        
-    } 
+
+    }
 
     public ArrayList<InvItem> getAllItems() {
-           return (ArrayList<InvItem>)items;
+        return (ArrayList<InvItem>) items;
     }
-    
+
     public String getAllItemsAsString(int field) {
         return getAllItemsAsString(field, "|");
     }
@@ -259,58 +262,56 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         final int TYPE = -102;
         final int NUSENATE = -103;
         final int CDCATEGORY = -104;
-        final int SELECTED = -105;   
-        
-        if (items==null) {
-            Log.i("InvSelViewAdapter", "getAllItemsAsString items: null");  
-        }
-        else {
-            
+        final int SELECTED = -105;
+
+        if (items == null) {
+            Log.i("InvSelViewAdapter", "getAllItemsAsString items: null");
+        } else {
+
         }
 
-        for (int x=0;x<items.size();x++) {
+        for (int x = 0; x < items.size(); x++) {
             curInvItem = items.get(x);
-                switch (field) {
-                    case DECOMMODITYF:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getDecommodityf());
-                        break;
-                    case TYPE:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getType());
-                        break;
-                    case NUSENATE:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getNusenate());
-                        break;
-                    case CDCATEGORY:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getCdcategory());
-                        break;
-                    case SELECTED:
-                        if (x>0) {
-                            returnItems.append(delimeter);
-                        }
-                        returnItems.append(curInvItem.getSelected());
-                        break;
-                    default:
-                        return "!!ERROR: InvItem Field Name not found.";
+            switch (field) {
+            case DECOMMODITYF:
+                if (x > 0) {
+                    returnItems.append(delimeter);
                 }
-                                        
+                returnItems.append(curInvItem.getDecommodityf());
+                break;
+            case TYPE:
+                if (x > 0) {
+                    returnItems.append(delimeter);
+                }
+                returnItems.append(curInvItem.getType());
+                break;
+            case NUSENATE:
+                if (x > 0) {
+                    returnItems.append(delimeter);
+                }
+                returnItems.append(curInvItem.getNusenate());
+                break;
+            case CDCATEGORY:
+                if (x > 0) {
+                    returnItems.append(delimeter);
+                }
+                returnItems.append(curInvItem.getCdcategory());
+                break;
+            case SELECTED:
+                if (x > 0) {
+                    returnItems.append(delimeter);
+                }
+                returnItems.append(curInvItem.getSelected());
+                break;
+            default:
+                return "!!ERROR: InvItem Field Name not found.";
             }
+
+        }
         return returnItems.toString();
-        
-    } 
-    
-    
+
+    }
+
     public int findTypePos(String type) {
         return findTypePos(type, 0);
     }

@@ -94,7 +94,7 @@ public class Pickup3 extends SenateActivity
     public TextView tv_count_pickup3;
     public TextView tvOriginPickup3;
     public TextView tvDestinationPickup3;
-    
+
     public static ProgressBar progBarPickup3;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
@@ -105,7 +105,7 @@ public class Pickup3 extends SenateActivity
         setContentView(R.layout.activity_pickup3);
         registerBaseActivityReceiver();
         currentActivity = this;
-        
+
         sign = (SignatureView) findViewById(R.id.blsignImageView);
         sign.setMinDimensions(200, 100);
         commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
@@ -182,9 +182,9 @@ public class Pickup3 extends SenateActivity
                                 naemployeeView.getWindowToken(), 0);
                     }
                 });
-        
+
         // Setup ProgressBar
-        progBarPickup3 = (ProgressBar) findViewById(R.id.progBarPickup3);        
+        progBarPickup3 = (ProgressBar) findViewById(R.id.progBarPickup3);
 
         // Get the Employee Name List from the Web Service and populate the
         // Employee Name Autocomplete Field with it
@@ -204,15 +204,14 @@ public class Pickup3 extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
-                    }                    
-                }
-                catch (NullPointerException e) {
+                    }
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                }                      
+                }
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -434,42 +433,48 @@ public class Pickup3 extends SenateActivity
             return;
         }
 
-
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Pickup Confirmation");
-        confirmDialog.setMessage("Are you sure you want to pickup these " + scannedBarcodeNumbers.size() + " items?");
-        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                 /*
-                  * Prevent Multiple clicks on button, which will cause
-                  * issues witn the database inserting multiple nuxrpds
-                  * for the same pickup.
-                  */
-                
-                 if (positiveButtonPressed) {
-                    /* Context context = getApplicationContext();
-                     int duration = Toast.LENGTH_SHORT;
+        confirmDialog.setMessage("Are you sure you want to pickup these "
+                + scannedBarcodeNumbers.size() + " items?");
+        confirmDialog.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*
+                         * Prevent Multiple clicks on button, which will cause
+                         * issues witn the database inserting multiple nuxrpds
+                         * for the same pickup.
+                         */
 
-                     Toast toast = Toast.makeText(context,
-                             "Button was already been pressed.", Toast.LENGTH_SHORT);
-                     toast.setGravity(Gravity.CENTER, 0, 0);
-                     toast.show();*/
-                     
-                 }
-                 else {
-                    positiveButtonPressed = true;
-                    positiveDialog();
-                 }
-            }
-        });
+                        if (positiveButtonPressed) {
+                            /*
+                             * Context context = getApplicationContext(); int
+                             * duration = Toast.LENGTH_SHORT;
+                             * 
+                             * Toast toast = Toast.makeText(context,
+                             * "Button was already been pressed.",
+                             * Toast.LENGTH_SHORT);
+                             * toast.setGravity(Gravity.CENTER, 0, 0);
+                             * toast.show();
+                             */
 
-        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Continue in same activity.
-            }
-        });
+                        } else {
+                            positiveButtonPressed = true;
+                            positiveDialog();
+                        }
+                    }
+                });
+
+        confirmDialog.setNegativeButton("No",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue in same activity.
+                    }
+                });
 
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
@@ -502,7 +507,6 @@ public class Pickup3 extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -512,8 +516,8 @@ public class Pickup3 extends SenateActivity
 
         // show it
         alertDialog.show();
-    }    
-    
+    }
+
     public void backButton(View view) {
         super.onBackPressed();
         /*
@@ -595,18 +599,16 @@ public class Pickup3 extends SenateActivity
                 try {
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?")>-1) {
+                    if (uri[0].indexOf("?") > -1) {
                         if (!uri[0].trim().endsWith("?")) {
                             urls.append("&");
                         }
-                    }
-                    else {
+                    } else {
                         urls.append("?");
                     }
                     urls.append("userFallback=");
                     urls.append(LoginActivity.nauser);
-                    
-                    
+
                     URL url = new URL(urls.toString());
 
                     HttpURLConnection conn = (HttpURLConnection) url
@@ -633,8 +635,8 @@ public class Pickup3 extends SenateActivity
                     }
                     temp = null;
                     in.close();
-                     System.out.println("Server response:\n'" + responseString
-                     + "'");
+                    System.out.println("Server response:\n'" + responseString
+                            + "'");
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
@@ -655,7 +657,8 @@ public class Pickup3 extends SenateActivity
                 try {
 
                     String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
-                            + "&DECOMMENTS=" + DECOMMENTS+"&userFallback="+LoginActivity.nauser;
+                            + "&DECOMMENTS=" + DECOMMENTS + "&userFallback="
+                            + LoginActivity.nauser;
                     System.out.println("pickupURL:" + pickupURL);
                     response = httpclient.execute(new HttpGet(pickupURL));
                     StatusLine statusLine = response.getStatusLine();
@@ -683,16 +686,15 @@ public class Pickup3 extends SenateActivity
                 try {
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?")>-1) {
+                    if (uri[0].indexOf("?") > -1) {
                         if (!uri[0].trim().endsWith("?")) {
                             urls.append("&");
                         }
-                    }
-                    else {
+                    } else {
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);
                     response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -724,9 +726,9 @@ public class Pickup3 extends SenateActivity
         progBarPickup3.setVisibility(ProgressBar.VISIBLE);
         btnPickup3Cont.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
-        //String jsonString = null;
+        // String jsonString = null;
         String status = null;
-        //JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
+        // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
         String barcodeNum = "";
 
@@ -805,22 +807,19 @@ public class Pickup3 extends SenateActivity
                         + "&destinationLocation=" + destinationLocationCode
                         + "&barcodes=" + barcodeNum + "&NAPICKUPBY="
                         + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                        + "&cdloctypeto=" + cdloctypeto 
-                        + "&cdloctypefrm=" + cdloctypefrm);
+                        + "&cdloctypeto=" + cdloctypeto + "&cdloctypefrm="
+                        + cdloctypefrm);
 
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+
                     }
-                    else if (res.indexOf("Session timed out")>-1) {
-                        
-                        
-                    }
-                }
-                catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
                 }

@@ -86,15 +86,14 @@ public class Delivery1 extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
                     }
-                    }
-                catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                 }    
+                }
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -234,13 +233,12 @@ public class Delivery1 extends SenateActivity
                         try {
                             res = null;
                             res = resr1.get().trim().toString();
-                            if (res==null) {
+                            if (res == null) {
                                 noServerResponse();
                                 return;
                             }
-                            
-                        }
-                        catch (NullPointerException e) {
+
+                        } catch (NullPointerException e) {
                             noServerResponse();
                             return;
                         }
@@ -299,7 +297,7 @@ public class Delivery1 extends SenateActivity
             }
         }
     };
-    
+
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -326,7 +324,6 @@ public class Delivery1 extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -337,7 +334,6 @@ public class Delivery1 extends SenateActivity
         // show it
         alertDialog.show();
     }
-    
 
     public void continueButton(View view) {
         Delivery1.btnDelivery1Cont.getBackground().setAlpha(45);
