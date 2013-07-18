@@ -860,16 +860,14 @@ public class ListtestActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml("***WARNING: Barcode#: <b>"
-                                + barcode_num
-                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
-                .setCancelable(false)
+        alertDialogBuilder.setMessage(Html.fromHtml("!!ERROR: Tag #: <b>" + barcode_num + "</b> does not exist in SFMS.<br><br>"
+                + "This should not occur when entering/scanning a Senate Tag #. "
+                + "Please report Location, Senate Tag # and Item Description to Inventory Control Management."));
+        alertDialogBuilder.setCancelable(false)
  /*               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
                     @Override
