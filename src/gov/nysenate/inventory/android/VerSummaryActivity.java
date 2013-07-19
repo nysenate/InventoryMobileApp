@@ -56,7 +56,7 @@ public class VerSummaryActivity extends SenateActivity
     boolean positiveButtonPressed = false;
     Activity currentActivity;
     String timeoutFrom = "VERIFICATIONSUMMARY";
-    public final int VERIFICATIONREPORTS_TIMEOUT = -101;
+    public final int VERIFICATIONREPORTS_TIMEOUT = 101, CONTINUEBUTTON_TIMEOUT = 102;
     String URL = null;
 
     @Override
@@ -160,12 +160,6 @@ public class VerSummaryActivity extends SenateActivity
         locCodeView.setText(Verification.autoCompleteTextView1.getText());
 
         // Create ArrayAdapter using the planet list.
-        // Adapter listAdapter1 = new ArrayAdapter<String>(this,
-        // android.R.layout.simple_list_item_1, AllScannedItems);
-        // Adapter listAdapter2 = new ArrayAdapter<String>(this,
-        // android.R.layout.simple_list_item_1,missingItems );
-        // Adapter listAdapter3 = new ArrayAdapter<String>(this,
-        // android.R.layout.simple_list_item_1,newItems );
         InvListViewAdapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, AllScannedItems);
         InvListViewAdapter listAdapter2 = new InvListViewAdapter(this,
@@ -307,8 +301,32 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void continueButton(View view) {
+        Log.i("continueButton", "Check for Session by using KeepSessionAlive");
+        URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                .toString();
+        AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
+        String response  = null;
+        try {
+             response = resr1.get().toString();
+             Log.i("continueButton", "KeepSessionAlive RESPONSE:"+response);
+            if (resr1==null||response==null||response.trim().length()==0) {
+                this.noServerResponse();
+                return;
+            }
+            else if (response.indexOf("Session timed out") > -1) {
+                continueButtonTimeout();
+                return;
+            }
+        }
+        catch (Exception e) {
+            if (resr1==null||response==null||response.trim().length()==0) {
+                this.noServerResponse();
+                return;
+            }
+        }
+        
         // Since AlertDialogs are asynchronous, need logic to display one at a
-        // time.
+        // time.        
         if (foundItemsScanned()) {
             displayFoundItemsDialog();
         } else if (newItemsScanned()) {
@@ -317,6 +335,14 @@ public class VerSummaryActivity extends SenateActivity
             displayVerificationDialog();
         }
     }
+    
+    public void continueButtonTimeout() {
+        Intent intentTimeout = new Intent(VerSummaryActivity.this,
+                LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, CONTINUEBUTTON_TIMEOUT);
+    }
+        
 
     private void displayFoundItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -552,7 +578,7 @@ public class VerSummaryActivity extends SenateActivity
             status = "no";
         }
 
-        // Display Toster
+        // Display Toaster
         Context context = getApplicationContext();
         CharSequence text = res;
         int duration = Toast.LENGTH_LONG;
