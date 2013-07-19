@@ -74,6 +74,8 @@ public class Pickup2Activity extends SenateActivity
     static Button btnPickup2Cancel;
     static ProgressBar progBarPickup2;
     Activity currentActivity;
+    String timeoutFrom = "pickup2";    
+    public final int ITEMDETAILS_TIMEOUT = 101;        
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +170,6 @@ public class Pickup2Activity extends SenateActivity
                 String barcode_num = et_pickup3_barcode.getText().toString()
                         .trim();
                 String barcode_number = barcode_num;
-                Log.i("test", "barcode_number:" + barcode_number);
 
                 int flag = 0;
                 boolean barcodeFound = false;
@@ -186,176 +187,12 @@ public class Pickup2Activity extends SenateActivity
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
-                VerList vl = new VerList();
 
                 // if it is not already scanned and does not exist in the
                 // list(location)
                 // then add it to list and append new item to its description
                 if ((flag == 0) && (barcodeFound == false)) {
-
-                    // check network connection
-                    ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                    if (networkInfo != null && networkInfo.isConnected()) {
-                        // fetch data
-                        status = "yes";
-                        // int barcode= Integer.parseInt(barcode_num);
-                        // scannedItems.add(barcode);
-                        // Get the URL from the properties
-                        String URL = LoginActivity.properties.get(
-                                "WEBAPP_BASE_URL").toString();
-
-                        AsyncTask<String, String, String> resr1 = new RequestTask()
-                                .execute(URL + "/ItemDetails?barcode_num="
-                                        + barcode_num);
-                        System.out.println("URL CALL:" + URL
-                                + "/ItemDetails?barcode_num=" + barcode_num);
-                        try {
-                            res = null;
-                            res = resr1.get().trim().toString();
-                            if (testResNull) { // Testing Purposes Only
-                                res = null;
-                                resr1 = null;
-                                Log.i("TEST RESNULL", "RES SET TO NULL");
-                            }
-                            System.out.println("URL RESULT:" + res);
-
-                            // add it to list and displist and scanned items
-                            JSONObject object = null;
-                            if (res == null) {
-                                // Log.i("TESTING", "A CALL noServerResponse");
-                                noServerResponse(barcode_num);
-                                return;
-                            } else if (res.toUpperCase().contains(
-                                    "DOES NOT EXIST IN SYSTEM")) {
-                                // Log.i("TESTING",
-                                // "A CALL barcodeDidNotExist");
-                                barcodeDidNotExist(barcode_num);
-                                return;
-                            } else {
-                                try {
-                                    object = (JSONObject) new JSONTokener(res)
-                                            .nextValue();
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-
-                                vl.NUSENATE = barcode_number;
-                                vl.CDCATEGORY = object.getString("cdcategory");
-                                vl.DECOMMODITYF = object.getString(
-                                        "decommodityf").replaceAll("&#34;",
-                                        "\"");
-                                vl.CDLOCATTO = object.getString("cdlocatto");
-                                vl.CDLOCTYPETO = object
-                                        .getString("cdloctypeto");
-                                vl.ADSTREET1 = object.getString("adstreet1to")
-                                        .replaceAll("&#34;", "\"");
-                                vl.DTISSUE = object.getString("dtissue");
-                                vl.CDLOCAT = object.getString("cdlocatto");
-                                vl.CDINTRANSIT = object
-                                        .getString("cdintransit");
-                                vl.CDSTATUS = object.getString("cdstatus");
-
-                                if (vl.CDSTATUS.equalsIgnoreCase("I")) {
-                                    errorMessage(
-                                            barcode_num,
-                                            "!!ERROR: Senate#: " + barcode_num
-                                                    + " has been Inactivated.",
-                                            "The <b>\""
-                                                    + vl.DECOMMODITYF
-                                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
-                                    return;
-                                }
-
-                                if (vl.CDINTRANSIT != null
-                                        && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
-                                    barcodeIntransit(vl);
-                                    return;
-                                }
-
-                                if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
-                                    vl.CONDITION = "EXISTING";
-                                    playSound(R.raw.ok);
-                                } else if (cdlocatto
-                                        .equalsIgnoreCase(vl.CDLOCAT)) {
-                                    playSound(R.raw.honk);
-                                    vl.DECOMMODITYF = vl.DECOMMODITYF
-                                            + "\n**Already in: " + vl.CDLOCAT;
-                                } else {
-                                    playSound(R.raw.warning);
-                                    vl.CONDITION = "DIFFERENT LOCATION";
-                                    vl.DECOMMODITYF = vl.DECOMMODITYF
-                                            + "\n**Found in: " + vl.CDLOCAT;
-                                }
-                            }
-
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                        status = "yes1";
-                    } else {
-                        // display error
-                        status = "no";
-                    }
-                    String invStatus;
-
-                    if (vl.CDLOCATTO == null
-                            || vl.CDLOCATTO.trim().length() == 0) {
-                        invStatus = "NOT IN SFMS";
-                    }
-                    // This is what should be expected. Trying to move the
-                    else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {
-                        invStatus = vl.CONDITION;
-                    } else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { //
-                        invStatus = "AT DESTINATION";
-                    } else {
-                        invStatus = "Found in: " + vl.CDLOCATTO;
-                    }
-
-                    // 5/24/13 BH Coded below to use InvItem Objects to display
-                    // the list.
-                    InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            invStatus, vl.DECOMMODITYF, vl.CDLOCAT);
-                    invList.add(invItem);
-
-                    list.add(vl);
-                    StringBuilder s_new = new StringBuilder();
-                    // s_new.append(vl.NUSENATE); since the desc coming from
-                    // server already contains barcode number we wont add it
-                    // again
-                    // s_new.append(" ");
-                    s_new.append(vl.CDCATEGORY);
-                    s_new.append(" ");
-                    s_new.append(vl.DECOMMODITYF);
-
-                    // display toster
-                    Context context = getApplicationContext();
-                    CharSequence text = s_new;
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-
-                    // dispList.add(s_new); // this list will display the
-                    // contents
-                    // on screen
-                    scannedItems.add(invItem);
-                    allScannedItems.add(invItem);
-                    newItems.add(invItem);// to keep
-                                          // track of
-                                          // (number+details)
-                                          // for
-                                          // summary
+                    getItemDetails();
                 }
 
                 // notify the adapter that the data in the list is changed and
@@ -683,4 +520,194 @@ public class Pickup2Activity extends SenateActivity
         String CONDITION;
         String CDSTATUS;
     }
+    
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case ITEMDETAILS_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                getItemDetails();
+                break;
+            }
+        }
+    }   
+    public void getItemDetails() {
+        String barcode_num = et_pickup3_barcode.getText().toString()
+                .trim();
+        String barcode_number = barcode_num;
+        VerList vl = new VerList();
+        
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+            // int barcode= Integer.parseInt(barcode_num);
+            // scannedItems.add(barcode);
+            // Get the URL from the properties
+            String URL = LoginActivity.properties.get(
+                    "WEBAPP_BASE_URL").toString();
+
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/ItemDetails?barcode_num="
+                            + barcode_num);
+            System.out.println("URL CALL:" + URL
+                    + "/ItemDetails?barcode_num=" + barcode_num);
+            try {
+                res = null;
+                res = resr1.get().trim().toString();
+                if (testResNull) { // Testing Purposes Only
+                    res = null;
+                    resr1 = null;
+                    Log.i("TEST RESNULL", "RES SET TO NULL");
+                }
+                System.out.println("URL RESULT:" + res);
+
+                // add it to list and displist and scanned items
+                JSONObject object = null;
+                if (res == null) {
+                    // Log.i("TESTING", "A CALL noServerResponse");
+                    noServerResponse(barcode_num);
+                    return;
+                } else if (res.toUpperCase().contains(
+                        "DOES NOT EXIST IN SYSTEM")) {
+                    // Log.i("TESTING",
+                    // "A CALL barcodeDidNotExist");
+                    barcodeDidNotExist(barcode_num);
+                    return;
+                } else if (res.indexOf("Session timed out") > -1) {
+                    startTimeout(ITEMDETAILS_TIMEOUT);
+                    return;
+                } else {
+                    try {
+                        object = (JSONObject) new JSONTokener(res)
+                                .nextValue();
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    vl.NUSENATE = barcode_number;
+                    vl.CDCATEGORY = object.getString("cdcategory");
+                    vl.DECOMMODITYF = object.getString(
+                            "decommodityf").replaceAll("&#34;",
+                            "\"");
+                    vl.CDLOCATTO = object.getString("cdlocatto");
+                    vl.CDLOCTYPETO = object
+                            .getString("cdloctypeto");
+                    vl.ADSTREET1 = object.getString("adstreet1to")
+                            .replaceAll("&#34;", "\"");
+                    vl.DTISSUE = object.getString("dtissue");
+                    vl.CDLOCAT = object.getString("cdlocatto");
+                    vl.CDINTRANSIT = object
+                            .getString("cdintransit");
+                    vl.CDSTATUS = object.getString("cdstatus");
+
+                    if (vl.CDSTATUS.equalsIgnoreCase("I")) {
+                        errorMessage(
+                                barcode_num,
+                                "!!ERROR: Senate#: " + barcode_num
+                                        + " has been Inactivated.",
+                                "The <b>\""
+                                        + vl.DECOMMODITYF
+                                        + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                        return;
+                    }
+
+                    if (vl.CDINTRANSIT != null
+                            && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
+                        barcodeIntransit(vl);
+                        return;
+                    }
+
+                    if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
+                        vl.CONDITION = "EXISTING";
+                        playSound(R.raw.ok);
+                    } else if (cdlocatto
+                            .equalsIgnoreCase(vl.CDLOCAT)) {
+                        playSound(R.raw.honk);
+                        vl.DECOMMODITYF = vl.DECOMMODITYF
+                                + "\n**Already in: " + vl.CDLOCAT;
+                    } else {
+                        playSound(R.raw.warning);
+                        vl.CONDITION = "DIFFERENT LOCATION";
+                        vl.DECOMMODITYF = vl.DECOMMODITYF
+                                + "\n**Found in: " + vl.CDLOCAT;
+                    }
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+        String invStatus;
+
+        if (vl.CDLOCATTO == null
+                || vl.CDLOCATTO.trim().length() == 0) {
+            invStatus = "NOT IN SFMS";
+        }
+        // This is what should be expected. Trying to move the
+        else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {
+            invStatus = vl.CONDITION;
+        } else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { //
+            invStatus = "AT DESTINATION";
+        } else {
+            invStatus = "Found in: " + vl.CDLOCATTO;
+        }
+
+        // 5/24/13 BH Coded below to use InvItem Objects to display
+        // the list.
+        InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                invStatus, vl.DECOMMODITYF, vl.CDLOCAT);
+        invList.add(invItem);
+
+        list.add(vl);
+        StringBuilder s_new = new StringBuilder();
+        // s_new.append(vl.NUSENATE); since the desc coming from
+        // server already contains barcode number we wont add it
+        // again
+        // s_new.append(" ");
+        s_new.append(vl.CDCATEGORY);
+        s_new.append(" ");
+        s_new.append(vl.DECOMMODITYF);
+
+        // display toster
+        Context context = getApplicationContext();
+        CharSequence text = s_new;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+
+        // dispList.add(s_new); // this list will display the
+        // contents
+        // on screen
+        scannedItems.add(invItem);
+        allScannedItems.add(invItem);
+        newItems.add(invItem);// to keep
+                              // track of
+                              // (number+details)
+                              // for
+                              // summary        
+    }
+    
 }

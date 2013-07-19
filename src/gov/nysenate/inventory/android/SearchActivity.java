@@ -41,6 +41,10 @@ public class SearchActivity extends SenateActivity
     static Button btnSrchBck;
     Activity currentActivity;
 
+    String timeoutFrom = "search";    
+    public final int SEARCH_TIMEOUT = 101;    
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,115 +85,12 @@ public class SearchActivity extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             if (barcode.getText().toString().length() >= 6) {
-                try {
-                    String barcode_num = barcode.getText().toString().trim();
-                    Log.i("Activity Search afterTextChanged ", "barcode_num "
-                            + barcode_num);
-                    // check network connection
-                    ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                    if (networkInfo != null && networkInfo.isConnected()) {
-                        // fetch data
-                        status = "yes";
-                        // Get the URL from the properties
-                        String URL = LoginActivity.properties.get(
-                                "WEBAPP_BASE_URL").toString();
-                        Log.i("Activity Search afterTextChanged ", "URL " + URL);
-                        AsyncTask<String, String, String> resr1 = new RequestTask()
-                                .execute(URL + "/Search?barcode_num="
-                                        + barcode_num);
-                        try {
-                            res = null;
-                            res = resr1.get().trim().toString();
-                            Log.i("Search res ", "res:" + res);
-                            if (res == null) {
-                                noServerResponse();
-                                return;
-                            }
-
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (NullPointerException e) {
-                            noServerResponse();
-                            return;
-                        }
-                        status = "yes1";
-                    } else {
-                        // display error
-                        status = "no";
-                    }
-                    if (res.toUpperCase().contains("DOES NOT EXIST IN SYSTEM")) {
-                        tvBarcode.setText(barcode.getText().toString()
-                                + " - !!ERROR: DOES NOT EXIST.");
-                        int color = Integer.parseInt("bb0000", 16) + 0xFF000000;
-                        tvBarcode.setTextColor(color);
-                        tvDescription.setText("N/A");
-                        tvCategory.setText("N/A");
-                        tvLocation.setText("N/A");
-                        tvDateInvntry.setText("N/A");
-
-                    } else {
-                        int color = Integer.parseInt("000000", 16) + 0xFF000000;
-                        tvBarcode.setTextColor(color);
-                        try {
-                            JSONObject object = (JSONObject) new JSONTokener(
-                                    res).nextValue();
-                            StringBuilder nusenateMsg = new StringBuilder();
-                            nusenateMsg.append(object.getString("nusenate"));
-                            String cdstatus = object.getString("cdstatus");
-                            Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
-                            if (cdstatus.equalsIgnoreCase("I")) {
-                                nusenateMsg
-                                        .append(" <font color='RED'>(INACTIVE) ");
-                                nusenateMsg
-                                        .append(object.getString("deadjust"));
-                                Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus
-                                        + ")");
-                            }
-
-                            Log.i("TEST", "BARCODE:" + nusenateMsg);
-                            tvBarcode.setText(Html.fromHtml(nusenateMsg
-                                    .toString()));
-
-                            tvDescription.setText(object.getString(
-                                    "decommodityf").replaceAll("&#34;", "\""));
-                            tvCategory.setText(object.getString("cdcategory"));
-                            tvLocation.setText(object.getString("cdlocatto")
-                                    + " ("
-                                    + object.getString("cdloctypeto")
-                                    + ") "
-                                    + object.getString("adstreet1to")
-                                            .replaceAll("&#34;", "\""));
-                            tvDateInvntry.setText(object
-                                    .getString("dtlstinvntry"));
-
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            tvDescription.setText("!!ERROR: " + e.getMessage());
-                            tvCategory.setText("Please contact STS/BAC.");
-                            tvLocation.setText("N/A");
-                            tvDateInvntry.setText("N/A");
-
-                            e.printStackTrace();
-                        }
-                    }
-                    // textView.setText("\n" + res);
-                    barcode.setText("");
-                } catch (Exception e) {
-                    tvDescription.setText("!!ERROR: " + e.getMessage());
-                    tvCategory.setText("Please contact STS/BAC.");
-                    tvLocation.setText("N/A");
-                    tvDateInvntry.setText("N/A");
-
-                }
+                getSearchDetails();
             }
         }
     };
 
+    
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -225,6 +126,117 @@ public class SearchActivity extends SenateActivity
 
         // show it
         alertDialog.show();
+    }
+    
+    public void getSearchDetails() {
+        try {
+            String barcode_num = barcode.getText().toString().trim();
+            Log.i("Activity Search afterTextChanged ", "barcode_num "
+                    + barcode_num);
+            // check network connection
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // fetch data
+                status = "yes";
+                // Get the URL from the properties
+                String URL = LoginActivity.properties.get(
+                        "WEBAPP_BASE_URL").toString();
+                Log.i("Activity Search afterTextChanged ", "URL " + URL);
+                AsyncTask<String, String, String> resr1 = new RequestTask()
+                        .execute(URL + "/Search?barcode_num="
+                                + barcode_num);
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    Log.i("Search res ", "res:" + res);
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(SEARCH_TIMEOUT);
+                        return;
+                    }
+
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                status = "yes1";
+            } else {
+                // display error
+                status = "no";
+            }
+            if (res.toUpperCase().contains("DOES NOT EXIST IN SYSTEM")) {
+                tvBarcode.setText(barcode.getText().toString()
+                        + " - !!ERROR: DOES NOT EXIST.");
+                int color = Integer.parseInt("bb0000", 16) + 0xFF000000;
+                tvBarcode.setTextColor(color);
+                tvDescription.setText("N/A");
+                tvCategory.setText("N/A");
+                tvLocation.setText("N/A");
+                tvDateInvntry.setText("N/A");
+
+            } else {
+                int color = Integer.parseInt("000000", 16) + 0xFF000000;
+                tvBarcode.setTextColor(color);
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(
+                            res).nextValue();
+                    StringBuilder nusenateMsg = new StringBuilder();
+                    nusenateMsg.append(object.getString("nusenate"));
+                    String cdstatus = object.getString("cdstatus");
+                    Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
+                    if (cdstatus.equalsIgnoreCase("I")) {
+                        nusenateMsg
+                                .append(" <font color='RED'>(INACTIVE) ");
+                        nusenateMsg
+                                .append(object.getString("deadjust"));
+                        Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus
+                                + ")");
+                    }
+
+                    Log.i("TEST", "BARCODE:" + nusenateMsg);
+                    tvBarcode.setText(Html.fromHtml(nusenateMsg
+                            .toString()));
+
+                    tvDescription.setText(object.getString(
+                            "decommodityf").replaceAll("&#34;", "\""));
+                    tvCategory.setText(object.getString("cdcategory"));
+                    tvLocation.setText(object.getString("cdlocatto")
+                            + " ("
+                            + object.getString("cdloctypeto")
+                            + ") "
+                            + object.getString("adstreet1to")
+                                    .replaceAll("&#34;", "\""));
+                    tvDateInvntry.setText(object
+                            .getString("dtlstinvntry"));
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    tvDescription.setText("!!ERROR: " + e.getMessage());
+                    tvCategory.setText("Please contact STS/BAC.");
+                    tvLocation.setText("N/A");
+                    tvDateInvntry.setText("N/A");
+
+                    e.printStackTrace();
+                }
+            }
+            // textView.setText("\n" + res);
+            barcode.setText("");
+        } catch (Exception e) {
+            tvDescription.setText("!!ERROR: " + e.getMessage());
+            tvCategory.setText("Please contact STS/BAC.");
+            tvLocation.setText("N/A");
+            tvDateInvntry.setText("N/A");
+
+        }        
     }
 
     @Override
@@ -269,5 +281,22 @@ public class SearchActivity extends SenateActivity
      * @Override public void onBackPressed() { super.onBackPressed();
      * overridePendingTransition(R.anim.in_left, R.anim.out_right); }
      */
+    
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case SEARCH_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                getSearchDetails();
+                break;
+            }
+        }
+    }
+        
 
 }
