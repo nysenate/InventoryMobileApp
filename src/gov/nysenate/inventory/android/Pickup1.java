@@ -379,6 +379,9 @@ public class Pickup1 extends SenateActivity
                 }
                 else {
                     getFromLocationDetails();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView1.getWindowToken(), 0);                    
                 }
                 break;
             }
@@ -390,6 +393,9 @@ public class Pickup1 extends SenateActivity
                 }
                 else {
                     getToLocationDetails();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView2.getWindowToken(), 0);                    
                 }
                 break;
             }
