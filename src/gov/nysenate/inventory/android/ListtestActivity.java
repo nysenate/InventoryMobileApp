@@ -677,7 +677,7 @@ public class ListtestActivity extends SenateActivity
                             // vl.NUSENATE = barcode_num;
                             // vl.CDCATEGORY = "";
                             // vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                            Log.i("TESTING", "A CALL Senate tag # DidNotExist");
+                            Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
                             barcodeDidNotExist(barcode_num);
                             return;
 
@@ -807,7 +807,7 @@ public class ListtestActivity extends SenateActivity
         StringBuilder msg = new StringBuilder();
         msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
         if (barcode_num != null && barcode_num.trim().length() > 0) {
-            msg.append(" Tag #:<b>");
+            msg.append(" Senate Tag#:<b>");
             msg.append(barcode_num);
             msg.append("</b> will be <b>IGNORED</b>.");
         }
@@ -829,7 +829,7 @@ public class ListtestActivity extends SenateActivity
                                 && barcode_num.trim().length() > 0) {
                             Context context = getApplicationContext();
 
-                            CharSequence text = "Senate Tag #: " + barcode_num
+                            CharSequence text = "Senate Tag#: " + barcode_num
                                     + " was NOT added";
                             int duration = Toast.LENGTH_SHORT;
 
@@ -853,18 +853,18 @@ public class ListtestActivity extends SenateActivity
     }
 
     public void barcodeDidNotExist(final String barcode_num) {
-        Log.i("TESTING", "****Senate Tag # DidNotExist MESSAGE");
+        Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
         // set dialog message
-        alertDialogBuilder.setMessage(Html.fromHtml("!!ERROR: Tag #: <b>" + barcode_num + "</b> does not exist in SFMS.<br><br>"
-                + "This should not occur when entering/scanning a Senate Tag #. "
-                + "Please report Location, Senate Tag # and Item Description to Inventory Control Management."));
+        alertDialogBuilder.setMessage(Html.fromHtml("!!ERROR: Tag#: <b>" + barcode_num + "</b> does not exist in SFMS.<br><br>"
+                + "This should not occur when entering/scanning a Senate Tag#. "
+                + "Please report Location, Senate Tag# and Item Description to Inventory Control Management."));
         alertDialogBuilder.setCancelable(false)
  /*               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
@@ -927,7 +927,7 @@ public class ListtestActivity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Senate Tag #: " + barcode_num
+                        CharSequence text = "Senate Tag#: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
@@ -968,7 +968,7 @@ public class ListtestActivity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Senate Tag #: " + barcode_num
+                        CharSequence text = "Senate Tag#: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 

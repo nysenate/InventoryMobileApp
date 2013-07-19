@@ -117,6 +117,7 @@ public class Pickup2Activity extends SenateActivity
 
         // code for textwatcher
 
+        
         et_pickup3_barcode = (ClearableEditText) findViewById(R.id.et_pickup3_barcode);
         et_pickup3_barcode.addTextChangedListener(filterTextWatcher);
 
@@ -207,11 +208,11 @@ public class Pickup2Activity extends SenateActivity
     };
 
     public void barcodeDidNotExist(final String barcode_num) {
-        Log.i("TESTING", "****Senate Tag # DidNotExist MESSAGE");
+        Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
         playSound(R.raw.error);
@@ -220,7 +221,7 @@ public class Pickup2Activity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("***WARNING: Senate Tag#: <b>"
                                 + barcode_num
-                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag #.<br/><br/> Do you want to add this Tag #?"))
+                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag#."))
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
@@ -308,8 +309,8 @@ public class Pickup2Activity extends SenateActivity
         playSound(R.raw.error);
         new MsgAlert(
                 this,
-                "Senate Tag #: " + vl.NUSENATE + " IS ALREADY IN TRANSIT",
-                "Senate Tag #: <b>"
+                "Senate Tag#: " + vl.NUSENATE + " IS ALREADY IN TRANSIT",
+                "Senate Tag#: <b>"
                         + vl.NUSENATE
                         + "   "
                         + vl.DECOMMODITYF
@@ -321,13 +322,13 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
         playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Senate Tag #:<b>"
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Senate Tag#:<b>"
                                 + barcode_num
                                 + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
                 .setCancelable(false)
