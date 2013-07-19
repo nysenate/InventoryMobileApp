@@ -95,7 +95,8 @@ public class Pickup1 extends SenateActivity
 
             // Get the URL from the properties
             try {
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
             } catch (NullPointerException e) {
                 MsgAlert msgAlert = new MsgAlert(
                         this,
@@ -119,15 +120,14 @@ public class Pickup1 extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
-                    }                    
                     }
-                catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                 }    
+                }
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -277,7 +277,6 @@ public class Pickup1 extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -287,8 +286,8 @@ public class Pickup1 extends SenateActivity
 
         // show it
         alertDialog.show();
-    }    
-    
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -345,15 +344,14 @@ public class Pickup1 extends SenateActivity
                         try {
                             res = null;
                             res = resr1.get().trim().toString();
-                            if (res==null) {
+                            if (res == null) {
                                 noServerResponse();
                                 return;
                             }
-                        }
-                        catch (NullPointerException e) {
+                        } catch (NullPointerException e) {
                             noServerResponse();
                             return;
-                         }                            
+                        }
                         try {
                             JSONObject object = (JSONObject) new JSONTokener(
                                     res).nextValue();
@@ -440,15 +438,14 @@ public class Pickup1 extends SenateActivity
                         try {
                             res = null;
                             res = resr1.get().trim().toString();
-                            if (res==null) {
+                            if (res == null) {
                                 noServerResponse();
                                 return;
-                            }                            
                             }
-                        catch (NullPointerException e) {
+                        } catch (NullPointerException e) {
                             noServerResponse();
                             return;
-                         }    
+                        }
                         try {
                             JSONObject object = (JSONObject) new JSONTokener(
                                     res).nextValue();
@@ -557,16 +554,17 @@ public class Pickup1 extends SenateActivity
             String cdloctypeto = "";
             String cdlocatfrm = "";
             String cdloctypefrm = "";
-            
+
             int nuStop = 0;
             int nuStop2 = 0;
             if (originLocation != null) {
                 nuStop = originLocation.indexOf("-");
-                
+
                 if (nuStop > -1) {
                     cdlocatfrm = originLocation.substring(0, nuStop);
                     nuStop2 = originLocation.indexOf(":", nuStop);
-                    cdloctypefrm = originLocation.substring(nuStop+1, nuStop2);
+                    cdloctypefrm = originLocation
+                            .substring(nuStop + 1, nuStop2);
                 } else {
                     cdlocatfrm = originLocation;
                 }
@@ -574,7 +572,8 @@ public class Pickup1 extends SenateActivity
                 if (nuStop > -1) {
                     cdlocatto = destinationLocation.substring(0, nuStop);
                     nuStop2 = destinationLocation.indexOf(":", nuStop);
-                    cdloctypeto = destinationLocation.substring(nuStop + 1, nuStop2);
+                    cdloctypeto = destinationLocation.substring(nuStop + 1,
+                            nuStop2);
                 } else {
                     cdlocatfrm = destinationLocation;
                 }

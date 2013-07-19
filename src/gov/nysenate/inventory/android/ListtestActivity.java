@@ -60,8 +60,8 @@ public class ListtestActivity extends SenateActivity
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
-    
-    public final int ITEMLIST_TIMEOUT = -101, LOCATIONDETAILS_TIMEOUT = -102; 
+
+    public final int ITEMLIST_TIMEOUT = -101, LOCATIONDETAILS_TIMEOUT = -102;
     String currentSortValue = "Description";
     public Spinner spinSortList;
     static Button btnVerListCont;
@@ -122,8 +122,8 @@ public class ListtestActivity extends SenateActivity
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
-        
-        // Setup TextViews       
+
+        // Setup TextViews
         tvCdlocat = (TextView) findViewById(R.id.tvCdlocat);
         tvCdlocat.setText(loc_code);
 
@@ -147,24 +147,22 @@ public class ListtestActivity extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
-                    }     
-                    else if (res.indexOf("Session timed out")>0) {
+                    } else if (res.indexOf("Session timed out") > 0) {
                         itemListTimeout();
                         return;
                     }
-                }
-                catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
                 }
-                if (this.testResNull) {  // Testing Purposes Only
+                if (this.testResNull) { // Testing Purposes Only
                     resr1 = null;
                 }
                 String jsonString = resr1.get().trim().toString();
-                if (this.testResNull) {  // Testing Purposes Only
+                if (this.testResNull) { // Testing Purposes Only
                     res = null;
                     resr1 = null;
                     Log.i("TEST RESNULL", "RES SET TO NULL");
@@ -333,22 +331,22 @@ public class ListtestActivity extends SenateActivity
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
-        
-        
+
         // Force Keyboard to Popup
-        
-        if (barcode==null) {
+
+        if (barcode == null) {
             barcode = (ClearableEditText) findViewById(R.id.preferencePWD);
-            barcode.addTextChangedListener(filterTextWatcher);            
+            barcode.addTextChangedListener(filterTextWatcher);
         }
-        
+
         barcode.requestFocus();
-        barcode.postDelayed(new Runnable() {
+        barcode.postDelayed(new Runnable()
+        {
             @Override
             public void run() {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(barcode, InputMethodManager.SHOW_FORCED);
-            }   
+            }
         }, 100);
 
     }
@@ -379,37 +377,37 @@ public class ListtestActivity extends SenateActivity
     }
 
     public void itemListTimeout() {
-        Intent intentTimeout = new Intent(ListtestActivity.this, LoginActivity.class);
+        Intent intentTimeout = new Intent(ListtestActivity.this,
+                LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, ITEMLIST_TIMEOUT);
     }
-    
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        switch(requestCode) {
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
         /**
          * Handle the results from the recognition activity.
          */
         case VOICE_RECOGNITION_REQUEST_CODE:
-             if (resultCode == RESULT_OK) {
-                 // Fill the list view with the strings the recognizer thought it
-                 // could have heard
-                 ArrayList<String> matches = data
-                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                 TextView t = (TextView) findViewById(R.id.textView2);
-                 t.setText(matches.get(0));                 
-             }
-            
+            if (resultCode == RESULT_OK) {
+                // Fill the list view with the strings the recognizer thought it
+                // could have heard
+                ArrayList<String> matches = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                TextView t = (TextView) findViewById(R.id.textView2);
+                t.setText(matches.get(0));
+            }
+
         case ITEMDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 System.out.println("TIME OUT SCREEN INTENT DONE");
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
                 AsyncTask<String, String, String> resr1 = new RequestTask()
-                .execute(URL + "/LocCodeList");                
+                        .execute(URL + "/LocCodeList");
 
                 System.out.println("TRY AFTER TIME OUT SCREEN");
-                resr1 = new RequestTask()
-                        .execute(URL + "/LocCodeList");
+                resr1 = new RequestTask().execute(URL + "/LocCodeList");
                 res = null;
                 System.out.println("TRY AFTER TIME OUT SCREEN");
                 try {
@@ -421,19 +419,17 @@ public class ListtestActivity extends SenateActivity
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                if (res==null) {
+                if (res == null) {
                     noServerResponse();
                     return;
-                }     
+                }
 
-                
                 break;
             }
-           }
-        super.onActivityResult(requestCode, resultCode, data);        
-    }   
-        
-    
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private TextWatcher filterTextWatcher = new TextWatcher()
     {
 
@@ -475,25 +471,24 @@ public class ListtestActivity extends SenateActivity
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     barcode.setText("");
-                    
-                    // Simply contact the Web Server to keep the Session Alive, to help minimize
-                    // issues with Session Timeouts                    
+
+                    // Simply contact the Web Server to keep the Session Alive,
+                    // to help minimize
+                    // issues with Session Timeouts
                     AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/KeepSessionAlive");
+                            .execute(URL + "/KeepSessionAlive");
 
-                     try {
+                    try {
 
-                           try {
-                               res = null;
-                               res = resr1.get().trim().toString();
-                           }
-                           catch (Exception e) {
-        
-                           }
-                      }
-                       catch (Exception ex) {
-                           
-                       }
+                        try {
+                            res = null;
+                            res = resr1.get().trim().toString();
+                        } catch (Exception e) {
+
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     return;
                 }
 
@@ -557,33 +552,31 @@ public class ListtestActivity extends SenateActivity
                                                         // for summary
                         Log.i("TEST", barcode_number + " BEFORE REMOVE(" + i
                                 + ") INVLIST SIZE:" + invList.size() + "");
-                        //invList.remove(i);
+                        // invList.remove(i);
                         scannedItems.add(curInvItem);// to keep track of all
                                                      // scanned items
                                                      // numbers for
                                                      // oracle table
                         cntScanned++;
-                        playSound(R.raw.ok);   
-                        // Simply contact the Web Server to keep the Session Alive, to help minimize
+                        playSound(R.raw.ok);
+                        // Simply contact the Web Server to keep the Session
+                        // Alive, to help minimize
                         // issues with Session Timeouts
                         AsyncTask<String, String, String> resr1 = new RequestTask()
-                        .execute(URL + "/KeepSessionAlive");
+                                .execute(URL + "/KeepSessionAlive");
 
-                         try {
+                        try {
 
-                               try {
-                                   res = null;
-                                   res = resr1.get().trim().toString();
-                               }
-                               catch (Exception e) {
-            
-                               }
-                          }
-                           catch (Exception ex) {
-                               
-                           }
-                              
-                        
+                            try {
+                                res = null;
+                                res = resr1.get().trim().toString();
+                            } catch (Exception e) {
+
+                            }
+                        } catch (Exception ex) {
+
+                        }
+
                         try {
                             StringBuffer values = new StringBuffer();
                             values.append(curInvItem.getNusenate());
@@ -603,15 +596,16 @@ public class ListtestActivity extends SenateActivity
                             values.append(LoginActivity.nauser);
                             values.append("|now|");
                             values.append(LoginActivity.nauser);
-                            
-                            long rowsInserted = MenuActivity.db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
-                                    values.toString());
+
+                            long rowsInserted = MenuActivity.db
+                                    .insert("ad12verinv",
+                                            "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
+                                            values.toString());
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
 
- 
                         flag = 1;
                     }
 
@@ -636,20 +630,19 @@ public class ListtestActivity extends SenateActivity
                                 .execute(URL + "/ItemDetails?barcode_num="
                                         + barcode_num);
                         try {
-                            if (testResNull) {  // Testing Purposes Only
+                            if (testResNull) { // Testing Purposes Only
                                 resr1 = null;
                                 Log.i("TEST RESNULL", "RES SET TO NULL");
-                            } 
+                            }
                             res = null;
                             res = resr1.get().trim().toString();
-                            if (res==null) {
+                            if (res == null) {
                                 noServerResponse();
                                 return;
-                            }    
-                            else if (res.indexOf("Session timed out")>-1) {
-                               itemListTimeout();
-                               return;
-                            }                            
+                            } else if (res.indexOf("Session timed out") > -1) {
+                                itemListTimeout();
+                                return;
+                            }
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -661,7 +654,7 @@ public class ListtestActivity extends SenateActivity
                             noServerResponse(barcode_num);
                             return;
                         }
-                        
+
                         status = "yes1";
                     } else {
                         // display error
@@ -695,25 +688,31 @@ public class ListtestActivity extends SenateActivity
                             vl.CDCATEGORY = jo.getString("cdcategory");
                             vl.CDLOCAT = jo.getString("cdlocatto");
                             vl.CDSTATUS = jo.getString("cdstatus");
-                            String nusenateReturned = jo.getString("nusenate");                           
+                            String nusenateReturned = jo.getString("nusenate");
 
                             if (nusenateReturned == null) {
                                 vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
                                 vl.CONDITION = "NEW";
                                 barcodeDidNotExist(barcode_num);
                                 return;
-                            } else if (vl.CDSTATUS.equalsIgnoreCase("I") ) {
+                            } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                                 vl.DECOMMODITYF = jo.getString("decommodityf");
-                                errorMessage(barcode_num, "!!ERROR: Senate#: " + barcode_num+ " has been Inactivated.", "The <b>\""+vl.DECOMMODITYF+"\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                                errorMessage(
+                                        barcode_num,
+                                        "!!ERROR: Senate#: " + barcode_num
+                                                + " has been Inactivated.",
+                                        "The <b>\""
+                                                + vl.DECOMMODITYF
+                                                + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
                                 return;
-                                
+
                             } else {
                                 // Log.i("TESTING",
                                 // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
                                 vl.DECOMMODITYF = jo.getString("decommodityf")
-                                        + " \n***Found in: "+vl.CDLOCAT;
+                                        + " \n***Found in: " + vl.CDLOCAT;
                                 vl.CONDITION = "DIFFERENT LOCATION";
-                                playSound(R.raw.warning);        
+                                playSound(R.raw.warning);
                             }
                         }
                     } catch (Exception e) {
@@ -761,14 +760,14 @@ public class ListtestActivity extends SenateActivity
                 // adapter.clear();
                 adapter.notifyDataSetChanged();
                 count = adapter.getCount();
-                int cntExisting =  countOf(invList, "EXISTING");
+                int cntExisting = countOf(invList, "EXISTING");
                 int cntNew = countOf(invList, "NEW");
-                tv_counts_new.setText(Html.fromHtml("<b>New</b><br/>"
-                        + cntNew));
-                tv_counts_existing.setText(Html.fromHtml("<b>Unscanned</b><br/>"
-                        + cntExisting));
+                tv_counts_new
+                        .setText(Html.fromHtml("<b>New</b><br/>" + cntNew));
+                tv_counts_existing.setText(Html
+                        .fromHtml("<b>Unscanned</b><br/>" + cntExisting));
                 tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
-                        +cntScanned));
+                        + cntScanned));
                 // listView.setAdapter(adapter);
                 Log.i("check", "listview updated");
 
@@ -789,26 +788,26 @@ public class ListtestActivity extends SenateActivity
         }
         return -1;
     }
-    
+
     public void noServerResponse() {
         noServerResponse(null);
-        
+
     }
 
     public void noServerResponse(final String barcode_num) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        
+
         StringBuilder title = new StringBuilder();
-        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+        if (barcode_num != null && barcode_num.trim().length() > 0) {
             title.append("Barcode#: ");
             title.append(barcode_num);
             title.append(" ");
         }
         title.append("NO SERVER RESPONSE");
-        
+
         StringBuilder msg = new StringBuilder();
         msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
-        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+        if (barcode_num != null && barcode_num.trim().length() > 0) {
             msg.append(" Barcode#:<b>");
             msg.append(barcode_num);
             msg.append("</b> will be <b>IGNORED</b>.");
@@ -819,9 +818,7 @@ public class ListtestActivity extends SenateActivity
         alertDialogBuilder.setTitle(title.toString());
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml(msg.toString()))
+        alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -829,14 +826,16 @@ public class ListtestActivity extends SenateActivity
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
-                        if (barcode_num!=null  && barcode_num.trim().length()>0) {
+                        if (barcode_num != null
+                                && barcode_num.trim().length() > 0) {
                             Context context = getApplicationContext();
-                        
+
                             CharSequence text = "Barcode#: " + barcode_num
                                     + " was NOT added";
                             int duration = Toast.LENGTH_SHORT;
 
-                            Toast toast = Toast.makeText(context, text, duration);
+                            Toast toast = Toast.makeText(context, text,
+                                    duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                         }
@@ -856,7 +855,7 @@ public class ListtestActivity extends SenateActivity
 
     public void barcodeDidNotExist(final String barcode_num) {
         Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
-        playSound(R.raw.error);        
+        playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
@@ -949,18 +948,18 @@ public class ListtestActivity extends SenateActivity
         // show it
         alertDialog.show();
     }
-    public void errorMessage(final String barcode_num, final String title, final String message) {
+
+    public void errorMessage(final String barcode_num, final String title,
+            final String message) {
         Log.i("TESTING", "****errorMessgae MESSAGE");
-        playSound(R.raw.error);        
+        playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
         alertDialogBuilder.setTitle(title);
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml(message))
+        alertDialogBuilder.setMessage(Html.fromHtml(message))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -990,7 +989,6 @@ public class ListtestActivity extends SenateActivity
         // show it
         alertDialog.show();
     }
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1026,8 +1024,8 @@ public class ListtestActivity extends SenateActivity
                                                   // list
             }
         }
-        Log.i("MISSING ITEMS COUNT", "MISSING ITEMS:"+missingItems.size());
-        
+        Log.i("MISSING ITEMS COUNT", "MISSING ITEMS:" + missingItems.size());
+
         String summary;
         summary = "{\"nutotitems\":\"" + numItems + "\",\"nuscanitems\":\""
                 + AllScannedItems.size() + "\",\"numissitems\":\""
@@ -1050,8 +1048,7 @@ public class ListtestActivity extends SenateActivity
         intent.putStringArrayListExtra("newItems", getJSONArrayList(newItems));// new
                                                                                // items
                                                                                // list
-        
-       
+
         /*
          * if (1==1) { // Testing return; }
          */
@@ -1059,7 +1056,7 @@ public class ListtestActivity extends SenateActivity
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -1071,7 +1068,7 @@ public class ListtestActivity extends SenateActivity
         default:
             return super.onOptionsItemSelected(item);
         }
-    }    
+    }
 
     public ArrayList<String> getJSONArrayList(ArrayList<InvItem> invList) {
         ArrayList<String> returnArray = new ArrayList<String>();
@@ -1099,7 +1096,6 @@ public class ListtestActivity extends SenateActivity
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-    
 
     public class spinSortListComparator implements Comparator
     {
@@ -1132,9 +1128,6 @@ public class ListtestActivity extends SenateActivity
         }
 
     }
-    
-   
-    
 
     public class SortChangedListener implements OnItemSelectedListener
     {

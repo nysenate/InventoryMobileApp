@@ -46,6 +46,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 //   WIFI Code Added Below
 
 public class LoginActivity extends SenateActivity
@@ -92,44 +93,44 @@ public class LoginActivity extends SenateActivity
     String status = "no";
     boolean timeoutActivity = false;
     String timeoutFrom = null;
-    
+
     public static DefaultHttpClient httpClient;
-    
- 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
-        // See if there is a Parent Activity, if there was one, then it must have timed out.
+        // See if there is a Parent Activity, if there was one, then it must
+        // have timed out.
         Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
         try {
             Intent fromIntent = getIntent();
             timeoutFrom = fromIntent.getStringExtra("TIMEOUTFROM");
-            Log.i("MAIN", "TIMEOUTFROM:"+timeoutFrom);
-        }
-        catch (Exception e) {
+            Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
+        } catch (Exception e) {
             timeoutFrom = null;
-            Log.i("MAIN","TIMEOUTFROM WILL BE NULL");
+            Log.i("MAIN", "TIMEOUTFROM WILL BE NULL");
         }
-        
-        if (timeoutFrom!=null) {
-            Log.i("MAIN","THIS is going to be treated as a Timeout Activity");
+
+        if (timeoutFrom != null) {
+            Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
         }
-                
+
         currentActivity = this;
         Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
-        
+
         if (timeoutActivity) {
             user_name.setKeyListener(null);
             user_name.setText(nauser);
             user_name.removeClearButton();
             user_name.setBackgroundResource(R.drawable.customshape);
+            password.requestFocus();
         }
 
         // Read from the /assets directory for properties of the project
@@ -149,7 +150,15 @@ public class LoginActivity extends SenateActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (!this.timeoutActivity) {
+            checkInitialWifiConnection();
+            checkInitialAudioLevel();
+        }
+    }
 
+    // Self Explanatory
+
+    public void checkInitialWifiConnection() {
         try {
             // WIFI Code Added Below
             senateWifiFound = -1;
@@ -455,92 +464,108 @@ public class LoginActivity extends SenateActivity
                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
             startService(msgIntent);
         }
-        
+    }
+
+    // Self Explanatory
+
+    private void checkInitialAudioLevel() {
         // Check Tablet Audio Volume. If it is too low or turned off, ask user
         // if they would like to turn it up or on in a dialog
 
         try {
             audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-            final int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            int currentVolume = audio
+                    .getStreamVolume(AudioManager.STREAM_MUSIC);
+            final int maxVolume = audio
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
             String msg = null;
             String title = null;
             boolean showAudioMsg = false;
 
-            if (currentVolume==0) {
-               msg = "***WARNING: The volume is currently <font color='RED'><b>OFF</b></font>. You will not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
-               showAudioMsg = true;
-            }
-            else if (currentVolume<.4*maxVolume) {
+            if (currentVolume == 0) {
+                msg = "***WARNING: The volume is currently <font color='RED'><b>OFF</b></font>. You will not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
+                showAudioMsg = true;
+            } else if (currentVolume < .4 * maxVolume) {
                 msg = "***WARNING: The volume is currently is <font color='RED'><b>LOW</b></font>. You might not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
                 showAudioMsg = true;
             }
 
             final int duration = Toast.LENGTH_LONG;
 
-            
-            
-          if (showAudioMsg) {
-              AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                      this);
+            if (showAudioMsg) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        this);
 
-              // set title
-              alertDialogBuilder.setTitle("");
+                // set title
+                alertDialogBuilder.setTitle("");
 
-              // set dialog message
-              alertDialogBuilder.setMessage(Html.fromHtml(msg))
-                      .setCancelable(false)
-                      .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                          public void onClick(DialogInterface dialog,int id) {
-                              audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
-                              Toast toast = Toast.makeText(getApplicationContext(),
-                                      "Sound has been turned on to Maximum Volume.", duration);
-                              toast.setGravity(Gravity.CENTER, 0, 0);
-                              toast.show();
-                             
-                              dialog.dismiss();
-                          }
-                      })
-                  .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "Sound Volume was NOT changed.", duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-                        dialog.dismiss();
-                    }
-                  });
-                      
-              // create alert dialog
-              AlertDialog alertDialog = alertDialogBuilder.create();
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage(Html.fromHtml(msg))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        audio.setStreamVolume(
+                                                AudioManager.STREAM_MUSIC,
+                                                maxVolume, 0);
+                                        Toast toast = Toast
+                                                .makeText(
+                                                        getApplicationContext(),
+                                                        "Sound has been turned on to Maximum Volume.",
+                                                        duration);
+                                        toast.setGravity(Gravity.CENTER, 0, 0);
+                                        toast.show();
 
-              // show it
-              alertDialog.show();
-             
-          }
-        }
-        catch (Exception e) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                        .setNegativeButton("No",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        Toast toast = Toast
+                                                .makeText(
+                                                        getApplicationContext(),
+                                                        "Sound Volume was NOT changed.",
+                                                        duration);
+                                        toast.setGravity(Gravity.CENTER, 0, 0);
+                                        toast.show();
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-        }        
-        
+        }
     }
-    
+
     private void login(String user_name, String password) {
         try {
             // check network connection
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             String res = null;
-            
+
             if (networkInfo != null && networkInfo.isConnected()) {
                 // fetch data
                 status = "yes";
                 try {
                     // Get the URL from the properties
-                    String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                            .toString();
+                    String URL = LoginActivity.properties
+                            .get("WEBAPP_BASE_URL").toString();
                     Log.i("Login test", URL + "/Login?user=" + user_name
                             + "&pwd=" + password);
                     AsyncTask<String, String, String> resr1 = new RequestTask()
@@ -548,9 +573,9 @@ public class LoginActivity extends SenateActivity
                                     + password);
                     try {
                         res = resr1.get().trim().toString();
-                        if (res==null) {
+                        if (res == null) {
                             noServerResponse();
-                            }
+                        }
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -560,7 +585,7 @@ public class LoginActivity extends SenateActivity
                     } catch (NullPointerException e) {
                         // TODO Auto-generated catch block
                         noServerResponse();
-                        }
+                    }
                 } catch (Exception e) {
 
                 }
@@ -588,17 +613,17 @@ public class LoginActivity extends SenateActivity
             // calling the menu activity after validation
             System.out.println("RES:" + res);
             if (res.equals("VALID")) {
-                // If LoginActivity was called because the App Timed Out.., 
+                // If LoginActivity was called because the App Timed Out..,
                 // Go back to the activity of the timeout.
-                // If it is not an Application Timed Out, go to the App main menu
+                // If it is not an Application Timed Out, go to the App main
+                // menu
                 //
-                
+
                 if (timeoutActivity) {
                     Intent i = getIntent();
                     setResult(RESULT_OK, i);
                     finish();
-                }
-                else {
+                } else {
                     Intent intent2 = new Intent(this, MenuActivity.class);
                     startActivity(intent2);
                     overridePendingTransition(R.anim.slide_in_left,
@@ -630,8 +655,8 @@ public class LoginActivity extends SenateActivity
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
-    }     
-    
+    }
+
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -657,7 +682,8 @@ public class LoginActivity extends SenateActivity
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
-                        progressBarLogin.setVisibility(progressBarLogin.INVISIBLE);
+                        progressBarLogin
+                                .setVisibility(progressBarLogin.INVISIBLE);
                         buttonLogin.getBackground().setAlpha(255);
                         dialog.dismiss();
                     }
@@ -668,18 +694,32 @@ public class LoginActivity extends SenateActivity
 
         // show it
         alertDialog.show();
-    }         
+    }
+
     @Override
     protected void onResume(Bundle savedInstanceState) {
         super.onResume(savedInstanceState);
-        httpClient  = new DefaultHttpClient();        
+        httpClient = new DefaultHttpClient();
     }
-    
+
     @Override
     public void onDestroy() {
         // unregister your receivers
-        this.unregisterReceiver(receiver);
-        this.unregisterReceiver(downloadReceiver);
+        if (!this.timeoutActivity) {
+                try {
+                        this.unregisterReceiver(receiver);
+                    }
+                catch (Exception e) {
+                    Log.w("LoginActivity", "**WARNING: unable to unregister Internet Connection Receiver.");
+                    }
+                try {
+                    this.unregisterReceiver(downloadReceiver);
+                    }
+                catch (Exception e) {
+                    Log.w("LoginActivity", "**WARNING: unable to unregister Download Receiver.");
+                }
+        }
+
         super.onDestroy();
     }
 
@@ -754,26 +794,27 @@ public class LoginActivity extends SenateActivity
                 String pwd = password.getText().toString();
                 this.login(u_name, pwd);
                 /*
-                Intent intent = new Intent(this, DisplayMessageActivity.class);
-                // Intent intent = new Intent(this, MenuActivity.class);
-                String u_name = user_name.getText().toString();
-                String pwd = password.getText().toString();
-                intent.putExtra(u_name_intent, u_name);
-                intent.putExtra(pwd_intent, pwd);
-                startActivity(intent);
-                overridePendingTransition(R.anim.in_right, R.anim.out_left);*/
+                 * Intent intent = new Intent(this,
+                 * DisplayMessageActivity.class); // Intent intent = new
+                 * Intent(this, MenuActivity.class); String u_name =
+                 * user_name.getText().toString(); String pwd =
+                 * password.getText().toString(); intent.putExtra(u_name_intent,
+                 * u_name); intent.putExtra(pwd_intent, pwd);
+                 * startActivity(intent);
+                 * overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                 */
             }
         }
     }
 
     public void testSessions(View view) {
         AsyncTask<String, String, String> resr1 = new RequestTask()
-        .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");
-        
+                .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");
+
         String res1;
         try {
             res1 = resr1.get().toString();
-            System.out.println ("resr1:"+res1);
+            System.out.println("resr1:" + res1);
         } catch (InterruptedException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -783,12 +824,12 @@ public class LoginActivity extends SenateActivity
         }
 
         AsyncTask<String, String, String> resr2 = new RequestTask()
-        .execute("http://10.26.3.74:8080/WebApplication1/GetSessionServlet");
-        
+                .execute("http://10.26.3.74:8080/WebApplication1/GetSessionServlet");
+
         String res2;
         try {
             res2 = resr2.get().toString();
-            System.out.println ("resr2:"+res2);
+            System.out.println("resr2:" + res2);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -798,8 +839,7 @@ public class LoginActivity extends SenateActivity
         }
 
     }
-    
-    
+
     public void testSQLlite(View view) {
         testSQLlite();
     }
@@ -807,29 +847,38 @@ public class LoginActivity extends SenateActivity
     public void testSQLlite() {
         InvDB db = new InvDB(this);
         try {
-            //db.resetDB();
-            //db.truncateTable("ad12verinv");
-/*            long rowsInserted = db.insert("ad12verinv", "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser",
-                                       "111111|NEW|TEST|Y|99999999|THIS IS THE FIRST TEST|AAAA|NOW|HEITNER|NOW|HEITNER");
-            
-            Log.i(MainActivity.class.getName(), "ROWS INSERTED:"+rowsInserted);*/
-            
+            // db.resetDB();
+            // db.truncateTable("ad12verinv");
+            /*
+             * long rowsInserted = db.insert("ad12verinv",
+             * "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser"
+             * ,
+             * "111111|NEW|TEST|Y|99999999|THIS IS THE FIRST TEST|AAAA|NOW|HEITNER|NOW|HEITNER"
+             * );
+             * 
+             * Log.i(MainActivity.class.getName(),
+             * "ROWS INSERTED:"+rowsInserted);
+             */
+
             Cursor mCursor = db.rawQuery("SELECT * FROM ad12verinv", null);
-            
-            if (mCursor != null ) {
-                if  (mCursor.moveToFirst()) {
-                      do {
-                       String nusenate = mCursor.getString(mCursor.getColumnIndex("nusenate"));
-                       String decommodityf = mCursor.getString(mCursor.getColumnIndex("decommodityf"));
-                       Log.i(LoginActivity.class.getName(), nusenate+": "+decommodityf);
-                      }while (mCursor.moveToNext());
-                } 
-           }            
+
+            if (mCursor != null) {
+                if (mCursor.moveToFirst()) {
+                    do {
+                        String nusenate = mCursor.getString(mCursor
+                                .getColumnIndex("nusenate"));
+                        String decommodityf = mCursor.getString(mCursor
+                                .getColumnIndex("decommodityf"));
+                        Log.i(LoginActivity.class.getName(), nusenate + ": "
+                                + decommodityf);
+                    } while (mCursor.moveToNext());
+                }
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    
+
     }
 
     public void startUpdate(View View) {
@@ -945,8 +994,8 @@ public class LoginActivity extends SenateActivity
         default:
             return super.onOptionsItemSelected(item);
         }
-    }        
-    
+    }
+
     // broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
     {

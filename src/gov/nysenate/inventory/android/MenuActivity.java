@@ -38,7 +38,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     public static final Integer[] images = { R.drawable.ssearch,
             R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
-    
+
     static InvDB db;
 
     ListView listView;
@@ -64,9 +64,9 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 R.layout.list_item, rowItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-        
+
         // Setup Local Database
-        db = new InvDB(this);        
+        db = new InvDB(this);
     }
 
     @Override

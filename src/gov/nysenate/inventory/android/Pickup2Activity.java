@@ -81,7 +81,7 @@ public class Pickup2Activity extends SenateActivity
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
         currentActivity = this;
-        
+
         // Get the origin and destination location from the previous activity
         Intent intent = getIntent();
         originLocation = intent.getStringExtra("originLocation");
@@ -135,7 +135,7 @@ public class Pickup2Activity extends SenateActivity
         btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
         btnPickup2Cancel.getBackground().setAlpha(255);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -147,8 +147,7 @@ public class Pickup2Activity extends SenateActivity
         default:
             return super.onOptionsItemSelected(item);
         }
-    }    
-       
+    }
 
     private TextWatcher filterTextWatcher = new TextWatcher()
     {
@@ -162,7 +161,6 @@ public class Pickup2Activity extends SenateActivity
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
         }
-
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -215,21 +213,23 @@ public class Pickup2Activity extends SenateActivity
                         try {
                             res = null;
                             res = resr1.get().trim().toString();
-                            if (testResNull) {  // Testing Purposes Only
+                            if (testResNull) { // Testing Purposes Only
                                 res = null;
                                 resr1 = null;
                                 Log.i("TEST RESNULL", "RES SET TO NULL");
-                            }                            System.out.println("URL RESULT:" + res);
+                            }
+                            System.out.println("URL RESULT:" + res);
 
                             // add it to list and displist and scanned items
                             JSONObject object = null;
                             if (res == null) {
-                                //Log.i("TESTING", "A CALL noServerResponse");
+                                // Log.i("TESTING", "A CALL noServerResponse");
                                 noServerResponse(barcode_num);
                                 return;
                             } else if (res.toUpperCase().contains(
                                     "DOES NOT EXIST IN SYSTEM")) {
-                                //Log.i("TESTING", "A CALL barcodeDidNotExist");
+                                // Log.i("TESTING",
+                                // "A CALL barcodeDidNotExist");
                                 barcodeDidNotExist(barcode_num);
                                 return;
                             } else {
@@ -253,33 +253,42 @@ public class Pickup2Activity extends SenateActivity
                                         .replaceAll("&#34;", "\"");
                                 vl.DTISSUE = object.getString("dtissue");
                                 vl.CDLOCAT = object.getString("cdlocatto");
-                                vl.CDINTRANSIT = object.getString("cdintransit");
+                                vl.CDINTRANSIT = object
+                                        .getString("cdintransit");
                                 vl.CDSTATUS = object.getString("cdstatus");
-                                
-                                if (vl.CDSTATUS.equalsIgnoreCase("I") ) {
-                                    errorMessage(barcode_num, "!!ERROR: Senate#: " + barcode_num+ " has been Inactivated.", "The <b>\""+vl.DECOMMODITYF+"\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+
+                                if (vl.CDSTATUS.equalsIgnoreCase("I")) {
+                                    errorMessage(
+                                            barcode_num,
+                                            "!!ERROR: Senate#: " + barcode_num
+                                                    + " has been Inactivated.",
+                                            "The <b>\""
+                                                    + vl.DECOMMODITYF
+                                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
                                     return;
                                 }
-                                
-                                if (vl.CDINTRANSIT != null && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
+
+                                if (vl.CDINTRANSIT != null
+                                        && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
                                     barcodeIntransit(vl);
                                     return;
                                 }
-                                
+
                                 if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
                                     vl.CONDITION = "EXISTING";
                                     playSound(R.raw.ok);
-                                }
-                                else if (cdlocatto.equalsIgnoreCase(vl.CDLOCAT)) {
+                                } else if (cdlocatto
+                                        .equalsIgnoreCase(vl.CDLOCAT)) {
                                     playSound(R.raw.honk);
-                                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: " + vl.CDLOCAT;
-                                }
-                                else {
+                                    vl.DECOMMODITYF = vl.DECOMMODITYF
+                                            + "\n**Already in: " + vl.CDLOCAT;
+                                } else {
                                     playSound(R.raw.warning);
                                     vl.CONDITION = "DIFFERENT LOCATION";
-                                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Found in: " + vl.CDLOCAT;
+                                    vl.DECOMMODITYF = vl.DECOMMODITYF
+                                            + "\n**Found in: " + vl.CDLOCAT;
                                 }
-                                                           }
+                            }
 
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
@@ -305,7 +314,7 @@ public class Pickup2Activity extends SenateActivity
                     }
                     // This is what should be expected. Trying to move the
                     else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {
-                        invStatus =  vl.CONDITION;
+                        invStatus = vl.CONDITION;
                     } else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { //
                         invStatus = "AT DESTINATION";
                     } else {
@@ -368,7 +377,7 @@ public class Pickup2Activity extends SenateActivity
         alertDialogBuilder.setTitle("Barcode#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
-        playSound(R.raw.error);    
+        playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
                 .setMessage(
@@ -383,45 +392,38 @@ public class Pickup2Activity extends SenateActivity
                         // 5/24/13 BH Coded below to use InvItem Objects to
                         // display
                         // the list.
-                     /*   VerList vl = new VerList();
-                        vl.NUSENATE = barcode_num;
-                        vl.CDCATEGORY = "";
-                        vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                        vl.CDINTRANSIT = "";
-
-                        InvItem invItem = new InvItem(vl.NUSENATE,
-                                vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
-                        invList.add(invItem);
-
-                        list.add(vl);
-                        StringBuilder s_new = new StringBuilder();
-                        // s_new.append(vl.NUSENATE); since the desc coming from
-                        // server already contains barcode number we wont add it
-                        // again
-                        // s_new.append(" ");
-                        s_new.append(vl.CDCATEGORY);
-                        s_new.append(" ");
-                        s_new.append(vl.DECOMMODITYF);
-
-                        // display toster
-                        Context context = getApplicationContext();
-                        CharSequence text = s_new;
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        // dispList.add(s_new); // this list will display the
-                        // contents
-                        // on screen
-                        scannedItems.add(invItem);
-                        allScannedItems.add(invItem);
-                        newItems.add(invItem);// to keep
-
-                        list.add(vl);
-                        et_pickup3_barcode.setText("");
-                        dialog.dismiss();*/
+                        /*
+                         * VerList vl = new VerList(); vl.NUSENATE =
+                         * barcode_num; vl.CDCATEGORY = ""; vl.DECOMMODITYF =
+                         * " ***NOT IN SFMS***  New Item"; vl.CDINTRANSIT = "";
+                         * 
+                         * InvItem invItem = new InvItem(vl.NUSENATE,
+                         * vl.CDCATEGORY, "NEW", vl.DECOMMODITYF, vl.CDLOCAT);
+                         * invList.add(invItem);
+                         * 
+                         * list.add(vl); StringBuilder s_new = new
+                         * StringBuilder(); // s_new.append(vl.NUSENATE); since
+                         * the desc coming from // server already contains
+                         * barcode number we wont add it // again //
+                         * s_new.append(" "); s_new.append(vl.CDCATEGORY);
+                         * s_new.append(" "); s_new.append(vl.DECOMMODITYF);
+                         * 
+                         * // display toster Context context =
+                         * getApplicationContext(); CharSequence text = s_new;
+                         * int duration = Toast.LENGTH_SHORT;
+                         * 
+                         * Toast toast = Toast.makeText(context, text,
+                         * duration); toast.setGravity(Gravity.CENTER, 0, 0);
+                         * toast.show();
+                         * 
+                         * // dispList.add(s_new); // this list will display the
+                         * // contents // on screen scannedItems.add(invItem);
+                         * allScannedItems.add(invItem);
+                         * newItems.add(invItem);// to keep
+                         * 
+                         * list.add(vl); et_pickup3_barcode.setText("");
+                         * dialog.dismiss();
+                         */
                         // if this button is clicked, just close
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
@@ -437,30 +439,26 @@ public class Pickup2Activity extends SenateActivity
                         et_pickup3_barcode.setText("");
 
                         dialog.dismiss();
-                        
+
                     }
                 })
-          /*      .setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "Barcode#: " + barcode_num
-                                + " was NOT added";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        et_pickup3_barcode.setText("");
-
-                        dialog.dismiss();
-                    }
-                })*/;
+        /*
+         * .setNegativeButton("No", new DialogInterface.OnClickListener() {
+         * 
+         * @Override public void onClick(DialogInterface dialog, int id) { // if
+         * this button is clicked, just close // the dialog box and do nothing
+         * Context context = getApplicationContext();
+         * 
+         * CharSequence text = "Barcode#: " + barcode_num + " was NOT added";
+         * int duration = Toast.LENGTH_SHORT;
+         * 
+         * Toast toast = Toast.makeText(context, text, duration);
+         * toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
+         * 
+         * et_pickup3_barcode.setText("");
+         * 
+         * dialog.dismiss(); } })
+         */;
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -471,10 +469,17 @@ public class Pickup2Activity extends SenateActivity
 
     public void barcodeIntransit(final VerList vl) {
         playSound(R.raw.error);
-        new MsgAlert(this, "Barcode#: " + vl.NUSENATE+ " IS ALREADY IN TRANSIT", "Barcode#: <b>" + vl.NUSENATE+ "   "+vl.DECOMMODITYF+"</b> has  already been picked up and was marked as <font color='RED'><b>IN TRANSIT</b></font> and cannot be picked up.");
+        new MsgAlert(
+                this,
+                "Barcode#: " + vl.NUSENATE + " IS ALREADY IN TRANSIT",
+                "Barcode#: <b>"
+                        + vl.NUSENATE
+                        + "   "
+                        + vl.DECOMMODITYF
+                        + "</b> has  already been picked up and was marked as <font color='RED'><b>IN TRANSIT</b></font> and cannot be picked up.");
         et_pickup3_barcode.setText("");
-    }    
-    
+    }
+
     public void noServerResponse(final String barcode_num) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -518,18 +523,17 @@ public class Pickup2Activity extends SenateActivity
         alertDialog.show();
     }
 
-    public void errorMessage(final String barcode_num, final String title, final String message) {
+    public void errorMessage(final String barcode_num, final String title,
+            final String message) {
         Log.i("TESTING", "****errorMessgae MESSAGE");
-        playSound(R.raw.error);        
+        playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
         alertDialogBuilder.setTitle(title);
 
         // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml(message))
+        alertDialogBuilder.setMessage(Html.fromHtml(message))
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
@@ -559,8 +563,7 @@ public class Pickup2Activity extends SenateActivity
         // show it
         alertDialog.show();
     }
-        
-    
+
     public int findBarcode(String barcode_num) {
         for (int x = 0; x < invList.size(); x++) {
             if (invList.get(x).getNusenate().equals(barcode_num)) {

@@ -87,14 +87,14 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
             holder.invListDescr.setText(rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.graydark)); // black
-        
+
         } else {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.blue)); // blue
             holder.invListDescr.setText(rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
-                    R.color.blue)); // blue            
+                    R.color.blue)); // blue
 
         }
         OnClickListener l = new OnClickListener()

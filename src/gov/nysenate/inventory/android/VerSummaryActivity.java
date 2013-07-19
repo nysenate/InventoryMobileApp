@@ -31,13 +31,21 @@ import android.widget.Toast;
 public class VerSummaryActivity extends SenateActivity
 {
     ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();
-    ArrayList<InvItem> missingItems = new ArrayList<InvItem>(); // Items in the location which have not been verified.
-    ArrayList<InvItem> newItems = new ArrayList<InvItem>(); // Items in the location but listed elsewhere in the database.
+    ArrayList<InvItem> missingItems = new ArrayList<InvItem>(); // Items in the
+                                                                // location
+                                                                // which have
+                                                                // not been
+                                                                // verified.
+    ArrayList<InvItem> newItems = new ArrayList<InvItem>(); // Items in the
+                                                            // location but
+                                                            // listed elsewhere
+                                                            // in the database.
     ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
     TextView tvTotItemVSum;
     TextView tvTotScanVSum;
     TextView tvMisItems;
     TextView tvNewItems;
+    String barcodeNum = "";
 
     public String res = null;
     String loc_code = null;
@@ -47,7 +55,9 @@ public class VerSummaryActivity extends SenateActivity
     ProgressBar progressVerSum;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
-    String timeoutFrom = "VERIFICATIONSUMMARY";   
+    String timeoutFrom = "VERIFICATIONSUMMARY";
+    public final int VERIFICATIONREPORTS_TIMEOUT = -101;
+    String URL = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,33 +128,28 @@ public class VerSummaryActivity extends SenateActivity
             try {
                 tvTotItemVSum.setText(jsonObject.getString("nutotitems"));
 
-            }
-            catch (Exception e2) {
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvTotScanVSum.setText(jsonObject.getString("nuscanitems"));
 
-            }
-            catch (Exception e2) {
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvMisItems.setText(jsonObject.getString("numissitems"));
 
-            }
-            catch (Exception e2) {
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
             try {
                 tvNewItems.setText(jsonObject.getString("nunewitems"));
 
-            }
-            catch (Exception e2) {
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
 
         }
 
@@ -173,6 +178,21 @@ public class VerSummaryActivity extends SenateActivity
         ListViewTab3.setAdapter(listAdapter3);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("onActivityResult", "requestCode:" + requestCode
+                + ", requestCode:" + requestCode + " = " + RESULT_OK);
+        switch (requestCode) {
+        case VERIFICATIONREPORTS_TIMEOUT:
+            Log.i("TIMEOUT RETURNED", "SUBMIT VERIFICATION");
+            if (resultCode == RESULT_OK) {
+                Log.i("TIMEOUT RETURNED", "SUBMIT VERIFICATION OK");
+                submitVerification();
+                break;
+            }
+        }
+    }
+
     public ArrayList<InvItem> getInvArrayListFromJSON(ArrayList<String> ar) {
         ArrayList<InvItem> returnList = new ArrayList<InvItem>();
         InvItem curInvItem;
@@ -185,34 +205,29 @@ public class VerSummaryActivity extends SenateActivity
                     try {
                         curInvItem
                                 .setNusenate(jsonObject.getString("nusenate"));
-                    }
-                    catch (Exception e2) {
+                    } catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setCdcategory(jsonObject
                                 .getString("cdcategory"));
-                    }
-                    catch (Exception e2) {
+                    } catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setType(jsonObject.getString("type"));
-                    }
-                    catch (Exception e2) {
+                    } catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     try {
                         curInvItem.setDecommodityf(jsonObject
                                 .getString("decommodityf"));
-                    }
-                    catch (Exception e2) {
+                    } catch (Exception e2) {
                         e2.printStackTrace();
                     }
                     returnList.add(curInvItem);
 
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     Log.i("System.err",
                             "ERROR CONVERTING FROM ARRAYLIST OF JSON" + x + ":"
@@ -234,7 +249,7 @@ public class VerSummaryActivity extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
-        positiveButtonPressed = false;                
+        positiveButtonPressed = false;
         // Setup Buttons and Progress Bar
         this.progressVerSum = (ProgressBar) findViewById(R.id.progressVerSum);
         VerSummaryActivity.btnVerSumBack = (Button) findViewById(R.id.btnVerSumBack);
@@ -246,10 +261,10 @@ public class VerSummaryActivity extends SenateActivity
     public void backButton(View view) {
         this.onBackPressed();
         /*
-         * VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45);
-         * Intent intent = new Intent(this, ListtestActivity.class);
-         * startActivity(intent);
-         * overridePendingTransition(R.anim.in_left, R.anim.out_right);
+         * VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45); Intent
+         * intent = new Intent(this, ListtestActivity.class);
+         * startActivity(intent); overridePendingTransition(R.anim.in_left,
+         * R.anim.out_right);
          */
 
     }
@@ -292,14 +307,13 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void continueButton(View view) {
-        // Since AlertDialogs are asynchronous, need logic to display one at a time.
+        // Since AlertDialogs are asynchronous, need logic to display one at a
+        // time.
         if (foundItemsScanned()) {
             displayFoundItemsDialog();
-        }
-        else if (newItemsScanned()) {
+        } else if (newItemsScanned()) {
             displayNewItemsDialog();
-        }
-        else {
+        } else {
             displayVerificationDialog();
         }
     }
@@ -307,28 +321,36 @@ public class VerSummaryActivity extends SenateActivity
     private void displayFoundItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Warning");
-        dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numFoundItems() +
-                " Item/s found in OTHER</b> locations will be moved to the current location: <b>" + loc_code + "</b>. <br><br>" +
-                "Continue with Verification Submission (Y/N)?"));
-        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (newItemsScanned()) {
-                    displayNewItemsDialog();
-                }
-                else {
-                    displayVerificationDialog();
-                }
-            }
-        });
+        dialogBuilder
+                .setMessage(Html
+                        .fromHtml("<font color='RED'><b>**WARNING:</font> The "
+                                + numFoundItems()
+                                + " Item/s found in OTHER</b> locations will be moved to the current location: <b>"
+                                + loc_code
+                                + "</b>. <br><br>"
+                                + "Continue with Verification Submission (Y/N)?"));
+        dialogBuilder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (newItemsScanned()) {
+                            displayNewItemsDialog();
+                        } else {
+                            displayVerificationDialog();
+                        }
+                    }
+                });
 
-        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        dialogBuilder.setNegativeButton("No",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
@@ -337,24 +359,34 @@ public class VerSummaryActivity extends SenateActivity
     private void displayNewItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Warning");
-        dialogBuilder.setMessage(Html.fromHtml("<font color='RED'><b>**WARNING:</font> The " + numNewItems() +
-                " NEW Items scanned will " + "NOT be tagged to location: " + loc_code + ".</b><br><br>" +
-                "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>" +
-                "Continue with Verification Submission (Y/N)?"));
-        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                displayVerificationDialog();
-            }
-        });
+        dialogBuilder
+                .setMessage(Html
+                        .fromHtml("<font color='RED'><b>**WARNING:</font> The "
+                                + numNewItems()
+                                + " NEW Items scanned will "
+                                + "NOT be tagged to location: "
+                                + loc_code
+                                + ".</b><br><br>"
+                                + "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>"
+                                + "Continue with Verification Submission (Y/N)?"));
+        dialogBuilder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        displayVerificationDialog();
+                    }
+                });
 
-        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        dialogBuilder.setNegativeButton("No",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
@@ -363,34 +395,41 @@ public class VerSummaryActivity extends SenateActivity
     private void displayVerificationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Verification Confirmation");
-        confirmDialog.setMessage("Are you sure you want to submit this verification?");
-        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+        confirmDialog
+                .setMessage("Are you sure you want to submit this verification?");
+        confirmDialog.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
 
-                if (positiveButtonPressed) {
-                    /* Context context = getApplicationContext();
-                     int duration = Toast.LENGTH_SHORT;
+                        if (positiveButtonPressed) {
+                            /*
+                             * Context context = getApplicationContext(); int
+                             * duration = Toast.LENGTH_SHORT;
+                             * 
+                             * Toast toast = Toast.makeText(context,
+                             * "Button was already been pressed.",
+                             * Toast.LENGTH_SHORT);
+                             * toast.setGravity(Gravity.CENTER, 0, 0);
+                             * toast.show();
+                             */
+                        } else {
+                            positiveButtonPressed = true;
+                            submitVerification();
+                        }
+                    }
+                });
 
-                     Toast toast = Toast.makeText(context,
-                             "Button was already been pressed.", Toast.LENGTH_SHORT);
-                     toast.setGravity(Gravity.CENTER, 0, 0);
-                     toast.show();*/
-                 }
-                 else {
-                    positiveButtonPressed = true;
-                    submitVerification();
-                 }                
-            }
-        });
-
-        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        confirmDialog.setNegativeButton("No",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
@@ -433,17 +472,22 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     private void submitVerification() {
+        Log.i("submitVerification", "start");
+
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
+        Log.i("submitVerification", "2");
         // new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
         // String jsonString = null;
         String status = null;
         // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
-        String barcodeNum = "";
+        Log.i("submitVerification", "get barcodes");
+        barcodeNum = "";
         for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
             barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
         }
+        Log.i("submitVerification", "get barcodes done");
 
         // Create a JSON string from the arraylist
         /*
@@ -458,48 +502,52 @@ public class VerSummaryActivity extends SenateActivity
         // Send it to the server
 
         // check network connection
+        Log.i("submitVerification", "connection");
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        Log.i("submitVerification", "network");
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             // fetch data
             status = "yes";
+            Log.i("submitVerification", "network connection available");
 
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
-                System.out.println(URL + "/VerificationReports?loc_code="
-                        + loc_code + "&barcodes=" + barcodeNum);
+                Log.i("submitVerification", "URL:" + URL);
                 resr1 = new RequestTask().execute(URL
                         + "/VerificationReports?loc_code=" + loc_code
                         + "&barcodes=" + barcodeNum);
+                Log.i("submitVerification", "SUBMIT TO URL");
 
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
+                    Log.i("submitVerification", "RESULTS:" + res);
                     if (res == null) {
                         noServerResponse();
                         return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        verificationReportsTimeout();
+                        return;
                     }
-                }
-                catch (NullPointerException e) {
+
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
                 }
 
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
-            catch (ExecutionException e) {
+            } catch (ExecutionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             status = "yes1";
-        }
-        else {
+        } else {
             // display error
             status = "no";
         }
@@ -510,11 +558,9 @@ public class VerSummaryActivity extends SenateActivity
         int duration = Toast.LENGTH_LONG;
         if (res == null) {
             text = "!!!ERROR: NO RESPONSE FROM SERVER";
-        }
-        else if (res.length() == 0) {
+        } else if (res.length() == 0) {
             text = "Database not updated";
-        }
-        else {
+        } else {
             duration = Toast.LENGTH_SHORT;
         }
 
@@ -523,9 +569,18 @@ public class VerSummaryActivity extends SenateActivity
         toast.show();
 
         // ===================ends
+        Log.i("submitVerification", "go to menu");
         Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
+    public void verificationReportsTimeout() {
+        this.progressVerSum.setVisibility(progressVerSum.INVISIBLE);
+        VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        System.out.println("TIME OUT SCREEN INTENT");
+        startActivityForResult(intentTimeout, VERIFICATIONREPORTS_TIMEOUT);
+    }
 }

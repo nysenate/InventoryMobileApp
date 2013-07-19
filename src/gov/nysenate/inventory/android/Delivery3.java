@@ -110,7 +110,7 @@ public class Delivery3 extends SenateActivity
         btnDeliv3ClrSig = (Button) findViewById(R.id.btnDeliv3ClrSig);
         btnDelivery3Back = (Button) findViewById(R.id.btnDelivery3Back);
         btnDelivery3Cont = (Button) findViewById(R.id.btnDelivery3Cont);
-        
+
         // Setup ProgressBar
         progBarDelivery3 = (ProgressBar) findViewById(R.id.progBarDelivery3);
 
@@ -158,16 +158,15 @@ public class Delivery3 extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
                     }
-                    
-                }
-                catch (NullPointerException e) {
+
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                }  
+                }
                 // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
@@ -175,14 +174,13 @@ public class Delivery3 extends SenateActivity
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-                        
                     JSONObject jo = new JSONObject();
                     jo = jsonArray.getJSONObject(i);
-                    System.out.println(i+":"+jo.toString());
+                    System.out.println(i + ":" + jo.toString());
                     String nusenate = jo.getString("nusenate");
                     String cdcategory = jo.getString("cdcategory");
-                    String decommodityf = jo.getString("decommodityf");                   
-                    String cdlocat = jo.getString("cdlocat");                   
+                    String decommodityf = jo.getString("decommodityf");
+                    String cdlocat = jo.getString("cdlocat");
 
                     // 3/15/13 BH Coded below to use InvItem Objects to display
                     // the list.
@@ -208,11 +206,12 @@ public class Delivery3 extends SenateActivity
                  */
                 listview = (ListView) findViewById(R.id.listView1);
                 listview.setItemsCanFocus(false);
-               // listview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+                // listview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
                 // listview.setAdapter(adapter2);
-                invAdapter = new InvSelListViewAdapter(getApplicationContext(), R.layout.invlist_sel_item, invList);
-                listview.setAdapter(invAdapter);               
+                invAdapter = new InvSelListViewAdapter(getApplicationContext(),
+                        R.layout.invlist_sel_item, invList);
+                listview.setAdapter(invAdapter);
                 // set everything as checked
                 invAdapter.setAllSelected(true);
                 invAdapter.setNotifyOnChange(true);
@@ -281,13 +280,12 @@ public class Delivery3 extends SenateActivity
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         positiveButtonPressed = false;
     }
-    
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -315,7 +313,6 @@ public class Delivery3 extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-
                         dialog.dismiss();
                     }
                 });
@@ -325,7 +322,7 @@ public class Delivery3 extends SenateActivity
 
         // show it
         alertDialog.show();
-    }    
+    }
 
     public int findEmployee(String employeeName) {
         for (int x = 0; x < employeeHiddenList.size(); x++) {
@@ -382,44 +379,51 @@ public class Delivery3 extends SenateActivity
             toast.show();
             return;
         }
-        
+
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delivery Confirmation");
-        confirmDialog.setMessage("Are you sure you want to deliver these " + numItemsDelivered + " items?");
-        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                /*
-                 * Prevent Multiple clicks on button, which will cause
-                 * issues witn the database inserting multiple nuxrpds
-                 * for the same pickup.
-                 */
-               
-                if (positiveButtonPressed) {
-                   /* Context context = getApplicationContext();
-                    int duration = Toast.LENGTH_SHORT;
+        confirmDialog.setMessage("Are you sure you want to deliver these "
+                + numItemsDelivered + " items?");
+        confirmDialog.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*
+                         * Prevent Multiple clicks on button, which will cause
+                         * issues witn the database inserting multiple nuxrpds
+                         * for the same pickup.
+                         */
 
-                    Toast toast = Toast.makeText(context,
-                            "Button was already been pressed.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();*/
-                    
-                }
-                else {
-                   positiveButtonPressed = true;
-                   positiveDialog();
-                }
+                        if (positiveButtonPressed) {
+                            /*
+                             * Context context = getApplicationContext(); int
+                             * duration = Toast.LENGTH_SHORT;
+                             * 
+                             * Toast toast = Toast.makeText(context,
+                             * "Button was already been pressed.",
+                             * Toast.LENGTH_SHORT);
+                             * toast.setGravity(Gravity.CENTER, 0, 0);
+                             * toast.show();
+                             */
 
-            }
-        });
+                        } else {
+                            positiveButtonPressed = true;
+                            positiveDialog();
+                        }
 
-        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Continue in same activity.
-            }
-        });
+                    }
+                });
+
+        confirmDialog.setNegativeButton("No",
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue in same activity.
+                    }
+                });
 
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
@@ -437,8 +441,9 @@ public class Delivery3 extends SenateActivity
             e1.printStackTrace();
         }
 
-        if (this.invAdapter==null) {
-            this.invAdapter = (InvSelListViewAdapter)this.listview.getAdapter();
+        if (this.invAdapter == null) {
+            this.invAdapter = (InvSelListViewAdapter) this.listview
+                    .getAdapter();
         }
         int NUSENATE = new InvItem().NUSENATE;
         DECOMMENTS = null;
@@ -463,26 +468,34 @@ public class Delivery3 extends SenateActivity
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
                 this.requestTaskType = "Delivery";
-                String deliveryURL = URL + "/DeliveryConfirmation?NUXRPD=" + nuxrpd + "&NADELIVERBY=" + LoginActivity.nauser
-                        + "&NAACCEPTBY=" + NAACCEPTBY + generateGetArray("deliveryItemsStr[]", this.invAdapter.getAllItems())
-                        + generateGetArray("checkedStr[]", this.invAdapter.getSelectedItems(true));
+                String deliveryURL = URL
+                        + "/DeliveryConfirmation?NUXRPD="
+                        + nuxrpd
+                        + "&NADELIVERBY="
+                        + LoginActivity.nauser
+                        + "&NAACCEPTBY="
+                        + NAACCEPTBY
+                        + generateGetArray("deliveryItemsStr[]",
+                                this.invAdapter.getAllItems())
+                        + generateGetArray("checkedStr[]",
+                                this.invAdapter.getSelectedItems(true));
 
                 resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, deliveryURL);
+                        + LoginActivity.nauser + "&nuxrefem=" + nuxrefem,
+                        deliveryURL);
 
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    if (res==null) {
+                    if (res == null) {
                         noServerResponse();
                         return;
                     }
-                }
-                catch (NullPointerException e) {
+                } catch (NullPointerException e) {
                     noServerResponse();
                     return;
-                }  
-                Log.i("Confirm Response", "res:"+res);
+                }
+                Log.i("Confirm Response", "res:" + res);
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -532,7 +545,7 @@ public class Delivery3 extends SenateActivity
             return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -592,14 +605,19 @@ public class Delivery3 extends SenateActivity
         for (InvItem aValue : invItems) {
             nusenateStrings.add(aValue.getNusenate());
         }
-        String[] s = nusenateStrings.toArray(new String[nusenateStrings.size()]);
+        String[] s = nusenateStrings
+                .toArray(new String[nusenateStrings.size()]);
         return generateGetArray(parameterName, s);
     }
 
     /**
-     * @param parameterName Name of get request parameter associated with this array.
-     * @param values String array to convert into get request form.
-     * @return string array formatted for a get request. example: &parameterName=value1&parameterName=value2&parameterName=value3...
+     * @param parameterName
+     *            Name of get request parameter associated with this array.
+     * @param values
+     *            String array to convert into get request form.
+     * @return string array formatted for a get request. example:
+     *         &parameterName=
+     *         value1&parameterName=value2&parameterName=value3...
      */
     private String generateGetArray(String parameterName, String[] values) {
         String getString = "";
@@ -645,17 +663,16 @@ public class Delivery3 extends SenateActivity
                             + imageInByte.length);
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?")>-1) {
+                    if (uri[0].indexOf("?") > -1) {
                         if (!uri[0].trim().endsWith("?")) {
                             urls.append("&");
                         }
-                    }
-                    else {
+                    } else {
                         urls.append("?");
                     }
                     urls.append("userFallback=");
                     urls.append(LoginActivity.nauser);
-                    
+
                     URL url = new URL(urls.toString());
 
                     HttpURLConnection conn = (HttpURLConnection) url
@@ -701,16 +718,15 @@ public class Delivery3 extends SenateActivity
                 try {
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[1].trim());
-                    if (uri[1].indexOf("?")>-1) {
+                    if (uri[1].indexOf("?") > -1) {
                         if (!uri[1].trim().endsWith("?")) {
                             urls.append("&");
                         }
-                    }
-                    else {
+                    } else {
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);
                     response = httpclient.execute(new HttpGet(urls.toString()
                             + "&NUXRACCPTSIGN=" + NUXRACCPTSIGN
                             + "&DECOMMENTS=" + DECOMMENTS));
@@ -743,16 +759,15 @@ public class Delivery3 extends SenateActivity
                 try {
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?")>-1) {
+                    if (uri[0].indexOf("?") > -1) {
                         if (!uri[0].trim().endsWith("?")) {
                             urls.append("&");
                         }
-                    }
-                    else {
+                    } else {
                         urls.append("?");
                     }
                     urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);                    
+                    urls.append(LoginActivity.nauser);
                     response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -774,7 +789,8 @@ public class Delivery3 extends SenateActivity
                 }
 
                 try {
-                    response = httpclient.execute(new HttpGet(uri[1]+"&userFallback="+LoginActivity.nauser));
+                    response = httpclient.execute(new HttpGet(uri[1]
+                            + "&userFallback=" + LoginActivity.nauser));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
