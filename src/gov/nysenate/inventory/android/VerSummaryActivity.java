@@ -56,7 +56,7 @@ public class VerSummaryActivity extends SenateActivity
     boolean positiveButtonPressed = false;
     Activity currentActivity;
     String timeoutFrom = "VERIFICATIONSUMMARY";
-    public final int VERIFICATIONREPORTS_TIMEOUT = -101, CONTINUEBUTTON_TIMEOUT = -102;
+    public final int VERIFICATIONREPORTS_TIMEOUT = 101, CONTINUEBUTTON_TIMEOUT = 102;
     String URL = null;
 
     @Override
@@ -578,7 +578,7 @@ public class VerSummaryActivity extends SenateActivity
             status = "no";
         }
 
-        // Display Toster
+        // Display Toaster
         Context context = getApplicationContext();
         CharSequence text = res;
         int duration = Toast.LENGTH_LONG;

@@ -61,7 +61,7 @@ public class ListtestActivity extends SenateActivity
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
 
-    public final int ITEMLIST_TIMEOUT = -101, LOCATIONDETAILS_TIMEOUT = -102;
+    public final int ITEMLIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
     String currentSortValue = "Description";
     public Spinner spinSortList;
     static Button btnVerListCont;

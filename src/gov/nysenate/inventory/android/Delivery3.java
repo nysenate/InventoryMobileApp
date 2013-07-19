@@ -83,6 +83,8 @@ public class Delivery3 extends SenateActivity
     public static ProgressBar progBarDelivery3;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
+    String timeoutFrom = "delivery1";    
+    public final int DELIVERYDETAILS_TIMEOUT = 101, POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103;        
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
 
@@ -139,101 +141,7 @@ public class Delivery3 extends SenateActivity
                     }
                 });
 
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-
-            // Get the URL from the properties
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
-            this.requestTaskType = "EmployeeDeliveryList";
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/EmployeeList", URL
-                            + "/DeliveryDetails?NUXRPD=" + nuxrpd);
-
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                // code for JSON
-
-                String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(i);
-                    System.out.println(i + ":" + jo.toString());
-                    String nusenate = jo.getString("nusenate");
-                    String cdcategory = jo.getString("cdcategory");
-                    String decommodityf = jo.getString("decommodityf");
-                    String cdlocat = jo.getString("cdlocat");
-
-                    // 3/15/13 BH Coded below to use InvItem Objects to display
-                    // the list.
-                    InvItem invItem = new InvItem(nusenate, cdcategory,
-                            "EXISTING", decommodityf, cdlocat);
-                    invList.add(invItem);
-                    // invItem = null;
-
-                    // String s =
-                    // vl.NUSENATE+" "+vl.CDCATEGORY+" "+vl.DECOMMODITYF;
-                    // dispList.add(s);
-                    // number= dispList.size();
-                    // list.add((verList) jsonArray.getJSONObject(i));
-                }
-
-                // Display the pickup data
-                /*
-                 * ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                 * android.R.layout.simple_dropdown_item_1line,
-                 * deliveryDetails); // custom adapter for checkbox with
-                 * textview adapter2= new DeliveryItemViewAdapter(this,
-                 * R.layout.delivery_row, deliveryList);
-                 */
-                listview = (ListView) findViewById(R.id.listView1);
-                listview.setItemsCanFocus(false);
-                // listview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-
-                // listview.setAdapter(adapter2);
-                invAdapter = new InvSelListViewAdapter(getApplicationContext(),
-                        R.layout.invlist_sel_item, invList);
-                listview.setAdapter(invAdapter);
-                // set everything as checked
-                invAdapter.setAllSelected(true);
-                invAdapter.setNotifyOnChange(true);
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                Log.i("InterruptedException", e.getMessage());
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                Log.i("ExecutionException", e.getMessage());
-                e.printStackTrace();
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                Log.i("JSONException", e.getMessage());
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
+        getDeliveryDetails();
 
         // list of name of the employee for autocomplete (get from server and
         // populate the autocomplete textview)
@@ -280,6 +188,13 @@ public class Delivery3 extends SenateActivity
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
     }
+    
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+    
 
     @Override
     protected void onResume() {
@@ -379,7 +294,10 @@ public class Delivery3 extends SenateActivity
             toast.show();
             return;
         }
-
+        if (!keepAlive()) {
+            return;
+        }
+        
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delivery Confirmation");
@@ -490,7 +408,11 @@ public class Delivery3 extends SenateActivity
                     if (res == null) {
                         noServerResponse();
                         return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(this.POSITIVEDIALOG_TIMEOUT);
+                        return;
                     }
+                    
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -584,18 +506,29 @@ public class Delivery3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE
-                && resultCode == RESULT_OK) {
+        switch (requestCode) {
+        case DELIVERYDETAILS_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                getDeliveryDetails();
+                break;
+            }
+        case POSITIVEDIALOG_TIMEOUT:
+            //positiveDialog();
+            break;
+        case KEEPALIVE_TIMEOUT:
+            break;
+        case VOICE_RECOGNITION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
             // Fill the list view with the strings the recognizer thought it
             // could have heard
             ArrayList<String> matches = data
                     .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             commentsEditText.setText(matches.get(0));
+             } 
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-
     public void backButton(View view) {
         super.onBackPressed();
     }
@@ -811,10 +744,169 @@ public class Delivery3 extends SenateActivity
                 }
 
                 return responseString;
-            }
+            } else if (requestTaskType.equalsIgnoreCase("KeepAlive")) {
 
+                // Get List of Employees for the Signing Employee Dropdown
+
+                try {
+                    response = httpclient.execute(new HttpGet(uri[0]));
+                    StatusLine statusLine = response.getStatusLine();
+                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else {
+                        // Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    // TODO Handle problems..
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Handle problems..
+                    e.printStackTrace();
+                }
+                return responseString;
+            }
             return responseString;
 
         }
+    }
+    
+    public void getDeliveryDetails(){
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            // Get the URL from the properties
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+            this.requestTaskType = "EmployeeDeliveryList";
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/EmployeeList", URL
+                            + "/DeliveryDetails?NUXRPD=" + nuxrpd);
+
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(this.DELIVERYDETAILS_TIMEOUT);
+                        return;
+                    }
+
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                // code for JSON
+
+                String jsonString = resr1.get().trim().toString();
+                JSONArray jsonArray = new JSONArray(jsonString);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject jo = new JSONObject();
+                    jo = jsonArray.getJSONObject(i);
+                    System.out.println(i + ":" + jo.toString());
+                    String nusenate = jo.getString("nusenate");
+                    String cdcategory = jo.getString("cdcategory");
+                    String decommodityf = jo.getString("decommodityf");
+                    String cdlocat = jo.getString("cdlocat");
+
+                    // 3/15/13 BH Coded below to use InvItem Objects to display
+                    // the list.
+                    InvItem invItem = new InvItem(nusenate, cdcategory,
+                            "EXISTING", decommodityf, cdlocat);
+                    invList.add(invItem);
+                }
+
+                // Display the pickup data
+                listview = (ListView) findViewById(R.id.listView1);
+                listview.setItemsCanFocus(false);
+                // listview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
+                // listview.setAdapter(adapter2);
+                invAdapter = new InvSelListViewAdapter(getApplicationContext(),
+                        R.layout.invlist_sel_item, invList);
+                listview.setAdapter(invAdapter);
+                // set everything as checked
+                invAdapter.setAllSelected(true);
+                invAdapter.setNotifyOnChange(true);
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.i("InterruptedException", e.getMessage());
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                Log.i("ExecutionException", e.getMessage());
+                e.printStackTrace();
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                Log.i("JSONException", e.getMessage());
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }        
+    }
+    
+    public boolean keepAlive() {
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            AsyncTask<String, String, String> resr1;
+            try {
+                // Get the URL from the properties
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+                this.requestTaskType = "KeepAlive";
+                resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
+
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return false;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(this.KEEPALIVE_TIMEOUT);
+                        return false;
+                    }
+                    
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return false;
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+        return true;
+        
     }
 }
