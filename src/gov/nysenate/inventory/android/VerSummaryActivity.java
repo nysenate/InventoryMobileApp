@@ -94,6 +94,11 @@ public class VerSummaryActivity extends SenateActivity
         tabHost.addTab(spec2);
         tabHost.addTab(spec3);
 
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextSize(20);
+        }
+
         // Find the ListView resource.
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
         ListView ListViewTab2 = (ListView) findViewById(R.id.listView2);
