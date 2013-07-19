@@ -65,7 +65,7 @@ public class SearchActivity extends SenateActivity
 
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher()
+    private final TextWatcher filterTextWatcher = new TextWatcher()
     {
 
         @Override
@@ -83,7 +83,7 @@ public class SearchActivity extends SenateActivity
             if (barcode.getText().toString().length() >= 6) {
                 try {
                     String barcode_num = barcode.getText().toString().trim();
-                    Log.i("Activity Search afterTextChanged ", "barcode_num "
+                    Log.i("Activity Search afterTextChanged ", "Senate Tag # "
                             + barcode_num);
                     // check network connection
                     ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

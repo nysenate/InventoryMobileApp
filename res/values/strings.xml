@@ -22,8 +22,8 @@
     <string name="title_activity_search">Search</string>
     <string name="title_activity_add_item">AddItemActivity</string>
     <string name="title_activity_location">LocationActivity</string>
-    <string name="SearchActivity_MSG">Scan the item or enter the barcode number </string>
-    <string name="barcode_number">Barcode number </string>
+    <string name="SearchActivity_MSG">Scan the item or enter the Senate Tag Number </string>
+    <string name="barcode_number">Senate Tag Number</string>
     <string name="scan_button">Scan </string>
     <string name="ok_button">OK </string>
     <string name="cancel_button">Cancel </string>

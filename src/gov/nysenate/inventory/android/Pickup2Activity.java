@@ -149,7 +149,7 @@ public class Pickup2Activity extends SenateActivity
         }
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher()
+    private final TextWatcher filterTextWatcher = new TextWatcher()
     {
 
         @Override
@@ -260,7 +260,7 @@ public class Pickup2Activity extends SenateActivity
                                 if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                                     errorMessage(
                                             barcode_num,
-                                            "!!ERROR: Senate#: " + barcode_num
+                                            "!!ERROR: Senate Tag #: " + barcode_num
                                                     + " has been Inactivated.",
                                             "The <b>\""
                                                     + vl.DECOMMODITYF
@@ -370,20 +370,20 @@ public class Pickup2Activity extends SenateActivity
     };
 
     public void barcodeDidNotExist(final String barcode_num) {
-        Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
+        Log.i("TESTING", "****Senate Tag # DidNotExist MESSAGE");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
 
         playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("***WARNING: Barcode#: <b>"
+                        Html.fromHtml("***WARNING: Senate Tag #: <b>"
                                 + barcode_num
-                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag#.<br/><br/> Do you want to add this barcode?"))
+                                + "</b> does not exist in SFMS. This should not occur with a Senate Tag #.<br/><br/> Do you want to add this Tag #?"))
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
@@ -428,7 +428,7 @@ public class Pickup2Activity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Barcode#: " + barcode_num
+                        CharSequence text = "Senate Tag #: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
@@ -471,8 +471,8 @@ public class Pickup2Activity extends SenateActivity
         playSound(R.raw.error);
         new MsgAlert(
                 this,
-                "Barcode#: " + vl.NUSENATE + " IS ALREADY IN TRANSIT",
-                "Barcode#: <b>"
+                "Senate Tag #: " + vl.NUSENATE + " IS ALREADY IN TRANSIT",
+                "Senate Tag #: <b>"
                         + vl.NUSENATE
                         + "   "
                         + vl.DECOMMODITYF
@@ -484,13 +484,13 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Barcode#: " + barcode_num
+        alertDialogBuilder.setTitle("Senate Tag #: " + barcode_num
                 + " DOES NOT EXIST IN SFMS");
         playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Barcode#:<b>"
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. Senate Tag #:<b>"
                                 + barcode_num
                                 + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
                 .setCancelable(false)
@@ -502,7 +502,7 @@ public class Pickup2Activity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Barcode#: " + barcode_num
+                        CharSequence text = "Senate Tag #: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
@@ -543,7 +543,7 @@ public class Pickup2Activity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Barcode#: " + barcode_num
+                        CharSequence text = "Senate Tag #: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
