@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.android.Pickup2Activity.VerList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -383,6 +381,7 @@ public class ListtestActivity extends SenateActivity
         startActivityForResult(intentTimeout, ITEMLIST_TIMEOUT);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         /**
@@ -430,7 +429,7 @@ public class ListtestActivity extends SenateActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher()
+    private final TextWatcher filterTextWatcher = new TextWatcher()
     {
 
         @Override
@@ -513,7 +512,7 @@ public class ListtestActivity extends SenateActivity
                         }
                         if (barcode_number == null) {
                             Log.i("NULL CHECK",
-                                    "barcode_number IS NULL!! AS OF CHECKING INDEX#:"
+                                    "Senate tag number IS NULL!! AS OF CHECKING INDEX#:"
                                             + i);
                         }
 
@@ -678,7 +677,7 @@ public class ListtestActivity extends SenateActivity
                             // vl.NUSENATE = barcode_num;
                             // vl.CDCATEGORY = "";
                             // vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                            Log.i("TESTING", "A CALL barcodeDidNotExist");
+                            Log.i("TESTING", "A CALL Senate tag # DidNotExist");
                             barcodeDidNotExist(barcode_num);
                             return;
 
@@ -808,7 +807,7 @@ public class ListtestActivity extends SenateActivity
         StringBuilder msg = new StringBuilder();
         msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
         if (barcode_num != null && barcode_num.trim().length() > 0) {
-            msg.append(" Barcode#:<b>");
+            msg.append(" Tag #:<b>");
             msg.append(barcode_num);
             msg.append("</b> will be <b>IGNORED</b>.");
         }
@@ -830,7 +829,7 @@ public class ListtestActivity extends SenateActivity
                                 && barcode_num.trim().length() > 0) {
                             Context context = getApplicationContext();
 
-                            CharSequence text = "Barcode#: " + barcode_num
+                            CharSequence text = "Senate Tag #: " + barcode_num
                                     + " was NOT added";
                             int duration = Toast.LENGTH_SHORT;
 
@@ -854,7 +853,7 @@ public class ListtestActivity extends SenateActivity
     }
 
     public void barcodeDidNotExist(final String barcode_num) {
-        Log.i("TESTING", "****barcodeDidNotExist MESSAGE");
+        Log.i("TESTING", "****Senate Tag # DidNotExist MESSAGE");
         playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -928,7 +927,7 @@ public class ListtestActivity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Barcode#: " + barcode_num
+                        CharSequence text = "Senate Tag #: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
@@ -969,7 +968,7 @@ public class ListtestActivity extends SenateActivity
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
 
-                        CharSequence text = "Barcode#: " + barcode_num
+                        CharSequence text = "Senate Tag #: " + barcode_num
                                 + " was NOT added";
                         int duration = Toast.LENGTH_SHORT;
 
