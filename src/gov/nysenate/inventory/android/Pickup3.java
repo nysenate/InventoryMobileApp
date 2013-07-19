@@ -435,16 +435,21 @@ public class Pickup3 extends SenateActivity
             return;
         }
 
+        Log.i("continueButton", "Check for Session by using KeepSessionAlive");
+        URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                .toString();        
         AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
         String response  = null;
         try {
-            response = resr1.get().toString();
+             response = resr1.get().toString();
+             Log.i("continueButton", "KeepSessionAlive RESPONSE:"+response);
             if (resr1==null||response==null||response.trim().length()==0) {
                 this.noServerResponse();
                 return;
             }
-            else if (response.indexOf("Session timed out") > 0) {
+            else if (response.indexOf("Session timed out") > -1) {
                 continueButtonTimeout();
+                return;
             }
         }
         catch (Exception e) {
