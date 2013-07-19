@@ -98,6 +98,8 @@ public class Pickup3 extends SenateActivity
     public static ProgressBar progBarPickup3;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
+    final int CONTINUEBUTTON_TIMEOUT = -101;
+    public String timeoutFrom = "pickup3";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -433,6 +435,26 @@ public class Pickup3 extends SenateActivity
             return;
         }
 
+        AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
+        String response  = null;
+        try {
+            response = resr1.get().toString();
+            if (resr1==null||response==null||response.trim().length()==0) {
+                this.noServerResponse();
+                return;
+            }
+            else if (response.indexOf("Session timed out") > 0) {
+                continueButtonTimeout();
+            }
+        }
+        catch (Exception e) {
+            if (resr1==null||response==null||response.trim().length()==0) {
+                this.noServerResponse();
+                return;
+            }
+        }
+
+        
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Pickup Confirmation");
         confirmDialog.setMessage("Are you sure you want to pickup these "
@@ -481,6 +503,14 @@ public class Pickup3 extends SenateActivity
 
     }
 
+   public void continueButtonTimeout() {
+        Intent intentTimeout = new Intent(Pickup3.this,
+                LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, CONTINUEBUTTON_TIMEOUT);
+    }
+    
+    
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -714,7 +744,32 @@ public class Pickup3 extends SenateActivity
                 }
                 res = responseString;
                 return responseString;
-            } else {
+            }  else if (requestTaskType.equalsIgnoreCase("KeepAlive")) {
+                HttpClient httpclient = LoginActivity.httpClient;
+                HttpResponse response;
+                String responseString = null;
+                try {
+                    response = httpclient.execute(new HttpGet(uri[0]));
+                    StatusLine statusLine = response.getStatusLine();
+                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        response.getEntity().writeTo(out);
+                        out.close();
+                        responseString = out.toString();
+                    } else {
+                        // Closes the connection.
+                        response.getEntity().getContent().close();
+                        throw new IOException(statusLine.getReasonPhrase());
+                    }
+                } catch (ClientProtocolException e) {
+                    // TODO Handle problems..
+                } catch (IOException e) {
+                    // TODO Handle problems..
+                }
+                res = responseString;
+                return responseString;                
+                
+            }    else {
                 System.out.println("!!ERROR: Invalid requestTypeTask:"
                         + requestTaskType);
                 return "!!ERROR: Invalid requestTypeTask:" + requestTaskType;

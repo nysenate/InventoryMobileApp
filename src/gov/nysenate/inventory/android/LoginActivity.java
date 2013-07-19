@@ -705,8 +705,21 @@ public class LoginActivity extends SenateActivity
     @Override
     public void onDestroy() {
         // unregister your receivers
-        this.unregisterReceiver(receiver);
-        this.unregisterReceiver(downloadReceiver);
+        if (!this.timeoutActivity) {
+                try {
+                        this.unregisterReceiver(receiver);
+                    }
+                catch (Exception e) {
+                    Log.w("LoginActivity", "**WARNING: unable to unregister Internet Connection Receiver.");
+                    }
+                try {
+                    this.unregisterReceiver(downloadReceiver);
+                    }
+                catch (Exception e) {
+                    Log.w("LoginActivity", "**WARNING: unable to unregister Download Receiver.");
+                }
+        }
+
         super.onDestroy();
     }
 
