@@ -23,7 +23,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -734,11 +733,11 @@ public class Pickup3 extends SenateActivity
         String status = null;
         // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
-        String barcodeNum = "";
+        // String barcodeNum = "";
 
-        for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-            barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
-        }
+        // for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
+        // barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
+        // }
 
         // Create a JSON string from the arraylist
         /*
@@ -809,10 +808,9 @@ public class Pickup3 extends SenateActivity
                         + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, URL
                         + "/Pickup?originLocation=" + originLocationCode
                         + "&destinationLocation=" + destinationLocationCode
-                        + "&barcodes=" + barcodeNum + "&NAPICKUPBY="
-                        + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                        + "&cdloctypeto=" + cdloctypeto + "&cdloctypefrm="
-                        + cdloctypefrm);
+                        + Formatter.generateGetArray("barcode[]", scannedBarcodeNumbers)
+                        + "&NAPICKUPBY=" + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
+                        + "&cdloctypeto=" + cdloctypeto + "&cdloctypefrm=" + cdloctypefrm);
 
                 try {
                     res = null;

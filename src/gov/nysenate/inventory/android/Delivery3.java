@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -393,10 +392,8 @@ public class Delivery3 extends SenateActivity
                         + LoginActivity.nauser
                         + "&NAACCEPTBY="
                         + NAACCEPTBY
-                        + generateGetArray("deliveryItemsStr[]",
-                                this.invAdapter.getAllItems())
-                        + generateGetArray("checkedStr[]",
-                                this.invAdapter.getSelectedItems(true));
+                        + Formatter.generateGetArray("deliveryItemsStr[]", this.invAdapter.getAllItems())
+                        + Formatter.generateGetArray("checkedStr[]", this.invAdapter.getSelectedItems(true));
 
                 resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
                         + LoginActivity.nauser + "&nuxrefem=" + nuxrefem,
@@ -531,33 +528,6 @@ public class Delivery3 extends SenateActivity
     }
     public void backButton(View view) {
         super.onBackPressed();
-    }
-
-    private String generateGetArray(String parameterName, List<InvItem> invItems) {
-        ArrayList<String> nusenateStrings = new ArrayList<String>();
-        for (InvItem aValue : invItems) {
-            nusenateStrings.add(aValue.getNusenate());
-        }
-        String[] s = nusenateStrings
-                .toArray(new String[nusenateStrings.size()]);
-        return generateGetArray(parameterName, s);
-    }
-
-    /**
-     * @param parameterName
-     *            Name of get request parameter associated with this array.
-     * @param values
-     *            String array to convert into get request form.
-     * @return string array formatted for a get request. example:
-     *         &parameterName=
-     *         value1&parameterName=value2&parameterName=value3...
-     */
-    private String generateGetArray(String parameterName, String[] values) {
-        String getString = "";
-        for (String value : values) {
-            getString += "&" + parameterName + "=" + value;
-        }
-        return getString;
     }
 
     // class for connecting to internet and sending HTTP request to server
