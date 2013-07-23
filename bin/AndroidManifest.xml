@@ -178,8 +178,8 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="gov.nysenate.inventory.android.ListtestActivity"
-            android:label="@string/title_activity_listtest"
+            android:name="gov.nysenate.inventory.android.VerScanActivity"
+            android:label="@string/title_activity_verscan"
             android:screenOrientation="portrait" >
         </activity>
         <activity

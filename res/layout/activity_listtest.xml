@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListtestActivity" >
+    tools:context=".VerScanActivity" >
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="100dp"

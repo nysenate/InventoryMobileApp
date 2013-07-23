@@ -62,8 +62,12 @@ public class Pickup1 extends SenateActivity
     TextView tvDescript2;
     TextView tvCount2;
     Activity currentActivity;
+    boolean fromLocationBeingTyped = false;
+    boolean toLocationBeingTyped = false;
     public static ProgressBar progBarPickup1;
-
+    String timeoutFrom = "pickup1";    
+    public final int LOCCODELIST_TIMEOUT = 101, FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;        
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,153 +90,34 @@ public class Pickup1 extends SenateActivity
 
         progBarPickup1 = (ProgressBar) this.findViewById(R.id.progBarPickup1);
 
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
+        getLocCodeList();
+        autoCompleteTextView1.setThreshold(1);
+        
+        btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
+        btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
 
-            // Get the URL from the properties
-            try {
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-            } catch (NullPointerException e) {
-                MsgAlert msgAlert = new MsgAlert(
-                        this,
-                        "Properties cannot be loaded.",
-                        "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
-                if (LoginActivity.properties == null) {
-                    try {
+        autoCompleteTextView1
+                .setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent,
+                            View view, int position, long id) {
+                        Log.i("ItemClicked", "ITEM CLICKED");
+                        if (autoCompleteTextView2.getText().toString()
+                                .trim().length() > 0) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    autoCompleteTextView1
+                                            .getWindowToken(), 0);
+                        } else {
+                            boolean focusRequested = autoCompleteTextView2
+                                    .requestFocus();
+                        }
+                        fromLocationBeingTyped = false;                        
 
-                    } catch (Exception e2) {
-                        e.printStackTrace();
                     }
+                });
 
-                } else {
-
-                }
-            }
-
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocCodeList");
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                // code for JSON
-
-                String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    locCodeList.add(jsonArray.getString(i).toString());
-                }
-                Collections.sort(locCodeList);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        locCodeList);
-
-                btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
-                btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
-                // for origin dest code
-                autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-                autoCompleteTextView1.setThreshold(1);
-                autoCompleteTextView1.setAdapter(adapter);
-                autoCompleteTextView1
-                        .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                        {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent,
-                                    View view, int position, long id) {
-                                Log.i("ItemClicked", "ITEM CLICKED");
-                                if (autoCompleteTextView2.getText().toString()
-                                        .trim().length() > 0) {
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(
-                                            autoCompleteTextView1
-                                                    .getWindowToken(), 0);
-                                } else {
-                                    boolean focusRequested = autoCompleteTextView2
-                                            .requestFocus();
-                                }
-
-                            }
-                        });
-
-                // for destination code
-
-                autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
-                autoCompleteTextView2.setThreshold(1);
-                autoCompleteTextView2.setAdapter(adapter);
-                autoCompleteTextView2
-                        .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                        {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent,
-                                    View view, int position, long id) {
-                                int duration = Toast.LENGTH_SHORT;
-                                if (autoCompleteTextView1.getText().toString()
-                                        .trim().length() == 0) {
-                                    boolean focusRequested = autoCompleteTextView1
-                                            .requestFocus();
-                                    Toast toast = Toast.makeText(
-                                            getApplicationContext(),
-                                            "Please pick a from location.",
-                                            duration);
-                                    toast.setGravity(Gravity.CENTER, 0, 0);
-                                    toast.show();
-                                } else {
-                                    if (autoCompleteTextView1.getText()
-                                            .toString().trim().length() > 0) {
-                                        if (autoCompleteTextView1.getText()
-                                                .toString().trim().length() > 0) {
-                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                            imm.hideSoftInputFromWindow(
-                                                    autoCompleteTextView1
-                                                            .getWindowToken(),
-                                                    0);
-                                        } else {
-
-                                        }
-                                    } else {
-                                        boolean focusRequested = autoCompleteTextView1
-                                                .requestFocus();
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(
-                                                0,
-                                                InputMethodManager.SHOW_IMPLICIT);
-                                    }
-
-                                }
-                            }
-                        });
-                MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
 
         // code for textwatcher
         // for origin location code
@@ -312,85 +197,9 @@ public class Pickup1 extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
+            fromLocationBeingTyped = true;
             if (autoCompleteTextView1.getText().toString().length() >= 3) {
-                // loc_details.setText(loc_code.getText().toString());
-                originLocation = autoCompleteTextView1.getText().toString()
-                        .trim();
-
-                String barcodeNumberDetails[] = autoCompleteTextView1.getText()
-                        .toString().trim().split("-");
-                String barcode_num = barcodeNumberDetails[0];// this will be
-                                                             // passed to the
-                                                             // server
-                loc_code_str = barcodeNumberDetails[0];// this will be passed to
-                                                       // next activity with
-                                                       // intent
-
-                // check network connection
-                ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    // fetch data
-                    status = "yes";
-
-                    // Get the URL from the properties
-                    URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                            .toString();
-
-                    AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/LocationDetails?barcode_num="
-                                    + barcode_num);
-                    try {
-                        try {
-                            res = null;
-                            res = resr1.get().trim().toString();
-                            if (res == null) {
-                                noServerResponse();
-                                return;
-                            }
-                        } catch (NullPointerException e) {
-                            noServerResponse();
-                            return;
-                        }
-                        try {
-                            JSONObject object = (JSONObject) new JSONTokener(
-                                    res).nextValue();
-                            tvOffice1.setText(object.getString("cdrespctrhd"));
-                            // tvLocCd1.setText( object.getString("cdlocat"));
-                            tvDescript1.setText(object.getString("adstreet1")
-                                    .replaceAll("&#34;", "\"")
-                                    + " ,"
-                                    + object.getString("adcity").replaceAll(
-                                            "&#34;", "\"")
-                                    + ", "
-                                    + object.getString("adstate").replaceAll(
-                                            "&#34;", "\"")
-                                    + " "
-                                    + object.getString("adzipcode").replaceAll(
-                                            "&#34;", "\""));
-                            tvCount1.setText(object.getString("nucount"));
-
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            // tvLocCd1.setText( "!!ERROR: "+e.getMessage());
-                            tvOffice1.setText("!!ERROR: " + e.getMessage());
-                            tvDescript1.setText("Please contact STS/BAC.");
-                            tvCount1.setText("N/A");
-
-                            e.printStackTrace();
-                        }
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    status = "yes1";
-                } else {
-                    // display error
-                    status = "no";
-                }
+                  getFromLocationDetails();
             }
         }
     };
@@ -411,82 +220,9 @@ public class Pickup1 extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
+            toLocationBeingTyped = true;
             if (autoCompleteTextView2.getText().toString().length() >= 3) {
-                // loc_details.setText(loc_code.getText().toString());
-                destinationLocation = autoCompleteTextView2.getText()
-                        .toString().trim();
-                String barcodeNumberDetails[] = autoCompleteTextView2.getText()
-                        .toString().trim().split("-");
-                String barcode_num = barcodeNumberDetails[0];// this will be
-                                                             // passed to the
-                                                             // server
-                loc_code_str = barcodeNumberDetails[0];// this will be passed to
-                                                       // next activity with
-                                                       // intent
-
-                // check network connection
-                ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    // fetch data
-                    status = "yes";
-
-                    AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/LocationDetails?barcode_num="
-                                    + barcode_num);
-                    try {
-                        try {
-                            res = null;
-                            res = resr1.get().trim().toString();
-                            if (res == null) {
-                                noServerResponse();
-                                return;
-                            }
-                        } catch (NullPointerException e) {
-                            noServerResponse();
-                            return;
-                        }
-                        try {
-                            JSONObject object = (JSONObject) new JSONTokener(
-                                    res).nextValue();
-                            tvOffice2.setText(object.getString("cdrespctrhd"));
-                            // tvLocCd2.setText( object.getString("cdlocat"));
-                            tvDescript2.setText(object.getString("adstreet1")
-                                    .replaceAll("&#34;", "\"")
-                                    + " ,"
-                                    + object.getString("adcity").replaceAll(
-                                            "&#34;", "\"")
-                                    + ", "
-                                    + object.getString("adstate").replaceAll(
-                                            "&#34;", "\"")
-                                    + " "
-                                    + object.getString("adzipcode").replaceAll(
-                                            "&#34;", "\""));
-                            tvCount2.setText(object.getString("nucount"));
-
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            tvDescript2.setText("!!ERROR: " + e.getMessage());
-                            tvOffice2.setText("Please contact STS/BAC.");
-                            tvCount2.setText("N/A");
-
-                            e.printStackTrace();
-                        }
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    status = "yes1";
-                } else {
-                    // display error
-                    status = "no";
-                }
-                // locDetailsDest.setText(res);
-                // locDetailsDest.append("\n"+loc_code.getText().toString());
-                // autoCompleteTextView1.setText(barcode_num);
+                   getToLocationDetails();
             }
         }
     };
@@ -621,5 +357,347 @@ public class Pickup1 extends SenateActivity
         getMenuInflater().inflate(R.menu.activity_pickup1, menu);
         return true;
     }
+    
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+    
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case LOCCODELIST_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                getLocCodeList();
+                break;
+            }
+        case FROMLOCATIONDETAILS_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                if (fromLocationBeingTyped) {
+                    autoCompleteTextView1.setText(autoCompleteTextView1.getText());
+                    autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
+                }
+                else {
+                    getFromLocationDetails();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView1.getWindowToken(), 0);                    
+                }
+                break;
+            }
+        case TOLOCATIONDETAILS_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                if (toLocationBeingTyped) {
+                    autoCompleteTextView2.setText(autoCompleteTextView2.getText());
+                    autoCompleteTextView2.setSelection(autoCompleteTextView2.getText().length());
+                }
+                else {
+                    getToLocationDetails();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView2.getWindowToken(), 0);                    
+                }
+                break;
+            }
+            
+        }
+    }    
+    
+    public void getLocCodeList() {
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            // Get the URL from the properties
+            try {
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+            } catch (NullPointerException e) {
+                MsgAlert msgAlert = new MsgAlert(
+                        this,
+                        "Properties cannot be loaded.",
+                        "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
+                if (LoginActivity.properties == null) {
+                    try {
+
+                    } catch (Exception e2) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                }
+            }
+
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/LocCodeList");
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(LOCCODELIST_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                // code for JSON
+
+                String jsonString = resr1.get().trim().toString();
+                JSONArray jsonArray = new JSONArray(jsonString);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    locCodeList.add(jsonArray.getString(i).toString());
+                }
+                Collections.sort(locCodeList);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        locCodeList);
+                // for origin dest code
+                autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+                autoCompleteTextView1.setThreshold(1);
+                autoCompleteTextView1.setAdapter(adapter);       
+                // for destination code
+
+                autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+                autoCompleteTextView2.setThreshold(1);
+                autoCompleteTextView2.setAdapter(adapter);
+                autoCompleteTextView2
+                        .setOnItemClickListener(new AdapterView.OnItemClickListener()
+                        {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent,
+                                    View view, int position, long id) {
+                                int duration = Toast.LENGTH_SHORT;
+                                toLocationBeingTyped = false;
+                                if (autoCompleteTextView1.getText().toString()
+                                        .trim().length() == 0) {
+                                    boolean focusRequested = autoCompleteTextView1
+                                            .requestFocus();
+                                    Toast toast = Toast.makeText(
+                                            getApplicationContext(),
+                                            "Please pick a from location.",
+                                            duration);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
+                                    toast.show();
+                                } else {
+                                    if (autoCompleteTextView1.getText()
+                                            .toString().trim().length() > 0) {
+                                        if (autoCompleteTextView1.getText()
+                                                .toString().trim().length() > 0) {
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(
+                                                    autoCompleteTextView1
+                                                            .getWindowToken(),
+                                                    0);
+                                        } else {
+
+                                        }
+                                    } else {
+                                        boolean focusRequested = autoCompleteTextView1
+                                                .requestFocus();
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(
+                                                0,
+                                                InputMethodManager.SHOW_IMPLICIT);
+                                    }
+
+                                }
+                            }
+                        });
+                MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
+
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (ExecutionException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+                
+    }
+    
+    public void getFromLocationDetails() {
+        // loc_details.setText(loc_code.getText().toString());
+        originLocation = autoCompleteTextView1.getText().toString()
+                .trim();
+
+        String barcodeNumberDetails[] = autoCompleteTextView1.getText()
+                .toString().trim().split("-");
+        String barcode_num = barcodeNumberDetails[0];// this will be
+                                                     // passed to the
+                                                     // server
+        loc_code_str = barcodeNumberDetails[0];// this will be passed to
+                                               // next activity with
+                                               // intent
+
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            // Get the URL from the properties
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                    .toString();
+
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/LocationDetails?barcode_num="
+                            + barcode_num);
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(
+                            res).nextValue();
+                    tvOffice1.setText(object.getString("cdrespctrhd"));
+                    // tvLocCd1.setText( object.getString("cdlocat"));
+                    tvDescript1.setText(object.getString("adstreet1")
+                            .replaceAll("&#34;", "\"")
+                            + " ,"
+                            + object.getString("adcity").replaceAll(
+                                    "&#34;", "\"")
+                            + ", "
+                            + object.getString("adstate").replaceAll(
+                                    "&#34;", "\"")
+                            + " "
+                            + object.getString("adzipcode").replaceAll(
+                                    "&#34;", "\""));
+                    tvCount1.setText(object.getString("nucount"));
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    // tvLocCd1.setText( "!!ERROR: "+e.getMessage());
+                    tvOffice1.setText("!!ERROR: " + e.getMessage());
+                    tvDescript1.setText("Please contact STS/BAC.");
+                    tvCount1.setText("N/A");
+
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }        
+    }
+    
+    public void getToLocationDetails() {
+        // loc_details.setText(loc_code.getText().toString());
+        destinationLocation = autoCompleteTextView2.getText()
+                .toString().trim();
+        String barcodeNumberDetails[] = autoCompleteTextView2.getText()
+                .toString().trim().split("-");
+        String barcode_num = barcodeNumberDetails[0];// this will be
+                                                     // passed to the
+                                                     // server
+        loc_code_str = barcodeNumberDetails[0];// this will be passed to
+                                               // next activity with
+                                               // intent
+
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/LocationDetails?barcode_num="
+                            + barcode_num);
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(TOLOCATIONDETAILS_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(
+                            res).nextValue();
+                    tvOffice2.setText(object.getString("cdrespctrhd"));
+                    // tvLocCd2.setText( object.getString("cdlocat"));
+                    tvDescript2.setText(object.getString("adstreet1")
+                            .replaceAll("&#34;", "\"")
+                            + " ,"
+                            + object.getString("adcity").replaceAll(
+                                    "&#34;", "\"")
+                            + ", "
+                            + object.getString("adstate").replaceAll(
+                                    "&#34;", "\"")
+                            + " "
+                            + object.getString("adzipcode").replaceAll(
+                                    "&#34;", "\""));
+                    tvCount2.setText(object.getString("nucount"));
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    tvDescript2.setText("!!ERROR: " + e.getMessage());
+                    tvOffice2.setText("Please contact STS/BAC.");
+                    tvCount2.setText("N/A");
+
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+        // locDetailsDest.setText(res);
+        // locDetailsDest.append("\n"+loc_code.getText().toString());
+        // autoCompleteTextView1.setText(barcode_num);
+    }
+    
 
 }

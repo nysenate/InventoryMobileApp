@@ -55,6 +55,8 @@ public class Delivery1 extends SenateActivity
     String timeoutFrom = "delivery1";    
     public final int LOCCODELIST_TIMEOUT = 101,
             LOCATIONDETAILS_TIMEOUT = 102;
+    
+    boolean locationBeingTyped = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,16 @@ public class Delivery1 extends SenateActivity
         case LOCCODELIST_TIMEOUT:
             Log.i("onActivityResult", "LOCCODELIST WAS TIMED OUT");
             if (resultCode == RESULT_OK) {
-                getLocCodeList();
+                if (locationBeingTyped) {
+                    autoCompleteTextView1.setText(autoCompleteTextView1.getText());
+                    autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
+                }
+                else {
+                    getLocCodeList();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView1.getWindowToken(), 0);                    
+                }
                 break;
             }
             else {
@@ -143,6 +154,7 @@ public class Delivery1 extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
+            locationBeingTyped = true;
             int textLength = autoCompleteTextView1.getText().toString()
                     .length();
             if (textLength == 0) {
@@ -413,6 +425,7 @@ public class Delivery1 extends SenateActivity
                                         autoCompleteTextView1.getWindowToken(),
                                         0);
                                 autoCompleteTextView1.setSelection(0);
+                                locationBeingTyped = false;
                             }
                         });
 

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.android.Delivery3.RequestTask;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -97,9 +99,8 @@ public class Pickup3 extends SenateActivity
     public static ProgressBar progBarPickup3;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
-    final int CONTINUEBUTTON_TIMEOUT = -101;
+    public final int CONTINUEBUTTON_TIMEOUT = 101, POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103, EMPLOYEELIST_TIMEOUT = 104;        
     public String timeoutFrom = "pickup3";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,72 +188,8 @@ public class Pickup3 extends SenateActivity
         // Setup ProgressBar
         progBarPickup3 = (ProgressBar) findViewById(R.id.progBarPickup3);
 
-        // Get the Employee Name List from the Web Service and populate the
-        // Employee Name Autocomplete Field with it
-
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-
-            // Get the URL from the properties
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            requestTaskType = "EmployeeList";
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/EmployeeList");
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                // code for JSON
-
-                String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-                for (int x = 0; x < jsonArray.length(); x++) {
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(x);
-                    Employee currentEmployee = new Employee();
-                    currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-                            jo.getString("naemployee"));
-                    employeeHiddenList.add(currentEmployee);
-                    employeeNameList.add(jo.getString("naemployee"));
-                }
-
-                Collections.sort(employeeNameList);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        employeeNameList);
-
-                // for origin dest code
-                naemployeeView.setThreshold(1);
-                naemployeeView.setAdapter(adapter);
-                // for destination code
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
+        getEmployeeList();
+        
 
         // code for textwatcher
         // for origin location code
@@ -308,7 +245,6 @@ public class Pickup3 extends SenateActivity
                 nuxrefem = -1;
             }
         });
-        Pickup2Activity.progBarPickup2.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -375,15 +311,25 @@ public class Pickup3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE
-                && resultCode == RESULT_OK) {
-            // Fill the list view with the strings the recognizer thought it
-            // could have heard
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            commentsEditText.setText(matches.get(0));
+        switch (requestCode) {
+        case EMPLOYEELIST_TIMEOUT:
+            if (resultCode == RESULT_OK) {
+                getEmployeeList();
+            }
+            break;
+        case POSITIVEDIALOG_TIMEOUT:
+            break;
+        case VOICE_RECOGNITION_REQUEST_CODE:   
+            if (resultCode == RESULT_OK) {
+                // Fill the list view with the strings the recognizer thought it
+                // could have heard
+                ArrayList<String> matches = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                commentsEditText.setText(matches.get(0));
+            }
+            break;
         }
-
+        
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -435,29 +381,10 @@ public class Pickup3 extends SenateActivity
         }
 
         Log.i("continueButton", "Check for Session by using KeepSessionAlive");
-        URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                .toString();        
-        AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
-        String response  = null;
-        try {
-             response = resr1.get().toString();
-             Log.i("continueButton", "KeepSessionAlive RESPONSE:"+response);
-            if (resr1==null||response==null||response.trim().length()==0) {
-                this.noServerResponse();
-                return;
-            }
-            else if (response.indexOf("Session timed out") > -1) {
-                continueButtonTimeout();
-                return;
-            }
+        
+        if (!keepAlive()) {
+            return;
         }
-        catch (Exception e) {
-            if (resr1==null||response==null||response.trim().length()==0) {
-                this.noServerResponse();
-                return;
-            }
-        }
-
         
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Pickup Confirmation");
@@ -505,15 +432,7 @@ public class Pickup3 extends SenateActivity
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
 
-    }
-
-   public void continueButtonTimeout() {
-        Intent intentTimeout = new Intent(Pickup3.this,
-                LoginActivity.class);
-        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
-        startActivityForResult(intentTimeout, CONTINUEBUTTON_TIMEOUT);
-    }
-    
+    }  
     
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -875,7 +794,8 @@ public class Pickup3 extends SenateActivity
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-
+                        startTimeout(POSITIVEDIALOG_TIMEOUT);
+                        return;
                     }
                 } catch (NullPointerException e) {
                     noServerResponse();
@@ -910,6 +830,132 @@ public class Pickup3 extends SenateActivity
         // Intent intent = new Intent(this, MenuActivity.class);
         Intent intent = new Intent(this, Move.class);
         startActivity(intent);
+    }
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+    
+    public boolean keepAlive() {
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            AsyncTask<String, String, String> resr1;
+            try {
+                // Get the URL from the properties
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+                this.requestTaskType = "KeepAlive";
+                resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
+
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return false;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(this.KEEPALIVE_TIMEOUT);
+                        return false;
+                    }
+                    
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return false;
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+        return true;
+        
+    } 
+    
+    public void getEmployeeList() {
+        // Get the Employee Name List from the Web Service and populate the
+        // Employee Name Autocomplete Field with it
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
+
+            // Get the URL from the properties
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            requestTaskType = "EmployeeList";
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/EmployeeList");
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(EMPLOYEELIST_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                // code for JSON
+
+                String jsonString = resr1.get().trim().toString();
+                JSONArray jsonArray = new JSONArray(jsonString);
+                for (int x = 0; x < jsonArray.length(); x++) {
+                    JSONObject jo = new JSONObject();
+                    jo = jsonArray.getJSONObject(x);
+                    Employee currentEmployee = new Employee();
+                    currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
+                            jo.getString("naemployee"));
+                    employeeHiddenList.add(currentEmployee);
+                    employeeNameList.add(jo.getString("naemployee"));
+                }
+
+                Collections.sort(employeeNameList);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        employeeNameList);
+
+                // for origin dest code
+                naemployeeView.setThreshold(1);
+                naemployeeView.setAdapter(adapter);
+                // for destination code
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+        Pickup2Activity.progBarPickup2.setVisibility(View.INVISIBLE);
     }
 
 }

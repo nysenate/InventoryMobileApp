@@ -54,6 +54,7 @@ public class Verification extends SenateActivity
     TextView tvOffice;
     Activity currentActivity;
     String timeoutFrom = "verification";
+    boolean locationBeingTyped = false;
 
     public final int LOCCODELIST_TIMEOUT = 101,
             LOCATIONDETAILS_TIMEOUT = 102;
@@ -104,6 +105,7 @@ public class Verification extends SenateActivity
                         imm.hideSoftInputFromWindow(
                                 autoCompleteTextView1.getWindowToken(), 0);
                         autoCompleteTextView1.setSelection(0);
+                        locationBeingTyped = false;                        
                     }
                 });
 
@@ -163,6 +165,7 @@ public class Verification extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
+            locationBeingTyped = true;
             if (autoCompleteTextView1.getText().toString().length() >= 3) {
                 getLocationDetails();
             }
@@ -176,12 +179,11 @@ public class Verification extends SenateActivity
         startActivityForResult(intentTimeout, LOCATIONDETAILS_TIMEOUT);
     }
 
-    public void locCodeListTimeout() {
-        System.out.println("TIME OUT SCREEN");
+    
+    public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
-        System.out.println("TIME OUT SCREEN INTENT");
-        startActivityForResult(intentTimeout, LOCCODELIST_TIMEOUT);
+        startActivityForResult(intentTimeout, timeoutType);
     }
 
     @Override
@@ -194,9 +196,19 @@ public class Verification extends SenateActivity
             }
         case LOCATIONDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
-                getLocationDetails();
-                break;
+                if (locationBeingTyped) {
+                    autoCompleteTextView1.setText(autoCompleteTextView1.getText());
+                    autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
+                }
+                else {                
+                    getLocationDetails();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            autoCompleteTextView1.getWindowToken(), 0);
+                    
+                }
             }
+            break;
         }
     }
 
@@ -258,7 +270,7 @@ public class Verification extends SenateActivity
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        locationDetailTimeout();
+                        startTimeout(LOCATIONDETAILS_TIMEOUT);
                         return;
                     }
 
@@ -335,7 +347,7 @@ public class Verification extends SenateActivity
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        locCodeListTimeout();
+                        startTimeout(LOCCODELIST_TIMEOUT);
                         return;
                     }
 
@@ -407,7 +419,7 @@ public class Verification extends SenateActivity
         } else {
             progBarVerify.setVisibility(View.VISIBLE);
             btnVerify1Cont.getBackground().setAlpha(45);
-            Intent intent = new Intent(this, ListtestActivity.class);
+            Intent intent = new Intent(this, VerScanActivity.class);
             intent.putExtra(loc_code_intent, loc_code_str);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

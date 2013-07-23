@@ -161,7 +161,7 @@ public class Verification_list extends Activity
         alphaUp.setFillAfter(true);
         buttonVerifyListContinue.startAnimation(alphaUp);
         progressBarVerifyList.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, ListtestActivity.class);
+        Intent intent = new Intent(this, VerScanActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
 
@@ -173,7 +173,7 @@ public class Verification_list extends Activity
         AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
         alphaUp.setFillAfter(true);
         buttonVerifyListCancel.startAnimation(alphaUp);
-        Intent intent = new Intent(this, ListtestActivity.class);
+        Intent intent = new Intent(this, VerScanActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
 
