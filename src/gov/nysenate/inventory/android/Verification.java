@@ -419,7 +419,7 @@ public class Verification extends SenateActivity
         } else {
             progBarVerify.setVisibility(View.VISIBLE);
             btnVerify1Cont.getBackground().setAlpha(45);
-            Intent intent = new Intent(this, ListtestActivity.class);
+            Intent intent = new Intent(this, VerScanActivity.class);
             intent.putExtra(loc_code_intent, loc_code_str);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
