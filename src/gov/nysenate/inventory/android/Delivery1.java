@@ -2,6 +2,8 @@ package gov.nysenate.inventory.android;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -133,9 +135,14 @@ public class Delivery1 extends SenateActivity
                 }
                 else {
                     getLocCodeList();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            autoCompleteTextView1.getWindowToken(), 0);                    
+                    new Timer().schedule(new TimerTask() {          
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    autoCompleteTextView1.getWindowToken(), 0);
+                        }
+                    }, 50);                 
                 }
                 break;
             }

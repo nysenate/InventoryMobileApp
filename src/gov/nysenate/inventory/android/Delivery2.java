@@ -70,6 +70,7 @@ public class Delivery2 extends SenateActivity
         location = getIntent().getStringExtra("location");
         loc_details = (TextView) findViewById(R.id.textView1);
         loc_details.setText(Html.fromHtml(sb.toString()));
+        listview = (ListView) findViewById(R.id.listView1);
 
         getDeliveryList();
         // listener for list click
@@ -311,7 +312,6 @@ public class Delivery2 extends SenateActivity
                        this, R.layout.pickup_group_row, pickupGroups);
                // System.out.println ("Setup Listview with pickupGroups");
 
-               listview = (ListView) findViewById(R.id.listView1);
                listview.setAdapter(adapter);
 
            } catch (InterruptedException e) {
