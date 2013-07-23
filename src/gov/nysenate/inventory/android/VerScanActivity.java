@@ -61,6 +61,8 @@ public class VerScanActivity extends SenateActivity
 
     public final int ITEMLIST_TIMEOUT = 101, ITEMDETAILS_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103;
     public final int NONE = 200, REMOVEITEM_STATE = 201, ADDITEM_STATE = 202, ALIVE_STATE = 203;
+    public final int SESSION_TIMED_OUT = 1000, NO_SERVER_RESPONSE = 1001, SENTAG_NOT_FOUND = 1002, EXCEPTION_IN_CODE = 1003, INACTIVE_SENTAG = 1004;
+    public final int OK = 1005;
     String currentSortValue = "Description";
     public Spinner spinSortList;
     static Button btnVerListCont;
@@ -125,6 +127,11 @@ public class VerScanActivity extends SenateActivity
         // Setup TextViews
         tvCdlocat = (TextView) findViewById(R.id.tvCdlocat);
         tvCdlocat.setText(loc_code);
+        
+        // display the count on screen
+        tv_counts_new = (TextView) findViewById(R.id.tv_counts_new);
+        tv_counts_existing = (TextView) findViewById(R.id.tv_counts_existing);
+        tv_counts_scanned = (TextView) findViewById(R.id.tv_counts_scanned);        
 
         getItemsList();
         
@@ -172,7 +179,7 @@ public class VerScanActivity extends SenateActivity
         // code for textwatcher
 
         barcode = (ClearableEditText) findViewById(R.id.preferencePWD);
-        barcode.addTextChangedListener(filterTextWatcher);
+        barcode.addTextChangedListener(filterTextWatcher);      
 
         tv_counts_existing.setOnTouchListener(new View.OnTouchListener()
         {
@@ -294,13 +301,18 @@ public class VerScanActivity extends SenateActivity
             break;
 
         case ITEMDETAILS_TIMEOUT:
-            if (resultCode == RESULT_OK) { // CODE NEEDS MODIFICATIONS
+            if (resultCode == RESULT_OK) { 
                 handleItem(true);
             }
             break;
         case ITEMLIST_TIMEOUT:
-            if (resultCode == RESULT_OK) { // CODE NEEDS MODIFICATIONS
-                handleItem(true);
+            if (resultCode == RESULT_OK) { 
+                this.getItemsList();
+            }
+            break;
+        case KEEPALIVE_TIMEOUT:
+            if (resultCode == RESULT_OK) { 
+                keepAlive();
             }
             break;
         }
@@ -627,7 +639,7 @@ public class VerScanActivity extends SenateActivity
                     if (res == null) {
                         noServerResponse();
                         return;
-                    } else if (res.indexOf("Session timed out") > 0) {
+                    } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(ITEMLIST_TIMEOUT);
                         return;
                     }
@@ -698,10 +710,6 @@ public class VerScanActivity extends SenateActivity
          * android.R.layout.simple_list_item_1, dispList);
          */
 
-        // display the count on screen
-        tv_counts_new = (TextView) findViewById(R.id.tv_counts_new);
-        tv_counts_existing = (TextView) findViewById(R.id.tv_counts_existing);
-        tv_counts_scanned = (TextView) findViewById(R.id.tv_counts_scanned);
 
         /*tv_counts_new.setText(Html.fromHtml("<b>New</b><br/>"
                 + countOf(invList, "NEW")));
@@ -824,6 +832,7 @@ public class VerScanActivity extends SenateActivity
                 
                 foundAt = i;
                 if (!keepAlive()) {
+                    currentState = NONE;
                     return -2;
                 }                
             }
@@ -832,20 +841,27 @@ public class VerScanActivity extends SenateActivity
         return foundAt;
     }
     
-    public boolean addItem(String nusenate) {
+    public int addItem(String nusenate) {
         currentState = ADDITEM_STATE;
-        String serverResponse = getItemDetails(nusenate);
+        
+        // Don't Let getItemDetails handle the timeout, we want the timeout to be shown as ITEMDETAILS_TIMEOUT 
+        // from the code in Add Item and to return false for Add Item before it attempts to add an item with
+        // the else condition.
+        
+        String serverResponse = getItemDetails(nusenate, false);
+        
+        Log.i("AddItem", "nusenate:"+nusenate+" Server RESPONSE:"+serverResponse);
         
         if (serverResponse == null) {
             noServerResponse();
-            return false;
+            return NO_SERVER_RESPONSE;
         } else if (res.indexOf("Session timed out") > -1) {
             startTimeout(ITEMDETAILS_TIMEOUT);
-            return false;
+            return SESSION_TIMED_OUT;
         } else if (res.contains("Does not exist in system")) {
             Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
             barcodeDidNotExist(nusenate);
-            return false;
+            return SENTAG_NOT_FOUND;
         } else {
             JSONObject jo;
             try {
@@ -862,7 +878,7 @@ public class VerScanActivity extends SenateActivity
                     vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
                     vl.CONDITION = "NEW";
                     barcodeDidNotExist(nusenate);
-                    return false;
+                    return SENTAG_NOT_FOUND;
                 } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                     vl.DECOMMODITYF = jo.getString("decommodityf");
                     errorMessage(
@@ -872,7 +888,7 @@ public class VerScanActivity extends SenateActivity
                                 "The <b>\""
                                     + vl.DECOMMODITYF
                                     + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
-                    return false;
+                    return -4;
 
                 } else {
                     // Log.i("TESTING",
@@ -914,16 +930,20 @@ public class VerScanActivity extends SenateActivity
                                        // for summary                
                 currentState = NONE;
                 
-                return true;
+                return OK;
                 } catch (JSONException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
-                    return false;
+                    return EXCEPTION_IN_CODE;
                 }
         }
     }
-    
+
     public String getItemDetails(String nusenate) {
+        return getItemDetails(nusenate, true); // By default, check for a timeout
+    }
+
+    public String getItemDetails(String nusenate, boolean checkTimeout) {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -946,7 +966,7 @@ public class VerScanActivity extends SenateActivity
                 if (res == null) {
                     noServerResponse();
                     return res;
-                } else if (res.indexOf("Session timed out") > -1) {
+                } else if (checkTimeout && res.indexOf("Session timed out") > -1) {
                     startTimeout(ITEMDETAILS_TIMEOUT);
                     return res;
                 }
@@ -998,7 +1018,7 @@ public class VerScanActivity extends SenateActivity
                 + " (" + barcode.getText().length() + ")");
         
         String nusenate = barcode.getText().toString().trim();
-        
+               
         if (resumeFromTimeout) {
             if (currentState==NONE) {
                 Log.i("TESTING", "STATE WAS NONE PRIOR TO TIMEOUT");
@@ -1011,7 +1031,6 @@ public class VerScanActivity extends SenateActivity
         }
         
         boolean barcodeFound = false;
-        
         // Try to remove an item from the list....
         int invItemIndex = -1;
         if (!resumeFromTimeout || (currentState == NONE||currentState == REMOVEITEM_STATE)) {
@@ -1019,14 +1038,16 @@ public class VerScanActivity extends SenateActivity
             invItemIndex = removeItem(nusenate, resumeFromTimeout);   
         }
         
+
         if ((resumeFromTimeout && currentState == ADDITEM_STATE) || invItemIndex==-1) { // Item not found, so Add Item to list
             Log.i("TESTING", "Adding item "+nusenate);
-           addItem(nusenate);
-        } else if (invItemIndex==-2) { // Session timed out.. so do nothing
-            Log.i("TESTING", "timet out");
-            updateChanges();
-            return;
-        }
+            int addItemResults = -1;
+            addItemResults = addItem(nusenate);
+            if (addItemResults==SESSION_TIMED_OUT) {
+                return;
+            }
+        } 
+        
         
         updateChanges();        
         Log.i("TESTING", "State set back to NONE");
