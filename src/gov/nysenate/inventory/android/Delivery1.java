@@ -75,7 +75,24 @@ public class Delivery1 extends SenateActivity
 
         progBarDelivery1 = (ProgressBar) this
                 .findViewById(R.id.progBarDelivery1);
-
+        
+        // for origin dest code
+        autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+        autoCompleteTextView1.setThreshold(1);
+        autoCompleteTextView1
+                .setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent,
+                            View view, int position, long id) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(
+                                autoCompleteTextView1.getWindowToken(),
+                                0);
+                        autoCompleteTextView1.setSelection(0);
+                        locationBeingTyped = false;
+                    }
+                });
         getLocCodeList();
         // code for textwatcher
         // for origin location code
@@ -410,24 +427,8 @@ public class Delivery1 extends SenateActivity
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_dropdown_item_1line,
                         locCodeList);
-                // for origin dest code
-                autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-                autoCompleteTextView1.setThreshold(1);
+
                 autoCompleteTextView1.setAdapter(adapter);
-                autoCompleteTextView1
-                        .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                        {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent,
-                                    View view, int position, long id) {
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(
-                                        autoCompleteTextView1.getWindowToken(),
-                                        0);
-                                autoCompleteTextView1.setSelection(0);
-                                locationBeingTyped = false;
-                            }
-                        });
 
                 // for destination code
 

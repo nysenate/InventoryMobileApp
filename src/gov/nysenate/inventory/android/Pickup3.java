@@ -460,6 +460,8 @@ public class Pickup3 extends SenateActivity
     }  
     
     public void noServerResponse() {
+        progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+        btnPickup3Cont.getBackground().setAlpha(255);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
