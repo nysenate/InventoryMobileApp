@@ -174,16 +174,16 @@ public class VerSummaryActivity extends SenateActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("onActivityResult", "requestCode:" + requestCode
-                + ", requestCode:" + requestCode + " = " + RESULT_OK);
+//        Log.i("onActivityResult", "requestCode:" + requestCode
+//                + ", resultCode:" + resultCode + " = " + RESULT_OK);
         switch (requestCode) {
         case VERIFICATIONREPORTS_TIMEOUT:
-            Log.i("TIMEOUT RETURNED", "SUBMIT VERIFICATION");
             if (resultCode == RESULT_OK) {
-                Log.i("TIMEOUT RETURNED", "SUBMIT VERIFICATION OK");
                 submitVerification();
                 break;
             }
+        case CONTINUEBUTTON_TIMEOUT:
+            break;
         }
     }
 
@@ -503,12 +503,6 @@ public class VerSummaryActivity extends SenateActivity
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
         Log.i("submitVerification", "2");
-        // new VerSummeryActivity().sendJsonString(scannedBarcodeNumbers);
-        // String jsonString = null;
-        String status = null;
-        // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
-
-        Log.i("submitVerification", "get barcodes");
         barcodeNum = "";
         for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
             barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
@@ -516,14 +510,6 @@ public class VerSummaryActivity extends SenateActivity
         Log.i("submitVerification", "get Tag #'s done");
 
         // Create a JSON string from the arraylist
-        /*
-         * WORK ON IT LATER (SENDING THE STRING AS JSON) JSONObject jo=new
-         * JSONObject();// =jsArray.toJSONObject("number"); try {
-         * 
-         * //jo.putOpt("barcodes",scannedBarcodeNumbers.toString());
-         * jsonString=jsArray.toString(); } catch (Exception e) { // TODO
-         * Auto-generated catch block e.printStackTrace(); }
-         */
 
         // Send it to the server
 
@@ -533,8 +519,6 @@ public class VerSummaryActivity extends SenateActivity
         Log.i("submitVerification", "network");
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
             Log.i("submitVerification", "network connection available");
 
             AsyncTask<String, String, String> resr1;
@@ -556,7 +540,7 @@ public class VerSummaryActivity extends SenateActivity
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        verificationReportsTimeout();
+                        startTimeout(VERIFICATIONREPORTS_TIMEOUT);
                         return;
                     }
 
@@ -572,10 +556,7 @@ public class VerSummaryActivity extends SenateActivity
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            status = "yes1";
         } else {
-            // display error
-            status = "no";
         }
 
         // Display Toaster
@@ -600,13 +581,13 @@ public class VerSummaryActivity extends SenateActivity
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
-
-    public void verificationReportsTimeout() {
+ 
+    public void startTimeout(int timeoutType) {
         this.progressVerSum.setVisibility(progressVerSum.INVISIBLE);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
-        System.out.println("TIME OUT SCREEN INTENT");
-        startActivityForResult(intentTimeout, VERIFICATIONREPORTS_TIMEOUT);
+        startActivityForResult(intentTimeout, timeoutType);
     }
+
 }

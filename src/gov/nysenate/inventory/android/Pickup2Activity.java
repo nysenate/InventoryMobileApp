@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 public class Pickup2Activity extends SenateActivity
 {
-    public ClearableEditText et_pickup3_barcode;
+    public ClearableEditText etNusenate;
     public TextView tv_count_pickup2;
     public TextView loc_details;
     public TextView TextView2;
@@ -75,7 +75,9 @@ public class Pickup2Activity extends SenateActivity
     static ProgressBar progBarPickup2;
     Activity currentActivity;
     String timeoutFrom = "pickup2";    
-    public final int ITEMDETAILS_TIMEOUT = 101;        
+    public final int ITEMDETAILS_TIMEOUT = 101;     
+    public final int SESSION_TIMED_OUT = 1000, NO_SERVER_RESPONSE = 1001, SENTAG_NOT_FOUND = 1002, EXCEPTION_IN_CODE = 1003, INACTIVE_SENTAG = 1004, SENTAG_IN_TRANSIT = 1006;
+    public final int OK = 1005;   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class Pickup2Activity extends SenateActivity
         currentActivity = this;
 
         // Get the origin and destination location from the previous activity
+
         Intent intent = getIntent();
         originLocation = intent.getStringExtra("originLocation");
         destinationLocation = intent.getStringExtra("destinationLocation");
@@ -94,6 +97,11 @@ public class Pickup2Activity extends SenateActivity
         cdloctypeto = intent.getStringExtra("cdloctypeto");
 
         listView = (ListView) findViewById(R.id.listView1);
+        
+        // code for textwatcher
+        etNusenate = (ClearableEditText) findViewById(R.id.etNusenate);
+        etNusenate.addTextChangedListener(filterTextWatcher);
+        
         count = 0;// for initialization
         /*
          * adapter = new ArrayAdapter<StringBuilder>(this,
@@ -115,11 +123,6 @@ public class Pickup2Activity extends SenateActivity
         // populate the listview
         listView.setAdapter(adapter);
 
-        // code for textwatcher
-
-        
-        et_pickup3_barcode = (ClearableEditText) findViewById(R.id.et_pickup3_barcode);
-        et_pickup3_barcode.addTextChangedListener(filterTextWatcher);
 
         // Button Setup
         btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
@@ -127,7 +130,12 @@ public class Pickup2Activity extends SenateActivity
         btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
         btnPickup2Cancel.getBackground().setAlpha(255);
 
-        Pickup1.progBarPickup1.setVisibility(View.INVISIBLE);
+       try {
+            Pickup1.progBarPickup1.setVisibility(View.INVISIBLE);
+       }
+       catch (Exception e) {
+           e.printStackTrace();
+       }
     }
 
     @Override
@@ -167,8 +175,8 @@ public class Pickup2Activity extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (et_pickup3_barcode.getText().toString().length() >= 6) {
-                String barcode_num = et_pickup3_barcode.getText().toString()
+            if (etNusenate.getText().toString().length() >= 6) {
+                String barcode_num = etNusenate.getText().toString()
                         .trim();
                 String barcode_number = barcode_num;
 
@@ -188,25 +196,40 @@ public class Pickup2Activity extends SenateActivity
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
-
+                
+                
                 // if it is not already scanned and does not exist in the
                 // list(location)
                 // then add it to list and append new item to its description
                 if ((flag == 0) && (barcodeFound == false)) {
-                    getItemDetails();
+                    int returnedStatus = -1;
+                    returnedStatus = getItemDetails();
+                    if (returnedStatus==SESSION_TIMED_OUT) {
+                        return;
+                    }
                 }
-
+                
                 // notify the adapter that the data in the list is changed and
                 // refresh the view
-                adapter.notifyDataSetChanged();
-                count = list.size();
-                tv_count_pickup2.setText(Integer.toString(count));
-                listView.setAdapter(adapter);
-                et_pickup3_barcode.setText("");
+                updateChanges();
             }
         }
     };
 
+    public void updateChanges() {
+        adapter.notifyDataSetChanged();
+        count = list.size();
+        tv_count_pickup2.setText(Integer.toString(count));
+        listView.setAdapter(adapter);
+        try {
+            etNusenate.setText("");
+        }
+        catch (NullPointerException e) {
+            etNusenate = (ClearableEditText) findViewById(R.id.etNusenate);
+            e.printStackTrace();
+        }
+    }
+    
     public void barcodeDidNotExist(final String barcode_num) {
         Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -259,7 +282,7 @@ public class Pickup2Activity extends SenateActivity
                          * allScannedItems.add(invItem);
                          * newItems.add(invItem);// to keep
                          * 
-                         * list.add(vl); et_pickup3_barcode.setText("");
+                         * list.add(vl); etNusenate.setText("");
                          * dialog.dismiss();
                          */
                         // if this button is clicked, just close
@@ -274,7 +297,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        et_pickup3_barcode.setText("");
+                        etNusenate.setText("");
 
                         dialog.dismiss();
 
@@ -293,7 +316,7 @@ public class Pickup2Activity extends SenateActivity
          * Toast toast = Toast.makeText(context, text, duration);
          * toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
          * 
-         * et_pickup3_barcode.setText("");
+         * etNusenate.setText("");
          * 
          * dialog.dismiss(); } })
          */;
@@ -315,7 +338,7 @@ public class Pickup2Activity extends SenateActivity
                         + "   "
                         + vl.DECOMMODITYF
                         + "</b> has  already been picked up and was marked as <font color='RED'><b>IN TRANSIT</b></font> and cannot be picked up.");
-        et_pickup3_barcode.setText("");
+        etNusenate.setText("");
     }
 
     public void noServerResponse(final String barcode_num) {
@@ -348,7 +371,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        et_pickup3_barcode.setText("");
+                        etNusenate.setText("");
 
                         dialog.dismiss();
                     }
@@ -389,7 +412,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        et_pickup3_barcode.setText("");
+                        etNusenate.setText("");
 
                         dialog.dismiss();
                     }
@@ -532,13 +555,16 @@ public class Pickup2Activity extends SenateActivity
         switch (requestCode) {
         case ITEMDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
-                getItemDetails();
-                break;
+                if (getItemDetails() != SESSION_TIMED_OUT) {
+                    updateChanges();
+                }
             }
+            break;
         }
-    }   
-    public void getItemDetails() {
-        String barcode_num = et_pickup3_barcode.getText().toString()
+    }  
+    
+    public int getItemDetails() {
+        String barcode_num = etNusenate.getText().toString()
                 .trim();
         String barcode_number = barcode_num;
         VerList vl = new VerList();
@@ -575,16 +601,16 @@ public class Pickup2Activity extends SenateActivity
                 if (res == null) {
                     // Log.i("TESTING", "A CALL noServerResponse");
                     noServerResponse(barcode_num);
-                    return;
+                    return NO_SERVER_RESPONSE;
                 } else if (res.toUpperCase().contains(
                         "DOES NOT EXIST IN SYSTEM")) {
                     // Log.i("TESTING",
                     // "A CALL barcodeDidNotExist");
                     barcodeDidNotExist(barcode_num);
-                    return;
+                    return SENTAG_NOT_FOUND;
                 } else if (res.indexOf("Session timed out") > -1) {
                     startTimeout(ITEMDETAILS_TIMEOUT);
-                    return;
+                    return SESSION_TIMED_OUT;
                 } else {
                     try {
                         object = (JSONObject) new JSONTokener(res)
@@ -618,13 +644,13 @@ public class Pickup2Activity extends SenateActivity
                                 "The <b>\""
                                         + vl.DECOMMODITYF
                                         + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
-                        return;
+                        return INACTIVE_SENTAG;
                     }
 
                     if (vl.CDINTRANSIT != null
                             && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
                         barcodeIntransit(vl);
-                        return;
+                        return SENTAG_IN_TRANSIT;
                     }
 
                     if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
@@ -708,7 +734,8 @@ public class Pickup2Activity extends SenateActivity
                               // track of
                               // (number+details)
                               // for
-                              // summary        
+                              // summary      
+        return OK;
     }
     
 }

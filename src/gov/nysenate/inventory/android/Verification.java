@@ -2,6 +2,8 @@ package gov.nysenate.inventory.android;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -22,6 +24,7 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -202,9 +205,16 @@ public class Verification extends SenateActivity
                 }
                 else {                
                     getLocationDetails();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            autoCompleteTextView1.getWindowToken(), 0);
+                    //autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
+                    autoCompleteTextView1.requestFocus();
+                    new Timer().schedule(new TimerTask() {          
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    autoCompleteTextView1.getWindowToken(), 0);
+                        }
+                    }, 50);
                     
                 }
             }
@@ -238,8 +248,6 @@ public class Verification extends SenateActivity
     }
     
     public void getLocationDetails() {
-        // loc_details.setText(loc_code.getText().toString());
-
         String barcodeNumberDetails[] = autoCompleteTextView1.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
@@ -278,6 +286,8 @@ public class Verification extends SenateActivity
                     noServerResponse();
                     return;
                 }
+                
+                System.out.println("SEN TAG#:"+barcode_num+" SERVER RESPONSE:"+res);
                 try {
                     JSONObject object = (JSONObject) new JSONTokener(
                             res).nextValue();
@@ -297,8 +307,6 @@ public class Verification extends SenateActivity
                     tvCount.setText(object.getString("nucount"));
 
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    // tvLocCd.setText( "!!ERROR: "+e.getMessage());
                     tvOffice.setText("!!ERROR: " + e.getMessage());
                     tvDescript.setText("Please contact STS/BAC.");
                     tvCount.setText("N/A");
@@ -319,11 +327,6 @@ public class Verification extends SenateActivity
             status = "no";
         }
         System.out.println("RESPONSE FROM URL:" + res);
-
-        // loc_details.setText(res);
-
-        // loc_details.append("\n"+loc_code.getText().toString());
-        // autoCompleteTextView1.setText(barcode_num);
     }
     
     public void getLocCodeList() {

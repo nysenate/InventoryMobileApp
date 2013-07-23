@@ -2,6 +2,8 @@ package gov.nysenate.inventory.android;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -89,7 +91,11 @@ public class Pickup1 extends SenateActivity
         tvCount2 = (TextView) this.findViewById(R.id.tvCount2);
 
         progBarPickup1 = (ProgressBar) this.findViewById(R.id.progBarPickup1);
-
+        
+        // Setup Edit Text Fields
+        autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+        autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+        
         getLocCodeList();
         autoCompleteTextView1.setThreshold(1);
         
@@ -132,7 +138,12 @@ public class Pickup1 extends SenateActivity
         autoCompleteTextView2.addTextChangedListener(filterTextWatcher2);
         locDetailsDest = (TextView) findViewById(R.id.textView3);
 
-        Move.progBarMove.setVisibility(View.INVISIBLE);
+        try {
+            Move.progBarMove.setVisibility(View.INVISIBLE);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -379,9 +390,7 @@ public class Pickup1 extends SenateActivity
                 }
                 else {
                     getFromLocationDetails();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            autoCompleteTextView1.getWindowToken(), 0);                    
+                    autoCompleteTextView2.requestFocus();
                 }
                 break;
             }
@@ -393,9 +402,14 @@ public class Pickup1 extends SenateActivity
                 }
                 else {
                     getToLocationDetails();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            autoCompleteTextView2.getWindowToken(), 0);                    
+                    new Timer().schedule(new TimerTask() {          
+                        @Override
+                        public void run() {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    autoCompleteTextView2.getWindowToken(), 0);
+                        }
+                    }, 50);
                 }
                 break;
             }
@@ -463,12 +477,10 @@ public class Pickup1 extends SenateActivity
                         android.R.layout.simple_dropdown_item_1line,
                         locCodeList);
                 // for origin dest code
-                autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
                 autoCompleteTextView1.setThreshold(1);
                 autoCompleteTextView1.setAdapter(adapter);       
                 // for destination code
 
-                autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
                 autoCompleteTextView2.setThreshold(1);
                 autoCompleteTextView2.setAdapter(adapter);
                 autoCompleteTextView2

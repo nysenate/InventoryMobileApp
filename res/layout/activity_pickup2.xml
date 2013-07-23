@@ -18,7 +18,7 @@
 
 
     <gov.nysenate.inventory.android.ClearableEditText
-        android:id="@+id/et_pickup3_barcode"
+        android:id="@+id/etNusenate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

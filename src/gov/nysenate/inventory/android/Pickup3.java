@@ -13,6 +13,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -312,6 +314,8 @@ public class Pickup3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("onActivityResult", "requestCode:"+requestCode+" resultCode:"+resultCode);
+
         switch (requestCode) {
         case EMPLOYEELIST_TIMEOUT:
             if (resultCode == RESULT_OK) {
@@ -319,7 +323,28 @@ public class Pickup3 extends SenateActivity
             }
             break;
         case POSITIVEDIALOG_TIMEOUT:
+            new Timer().schedule(new TimerTask() {          
+                @Override
+                public void run() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            naemployeeView.getWindowToken(), 0);
+                }
+            }, 50);
             break;
+        case KEEPALIVE_TIMEOUT:
+            //Log.i("onActivityResult", "KEEPALIVE_TIMEOUT");
+            new Timer().schedule(new TimerTask() {          
+                @Override
+                public void run() {
+                    //Log.i("onActivityResult", "KEEPALIVE_TIMEOUT Hide Keyboard");
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            naemployeeView.getWindowToken(), 0);
+                }
+            }, 50);
+            break;
+
         case VOICE_RECOGNITION_REQUEST_CODE:   
             if (resultCode == RESULT_OK) {
                 // Fill the list view with the strings the recognizer thought it
