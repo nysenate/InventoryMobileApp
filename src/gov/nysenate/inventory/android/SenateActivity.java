@@ -29,8 +29,9 @@ public abstract class SenateActivity extends Activity
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
 
     private BaseActivityReceiver baseActivityReceiver = new BaseActivityReceiver();
-    //private CheckInternet receiver;
+    // private CheckInternet receiver;
     public static final IntentFilter INTENT_FILTER = createIntentFilter();
+    public static long maxWifiWaitTime = 20 * 1000; // 20 Seconds
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -61,7 +62,7 @@ public abstract class SenateActivity extends Activity
         super.onDestroy();
         unRegisterBaseActivityReceiver();
         InvApplication.activityDestroyed();
-        //unregisterReceiver(receiver);
+        // unregisterReceiver(receiver);
         InvApplication.activityPaused();
     }
 
@@ -94,10 +95,11 @@ public abstract class SenateActivity extends Activity
 
     protected void registerBaseActivityReceiver() {
         registerReceiver(baseActivityReceiver, INTENT_FILTER);
-        //IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        //receiver = new CheckInternet();
-        //registerReceiver(receiver, filter);
-                  
+        // IntentFilter filter = new
+        // IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        // receiver = new CheckInternet();
+        // registerReceiver(receiver, filter);
+
     }
 
     protected void unRegisterBaseActivityReceiver() {
@@ -121,7 +123,6 @@ public abstract class SenateActivity extends Activity
     }
 
     protected void onResume(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onResume();
         InvApplication.activityResumed();
         checkInternetConnection();
@@ -129,15 +130,15 @@ public abstract class SenateActivity extends Activity
 
     @Override
     protected void onResume() {
-      super.onResume();
-      InvApplication.activityResumed();      
-      checkInternetConnection();
+        super.onResume();
+        InvApplication.activityResumed();
+        checkInternetConnection();
     }
 
     @Override
     protected void onPause() {
-      super.onPause();
-      InvApplication.activityPaused();
+        super.onPause();
+        InvApplication.activityPaused();
     }
 
     WifiManager mainWifi;
@@ -145,95 +146,128 @@ public abstract class SenateActivity extends Activity
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
     boolean enablingWifi = false;
-    boolean prevConnected = true; // Assume that connection was already found so that it doesn't show Wifi Connection Found for every Activity 
-    boolean curConnected = true;  // Assume that connection was already found so that it doesn't show Wifi Connection Found for every Activity
-                                  // The Check Internet Service will check for connections and disconnections. 
+    boolean prevConnected = true; // Assume that connection was already found so
+                                  // that it doesn't show Wifi Connection Found
+                                  // for every Activity
+    boolean curConnected = true; // Assume that connection was already found so
+                                 // that it doesn't show Wifi Connection Found
+                                 // for every Activity
+                                 // The Check Internet Service will check for
+                                 // connections and disconnections.
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
+   
+    /*
+     *  The app needs an internet connection, so check it on Activity Startup (fires when Any Activity is opened)
+     *  If the internet connection is turned off, then attempt to turn it on.
+     */
 
     public void checkInternetConnection() {
-     /*   new Thread()
-        {
-            public void run() {*/
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast;
-                if (context == null) {
-                    context = getApplicationContext();
-                }
-                duration = Toast.LENGTH_SHORT;
-/*                toast = Toast.makeText(context, "Inventory App checking Internet Connection. Please be patient..",
-                        duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();*/
-                
-                SenateActivity.this.context = context;
-                ConnectivityManager cm = ((ConnectivityManager) context
-                        .getSystemService(Context.CONNECTIVITY_SERVICE));
+        /*
+         * new Thread() { public void run() {
+         */
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast;
+        if (context == null) {
+            context = getApplicationContext();
+        }
+        duration = Toast.LENGTH_SHORT;
+        /*
+         * toast = Toast.makeText(context,
+         * "Inventory App checking Internet Connection. Please be patient..",
+         * duration); toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
+         */
 
-                try {
-                    if (cm == null)
-                        return;
-                    prevConnected = curConnected;
-                    if (cm.getActiveNetworkInfo() != null
-                            && cm.getActiveNetworkInfo().isConnected()) {
-                        curConnected = cm.getActiveNetworkInfo().isConnected();
-                        if (!prevConnected) {
-                            duration = Toast.LENGTH_LONG;
-                            toast = Toast.makeText(context, "Wifi Connection found.",
-                                    duration);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
-                        }
-                    } else {
+        SenateActivity.this.context = context;
+        ConnectivityManager cm = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE));
 
-                        mainWifi = (WifiManager) context
-                                .getSystemService(Context.WIFI_SERVICE);
-                        curConnected = false;
-                        if (mainWifi.isWifiEnabled()) {
-                            if (prevConnected) {
-                                duration = Toast.LENGTH_LONG;
-                                toast = Toast.makeText(context,
-                                        "Wifi Connection lost.", duration);
-                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                toast.show();
-                                prevConnected = false;
-                            }
-                        } else {
-                            // check if connected! (will not work in a service)
-                            // wifiAlert("WIFI IS CURRENTLY TURNED OFF",
-                            // "***WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
+        try {
+            if (cm == null) {
+                return;
+            }
 
-                            // so using turnwifi on directly
-                            turnWifiOn();
-                        }
-                    }
-                    ;
-
-                } catch (Exception e0) {
-                    toast = Toast.makeText(context,
-                            "(EXCEPTION0) Check Internet:" + e0.getMessage(), duration);
+            prevConnected = curConnected;
+            /*
+             * If the internet connection is on, then check to see if it previously wasn't, if it was off
+             * then show the Wifi Connection Found toast.
+             * 
+             * If there is no internet connection, but Wifi on the Tablet is turned on then return the 
+             * toast that the Wifi Connection is lost. 
+             * 
+             * If there is no internet connection and the Wifi is off on the tablet, then attempt to turn
+             * on the Wifi Connection.
+             */
+            if (cm.getActiveNetworkInfo() != null
+                    && cm.getActiveNetworkInfo().isConnected()) {
+                curConnected = cm.getActiveNetworkInfo().isConnected();
+                if (!prevConnected) {
+                    duration = Toast.LENGTH_LONG;
+                    toast = Toast.makeText(context, "Wifi Connection found.",
+                            duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-
                 }
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                /*
-                 * AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                 * 
-                 * // 2. Chain together various setter methods to set the dialog
-                 * characteristics builder.setMessage(
-                 * "Internet Connection is Lost. Please fix before continuing.")
-                 * .setTitle("Internet Connection Lost");
-                 * 
-                 * // 3. Get the AlertDialog from create() AlertDialog dialog =
-                 * builder.create(); dialog.show();
-                 */
-     /*       }
-        }.start();*/
+            } else {
+
+                mainWifi = (WifiManager) context
+                        .getSystemService(Context.WIFI_SERVICE);
+                curConnected = false;
+                if (mainWifi.isWifiEnabled()) {
+                    if (prevConnected) {
+                        duration = Toast.LENGTH_LONG;
+                        toast = Toast.makeText(context,
+                                "Wifi Connection lost.", duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        prevConnected = false;
+                    }
+                } else {
+                    // check if connected! (will not work in a service)
+                    // wifiAlert("WIFI IS CURRENTLY TURNED OFF",
+                    // "***WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
+
+                    // so using turnwifi on directly
+                    turnWifiOn();
+                }
+            }
+            ;
+
+        } catch (Exception e0) {
+            toast = Toast.makeText(context,
+                    "(EXCEPTION0) Check Internet:" + e0.getMessage(), duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+
+        }
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        /*
+         * AlertDialog.Builder builder = new AlertDialog.Builder(context);
+         * 
+         * // 2. Chain together various setter methods to set the dialog
+         * characteristics builder.setMessage(
+         * "Internet Connection is Lost. Please fix before continuing.")
+         * .setTitle("Internet Connection Lost");
+         * 
+         * // 3. Get the AlertDialog from create() AlertDialog dialog =
+         * builder.create(); dialog.show();
+         */
+        /*
+         * } }.start();
+         */
 
     }
 
+    /*
+     * Wifi Alert does not work with the Check Internet connection Service.. 
+     * Original plans were to ask the user before connecting, but those plans have
+     * changed.. Now while the app is opened and in the foreground, we will try
+     * keep the wifi on (the app is useless without an internet connection). We
+     * will not try keeping the internet connection on if the App is closed or 
+     * in the background. Currently, WifiAlert is not being used for this reason.
+     */
+    
     public void wifiAlert(String title, String msg) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
@@ -281,14 +315,26 @@ public abstract class SenateActivity extends Activity
         // show it
         alertDialog.show();
     }
+    
+    /*
+     * Turn Wifi Connection back on if it is not Enabled
+     */
 
     public void turnWifiOn() {
+        turnWifiOn(maxWifiWaitTime);
+    }
+
+    public void turnWifiOn(long maxWifiWaitTime) {
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = null;
+        enablingWifi = false;
+        long startTime = System.currentTimeMillis();
 
         try {
-            while (!mainWifi.isWifiEnabled()) {
+            // Wait until Wifi is Enabled or the Maximum Wifi Wait Time has occurred
+            while (!mainWifi.isWifiEnabled() && (System.currentTimeMillis()-startTime <= maxWifiWaitTime)) {
+                // While waiting, attempt to turn on the Wifi Connection if it already hasn't been attempted
                 if (!enablingWifi) {
                     mainWifi.setWifiEnabled(true);
                     enablingWifi = true;
@@ -296,22 +342,28 @@ public abstract class SenateActivity extends Activity
                 // Wait to connect
                 Thread.sleep(1000);
             }
+            // Check to see if the Wifi Connection turned on, give appropriate message depending on if it was or not.
             if (mainWifi.isWifiEnabled()) {
                 toast = Toast.makeText(context,
-                        "(Inventory App) Wifi has been turned back on.", duration);
+                        "(Inventory App) Wifi has been turned back on.",
+                        duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
-                new MsgAlert(context, "WIFI could not be turned back on",
+                new MsgAlert(
+                        context,
+                        "WIFI could not be turned back on",
                         "***WARNING: (Inventory App) Unable to turn Wifi on. Please turn it on manually.");
             }
 
         } catch (Exception e) {
-            toast = Toast.makeText(context,
-                    "(Inventory App) (EXCEPTION1) Check Internet:" + e.getMessage(), duration);
+            toast = Toast.makeText(
+                    context,
+                    "(Inventory App) (EXCEPTION1) Check Internet:"
+                            + e.getMessage(), duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
-    
+
 }
