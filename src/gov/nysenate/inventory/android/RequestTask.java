@@ -20,13 +20,13 @@ public class RequestTask extends AsyncTask<String, String, String>
     public String doInBackground(String... uri) {
         String res = "";
         // HttpClient httpclient = new DefaultHttpClient();
-        HttpClient httpclient = LoginActivity.httpClient;
+        HttpClient httpClient = LoginActivity.httpClient;
         Log.i(RequestTask.class.getName(), "RequestTask RUNNING 2");
-        if (httpclient == null) {
+        if (httpClient == null) {
             Log.i(RequestTask.class.getName(),
                     "MainActivity.httpClient was null so it is being reset");
             LoginActivity.httpClient = new DefaultHttpClient();
-            httpclient = LoginActivity.httpClient;
+            httpClient = LoginActivity.httpClient;
         }
         HttpResponse response;
         String responseString = null;
@@ -43,7 +43,7 @@ public class RequestTask extends AsyncTask<String, String, String>
         url.append(LoginActivity.nauser);
 
         try {
-            response = httpclient.execute(new HttpGet(url.toString()));
+            response = httpClient.execute(new HttpGet(url.toString()));
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();

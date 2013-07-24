@@ -21,6 +21,13 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -557,6 +564,8 @@ public class Delivery3 extends SenateActivity
             Log.i("WEBRECEIVE", "requestTaskType:" + requestTaskType);
             if (requestTaskType.equalsIgnoreCase("Delivery")) {
                 try {
+                    // Scale the Image
+                    
                     String NUXRRELSIGN = "";
 
                     ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -577,8 +586,9 @@ public class Delivery3 extends SenateActivity
                     }
                     scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
                     imageInByte = bs.toByteArray();
-                    System.out.println("*************imageInByte:"
-                            + imageInByte.length);
+
+                    // Post the Image to the Web Server
+                    
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
                     if (uri[0].indexOf("?") > -1) {
@@ -593,7 +603,23 @@ public class Delivery3 extends SenateActivity
 
                     URL url = new URL(urls.toString());
 
-                    HttpURLConnection conn = (HttpURLConnection) url
+                    HttpClient httpClient = LoginActivity.httpClient;
+                    
+                    if (httpClient == null) {
+                        Log.i(RequestTask.class.getName(),
+                                "MainActivity.httpClient was null so it is being reset");
+                        LoginActivity.httpClient = new DefaultHttpClient();
+                        httpclient = LoginActivity.httpClient;
+                    }
+                    
+                    HttpContext localContext = new BasicHttpContext();  
+                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);                      
+                            
+                    HttpPost httpPost = new HttpPost(urls.toString());    
+                    entity.addPart("Signature", new ByteArrayBody(imageInByte, "temp.jpg"));  
+                    httpPost.setEntity(entity);                      
+
+                   /* HttpURLConnection conn = (HttpURLConnection) url
                             .openConnection();
                     // Set connection parameters.
                     conn.setDoInput(true);
@@ -616,9 +642,15 @@ public class Delivery3 extends SenateActivity
                         responseString += temp + "\n";
                     }
                     temp = null;
-                    in.close();
+                    in.close();*/
                     // System.out.println("Server response:\n'" + responseString
                     // + "'");
+                    
+                    // Get Server Response to the posted Image
+                    
+                    response = httpClient.execute(httpPost, localContext);  
+                    BufferedReader reader = new BufferedReader(new InputStreamReader( response.getEntity().getContent(), "UTF-8"));  
+                    responseString= reader.readLine();                      
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRACCPTSIGN = responseString
