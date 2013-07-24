@@ -145,8 +145,9 @@ public abstract class SenateActivity extends Activity
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
     boolean enablingWifi = false;
-    boolean prevConnected = false;
-    boolean curConnected = false;
+    boolean prevConnected = true; // Assume that connection was already found so that it doesn't show Wifi Connection Found for every Activity 
+    boolean curConnected = true;  // Assume that connection was already found so that it doesn't show Wifi Connection Found for every Activity
+                                  // The Check Internet Service will check for connections and disconnections. 
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
