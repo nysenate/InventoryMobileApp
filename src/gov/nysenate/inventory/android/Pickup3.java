@@ -204,8 +204,13 @@ public class Pickup3 extends SenateActivity
         // for origin location code
         // loc_code = (EditText) findViewById(R.id.editText1);
         // loc_code.addTextChangedListener(filterTextWatcher);
+        
+        // Commented out by Brian Heitner, found by Kevin Caseiras   
+        // I believe this code is left over code that doesn't ever fire..
+        // Leaving commented code in just in case I am wrong.
+        ///
 
-        naemployeeView.setOnItemSelectedListener(new OnItemSelectedListener()
+      /* naemployeeView.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
             @Override
@@ -253,7 +258,7 @@ public class Pickup3 extends SenateActivity
             public void onNothingSelected(AdapterView<?> arg0) {
                 nuxrefem = -1;
             }
-        });
+        });*/
     }
 
     @Override
