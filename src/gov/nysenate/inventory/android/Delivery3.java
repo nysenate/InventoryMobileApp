@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -503,16 +505,29 @@ public class Delivery3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("onActivityResult", "requestCode:"+requestCode+" resultCode:"+resultCode);
         switch (requestCode) {
         case DELIVERYDETAILS_TIMEOUT:
+            Log.i("onActivityResult", "DELIVERYDETAILS_TIMEOUT");
             if (resultCode == RESULT_OK) {
                 getDeliveryDetails();
                 break;
             }
         case POSITIVEDIALOG_TIMEOUT:
+            Log.i("onActivityResult", "POSITIVEDIALOG_TIMEOUT");
             //positiveDialog();
             break;
         case KEEPALIVE_TIMEOUT:
+            Log.i("onActivityResult", "KEEPALIVE_TIMEOUT");
+            new Timer().schedule(new TimerTask() {          
+                @Override
+                public void run() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(
+                            naemployeeView.getWindowToken(), 0);
+                }
+            }, 50);                 
+            
             break;
         case VOICE_RECOGNITION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
@@ -829,7 +844,45 @@ public class Delivery3 extends SenateActivity
         } else {
             // display error
             status = "no";
-        }        
+        }      
+        // Signature from 'Accepted By'
+
+        // Save the signature on server (Received By), comments, Name
+        // currently hardcoding
+        // Brian : Please assign values to following variables after saving the
+        // signature and name
+        NUXRACCPTSIGN = "1111";
+        NADELIVERBY = "BH";
+
+        NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query is
+                               // formated that way)
+
+        // Get the results for the Employee List and now do the actual setting
+        // of the Signing Employee
+        // Dropdown.
+        try {
+            JSONArray jsonArray = new JSONArray(employeeList);
+            for (int x = 0; x < jsonArray.length(); x++) {
+                JSONObject jo = new JSONObject();
+                jo = jsonArray.getJSONObject(x);
+                Employee currentEmployee = new Employee();
+                currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
+                        jo.getString("naemployee"));
+                employeeHiddenList.add(currentEmployee);
+                employeeNameList.add(jo.getString("naemployee"));
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Collections.sort(employeeNameList);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, employeeNameList);
+
+        naemployeeView.setAdapter(adapter);
+        
     }
     
     public boolean keepAlive() {

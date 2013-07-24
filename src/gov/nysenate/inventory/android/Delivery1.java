@@ -135,14 +135,6 @@ public class Delivery1 extends SenateActivity
                 }
                 else {
                     getLocCodeList();
-                    new Timer().schedule(new TimerTask() {          
-                        @Override
-                        public void run() {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(
-                                    autoCompleteTextView1.getWindowToken(), 0);
-                        }
-                    }, 50);                 
                 }
                 break;
             }
@@ -154,11 +146,18 @@ public class Delivery1 extends SenateActivity
             Log.i("onActivityResult", "LOCATIONDETAILS WAS TIMED OUT");
             if (resultCode == RESULT_OK) {
                 getLocationDetails();
+                new Timer().schedule(new TimerTask() {          
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(
+                                autoCompleteTextView1.getWindowToken(), 0);
+                    }
+                }, 50);                 
                 break;
             }
             else {
                 Log.i("onActivityResult", "TIMED OUT NOT OK");
-                
             }
         }
     }
