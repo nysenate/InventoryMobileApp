@@ -23,6 +23,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class SearchActivity extends SenateActivity
         btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
         btnSrchBck.getBackground().setAlpha(255);
 
+        // Suppress the Menu ProgressBar
+        MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
     }
 
     private final TextWatcher filterTextWatcher = new TextWatcher()

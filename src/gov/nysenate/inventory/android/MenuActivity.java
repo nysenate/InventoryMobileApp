@@ -74,6 +74,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
             long id) {
         RowItem curRow = rowItems.get(position);
         if (curRow.getTitle().equalsIgnoreCase("Search")) {
+            progBarMenu.setVisibility(View.VISIBLE);
             this.search(view);
         } else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
             progBarMenu.setVisibility(View.VISIBLE);

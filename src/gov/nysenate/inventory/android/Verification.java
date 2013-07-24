@@ -114,6 +114,8 @@ public class Verification extends SenateActivity
 
         loc_details = (TextView) findViewById(R.id.textView2);
 
+        // Suppress the Menu ProgressBar
+        MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
     }
 
     public void noServerResponse() {
