@@ -78,7 +78,7 @@ public class LoginActivity extends SenateActivity
     ProgressBar progressBarLogin;
     public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
     public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
-
+    
     private static final String LOG_TAG = "AppUpgrade";
     private MyWebReceiver receiver;
     private int versionCode = 0;
@@ -93,7 +93,8 @@ public class LoginActivity extends SenateActivity
     String status = "no";
     boolean timeoutActivity = false;
     String timeoutFrom = null;
-
+    public static TextView tvWarnLabel;
+    
     public static DefaultHttpClient httpClient;
 
     @Override
@@ -113,7 +114,10 @@ public class LoginActivity extends SenateActivity
             timeoutFrom = null;
             Log.i("MAIN", "TIMEOUTFROM WILL BE NULL");
         }
-
+        
+        // Red Text Message
+        tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
+        
         if (timeoutFrom != null) {
             Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
@@ -131,6 +135,11 @@ public class LoginActivity extends SenateActivity
             user_name.removeClearButton();
             user_name.setBackgroundResource(R.drawable.customshape);
             password.requestFocus();
+            tvWarnLabel.setText("You have TIMED OUT!!!");
+            this.playSound(R.raw.timeout);
+        }
+        else {
+            tvWarnLabel.setText("");
         }
 
         // Read from the /assets directory for properties of the project
@@ -155,6 +164,7 @@ public class LoginActivity extends SenateActivity
             checkInitialAudioLevel();
         }
     }
+   
 
     // Self Explanatory
 
@@ -806,7 +816,19 @@ public class LoginActivity extends SenateActivity
             }
         }
     }
+    
+    @Override
+    public void onBackPressed() {
+        if (this.timeoutActivity)   {
+            int duration = Toast.LENGTH_SHORT;
 
+            Toast toast = Toast.makeText(context, "!!ERROR: You must first enter you password.", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+        
+    }
+    
     public void testSessions(View view) {
         AsyncTask<String, String, String> resr1 = new RequestTask()
                 .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");
