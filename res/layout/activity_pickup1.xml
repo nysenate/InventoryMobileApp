@@ -29,14 +29,20 @@
         style="@style/NormalText"
         android:text="@string/details" />
 
-    <TableLayout
+    <LinearLayout
         android:id="@+id/pickup_info1"        
-        android:layout_width="535dp"
-        android:layout_height="200dp"
+        android:layout_width="550dp"
+        android:layout_height="230dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_alignRight="@+id/btnPickup1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="10dp" >
+
+    <TableLayout
+        android:id="@+id/pickup_info1a"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
         android:background="@drawable/customshape" >
 
         <TableRow>
@@ -111,16 +117,23 @@
                 android:text="N/A" />
         </TableRow>
     </TableLayout>
+    </LinearLayout>
 
-    <TableLayout
+    <LinearLayout
         android:id="@+id/pickup_info2"
-        android:layout_width="538dp"
-        android:layout_height="200dp"
+        android:layout_width="550dp"
+        android:layout_height="230dp"
         android:layout_alignLeft="@+id/autoCompleteTextView2"
         android:layout_alignRight="@+id/autoCompleteTextView2"
         android:layout_below="@+id/autoCompleteTextView2"
         android:layout_marginTop="10dp"
-        android:background="@drawable/customshape" >
+        >
+        <TableLayout
+        android:id="@+id/pickup_info2A"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customshape" 
+        >
 
         <TableRow>
 
@@ -193,12 +206,12 @@
                 style="@style/NormalText" />
         </TableRow>
     </TableLayout>
+    </LinearLayout>
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignRight="@+id/textView2"
         android:layout_below="@+id/pickup_info1"
