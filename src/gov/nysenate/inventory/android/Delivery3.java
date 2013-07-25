@@ -160,7 +160,7 @@ public class Delivery3 extends SenateActivity
         // currently hardcoding
         // Brian : Please assign values to following variables after saving the
         // signature and name
-        NUXRACCPTSIGN = "1111";
+/*        NUXRACCPTSIGN = "1111";
         NADELIVERBY = "BH";
 
         NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query is
@@ -169,6 +169,10 @@ public class Delivery3 extends SenateActivity
         // Get the results for the Employee List and now do the actual setting
         // of the Signing Employee
         // Dropdown.
+        Log.i("Delivery3", "EMPLOYEE LIST 2");
+        employeeHiddenList = new ArrayList<Employee>();
+        employeeNameList = new ArrayList<String>();
+        
         try {
             JSONArray jsonArray = new JSONArray(employeeList);
             for (int x = 0; x < jsonArray.length(); x++) {
@@ -191,8 +195,8 @@ public class Delivery3 extends SenateActivity
                 android.R.layout.simple_dropdown_item_1line, employeeNameList);
 
         // for origin dest code
+        naemployeeView.setAdapter(adapter);*/
         naemployeeView.setThreshold(1);
-        naemployeeView.setAdapter(adapter);
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
     }
@@ -892,8 +896,13 @@ public class Delivery3 extends SenateActivity
         // Get the results for the Employee List and now do the actual setting
         // of the Signing Employee
         // Dropdown.
+        
+        employeeHiddenList = new ArrayList<Employee>();
+        employeeNameList = new ArrayList<String>();
+        
         try {
             JSONArray jsonArray = new JSONArray(employeeList);
+            Log.i("Delivery3", "EMPLOYEE LIST 1");
             for (int x = 0; x < jsonArray.length(); x++) {
                 JSONObject jo = new JSONObject();
                 jo = jsonArray.getJSONObject(x);
