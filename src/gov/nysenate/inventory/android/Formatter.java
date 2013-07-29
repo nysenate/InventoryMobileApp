@@ -3,7 +3,8 @@ package gov.nysenate.inventory.android;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Formatter {
+public class Formatter
+{
 
     /**
      * @param parameterName
@@ -22,12 +23,14 @@ public class Formatter {
         return getString;
     }
 
-    public static String generateGetArray(String parameterName, List<InvItem> invItems) {
+    public static String generateGetArray(String parameterName,
+            List<InvItem> invItems) {
         ArrayList<String> nusenateStrings = new ArrayList<String>();
         for (InvItem aValue : invItems) {
             nusenateStrings.add(aValue.getNusenate());
         }
-        String[] s = nusenateStrings.toArray(new String[nusenateStrings.size()]);
+        String[] s = nusenateStrings
+                .toArray(new String[nusenateStrings.size()]);
         return Formatter.generateGetArray(parameterName, s);
     }
 }

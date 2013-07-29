@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -21,12 +23,16 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public abstract class SenateActivity extends Activity
 {
-
+    public String timeoutFrom = "N/A";
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
+    public final int OK = 100, SERVER_SESSION_TIMED_OUT = 1000,
+            NO_SERVER_RESPONSE = 1001, EXCEPTION_IN_CODE = 1002;    
+    public final int CHECK_SERVER_RESPONSE = 200;
 
     private BaseActivityReceiver baseActivityReceiver = new BaseActivityReceiver();
     // private CheckInternet receiver;
@@ -122,6 +128,49 @@ public abstract class SenateActivity extends Activity
         InvApplication.activityDestroyed();
     }
 
+    public void startTimeout(int timeoutType) {
+        Intent intentTimeout = new Intent(this, LoginActivity.class);
+        intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
+        startActivityForResult(intentTimeout, timeoutType);
+    }
+
+    public void noServerResponseMsg() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
     protected void onResume(Bundle savedInstanceState) {
         super.onResume();
         InvApplication.activityResumed();
@@ -141,6 +190,62 @@ public abstract class SenateActivity extends Activity
         InvApplication.activityPaused();
     }
 
+    public int checkServerResponse() {
+        return checkServerResponse(true);
+    }
+
+    public int checkServerResponse(boolean handleServerResponse) {
+        String serverResponse = null;
+        AsyncTask<String, String, String> requestServerResponse = null;
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+
+            try {
+                // Get the URL from the properties
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+                requestServerResponse = new RequestTask().execute(URL
+                        + "/KeepSessionAlive");
+
+                try {
+                    serverResponse = null;
+                    serverResponse = requestServerResponse.get().trim()
+                            .toString();
+                    if (serverResponse == null) {
+                        if (handleServerResponse) {
+                            noServerResponseMsg();
+                        }
+                        return NO_SERVER_RESPONSE;
+                    } else if (serverResponse.indexOf("Session timed out") > -1) {
+                        if (handleServerResponse) {
+                            startTimeout(this.CHECK_SERVER_RESPONSE);
+                        }
+                        return SERVER_SESSION_TIMED_OUT;
+                    }
+
+                } catch (NullPointerException e) {
+                    if (handleServerResponse) {
+                        noServerResponseMsg();
+                    }
+                    return EXCEPTION_IN_CODE;
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            // display error
+        }
+        return OK;
+    }
+
     WifiManager mainWifi;
     // WifiReceiver receiverWifi;
     List<ScanResult> wifiList;
@@ -157,10 +262,11 @@ public abstract class SenateActivity extends Activity
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
-   
+
     /*
-     *  The app needs an internet connection, so check it on Activity Startup (fires when Any Activity is opened)
-     *  If the internet connection is turned off, then attempt to turn it on.
+     * The app needs an internet connection, so check it on Activity Startup
+     * (fires when Any Activity is opened) If the internet connection is turned
+     * off, then attempt to turn it on.
      */
 
     public void checkInternetConnection() {
@@ -190,14 +296,15 @@ public abstract class SenateActivity extends Activity
 
             prevConnected = curConnected;
             /*
-             * If the internet connection is on, then check to see if it previously wasn't, if it was off
-             * then show the Wifi Connection Found toast.
+             * If the internet connection is on, then check to see if it
+             * previously wasn't, if it was off then show the Wifi Connection
+             * Found toast.
              * 
-             * If there is no internet connection, but Wifi on the Tablet is turned on then return the 
-             * toast that the Wifi Connection is lost. 
+             * If there is no internet connection, but Wifi on the Tablet is
+             * turned on then return the toast that the Wifi Connection is lost.
              * 
-             * If there is no internet connection and the Wifi is off on the tablet, then attempt to turn
-             * on the Wifi Connection.
+             * If there is no internet connection and the Wifi is off on the
+             * tablet, then attempt to turn on the Wifi Connection.
              */
             if (cm.getActiveNetworkInfo() != null
                     && cm.getActiveNetworkInfo().isConnected()) {
@@ -260,14 +367,15 @@ public abstract class SenateActivity extends Activity
     }
 
     /*
-     * Wifi Alert does not work with the Check Internet connection Service.. 
-     * Original plans were to ask the user before connecting, but those plans have
-     * changed.. Now while the app is opened and in the foreground, we will try
-     * keep the wifi on (the app is useless without an internet connection). We
-     * will not try keeping the internet connection on if the App is closed or 
-     * in the background. Currently, WifiAlert is not being used for this reason.
+     * Wifi Alert does not work with the Check Internet connection Service..
+     * Original plans were to ask the user before connecting, but those plans
+     * have changed.. Now while the app is opened and in the foreground, we will
+     * try keep the wifi on (the app is useless without an internet connection).
+     * We will not try keeping the internet connection on if the App is closed
+     * or in the background. Currently, WifiAlert is not being used for this
+     * reason.
      */
-    
+
     public void wifiAlert(String title, String msg) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
@@ -315,7 +423,7 @@ public abstract class SenateActivity extends Activity
         // show it
         alertDialog.show();
     }
-    
+
     /*
      * Turn Wifi Connection back on if it is not Enabled
      */
@@ -332,9 +440,12 @@ public abstract class SenateActivity extends Activity
         long startTime = System.currentTimeMillis();
 
         try {
-            // Wait until Wifi is Enabled or the Maximum Wifi Wait Time has occurred
-            while (!mainWifi.isWifiEnabled() && (System.currentTimeMillis()-startTime <= maxWifiWaitTime)) {
-                // While waiting, attempt to turn on the Wifi Connection if it already hasn't been attempted
+            // Wait until Wifi is Enabled or the Maximum Wifi Wait Time has
+            // occurred
+            while (!mainWifi.isWifiEnabled()
+                    && (System.currentTimeMillis() - startTime <= maxWifiWaitTime)) {
+                // While waiting, attempt to turn on the Wifi Connection if it
+                // already hasn't been attempted
                 if (!enablingWifi) {
                     mainWifi.setWifiEnabled(true);
                     enablingWifi = true;
@@ -342,7 +453,8 @@ public abstract class SenateActivity extends Activity
                 // Wait to connect
                 Thread.sleep(1000);
             }
-            // Check to see if the Wifi Connection turned on, give appropriate message depending on if it was or not.
+            // Check to see if the Wifi Connection turned on, give appropriate
+            // message depending on if it was or not.
             if (mainWifi.isWifiEnabled()) {
                 toast = Toast.makeText(context,
                         "(Inventory App) Wifi has been turned back on.",

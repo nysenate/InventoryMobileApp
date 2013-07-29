@@ -56,7 +56,8 @@ public class VerSummaryActivity extends SenateActivity
     boolean positiveButtonPressed = false;
     Activity currentActivity;
     String timeoutFrom = "VERIFICATIONSUMMARY";
-    public final int VERIFICATIONREPORTS_TIMEOUT = 101, CONTINUEBUTTON_TIMEOUT = 102;
+    public final int VERIFICATIONREPORTS_TIMEOUT = 101,
+            CONTINUEBUTTON_TIMEOUT = 102;
     String URL = null;
 
     @Override
@@ -95,7 +96,8 @@ public class VerSummaryActivity extends SenateActivity
         tabHost.addTab(spec3);
 
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
-            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i)
+                    .findViewById(android.R.id.title);
             tv.setTextSize(20);
         }
 
@@ -174,8 +176,8 @@ public class VerSummaryActivity extends SenateActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.i("onActivityResult", "requestCode:" + requestCode
-//                + ", resultCode:" + resultCode + " = " + RESULT_OK);
+        // Log.i("onActivityResult", "requestCode:" + requestCode
+        // + ", resultCode:" + resultCode + " = " + RESULT_OK);
         switch (requestCode) {
         case VERIFICATIONREPORTS_TIMEOUT:
             if (resultCode == RESULT_OK) {
@@ -253,7 +255,9 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void backButton(View view) {
-        this.onBackPressed();
+        if (checkServerResponse(true) == OK) {
+            this.onBackPressed();
+        }
         /*
          * VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45); Intent
          * intent = new Intent(this, ListtestActivity.class);
@@ -301,48 +305,51 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void continueButton(View view) {
-        Log.i("continueButton", "Check for Session by using KeepSessionAlive");
-        URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                .toString();
-        AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
-        String response  = null;
-        try {
-             response = resr1.get().toString();
-             Log.i("continueButton", "KeepSessionAlive RESPONSE:"+response);
-            if (resr1==null||response==null||response.trim().length()==0) {
-                this.noServerResponse();
-                return;
+        if (checkServerResponse(true) == OK) {
+            Log.i("continueButton",
+                    "Check for Session by using KeepSessionAlive");
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/KeepSessionAlive");
+            String response = null;
+            try {
+                response = resr1.get().toString();
+                Log.i("continueButton", "KeepSessionAlive RESPONSE:" + response);
+                if (resr1 == null || response == null
+                        || response.trim().length() == 0) {
+                    this.noServerResponse();
+                    return;
+                } else if (response.indexOf("Session timed out") > -1) {
+                    continueButtonTimeout();
+                    return;
+                }
+            } catch (Exception e) {
+                if (resr1 == null || response == null
+                        || response.trim().length() == 0) {
+                    this.noServerResponse();
+                    return;
+                }
             }
-            else if (response.indexOf("Session timed out") > -1) {
-                continueButtonTimeout();
-                return;
+
+            // Since AlertDialogs are asynchronous, need logic to display one at
+            // a
+            // time.
+            if (foundItemsScanned()) {
+                displayFoundItemsDialog();
+            } else if (newItemsScanned()) {
+                displayNewItemsDialog();
+            } else {
+                displayVerificationDialog();
             }
-        }
-        catch (Exception e) {
-            if (resr1==null||response==null||response.trim().length()==0) {
-                this.noServerResponse();
-                return;
-            }
-        }
-        
-        // Since AlertDialogs are asynchronous, need logic to display one at a
-        // time.        
-        if (foundItemsScanned()) {
-            displayFoundItemsDialog();
-        } else if (newItemsScanned()) {
-            displayNewItemsDialog();
-        } else {
-            displayVerificationDialog();
         }
     }
-    
+
     public void continueButtonTimeout() {
         Intent intentTimeout = new Intent(VerSummaryActivity.this,
                 LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, CONTINUEBUTTON_TIMEOUT);
     }
-        
 
     private void displayFoundItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -581,7 +588,7 @@ public class VerSummaryActivity extends SenateActivity
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
- 
+
     public void startTimeout(int timeoutType) {
         this.progressVerSum.setVisibility(progressVerSum.INVISIBLE);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);

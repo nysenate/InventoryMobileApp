@@ -65,7 +65,6 @@ public class LoginActivity extends SenateActivity
     String senateVisitorSSIDpwd = "";
     String wifiMessage = "" /* "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app." */;
     String currentSSID = "";
-    private ListView mList;
     public static String nauser = null;
     Resources resources = null;
     static ClearableEditText user_name;
@@ -78,7 +77,7 @@ public class LoginActivity extends SenateActivity
     ProgressBar progressBarLogin;
     public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
     public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
-    
+
     private static final String LOG_TAG = "AppUpgrade";
     private MyWebReceiver receiver;
     private int versionCode = 0;
@@ -94,7 +93,7 @@ public class LoginActivity extends SenateActivity
     boolean timeoutActivity = false;
     String timeoutFrom = null;
     public static TextView tvWarnLabel;
-    
+
     public static DefaultHttpClient httpClient;
 
     @Override
@@ -114,10 +113,10 @@ public class LoginActivity extends SenateActivity
             timeoutFrom = null;
             Log.i("MAIN", "TIMEOUTFROM WILL BE NULL");
         }
-        
+
         // Red Text Message
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
-        
+
         if (timeoutFrom != null) {
             Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
@@ -137,8 +136,7 @@ public class LoginActivity extends SenateActivity
             password.requestFocus();
             tvWarnLabel.setText("You have TIMED OUT!!!");
             this.playSound(R.raw.timeout);
-        }
-        else {
+        } else {
             tvWarnLabel.setText("");
         }
 
@@ -164,7 +162,6 @@ public class LoginActivity extends SenateActivity
             checkInitialAudioLevel();
         }
     }
-   
 
     // Self Explanatory
 
@@ -447,8 +444,6 @@ public class LoginActivity extends SenateActivity
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // get the app version Name for display
-        String version = pInfo.versionName;
         // get the app version Code for checking
         versionCode = pInfo.versionCode;
         Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
@@ -489,7 +484,6 @@ public class LoginActivity extends SenateActivity
             final int maxVolume = audio
                     .getStreamMaxVolume(AudioManager.STREAM_MUSIC);
             String msg = null;
-            String title = null;
             boolean showAudioMsg = false;
 
             if (currentVolume == 0) {
@@ -716,18 +710,18 @@ public class LoginActivity extends SenateActivity
     public void onDestroy() {
         // unregister your receivers
         if (!this.timeoutActivity) {
-                try {
-                        this.unregisterReceiver(receiver);
-                    }
-                catch (Exception e) {
-                    Log.w("LoginActivity", "**WARNING: unable to unregister Internet Connection Receiver.");
-                    }
-                try {
-                    this.unregisterReceiver(downloadReceiver);
-                    }
-                catch (Exception e) {
-                    Log.w("LoginActivity", "**WARNING: unable to unregister Download Receiver.");
-                }
+            try {
+                this.unregisterReceiver(receiver);
+            } catch (Exception e) {
+                Log.w("LoginActivity",
+                        "**WARNING: unable to unregister Internet Connection Receiver.");
+            }
+            try {
+                this.unregisterReceiver(downloadReceiver);
+            } catch (Exception e) {
+                Log.w("LoginActivity",
+                        "**WARNING: unable to unregister Download Receiver.");
+            }
         }
 
         super.onDestroy();
@@ -816,19 +810,20 @@ public class LoginActivity extends SenateActivity
             }
         }
     }
-    
+
     @Override
     public void onBackPressed() {
-        if (this.timeoutActivity)   {
+        if (this.timeoutActivity) {
             int duration = Toast.LENGTH_SHORT;
 
-            Toast toast = Toast.makeText(context, "!!ERROR: You must first enter you password.", duration);
+            Toast toast = Toast.makeText(context,
+                    "!!ERROR: You must first enter you password.", duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
-        
+
     }
-    
+
     public void testSessions(View view) {
         AsyncTask<String, String, String> resr1 = new RequestTask()
                 .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");

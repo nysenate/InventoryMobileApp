@@ -72,11 +72,16 @@ public class Move extends SenateActivity implements OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id) {
         RowItem curRow = rowItems.get(position);
-        progBarMove.setVisibility(View.VISIBLE);
         if (curRow.getTitle().equalsIgnoreCase("Pickup")) {
-            this.pickup(view);
+            if (checkServerResponse(true) == OK) {
+                progBarMove.setVisibility(View.VISIBLE);
+                this.pickup(view);
+            }
         } else if (curRow.getTitle().equalsIgnoreCase("Delivery")) {
-            this.delivery(view);
+            if (checkServerResponse(true) == OK) {
+                progBarMove.setVisibility(View.VISIBLE);
+                this.delivery(view);
+            }
         } else if (curRow.getTitle().equalsIgnoreCase("Pickup/Deliver Log")) {
             // TODO
         } else if (curRow.getTitle().equalsIgnoreCase("Main Menu")) {

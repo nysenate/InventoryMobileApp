@@ -42,10 +42,9 @@ public class SearchActivity extends SenateActivity
     static Button btnSrchBck;
     Activity currentActivity;
 
-    String timeoutFrom = "search";    
-    public final int SEARCH_TIMEOUT = 101;    
-    
-    
+    String timeoutFrom = "search";
+    public final int SEARCH_TIMEOUT = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +93,6 @@ public class SearchActivity extends SenateActivity
         }
     };
 
-    
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -131,7 +129,7 @@ public class SearchActivity extends SenateActivity
         // show it
         alertDialog.show();
     }
-    
+
     public void getSearchDetails() {
         try {
             String barcode_num = barcode.getText().toString().trim();
@@ -144,12 +142,11 @@ public class SearchActivity extends SenateActivity
                 // fetch data
                 status = "yes";
                 // Get the URL from the properties
-                String URL = LoginActivity.properties.get(
-                        "WEBAPP_BASE_URL").toString();
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
                 Log.i("Activity Search afterTextChanged ", "URL " + URL);
                 AsyncTask<String, String, String> resr1 = new RequestTask()
-                        .execute(URL + "/Search?barcode_num="
-                                + barcode_num);
+                        .execute(URL + "/Search?barcode_num=" + barcode_num);
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
@@ -191,36 +188,31 @@ public class SearchActivity extends SenateActivity
                 int color = Integer.parseInt("000000", 16) + 0xFF000000;
                 tvBarcode.setTextColor(color);
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(
-                            res).nextValue();
+                    JSONObject object = (JSONObject) new JSONTokener(res)
+                            .nextValue();
                     StringBuilder nusenateMsg = new StringBuilder();
                     nusenateMsg.append(object.getString("nusenate"));
                     String cdstatus = object.getString("cdstatus");
                     Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
                     if (cdstatus.equalsIgnoreCase("I")) {
-                        nusenateMsg
-                                .append(" <font color='RED'>(INACTIVE) ");
-                        nusenateMsg
-                                .append(object.getString("deadjust"));
-                        Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus
-                                + ")");
+                        nusenateMsg.append(" <font color='RED'>(INACTIVE) ");
+                        nusenateMsg.append(object.getString("deadjust"));
+                        Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus + ")");
                     }
 
                     Log.i("TEST", "Senate Tag#:" + nusenateMsg);
-                    tvBarcode.setText(Html.fromHtml(nusenateMsg
-                            .toString()));
+                    tvBarcode.setText(Html.fromHtml(nusenateMsg.toString()));
 
-                    tvDescription.setText(object.getString(
-                            "decommodityf").replaceAll("&#34;", "\""));
+                    tvDescription.setText(object.getString("decommodityf")
+                            .replaceAll("&#34;", "\""));
                     tvCategory.setText(object.getString("cdcategory"));
                     tvLocation.setText(object.getString("cdlocatto")
                             + " ("
                             + object.getString("cdloctypeto")
                             + ") "
-                            + object.getString("adstreet1to")
-                                    .replaceAll("&#34;", "\""));
-                    tvDateInvntry.setText(object
-                            .getString("dtlstinvntry"));
+                            + object.getString("adstreet1to").replaceAll(
+                                    "&#34;", "\""));
+                    tvDateInvntry.setText(object.getString("dtlstinvntry"));
 
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -240,7 +232,7 @@ public class SearchActivity extends SenateActivity
             tvLocation.setText("N/A");
             tvDateInvntry.setText("N/A");
 
-        }        
+        }
     }
 
     @Override
@@ -285,13 +277,13 @@ public class SearchActivity extends SenateActivity
      * @Override public void onBackPressed() { super.onBackPressed();
      * overridePendingTransition(R.anim.in_left, R.anim.out_right); }
      */
-    
+
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case SEARCH_TIMEOUT:
@@ -301,6 +293,5 @@ public class SearchActivity extends SenateActivity
             }
         }
     }
-        
 
 }

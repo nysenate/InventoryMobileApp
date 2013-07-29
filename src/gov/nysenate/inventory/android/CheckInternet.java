@@ -32,8 +32,8 @@ public class CheckInternet extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!InvApplication.isActivityVisible()) {
-             Log.i("CheckInternet", "Invapp is invisible"); 
-             return;
+            Log.i("CheckInternet", "Invapp is invisible");
+            return;
         }
         int duration = Toast.LENGTH_SHORT;
         Toast toast;
@@ -168,17 +168,22 @@ public class CheckInternet extends BroadcastReceiver
             }
             if (mainWifi.isWifiEnabled()) {
                 toast = Toast.makeText(context,
-                        "(Inventory App) Wifi has been turned back on.", duration);
+                        "(Inventory App) Wifi has been turned back on.",
+                        duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
-                new MsgAlert(context, "WIFI could not be turned back on",
+                new MsgAlert(
+                        context,
+                        "WIFI could not be turned back on",
                         "***WARNING: (Inventory App) Unable to turn Wifi on. Please turn it on manually.");
             }
 
         } catch (Exception e) {
-            toast = Toast.makeText(context,
-                    "(Inventory App) (EXCEPTION1) Check Internet:" + e.getMessage(), duration);
+            toast = Toast.makeText(
+                    context,
+                    "(Inventory App) (EXCEPTION1) Check Internet:"
+                            + e.getMessage(), duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }

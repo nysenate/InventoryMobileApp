@@ -80,7 +80,7 @@ public class Delivery3 extends SenateActivity
     public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
     public ArrayList<String> employeeNameList = new ArrayList<String>();
     ClearableAutoCompleteTextView naemployeeView;
-    String requestTaskType = "";
+    String deliveryRequestTaskType = "";
     String employeeList = "";
     private String DECOMMENTS = null;
     Button btnDeliv3ClrSig;
@@ -91,8 +91,9 @@ public class Delivery3 extends SenateActivity
     public static ProgressBar progBarDelivery3;
     boolean positiveButtonPressed = false;
     Activity currentActivity;
-    String timeoutFrom = "delivery1";    
-    public final int DELIVERYDETAILS_TIMEOUT = 101, POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103;        
+    String timeoutFrom = "delivery1";
+    public final int DELIVERYDETAILS_TIMEOUT = 101,
+            POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103;
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
 
@@ -160,53 +161,43 @@ public class Delivery3 extends SenateActivity
         // currently hardcoding
         // Brian : Please assign values to following variables after saving the
         // signature and name
-/*        NUXRACCPTSIGN = "1111";
-        NADELIVERBY = "BH";
-
-        NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query is
-                               // formated that way)
-
-        // Get the results for the Employee List and now do the actual setting
-        // of the Signing Employee
-        // Dropdown.
-        Log.i("Delivery3", "EMPLOYEE LIST 2");
-        employeeHiddenList = new ArrayList<Employee>();
-        employeeNameList = new ArrayList<String>();
-        
-        try {
-            JSONArray jsonArray = new JSONArray(employeeList);
-            for (int x = 0; x < jsonArray.length(); x++) {
-                JSONObject jo = new JSONObject();
-                jo = jsonArray.getJSONObject(x);
-                Employee currentEmployee = new Employee();
-                currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-                        jo.getString("naemployee"));
-                employeeHiddenList.add(currentEmployee);
-                employeeNameList.add(jo.getString("naemployee"));
-            }
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        Collections.sort(employeeNameList);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, employeeNameList);
-
-        // for origin dest code
-        naemployeeView.setAdapter(adapter);*/
+        /*
+         * NUXRACCPTSIGN = "1111"; NADELIVERBY = "BH";
+         * 
+         * NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query
+         * is // formated that way)
+         * 
+         * // Get the results for the Employee List and now do the actual
+         * setting // of the Signing Employee // Dropdown. Log.i("Delivery3",
+         * "EMPLOYEE LIST 2"); employeeHiddenList = new ArrayList<Employee>();
+         * employeeNameList = new ArrayList<String>();
+         * 
+         * try { JSONArray jsonArray = new JSONArray(employeeList); for (int x =
+         * 0; x < jsonArray.length(); x++) { JSONObject jo = new JSONObject();
+         * jo = jsonArray.getJSONObject(x); Employee currentEmployee = new
+         * Employee(); currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
+         * jo.getString("naemployee")); employeeHiddenList.add(currentEmployee);
+         * employeeNameList.add(jo.getString("naemployee")); } } catch
+         * (JSONException e) { // TODO Auto-generated catch block
+         * e.printStackTrace(); }
+         * 
+         * Collections.sort(employeeNameList);
+         * 
+         * ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+         * android.R.layout.simple_dropdown_item_1line, employeeNameList);
+         * 
+         * // for origin dest code naemployeeView.setAdapter(adapter);
+         */
         naemployeeView.setThreshold(1);
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
     }
-    
+
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
-    
 
     @Override
     protected void onResume() {
@@ -309,7 +300,7 @@ public class Delivery3 extends SenateActivity
         if (!keepAlive()) {
             return;
         }
-        
+
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delivery Confirmation");
@@ -397,7 +388,7 @@ public class Delivery3 extends SenateActivity
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
-                this.requestTaskType = "Delivery";
+                this.deliveryRequestTaskType = "Delivery";
                 String deliveryURL = URL
                         + "/DeliveryConfirmation?NUXRPD="
                         + nuxrpd
@@ -405,12 +396,14 @@ public class Delivery3 extends SenateActivity
                         + LoginActivity.nauser
                         + "&NAACCEPTBY="
                         + NAACCEPTBY
-                        + Formatter.generateGetArray("deliveryItemsStr[]", this.invAdapter.getAllItems())
-                        + Formatter.generateGetArray("checkedStr[]", this.invAdapter.getSelectedItems(true));
+                        + Formatter.generateGetArray("deliveryItemsStr[]",
+                                this.invAdapter.getAllItems())
+                        + Formatter.generateGetArray("checkedStr[]",
+                                this.invAdapter.getSelectedItems(true));
 
-                resr1 = new RequestTask().execute(URL + "/ImgUpload?nauser="
-                        + LoginActivity.nauser + "&nuxrefem=" + nuxrefem,
-                        deliveryURL);
+                resr1 = new DeliveryRequestTask().execute(URL
+                        + "/ImgUpload?nauser=" + LoginActivity.nauser
+                        + "&nuxrefem=" + nuxrefem, deliveryURL);
 
                 try {
                     res = null;
@@ -422,7 +415,7 @@ public class Delivery3 extends SenateActivity
                         startTimeout(this.POSITIVEDIALOG_TIMEOUT);
                         return;
                     }
-                    
+
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -516,7 +509,8 @@ public class Delivery3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("onActivityResult", "requestCode:"+requestCode+" resultCode:"+resultCode);
+        Log.i("onActivityResult", "requestCode:" + requestCode + " resultCode:"
+                + resultCode);
         switch (requestCode) {
         case DELIVERYDETAILS_TIMEOUT:
             Log.i("onActivityResult", "DELIVERYDETAILS_TIMEOUT");
@@ -526,38 +520,40 @@ public class Delivery3 extends SenateActivity
             }
         case POSITIVEDIALOG_TIMEOUT:
             Log.i("onActivityResult", "POSITIVEDIALOG_TIMEOUT");
-            //positiveDialog();
+            // positiveDialog();
             break;
         case KEEPALIVE_TIMEOUT:
             Log.i("onActivityResult", "KEEPALIVE_TIMEOUT");
-            new Timer().schedule(new TimerTask() {          
+            new Timer().schedule(new TimerTask()
+            {
                 @Override
                 public void run() {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(
                             naemployeeView.getWindowToken(), 0);
                 }
-            }, 50);                 
-            
+            }, 50);
+
             break;
         case VOICE_RECOGNITION_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-            // Fill the list view with the strings the recognizer thought it
-            // could have heard
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            commentsEditText.setText(matches.get(0));
-             } 
+            if (resultCode == RESULT_OK) {
+                // Fill the list view with the strings the recognizer thought it
+                // could have heard
+                ArrayList<String> matches = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                commentsEditText.setText(matches.get(0));
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     public void backButton(View view) {
         super.onBackPressed();
     }
 
     // class for connecting to internet and sending HTTP request to server
-    class RequestTask extends AsyncTask<String, String, String>
+    class DeliveryRequestTask extends AsyncTask<String, String, String>
     {
 
         @Override
@@ -565,11 +561,12 @@ public class Delivery3 extends SenateActivity
             HttpClient httpclient = LoginActivity.httpClient;
             HttpResponse response;
             String responseString = null;
-            Log.i("WEBRECEIVE", "requestTaskType:" + requestTaskType);
-            if (requestTaskType.equalsIgnoreCase("Delivery")) {
+            Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
+                    + deliveryRequestTaskType);
+            if (deliveryRequestTaskType.equalsIgnoreCase("Delivery")) {
                 try {
                     // Scale the Image
-                    
+
                     String NUXRRELSIGN = "";
 
                     ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -592,7 +589,7 @@ public class Delivery3 extends SenateActivity
                     imageInByte = bs.toByteArray();
 
                     // Post the Image to the Web Server
-                    
+
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[0].trim());
                     if (uri[0].indexOf("?") > -1) {
@@ -608,53 +605,51 @@ public class Delivery3 extends SenateActivity
                     URL url = new URL(urls.toString());
 
                     HttpClient httpClient = LoginActivity.httpClient;
-                    
+
                     if (httpClient == null) {
-                        Log.i(RequestTask.class.getName(),
+                        Log.i(DeliveryRequestTask.class.getName(),
                                 "MainActivity.httpClient was null so it is being reset");
                         LoginActivity.httpClient = new DefaultHttpClient();
                         httpclient = LoginActivity.httpClient;
                     }
-                    
-                    HttpContext localContext = new BasicHttpContext();  
-                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);                      
-                            
-                    HttpPost httpPost = new HttpPost(urls.toString());    
-                    entity.addPart("Signature", new ByteArrayBody(imageInByte, "temp.jpg"));  
-                    httpPost.setEntity(entity);                      
 
-                   /* HttpURLConnection conn = (HttpURLConnection) url
-                            .openConnection();
-                    // Set connection parameters.
-                    conn.setDoInput(true);
-                    conn.setDoOutput(true);
-                    conn.setUseCaches(false);
+                    HttpContext localContext = new BasicHttpContext();
+                    MultipartEntity entity = new MultipartEntity(
+                            HttpMultipartMode.BROWSER_COMPATIBLE);
 
-                    // Set content type to PNG
-                    conn.setRequestProperty("Content-Type", "image/jpg");
-                    OutputStream outputStream = conn.getOutputStream();
-                    OutputStream out = outputStream;
-                    // Write out the bytes of the content string to the stream.
-                    out.write(imageInByte);
-                    out.flush();
-                    out.close();
-                    // Read response from the input stream.
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(conn.getInputStream()));
-                    String temp;
-                    while ((temp = in.readLine()) != null) {
-                        responseString += temp + "\n";
-                    }
-                    temp = null;
-                    in.close();*/
+                    HttpPost httpPost = new HttpPost(urls.toString());
+                    entity.addPart("Signature", new ByteArrayBody(imageInByte,
+                            "temp.jpg"));
+                    httpPost.setEntity(entity);
+
+                    /*
+                     * HttpURLConnection conn = (HttpURLConnection) url
+                     * .openConnection(); // Set connection parameters.
+                     * conn.setDoInput(true); conn.setDoOutput(true);
+                     * conn.setUseCaches(false);
+                     * 
+                     * // Set content type to PNG
+                     * conn.setRequestProperty("Content-Type", "image/jpg");
+                     * OutputStream outputStream = conn.getOutputStream();
+                     * OutputStream out = outputStream; // Write out the bytes
+                     * of the content string to the stream.
+                     * out.write(imageInByte); out.flush(); out.close(); // Read
+                     * response from the input stream. BufferedReader in = new
+                     * BufferedReader( new
+                     * InputStreamReader(conn.getInputStream())); String temp;
+                     * while ((temp = in.readLine()) != null) { responseString
+                     * += temp + "\n"; } temp = null; in.close();
+                     */
                     // System.out.println("Server response:\n'" + responseString
                     // + "'");
-                    
+
                     // Get Server Response to the posted Image
-                    
-                    response = httpClient.execute(httpPost, localContext);  
-                    BufferedReader reader = new BufferedReader(new InputStreamReader( response.getEntity().getContent(), "UTF-8"));  
-                    responseString= reader.readLine();                      
+
+                    response = httpClient.execute(httpPost, localContext);
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(response.getEntity()
+                                    .getContent(), "UTF-8"));
+                    responseString = reader.readLine();
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRACCPTSIGN = responseString
@@ -702,11 +697,12 @@ public class Delivery3 extends SenateActivity
                     // TODO Handle problems..
                 }
                 res = responseString;
-                Log.i("WEBRECEIVE", "requestTaskType:" + requestTaskType
-                        + " response:" + res);
+                Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
+                        + deliveryRequestTaskType + " response:" + res);
 
                 return responseString;
-            } else if (requestTaskType.equalsIgnoreCase("EmployeeDeliveryList")) {
+            } else if (deliveryRequestTaskType
+                    .equalsIgnoreCase("EmployeeDeliveryList")) {
 
                 // Get List of Employees for the Signing Employee Dropdown
 
@@ -765,7 +761,7 @@ public class Delivery3 extends SenateActivity
                 }
 
                 return responseString;
-            } else if (requestTaskType.equalsIgnoreCase("KeepAlive")) {
+            } else if (deliveryRequestTaskType.equalsIgnoreCase("KeepAlive")) {
 
                 // Get List of Employees for the Signing Employee Dropdown
 
@@ -795,8 +791,8 @@ public class Delivery3 extends SenateActivity
 
         }
     }
-    
-    public void getDeliveryDetails(){
+
+    public void getDeliveryDetails() {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -807,8 +803,8 @@ public class Delivery3 extends SenateActivity
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
-            this.requestTaskType = "EmployeeDeliveryList";
-            AsyncTask<String, String, String> resr1 = new RequestTask()
+            this.deliveryRequestTaskType = "EmployeeDeliveryList";
+            AsyncTask<String, String, String> resr1 = new DeliveryRequestTask()
                     .execute(URL + "/EmployeeList", URL
                             + "/DeliveryDetails?NUXRPD=" + nuxrpd);
 
@@ -880,7 +876,7 @@ public class Delivery3 extends SenateActivity
         } else {
             // display error
             status = "no";
-        }      
+        }
         // Signature from 'Accepted By'
 
         // Save the signature on server (Received By), comments, Name
@@ -896,10 +892,10 @@ public class Delivery3 extends SenateActivity
         // Get the results for the Employee List and now do the actual setting
         // of the Signing Employee
         // Dropdown.
-        
+
         employeeHiddenList = new ArrayList<Employee>();
         employeeNameList = new ArrayList<String>();
-        
+
         try {
             JSONArray jsonArray = new JSONArray(employeeList);
             Log.i("Delivery3", "EMPLOYEE LIST 1");
@@ -923,9 +919,9 @@ public class Delivery3 extends SenateActivity
                 android.R.layout.simple_dropdown_item_1line, employeeNameList);
 
         naemployeeView.setAdapter(adapter);
-        
+
     }
-    
+
     public boolean keepAlive() {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -939,8 +935,9 @@ public class Delivery3 extends SenateActivity
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
-                this.requestTaskType = "KeepAlive";
-                resr1 = new RequestTask().execute(URL + "/KeepSessionAlive");
+                this.deliveryRequestTaskType = "KeepAlive";
+                resr1 = new DeliveryRequestTask().execute(URL
+                        + "/KeepSessionAlive");
 
                 try {
                     res = null;
@@ -952,7 +949,7 @@ public class Delivery3 extends SenateActivity
                         startTimeout(this.KEEPALIVE_TIMEOUT);
                         return false;
                     }
-                    
+
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return false;
@@ -971,6 +968,6 @@ public class Delivery3 extends SenateActivity
             status = "no";
         }
         return true;
-        
+
     }
 }

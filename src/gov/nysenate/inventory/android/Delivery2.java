@@ -43,8 +43,8 @@ public class Delivery2 extends SenateActivity
     static ProgressBar progBarDelivery2;
     static Button btnDelivery2Cancel;
     Activity currentActivity;
-    String timeoutFrom = "delivery1";    
-    public final int DELIVERYLIST_TIMEOUT = 101;    
+    String timeoutFrom = "delivery1";
+    public final int DELIVERYLIST_TIMEOUT = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +81,20 @@ public class Delivery2 extends SenateActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                progBarDelivery2.setVisibility(View.VISIBLE);
-                // this will go to the Delivery 3 activity with the data
-                PickupGroup selectedPickup = pickupGroups.get(position);
-                // String [] itemDetails=selectedPickup.split(":");
-                String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
+                if (checkServerResponse(true) == OK) {
 
-                intent.putExtra("location", location);
-                intent.putExtra("nuxrpd", nuxrpd);
+                    progBarDelivery2.setVisibility(View.VISIBLE);
+                    // this will go to the Delivery 3 activity with the data
+                    PickupGroup selectedPickup = pickupGroups.get(position);
+                    // String [] itemDetails=selectedPickup.split(":");
+                    String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
 
-                startActivity(intent);
-                overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                    intent.putExtra("location", location);
+                    intent.putExtra("nuxrpd", nuxrpd);
+
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                }
             }
 
         });
@@ -151,18 +154,20 @@ public class Delivery2 extends SenateActivity
     }
 
     public void cancelButton(View view) {
-        Delivery2.btnDelivery2Cancel.getBackground().setAlpha(45);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        if (checkServerResponse(true) == OK) {
+            Delivery2.btnDelivery2Cancel.getBackground().setAlpha(45);
+            Intent intent = new Intent(this, Move.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        }
     }
-    
+
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case DELIVERYLIST_TIMEOUT:
@@ -172,160 +177,159 @@ public class Delivery2 extends SenateActivity
             }
         }
     }
-    
-   public void getDeliveryList() {
-       // separate location code from the description
-       String locDesc[] = location.split("-");
-       locCode = locDesc[0];
 
-       // 2. Display all the in transit moves for the current location
-       // check network connection
-       ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-       NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-       if (networkInfo != null && networkInfo.isConnected()) {
-           // fetch data
-           status = "yes";
+    public void getDeliveryList() {
+        // separate location code from the description
+        String locDesc[] = location.split("-");
+        locCode = locDesc[0];
 
-           // Get the URL from the properties
-           URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+        // 2. Display all the in transit moves for the current location
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+            status = "yes";
 
-           AsyncTask<String, String, String> resr1 = new RequestTask()
-                   .execute(URL + "/DeliveryList?loc_code=" + locCode);
-           try {
-               try {
-                   res = null;
-                   res = resr1.get().trim().toString();
-                   if (res==null) {
-                       this.noServerResponse();
-                       return;
-                   } else if (res.indexOf("Session timed out") > -1) {
-                       startTimeout(this.DELIVERYLIST_TIMEOUT);
-                       return;
-                   }
-                       
-               } catch (NullPointerException e) {
-                   this.noServerResponse();
-                   return;
-               }
-               
-               
-               // code for JSON
+            // Get the URL from the properties
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
-               try {
-                   JSONArray jsonArray = new JSONArray(res);
-                   JSONObject object;
-                   PickupGroup currentPickupGroup;
-                   int nuxrpd = -1;
-                   String pickupDateTime = "N/A";
-                   String pickupFrom = "N/A";
-                   String pickupRelBy = "N/A";
-                   String pickupLocat = "N/A";
-                   String pickupAdstreet1 = "N/A";
-                   String pickupAdcity = "N/A";
-                   String pickupAdstate = "N/A";
-                   String pickupAdzipcode = "N/A";
-                   int pickupItemCount = -1;
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/DeliveryList?loc_code=" + locCode);
+            try {
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        this.noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(this.DELIVERYLIST_TIMEOUT);
+                        return;
+                    }
 
-                   for (int x = 0; x < jsonArray.length(); x++) {
-                       nuxrpd = -1;
-                       pickupDateTime = "N/A";
-                       pickupFrom = "N/A";
-                       pickupRelBy = "N/A";
-                       pickupLocat = "N/A";
-                       pickupAdstreet1 = "N/A";
-                       pickupAdcity = "N/A";
-                       pickupAdstate = "N/A";
-                       pickupAdzipcode = "N/A";
-                       pickupItemCount = -1;
-                       object = jsonArray.getJSONObject(x);
-                       try {
-                           nuxrpd = object.getInt("nuxrpd");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupDateTime = object.getString("pickupDateTime");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupFrom = object.getString("pickupFrom");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupRelBy = object.getString("pickupRelBy");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupLocat = object.getString("pickupLocat");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupItemCount = object.getInt("pickupItemCount");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupAdstreet1 = object
-                                   .getString("pickupAdstreet1");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupAdcity = object.getString("pickupAdcity");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupAdstate = object.getString("pickupAdstate");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           pickupAdzipcode = object
-                                   .getString("pickupAdzipcode");
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
+                } catch (NullPointerException e) {
+                    this.noServerResponse();
+                    return;
+                }
 
-                       // Log.i("JSON VALUES "+x, object.toString());
-                       currentPickupGroup = new PickupGroup(nuxrpd,
-                               pickupDateTime, pickupFrom, pickupRelBy,
-                               pickupLocat, pickupAdstreet1, pickupAdcity,
-                               pickupAdstate, pickupAdzipcode, pickupItemCount);
-                       // System.out.println(nuxrpd+" ,  "+pickupDateTime+" ,"+
-                       // pickupFrom+", "+pickupRelBy+" , "+pickupLocat+" , "+pickupItemCount);
-                       pickupGroups.add(currentPickupGroup);
-                   }
+                // code for JSON
 
-               } catch (JSONException e) {
-                   // TODO Auto-generated catch block
-                   e.printStackTrace();
-               }
+                try {
+                    JSONArray jsonArray = new JSONArray(res);
+                    JSONObject object;
+                    PickupGroup currentPickupGroup;
+                    int nuxrpd = -1;
+                    String pickupDateTime = "N/A";
+                    String pickupFrom = "N/A";
+                    String pickupRelBy = "N/A";
+                    String pickupLocat = "N/A";
+                    String pickupAdstreet1 = "N/A";
+                    String pickupAdcity = "N/A";
+                    String pickupAdstate = "N/A";
+                    String pickupAdzipcode = "N/A";
+                    int pickupItemCount = -1;
 
-               // System.out.println
-               // ("pickupGroups Count:"+pickupGroups.size());
-               PickupGroupViewAdapter adapter = new PickupGroupViewAdapter(
-                       this, R.layout.pickup_group_row, pickupGroups);
-               // System.out.println ("Setup Listview with pickupGroups");
+                    for (int x = 0; x < jsonArray.length(); x++) {
+                        nuxrpd = -1;
+                        pickupDateTime = "N/A";
+                        pickupFrom = "N/A";
+                        pickupRelBy = "N/A";
+                        pickupLocat = "N/A";
+                        pickupAdstreet1 = "N/A";
+                        pickupAdcity = "N/A";
+                        pickupAdstate = "N/A";
+                        pickupAdzipcode = "N/A";
+                        pickupItemCount = -1;
+                        object = jsonArray.getJSONObject(x);
+                        try {
+                            nuxrpd = object.getInt("nuxrpd");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupDateTime = object.getString("pickupDateTime");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupFrom = object.getString("pickupFrom");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupRelBy = object.getString("pickupRelBy");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupLocat = object.getString("pickupLocat");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupItemCount = object.getInt("pickupItemCount");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupAdstreet1 = object
+                                    .getString("pickupAdstreet1");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupAdcity = object.getString("pickupAdcity");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupAdstate = object.getString("pickupAdstate");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            pickupAdzipcode = object
+                                    .getString("pickupAdzipcode");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-               listview.setAdapter(adapter);
+                        // Log.i("JSON VALUES "+x, object.toString());
+                        currentPickupGroup = new PickupGroup(nuxrpd,
+                                pickupDateTime, pickupFrom, pickupRelBy,
+                                pickupLocat, pickupAdstreet1, pickupAdcity,
+                                pickupAdstate, pickupAdzipcode, pickupItemCount);
+                        // System.out.println(nuxrpd+" ,  "+pickupDateTime+" ,"+
+                        // pickupFrom+", "+pickupRelBy+" , "+pickupLocat+" , "+pickupItemCount);
+                        pickupGroups.add(currentPickupGroup);
+                    }
 
-           } catch (InterruptedException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-           } catch (ExecutionException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-           }
-           status = "yes1";
-       } else {
-           // display error
-           status = "no";
-       }       
-   }
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                // System.out.println
+                // ("pickupGroups Count:"+pickupGroups.size());
+                PickupGroupViewAdapter adapter = new PickupGroupViewAdapter(
+                        this, R.layout.pickup_group_row, pickupGroups);
+                // System.out.println ("Setup Listview with pickupGroups");
+
+                listview.setAdapter(adapter);
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            status = "yes1";
+        } else {
+            // display error
+            status = "no";
+        }
+    }
 
 }

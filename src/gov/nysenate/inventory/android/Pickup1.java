@@ -67,9 +67,11 @@ public class Pickup1 extends SenateActivity
     boolean fromLocationBeingTyped = false;
     boolean toLocationBeingTyped = false;
     public static ProgressBar progBarPickup1;
-    String timeoutFrom = "pickup1";    
-    public final int LOCCODELIST_TIMEOUT = 101, FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;        
+    String timeoutFrom = "pickup1";
+    public final int LOCCODELIST_TIMEOUT = 101,
+            FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
     ArrayAdapter<String> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,14 +93,14 @@ public class Pickup1 extends SenateActivity
         tvCount2 = (TextView) this.findViewById(R.id.tvCount2);
 
         progBarPickup1 = (ProgressBar) this.findViewById(R.id.progBarPickup1);
-        
+
         // Setup Edit Text Fields
         autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
         autoCompleteTextView2 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
-        
+
         getLocCodeList();
         autoCompleteTextView1.setThreshold(1);
-        
+
         btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
         btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
 
@@ -106,24 +108,22 @@ public class Pickup1 extends SenateActivity
                 .setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
-                    public void onItemClick(AdapterView<?> parent,
-                            View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent, View view,
+                            int position, long id) {
                         Log.i("ItemClicked", "ITEM CLICKED");
-                        if (autoCompleteTextView2.getText().toString()
-                                .trim().length() > 0) {
+                        if (autoCompleteTextView2.getText().toString().trim()
+                                .length() > 0) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(
-                                    autoCompleteTextView1
-                                            .getWindowToken(), 0);
+                                    autoCompleteTextView1.getWindowToken(), 0);
                         } else {
                             boolean focusRequested = autoCompleteTextView2
                                     .requestFocus();
                         }
-                        fromLocationBeingTyped = false;                        
+                        fromLocationBeingTyped = false;
 
                     }
                 });
-
 
         // code for textwatcher
         // for origin location code
@@ -140,8 +140,7 @@ public class Pickup1 extends SenateActivity
 
         try {
             Move.progBarMove.setVisibility(View.INVISIBLE);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -210,7 +209,7 @@ public class Pickup1 extends SenateActivity
         public void afterTextChanged(Editable s) {
             fromLocationBeingTyped = true;
             if (autoCompleteTextView1.getText().toString().length() >= 3) {
-                  getFromLocationDetails();
+                getFromLocationDetails();
             }
         }
     };
@@ -233,118 +232,124 @@ public class Pickup1 extends SenateActivity
         public void afterTextChanged(Editable s) {
             toLocationBeingTyped = true;
             if (autoCompleteTextView2.getText().toString().length() >= 3) {
-                   getToLocationDetails();
+                getToLocationDetails();
             }
         }
     };
 
     public void continueButton(View view) {
-        float alpha = 0.45f;
-        AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-        alphaUp.setFillAfter(true);
-        btnPickup1Cont.startAnimation(alphaUp);
-        int duration = Toast.LENGTH_SHORT;
+        if (checkServerResponse(true) == OK) {
 
-        String currentFromLocation = this.autoCompleteTextView1.getText()
-                .toString();
-        String currentToLocation = this.autoCompleteTextView2.getText()
-                .toString();
+            float alpha = 0.45f;
+            AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
+            alphaUp.setFillAfter(true);
+            btnPickup1Cont.startAnimation(alphaUp);
+            int duration = Toast.LENGTH_SHORT;
 
-        if (currentFromLocation.trim().length() == 0) {
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "!!ERROR: You must first pick a from location.", duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            boolean focusRequested = autoCompleteTextView1.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            String currentFromLocation = this.autoCompleteTextView1.getText()
+                    .toString();
+            String currentToLocation = this.autoCompleteTextView2.getText()
+                    .toString();
 
-        } else if (locCodeList.indexOf(currentFromLocation) == -1) {
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "!!ERROR: From Location Code \"" + currentFromLocation
-                            + "\" is invalid.", duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            boolean focusRequested = autoCompleteTextView1.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            if (currentFromLocation.trim().length() == 0) {
+                Toast toast = Toast.makeText(this.getApplicationContext(),
+                        "!!ERROR: You must first pick a from location.",
+                        duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                boolean focusRequested = autoCompleteTextView1.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-        } else if (currentToLocation.trim().length() == 0) {
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "!!ERROR: You must first pick a to location.", duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            boolean focusRequested = autoCompleteTextView2.requestFocus();
+            } else if (locCodeList.indexOf(currentFromLocation) == -1) {
+                Toast toast = Toast.makeText(this.getApplicationContext(),
+                        "!!ERROR: From Location Code \"" + currentFromLocation
+                                + "\" is invalid.", duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                boolean focusRequested = autoCompleteTextView1.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-        } else if (locCodeList.indexOf(currentFromLocation) == -1) {
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "!!ERROR: To Location Code \"" + currentToLocation
-                            + "\" is invalid.", duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            boolean focusRequested = autoCompleteTextView2.requestFocus();
+            } else if (currentToLocation.trim().length() == 0) {
+                Toast toast = Toast
+                        .makeText(this.getApplicationContext(),
+                                "!!ERROR: You must first pick a to location.",
+                                duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-        } else if (currentToLocation.equalsIgnoreCase(currentFromLocation)) {
-            Toast toast = Toast
-                    .makeText(
-                            this.getApplicationContext(),
-                            "!!ERROR: To Location Code \""
-                                    + currentToLocation
-                                    + "\" cannot be the same as the From Location Code.",
-                            duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            boolean focusRequested = autoCompleteTextView2.requestFocus();
+            } else if (locCodeList.indexOf(currentFromLocation) == -1) {
+                Toast toast = Toast.makeText(this.getApplicationContext(),
+                        "!!ERROR: To Location Code \"" + currentToLocation
+                                + "\" is invalid.", duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-        } else {
-            String cdlocatto = "";
-            String cdloctypeto = "";
-            String cdlocatfrm = "";
-            String cdloctypefrm = "";
+            } else if (currentToLocation.equalsIgnoreCase(currentFromLocation)) {
+                Toast toast = Toast
+                        .makeText(
+                                this.getApplicationContext(),
+                                "!!ERROR: To Location Code \""
+                                        + currentToLocation
+                                        + "\" cannot be the same as the From Location Code.",
+                                duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-            int nuStop = 0;
-            int nuStop2 = 0;
-            if (originLocation != null) {
-                nuStop = originLocation.indexOf("-");
+            } else {
+                String cdlocatto = "";
+                String cdloctypeto = "";
+                String cdlocatfrm = "";
+                String cdloctypefrm = "";
 
-                if (nuStop > -1) {
-                    cdlocatfrm = originLocation.substring(0, nuStop);
-                    nuStop2 = originLocation.indexOf(":", nuStop);
-                    cdloctypefrm = originLocation
-                            .substring(nuStop + 1, nuStop2);
-                } else {
-                    cdlocatfrm = originLocation;
+                int nuStop = 0;
+                int nuStop2 = 0;
+                if (originLocation != null) {
+                    nuStop = originLocation.indexOf("-");
+
+                    if (nuStop > -1) {
+                        cdlocatfrm = originLocation.substring(0, nuStop);
+                        nuStop2 = originLocation.indexOf(":", nuStop);
+                        cdloctypefrm = originLocation.substring(nuStop + 1,
+                                nuStop2);
+                    } else {
+                        cdlocatfrm = originLocation;
+                    }
+                    nuStop = destinationLocation.indexOf("-");
+                    if (nuStop > -1) {
+                        cdlocatto = destinationLocation.substring(0, nuStop);
+                        nuStop2 = destinationLocation.indexOf(":", nuStop);
+                        cdloctypeto = destinationLocation.substring(nuStop + 1,
+                                nuStop2);
+                    } else {
+                        cdlocatfrm = destinationLocation;
+                    }
                 }
-                nuStop = destinationLocation.indexOf("-");
-                if (nuStop > -1) {
-                    cdlocatto = destinationLocation.substring(0, nuStop);
-                    nuStop2 = destinationLocation.indexOf(":", nuStop);
-                    cdloctypeto = destinationLocation.substring(nuStop + 1,
-                            nuStop2);
-                } else {
-                    cdlocatfrm = destinationLocation;
-                }
+
+                progBarPickup1.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(this, Pickup2Activity.class);
+                intent.putExtra("cdlocatfrm", cdlocatfrm);
+                intent.putExtra("cdlocatto", cdlocatto);
+                intent.putExtra("cdloctypefrm", cdloctypefrm);
+                intent.putExtra("cdloctypeto", cdloctypeto);
+                intent.putExtra("originLocation", originLocation); // for origin
+                                                                   // code
+                intent.putExtra("destinationLocation", destinationLocation); // for
+                // destination
+                // code
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
 
-            progBarPickup1.setVisibility(View.VISIBLE);
-
-            Intent intent = new Intent(this, Pickup2Activity.class);
-            intent.putExtra("cdlocatfrm", cdlocatfrm);
-            intent.putExtra("cdlocatto", cdlocatto);
-            intent.putExtra("cdloctypefrm", cdloctypefrm);
-            intent.putExtra("cdloctypeto", cdloctypeto);
-            intent.putExtra("originLocation", originLocation); // for origin
-                                                               // code
-            intent.putExtra("destinationLocation", destinationLocation); // for
-            // destination
-            // code
-            startActivity(intent);
-            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+            alphaUp = new AlphaAnimation(1f, 1f);
+            alphaUp.setFillAfter(true);
+            btnPickup1Cont.startAnimation(alphaUp);
         }
-
-        alphaUp = new AlphaAnimation(1f, 1f);
-        alphaUp.setFillAfter(true);
-        btnPickup1Cont.startAnimation(alphaUp);
     }
 
     public void cancelButton(View view) {
@@ -368,13 +373,13 @@ public class Pickup1 extends SenateActivity
         getMenuInflater().inflate(R.menu.activity_pickup1, menu);
         return true;
     }
-    
+
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
-    
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case LOCCODELIST_TIMEOUT:
@@ -385,10 +390,11 @@ public class Pickup1 extends SenateActivity
         case FROMLOCATIONDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 if (fromLocationBeingTyped) {
-                    autoCompleteTextView1.setText(autoCompleteTextView1.getText());
-                    autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
-                }
-                else {
+                    autoCompleteTextView1.setText(autoCompleteTextView1
+                            .getText());
+                    autoCompleteTextView1.setSelection(autoCompleteTextView1
+                            .getText().length());
+                } else {
                     getFromLocationDetails();
                     autoCompleteTextView2.requestFocus();
                 }
@@ -397,12 +403,14 @@ public class Pickup1 extends SenateActivity
         case TOLOCATIONDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 if (toLocationBeingTyped) {
-                    autoCompleteTextView2.setText(autoCompleteTextView2.getText());
-                    autoCompleteTextView2.setSelection(autoCompleteTextView2.getText().length());
-                }
-                else {
+                    autoCompleteTextView2.setText(autoCompleteTextView2
+                            .getText());
+                    autoCompleteTextView2.setSelection(autoCompleteTextView2
+                            .getText().length());
+                } else {
                     getToLocationDetails();
-                    new Timer().schedule(new TimerTask() {          
+                    new Timer().schedule(new TimerTask()
+                    {
                         @Override
                         public void run() {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -413,10 +421,10 @@ public class Pickup1 extends SenateActivity
                 }
                 break;
             }
-            
+
         }
-    }    
-    
+    }
+
     public void getLocCodeList() {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -478,7 +486,7 @@ public class Pickup1 extends SenateActivity
                         locCodeList);
                 // for origin dest code
                 autoCompleteTextView1.setThreshold(1);
-                autoCompleteTextView1.setAdapter(adapter);       
+                autoCompleteTextView1.setAdapter(adapter);
                 // for destination code
 
                 autoCompleteTextView2.setThreshold(1);
@@ -543,13 +551,12 @@ public class Pickup1 extends SenateActivity
             // display error
             status = "no";
         }
-                
+
     }
-    
+
     public void getFromLocationDetails() {
         // loc_details.setText(loc_code.getText().toString());
-        originLocation = autoCompleteTextView1.getText().toString()
-                .trim();
+        originLocation = autoCompleteTextView1.getText().toString().trim();
 
         String barcodeNumberDetails[] = autoCompleteTextView1.getText()
                 .toString().trim().split("-");
@@ -568,8 +575,7 @@ public class Pickup1 extends SenateActivity
             status = "yes";
 
             // Get the URL from the properties
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                    .toString();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/LocationDetails?barcode_num="
@@ -590,21 +596,21 @@ public class Pickup1 extends SenateActivity
                     return;
                 }
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(
-                            res).nextValue();
+                    JSONObject object = (JSONObject) new JSONTokener(res)
+                            .nextValue();
                     tvOffice1.setText(object.getString("cdrespctrhd"));
                     // tvLocCd1.setText( object.getString("cdlocat"));
                     tvDescript1.setText(object.getString("adstreet1")
                             .replaceAll("&#34;", "\"")
                             + " ,"
-                            + object.getString("adcity").replaceAll(
-                                    "&#34;", "\"")
+                            + object.getString("adcity").replaceAll("&#34;",
+                                    "\"")
                             + ", "
-                            + object.getString("adstate").replaceAll(
-                                    "&#34;", "\"")
+                            + object.getString("adstate").replaceAll("&#34;",
+                                    "\"")
                             + " "
-                            + object.getString("adzipcode").replaceAll(
-                                    "&#34;", "\""));
+                            + object.getString("adzipcode").replaceAll("&#34;",
+                                    "\""));
                     tvCount1.setText(object.getString("nucount"));
 
                 } catch (JSONException e) {
@@ -627,13 +633,12 @@ public class Pickup1 extends SenateActivity
         } else {
             // display error
             status = "no";
-        }        
+        }
     }
-    
+
     public void getToLocationDetails() {
         // loc_details.setText(loc_code.getText().toString());
-        destinationLocation = autoCompleteTextView2.getText()
-                .toString().trim();
+        destinationLocation = autoCompleteTextView2.getText().toString().trim();
         String barcodeNumberDetails[] = autoCompleteTextView2.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
@@ -669,21 +674,21 @@ public class Pickup1 extends SenateActivity
                     return;
                 }
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(
-                            res).nextValue();
+                    JSONObject object = (JSONObject) new JSONTokener(res)
+                            .nextValue();
                     tvOffice2.setText(object.getString("cdrespctrhd"));
                     // tvLocCd2.setText( object.getString("cdlocat"));
                     tvDescript2.setText(object.getString("adstreet1")
                             .replaceAll("&#34;", "\"")
                             + " ,"
-                            + object.getString("adcity").replaceAll(
-                                    "&#34;", "\"")
+                            + object.getString("adcity").replaceAll("&#34;",
+                                    "\"")
                             + ", "
-                            + object.getString("adstate").replaceAll(
-                                    "&#34;", "\"")
+                            + object.getString("adstate").replaceAll("&#34;",
+                                    "\"")
                             + " "
-                            + object.getString("adzipcode").replaceAll(
-                                    "&#34;", "\""));
+                            + object.getString("adzipcode").replaceAll("&#34;",
+                                    "\""));
                     tvCount2.setText(object.getString("nucount"));
 
                 } catch (JSONException e) {
@@ -710,6 +715,5 @@ public class Pickup1 extends SenateActivity
         // locDetailsDest.append("\n"+loc_code.getText().toString());
         // autoCompleteTextView1.setText(barcode_num);
     }
-    
 
 }
