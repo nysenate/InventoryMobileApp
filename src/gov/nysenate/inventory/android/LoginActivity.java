@@ -134,7 +134,7 @@ public class LoginActivity extends SenateActivity
             user_name.removeClearButton();
             user_name.setBackgroundResource(R.drawable.customshape);
             password.requestFocus();
-            tvWarnLabel.setText("You have TIMED OUT!!!");
+            tvWarnLabel.setText("TIME OUT\r\nPlease enter your password");
             this.playSound(R.raw.timeout);
         } else {
             tvWarnLabel.setText("");

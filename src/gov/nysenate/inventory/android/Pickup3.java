@@ -39,6 +39,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -551,6 +552,14 @@ public class Pickup3 extends SenateActivity
         return returnArray;
     }
 
+   public Bitmap setBackgroundColor(Bitmap image, int backgroundColor) {
+        Bitmap newBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawColor(backgroundColor);
+        canvas.drawBitmap(image, 0, 0, null);
+        return newBitmap;
+   }
+    
     class pickupRequestTask extends AsyncTask<String, String, String>
     {
 
@@ -580,6 +589,8 @@ public class Pickup3 extends SenateActivity
                     }
                 }
                 scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+
+                scaledBitmap = setBackgroundColor(scaledBitmap, Color.WHITE);
                 imageInByte = bs.toByteArray();
                 String responseString = "";
                 try {
