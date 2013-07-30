@@ -63,10 +63,8 @@ public class VerScanActivity extends SenateActivity
             KEEPALIVE_TIMEOUT = 103;
     public final int NONE = 200, REMOVEITEM_STATE = 201, ADDITEM_STATE = 202,
             ALIVE_STATE = 203;
-    public final int SESSION_TIMED_OUT = 1000, NO_SERVER_RESPONSE = 1001,
-            SENTAG_NOT_FOUND = 1002, EXCEPTION_IN_CODE = 1003,
+    public final int SENTAG_NOT_FOUND = 1002, 
             INACTIVE_SENTAG = 1004;
-    public final int OK = 1005;
     String currentSortValue = "Description";
     public Spinner spinSortList;
     static Button btnVerListCont;
@@ -840,7 +838,7 @@ public class VerScanActivity extends SenateActivity
             return NO_SERVER_RESPONSE;
         } else if (res.indexOf("Session timed out") > -1) {
             startTimeout(ITEMDETAILS_TIMEOUT);
-            return SESSION_TIMED_OUT;
+            return SERVER_SESSION_TIMED_OUT;
         } else if (res.contains("Does not exist in system")) {
             Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
             barcodeDidNotExist(nusenate);
@@ -1028,7 +1026,7 @@ public class VerScanActivity extends SenateActivity
             Log.i("TESTING", "Adding item " + nusenate);
             int addItemResults = -1;
             addItemResults = addItem(nusenate);
-            if (addItemResults == SESSION_TIMED_OUT) {
+            if (addItemResults == SERVER_SESSION_TIMED_OUT) {
                 return;
             }
         }

@@ -21,7 +21,6 @@ public class RequestTask extends AsyncTask<String, String, String>
         String res = "";
         // HttpClient httpclient = new DefaultHttpClient();
         HttpClient httpClient = LoginActivity.httpClient;
-        Log.i(RequestTask.class.getName(), "RequestTask RUNNING 2");
         if (httpClient == null) {
             Log.i(RequestTask.class.getName(),
                     "MainActivity.httpClient was null so it is being reset");

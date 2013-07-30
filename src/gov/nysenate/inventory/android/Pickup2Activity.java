@@ -492,7 +492,8 @@ public class Pickup2Activity extends SenateActivity
 
     public void continueButton(View view) {
         // send the data to Pickup3 activity
-        Log.i("continueButton", "checkServerResponse(true):"+checkServerResponse(true) );
+        Log.i("continueButton", "BEFORE checkServerResponse(true)");
+        //Log.i("continueButton", "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
             progBarPickup2.setVisibility(View.VISIBLE);
             btnPickup2Cont.getBackground().setAlpha(70);
@@ -515,7 +516,9 @@ public class Pickup2Activity extends SenateActivity
 
     public void cancelButton(View view) {
         // send back to the Move Menu
-        Log.i("cancelButton", "checkServerResponse(true):"+checkServerResponse(true) );
+        Log.i("cancelButton", "BEFORE checkServerResponse(true)");
+
+        //Log.i("cancelButton", "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
             btnPickup2Cancel.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Move.class);

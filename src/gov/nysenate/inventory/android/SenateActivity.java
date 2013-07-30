@@ -194,7 +194,7 @@ public abstract class SenateActivity extends Activity
         return checkServerResponse(true);
     }
 
-    public int checkServerResponse(boolean handleServerResponse) {
+    public int checkServerResponse(boolean handleServerResponse) {                  
         String serverResponse = null;
         AsyncTask<String, String, String> requestServerResponse = null;
         // check network connection
@@ -217,7 +217,7 @@ public abstract class SenateActivity extends Activity
                     if (serverResponse == null) {
                         if (handleServerResponse) {
                             noServerResponseMsg();
-                        }
+                        }                  
                         return NO_SERVER_RESPONSE;
                     } else if (serverResponse.indexOf("Session timed out") > -1) {
                         if (handleServerResponse) {
