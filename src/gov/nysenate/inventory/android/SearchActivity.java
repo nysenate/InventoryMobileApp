@@ -38,6 +38,7 @@ public class SearchActivity extends SenateActivity
     TextView tvLocation;
     TextView tvCategory;
     TextView tvDateInvntry;
+    TextView tvCommodityCd;
 
     static Button btnSrchBck;
     Activity currentActivity;
@@ -63,6 +64,7 @@ public class SearchActivity extends SenateActivity
         tvLocation = (TextView) findViewById(R.id.tvLocation);
         tvDateInvntry = (TextView) findViewById(R.id.tvDateInvntry);
         tvCategory = (TextView) findViewById(R.id.tvCategory);
+        tvCommodityCd = (TextView) findViewById(R.id.tvCommodityCd);
 
         btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
         btnSrchBck.getBackground().setAlpha(255);
@@ -183,6 +185,7 @@ public class SearchActivity extends SenateActivity
                 tvCategory.setText("N/A");
                 tvLocation.setText("N/A");
                 tvDateInvntry.setText("N/A");
+                tvCommodityCd.setText("N/A");
 
             } else {
                 int color = Integer.parseInt("000000", 16) + 0xFF000000;
@@ -213,6 +216,7 @@ public class SearchActivity extends SenateActivity
                             + object.getString("adstreet1to").replaceAll(
                                     "&#34;", "\""));
                     tvDateInvntry.setText(object.getString("dtlstinvntry"));
+                    tvCommodityCd.setText(object.getString("commodityCd"));
 
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -220,6 +224,7 @@ public class SearchActivity extends SenateActivity
                     tvCategory.setText("Please contact STS/BAC.");
                     tvLocation.setText("N/A");
                     tvDateInvntry.setText("N/A");
+                    tvCommodityCd.setText("N/A");
 
                     e.printStackTrace();
                 }
@@ -231,7 +236,7 @@ public class SearchActivity extends SenateActivity
             tvCategory.setText("Please contact STS/BAC.");
             tvLocation.setText("N/A");
             tvDateInvntry.setText("N/A");
-
+            tvCommodityCd.setText("N/A");
         }
     }
 
@@ -278,12 +283,14 @@ public class SearchActivity extends SenateActivity
      * overridePendingTransition(R.anim.in_left, R.anim.out_right); }
      */
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case SEARCH_TIMEOUT:

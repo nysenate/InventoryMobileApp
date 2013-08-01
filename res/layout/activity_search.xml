@@ -53,22 +53,23 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="555dp"
-        android:layout_height="437dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="80dp">
     	<TableLayout
         	android:id="@+id/tableLayout1"
-        	android:layout_width="555dp"
+        	android:layout_width="match_parent"
         	android:layout_height="wrap_content"
-        	android:background="@drawable/customshape" >
+        	android:background="@drawable/customshape"
+        	android:layout_marginRight="20dp">
   			<TableRow
-  		    	android:layout_width="555dp">
+  		    	android:layout_width="match_parent">
 
             	<TextView
                 	android:id="@+id/tvHeadDetailsS"
-                	android:layout_width="555dp"
+                	android:layout_width="match_parent"
              		android:text="Details"
              		android:layout_gravity="center_horizontal"
                 	android:layout_span="2"
@@ -78,14 +79,12 @@
         	</TableRow>
         
         	<TableRow>
-		
-			
     			<TextView
         			android:id="@+id/tvLabelBarcd"
        	 			android:layout_width="wrap_content"
         			android:layout_height="wrap_content"
-        			android:layout_marginRight="20dp"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
             		android:gravity="right"
         			android:text="Senate Tag #:"
         			style="@style/NormalText"   
@@ -93,42 +92,66 @@
        
     			<TextView
         			android:id="@+id/tvBarcode"
-        			android:layout_width="390dp"
+        			android:layout_width="355dp"
         			android:layout_height="wrap_content"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
         			android:text="N/A"
         			style="@style/NormalText"   
         			android:textStyle="bold" />
-				</TableRow>    	
+			</TableRow>
 
-    			<TableRow>
+    		<TableRow>
 				<TextView
 	   				android:id="@+id/tvLabelDescr"
 	    			android:layout_width="wrap_content"
 	    			android:layout_height="wrap_content"
-        			android:layout_marginRight="20dp"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
             		android:gravity="right"
-	    			android:text="Description"
+	    			android:text="Description:"
 	    			style="@style/NormalText"   
 	    			android:textColor="@color/black" />
     
     			<TextView
         			android:id="@+id/tvDescription"
-        			android:layout_width="390dp"
-        			android:layout_height="wrap_content"        	
-        			android:layout_marginTop="20dp"
+        			android:layout_width="355dp"
+        			android:layout_height="wrap_content"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
         			android:text="N/A"
         			style="@style/NormalText"   
         			android:textColor="@color/black" />
+			</TableRow>
+			<TableRow>
+			    <TextView
+			        android:id="@+id/tvLabelCommodityCd"
+			        android:layout_width="wrap_content"
+        			android:layout_height="wrap_content"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
+        			android:gravity="right"
+        			android:text="Commodity Code:"
+        			style="@style/NormalText"
+        			android:textColor="@color/black"    />
+			    
+			    <TextView
+			        android:id="@+id/tvCommodityCd"
+        			android:layout_width="355dp"
+        			android:layout_height="wrap_content"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
+        			android:text="N/A"
+        			style="@style/NormalText"
+        			android:textColor="@color/black"    />
 			</TableRow>
     		<TableRow>	
     			<TextView
         			android:id="@+id/tvLabelCat"
         			android:layout_width="wrap_content"
         			android:layout_height="wrap_content"
-        			android:layout_marginRight="20dp"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
             		android:gravity="right"
         			android:text="Category:"
         			style="@style/NormalText"   
@@ -136,9 +159,10 @@
     
     			<TextView
         			android:id="@+id/tvCategory"
-        			android:layout_width="390dp"
+        			android:layout_width="355dp"
         			android:layout_height="wrap_content"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
         			android:text="N/A"
         			style="@style/NormalText"   
         			android:textColor="@color/black" />
@@ -148,8 +172,8 @@
         			android:id="@+id/tvLabelLoc"
         			android:layout_width="wrap_content"
         			android:layout_height="wrap_content"
-        			android:layout_marginRight="20dp"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
             		android:gravity="right"
         			android:text="Location:"
         			style="@style/NormalText"   
@@ -157,9 +181,10 @@
     
     			<TextView
         			android:id="@+id/tvLocation"
-        			android:layout_width="390dp"
+        			android:layout_width="355dp"
         			android:layout_height="wrap_content"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
         			android:text="N/A"
         			style="@style/NormalText"   
         			android:textColor="@color/black" />
@@ -169,20 +194,25 @@
         			android:id="@+id/tvLabelDtinvntry"
         			android:layout_width="wrap_content"
         			android:layout_height="wrap_content"
-        			android:layout_marginRight="20dp"
-        			android:layout_marginTop="20dp"
-        			android:layout_marginBottom="20dp"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
+        			android:layout_marginBottom="10dp"
+        			android:gravity="right"
         			android:text="Inventory Dt:"
-        			style="@style/NormalText"    />
+        			style="@style/NormalText"
+        			android:textColor="@color/black"    />
     
     			<TextView
         			android:id="@+id/tvDateInvntry"
-        			android:layout_width="wrap_content"
+        			android:layout_width="355dp"
         			android:layout_height="wrap_content"
-        			android:layout_marginTop="20dp"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
         			android:text="N/A"
-        			style="@style/NormalText"    />
-			</TableRow> 
+        			style="@style/NormalText"
+        			android:textColor="@color/black"    />
+			</TableRow>
+			
   		</TableLayout>
 	</LinearLayout>
 	
