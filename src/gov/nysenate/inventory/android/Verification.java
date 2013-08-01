@@ -41,12 +41,14 @@ import android.widget.Toast;
 public class Verification extends SenateActivity
 {
     public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
+    public final static String cdloctype_intent = "gov.nysenate.inventory.android.cdloctype";
     public final static String timeout_intent = "gov.nysenate.inventory.android.timeoutFrom";
     public EditText loc_code;
     public TextView loc_details;
     public String res = null;
     public String status = null;
     public String loc_code_str = null;
+    public String cdloctype = null;
     static ClearableAutoCompleteTextView autoCompleteTextView1;
     public ArrayList<String> locCodeList = new ArrayList<String>();
     static Button btnVerify1Cont;
@@ -258,6 +260,13 @@ public class Verification extends SenateActivity
         loc_code_str = barcodeNumberDetails[0];// this will be passed to
                                                // next activity with
                                                // intent
+        String[] nextSplit = barcodeNumberDetails[1].split(":");
+        if (nextSplit!= null && nextSplit.length>0)
+            cdloctype = nextSplit[0];
+        else {
+            Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1).");
+            cdloctype = null;
+        }
 
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -429,6 +438,7 @@ public class Verification extends SenateActivity
                 btnVerify1Cont.getBackground().setAlpha(45);
                 Intent intent = new Intent(this, VerScanActivity.class);
                 intent.putExtra(loc_code_intent, loc_code_str);
+                intent.putExtra(cdloctype_intent, cdloctype);
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }

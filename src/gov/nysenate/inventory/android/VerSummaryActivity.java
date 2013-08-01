@@ -49,6 +49,7 @@ public class VerSummaryActivity extends SenateActivity
 
     public String res = null;
     String loc_code = null;
+    String cdloctype = null;
 
     static Button btnVerSumBack;
     static Button btnVerSumCont;
@@ -124,6 +125,7 @@ public class VerSummaryActivity extends SenateActivity
         scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
                 .getStringArrayListExtra("scannedBarcodeNumbers"));
         loc_code = getIntent().getStringExtra("loc_code");
+        cdloctype = getIntent().getStringExtra("cdloctype");
         String summary = getIntent().getStringExtra("summary");
         try {
             JSONObject jsonObject = new JSONObject(summary);
@@ -533,9 +535,12 @@ public class VerSummaryActivity extends SenateActivity
                 // Get the URL from the properties
                 URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
-                Log.i("submitVerification", "URL:" + URL);
+                Log.i("submitVerification", "URL:" + URL + "/VerificationReports?loc_code=" + loc_code
+                        + "&cdloctype="+ cdloctype
+                        + "&barcodes=" + barcodeNum);
                 resr1 = new RequestTask().execute(URL
                         + "/VerificationReports?loc_code=" + loc_code
+                        + "&cdloctype="+ cdloctype
                         + "&barcodes=" + barcodeNum);
                 Log.i("submitVerification", "SUBMIT TO URL");
 
@@ -571,9 +576,11 @@ public class VerSummaryActivity extends SenateActivity
         CharSequence text = res;
         int duration = Toast.LENGTH_LONG;
         if (res == null) {
-            text = "!!!ERROR: NO RESPONSE FROM SERVER";
+            text = "!!ERROR: NO RESPONSE FROM SERVER";
         } else if (res.length() == 0) {
             text = "Database not updated";
+        } else if (res.trim().startsWith("!!ERROR:")||res.trim().startsWith("***WARNING:")) {
+            text = res.trim();
         } else {
             duration = Toast.LENGTH_SHORT;
         }
@@ -582,6 +589,15 @@ public class VerSummaryActivity extends SenateActivity
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
 
+        /*
+         * If there was some kind of error, don't leave the Activity. User will have to then call or cancel the 
+         * verification. At least the user will be aware that some problem occured instead of ignoring the message.
+         */
+        
+        if (text.equals("Database not updated")||text.toString().startsWith("!!ERROR:")||text.toString().startsWith("***WARNING:")) {
+             return;
+        }
+        
         // ===================ends
         Log.i("submitVerification", "go to menu");
         Intent intent = new Intent(this, MenuActivity.class);

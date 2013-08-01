@@ -55,6 +55,7 @@ public class VerScanActivity extends SenateActivity
     public ListView listView;
     public String loc_code = null; // populate this from the location code from
                                    // previous activity
+    public String cdloctype = null;
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
@@ -107,6 +108,7 @@ public class VerScanActivity extends SenateActivity
         // Get the location code from the previous activity
         Intent intent = getIntent();
         loc_code = intent.getStringExtra(Verification.loc_code_intent);
+        cdloctype = intent.getStringExtra(Verification.cdloctype_intent);
 
         // ----------code from other activity starts
         listView = (ListView) findViewById(R.id.preferenceList);
@@ -1087,6 +1089,7 @@ public class VerScanActivity extends SenateActivity
 
             Intent intent = new Intent(this, VerSummaryActivity.class);
             intent.putExtra("loc_code", loc_code);
+            intent.putExtra("cdloctype", cdloctype);
             intent.putExtra("summary", summary);
             intent.putStringArrayListExtra("scannedBarcodeNumbers",
                     getJSONArrayList(scannedItems));
