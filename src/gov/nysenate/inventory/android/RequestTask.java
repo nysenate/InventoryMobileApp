@@ -2,13 +2,17 @@ package gov.nysenate.inventory.android;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
@@ -16,6 +20,25 @@ import android.util.Log;
 
 public class RequestTask extends AsyncTask<String, String, String>
 {
+    public final int GET = -2;
+    public final int POST = -3;
+    List<NameValuePair> nameValuePairs;
+    
+    public int currentMode = -2;
+    
+    public RequestTask() {
+        this(-2);
+    }
+    
+    public RequestTask(int mode) {
+        this.currentMode = currentMode;
+    }   
+    
+    public RequestTask(List<NameValuePair> nameValuePairs) {
+        this.currentMode = POST;
+        this.nameValuePairs = nameValuePairs;
+    }
+    
     @Override
     public String doInBackground(String... uri) {
         String res = "";
@@ -42,7 +65,16 @@ public class RequestTask extends AsyncTask<String, String, String>
         url.append(LoginActivity.nauser);
 
         try {
-            response = httpClient.execute(new HttpGet(url.toString()));
+            if (currentMode==POST) {
+                HttpPost httpPost = new HttpPost(url.toString());
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                response = httpClient.execute(httpPost);
+            }
+            else {
+                HttpGet httpGet = new HttpGet(url.toString());
+                response = httpClient.execute(httpGet);
+            }
+            
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
