@@ -448,6 +448,12 @@ public class Delivery1 extends SenateActivity
 
     }
 
+    @Override
+    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
+        // TODO Auto-generated method stub
+        
+    }
+
     /*
      * Pickup3 AsyncTask class RequestTask extends AsyncTask<String, String,
      * String>{

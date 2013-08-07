@@ -18,26 +18,37 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public abstract class SenateActivity extends Activity
+public abstract class SenateActivity extends Activity implements CommodityDialogListener
 {
     public String timeoutFrom = "N/A";
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
     public final int OK = 100, SERVER_SESSION_TIMED_OUT = 1000,
             NO_SERVER_RESPONSE = 1001, EXCEPTION_IN_CODE = 1002;    
     public final int CHECK_SERVER_RESPONSE = 200;
+    public static final int COMMODITYLIST = 3030, NEWITEMCOMMENTS = 3031;       
 
     private BaseActivityReceiver baseActivityReceiver = new BaseActivityReceiver();
     // private CheckInternet receiver;
     public static final IntentFilter INTENT_FILTER = createIntentFilter();
     public static long maxWifiWaitTime = 20 * 1000; // 20 Seconds
+    
+    public int dialogSelectedRow = -1;
+    public String dialogKeywords = null;
+    public String dialogComments = null;
+    public String dialogTitle = null;
+    public String dialogMsg = null;
+    
+    public NewInvDialog newInvDialog = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -133,7 +144,49 @@ public abstract class SenateActivity extends Activity
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
+    
+    @Override
+    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
+        // TODO Auto-generated method stub
+        
+    }    
 
+    public void getDialogDataFromServer() {
+    
+    }
+    
+    public void reOpenNewInvDialog(){
+        if (newInvDialog!=null) {
+            newInvDialog.dismiss();
+        }
+        android.app.FragmentManager fm = this.getFragmentManager();
+        newInvDialog = new NewInvDialog(this, dialogTitle, dialogMsg);
+        newInvDialog.addListener(this);
+        newInvDialog.setRetainInstance(true);
+        newInvDialog.show(fm, "fragment_name");        
+    }
+    
+    public void startKeywordSpeech(View view) {
+        if (view.getId() == R.id.btnKeywordSpeech) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                    "Commodity Keyword Search");
+            startActivityForResult(intent, COMMODITYLIST);
+        }     
+    }   
+    
+    public void startNewItemSpeech(View view) {
+        if (view.getId() == R.id.btnNewItemCommentSpeech) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                    "New Item Comments");
+            startActivityForResult(intent, NEWITEMCOMMENTS);
+        }     
+    }       
     public void noServerResponseMsg() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -268,6 +321,8 @@ public abstract class SenateActivity extends Activity
      * (fires when Any Activity is opened) If the internet connection is turned
      * off, then attempt to turn it on.
      */
+    
+    
 
     public void checkInternetConnection() {
         /*

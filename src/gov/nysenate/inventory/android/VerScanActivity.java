@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,7 +41,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VerScanActivity extends SenateActivity
+public class VerScanActivity extends SenateActivity implements CommodityDialogListener
 {
 
     public ClearableEditText barcode;
@@ -51,11 +53,13 @@ public class VerScanActivity extends SenateActivity
     public String res = null;
     boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+    public static final int COMMODITYLIST_TIMEOUT = 2020, COMMODITYLIST = 3030, NEWITEMCOMMENTS = 3031;    
     public String status = null;
     public ListView listView;
     public String loc_code = null; // populate this from the location code from
                                    // previous activity
     public String cdloctype = null;
+    ArrayList commodityList = new ArrayList<Commodity>();
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
@@ -73,6 +77,8 @@ public class VerScanActivity extends SenateActivity
     int cntScanned = 0;
     Activity currentActivity;
     int currentState;
+    
+    String holdNusenate = null;
 
     String URL = ""; // this will be initialized once in onCreate() and used for
                      // all server calls.
@@ -97,7 +103,10 @@ public class VerScanActivity extends SenateActivity
 
     String lastClickedTo = "";
     int lastRowFound = -1;
-
+       
+    CommodityListViewAdapter commodityAdapter;     
+    CommodityDialogListener commodityDialogListener;    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -277,6 +286,7 @@ public class VerScanActivity extends SenateActivity
                 "Speech recognition demo");
         startActivityForResult(intentSpeech, VOICE_RECOGNITION_REQUEST_CODE);
     }
+    
 
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
@@ -316,10 +326,31 @@ public class VerScanActivity extends SenateActivity
                 keepAlive();
             }
             break;
+        case COMMODITYLIST:
+            if (resultCode == RESULT_OK) {
+                // Fill the list view with the strings the recognizer thought it
+                // could have heard
+                ArrayList<String> matches = data
+                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            
+                NewInvDialog.tvKeywordsToBlock.setText(matches.get(0).replaceAll(" ", ",").replaceAll(",,", ","));
+                getDialogDataFromServer();
+            }
+            break;
+            
+        case NEWITEMCOMMENTS:
+            if (resultCode == RESULT_OK) {
+                ArrayList<String> matches = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                                
+                NewInvDialog.etNewItemComments.setText(matches.get(0));
+            } 
         }
+        
         super.onActivityResult(requestCode, resultCode, data);
     }
-
+   
+    
     private final TextWatcher filterTextWatcher = new TextWatcher()
     {
 
@@ -475,11 +506,25 @@ public class VerScanActivity extends SenateActivity
         // show it
         alertDialog.show();
     }
-
+       
     public void barcodeDidNotExist(final String barcode_num) {
         Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         playSound(R.raw.error);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        
+        holdNusenate = barcode_num;
+        android.app.FragmentManager fm = this.getFragmentManager();
+        newInvDialog = new NewInvDialog(this, "Senate Tag#: " + barcode_num
+                + " DOES NOT EXIST IN SFMS", 
+                "!!ERROR: Tag#: <b>"
+                 + barcode_num
+                 + "</b> does not exist in SFMS.<br><br>"
+                 + "This should not occur when entering/scanning a Senate Tag#. "
+                 + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.");
+        newInvDialog.addListener(this);
+        newInvDialog.setRetainInstance(true);
+        newInvDialog.show(fm, "fragment_name");        
+        
+/*        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
         alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
@@ -528,7 +573,7 @@ public class VerScanActivity extends SenateActivity
          * tv_counts_scanned.setText(Html.fromHtml("Scanned<br /><b>" +
          * cntScanned + "</b>")); barcode.setText(""); dialog.dismiss(); } })
          */
-        .setPositiveButton("OK", new DialogInterface.OnClickListener()
+       /* .setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -554,7 +599,7 @@ public class VerScanActivity extends SenateActivity
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
-        alertDialog.show();
+        alertDialog.show();*/
     }
 
     public void errorMessage(final String barcode_num, final String title,
@@ -820,7 +865,50 @@ public class VerScanActivity extends SenateActivity
         currentState = NONE;
         return foundAt;
     }
+    
+    //
+    // Dialog will call this if the user picks a Commodity Code
+    //
+    
+    public void addNewItem(InvItem newInvItem) {
+        invList.add(newInvItem);
+        cntScanned++;
 
+        scannedItems.add(newInvItem);
+        AllScannedItems.add(newInvItem);
+        newItems.add(newInvItem); // to keep track of (number+details)
+                               // for summary
+
+        StringBuilder s_new = new StringBuilder();
+        // s_new.append(vl.NUSENATE); since the desc coming from
+        // server already contains barcode number we wont add it
+        // again
+        // s_new.append(" ");
+        s_new.append(newInvItem.getCdcategory());
+        s_new.append(" ");
+        s_new.append(newInvItem.getDecommodityf());
+        s_new.append(" New Item");
+
+        adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
+
+        listView.setAdapter(adapter);
+        updateChanges();       
+        
+        // display toster
+        Context context = getApplicationContext();
+        CharSequence text = s_new;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();        
+        
+        currentState = NONE;
+        // Clear Barcode after all actions are done
+        barcode.setText("");
+    }
+
+    
     public int addItem(String nusenate) {
         currentState = ADDITEM_STATE;
 
@@ -921,6 +1009,111 @@ public class VerScanActivity extends SenateActivity
             }
         }
     }
+    
+    public void getDialogDataFromServer() {
+        // check network connection
+
+        commodityList = new ArrayList<Commodity>();
+        
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        
+        // Get the URL from the properties
+        URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+        
+        
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            // Get the URL from the properties
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+             
+            Log.i("getCommodityList", URL + "/getCommodityList?keywords=" + NewInvDialog.tvKeywordsToBlock.getText().toString());
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/CommodityList?keywords=" + NewInvDialog.tvKeywordsToBlock.getText().toString());
+
+            try {
+
+                // code for JSON
+                try {
+                    res = null;
+                    res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                        return;
+                    } else if (res.indexOf("Session timed out") > -1) {
+                        startTimeout(COMMODITYLIST_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+                String jsonString = resr1.get().trim().toString();
+                //Log.i("getCommodityList","SERVER RESPONSE:"+jsonString);
+ 
+                JSONArray jsonArray = new JSONArray(jsonString);
+                // this will populate the lists from the JSON array coming from
+                // server
+                
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject jo = new JSONObject();
+                    jo = jsonArray.getJSONObject(i);
+                    Commodity curCommodity = new Commodity();
+                    curCommodity.setCdcategory(jo.getString("cdcategory"));
+                    curCommodity.setCdcommodity(jo.getString("cdcommodity"));
+                    curCommodity.setCDissunit(jo.getString("cdissunit"));
+                    curCommodity.setCdtype(jo.getString("cdtype"));
+                    curCommodity.setDecomments(jo.getString("decomments"));
+                    curCommodity.setDecommodityf(jo.getString("decommodityf"));
+                    curCommodity.setNucnt(jo.getString("nucnt"));
+                    curCommodity.setNuxrefco(jo.getString("nuxrefco"));
+                    
+                    commodityList.add(curCommodity);
+                    
+                }
+                
+                // code for JSON ends
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            // display error
+        }
+
+        commodityAdapter = new CommodityListViewAdapter(this, R.layout.commoditylist_row, commodityList);
+
+        if (commodityAdapter==null) {
+            Log.i("getCommodityList", "****commodityAdapter is null");
+        }
+        else {
+            Log.i("getCommodityList", "commodityAdapter is NOT null");
+        }
+        
+        if (newInvDialog==null) {
+            Log.i("getCommodityList", "****newInvDialog is null");
+        }
+        else {
+            Log.i("getCommodityList", "newInvDialog is NOT null");
+        }
+        
+        if (newInvDialog.commodityList==null) {
+            Log.i("getCommodityList", "****newInvDialog.commodityList is null");
+        }
+        else {
+            Log.i("getCommodityList", "newInvDialog.commodityList is NOT null");
+        }
+
+        newInvDialog.commodityList.setAdapter(commodityAdapter);
+        newInvDialog.checkKeywordsFound();
+    }        
 
     public String getItemDetails(String nusenate) {
         return getItemDetails(nusenate, true); // By default, check for a
@@ -1218,4 +1411,26 @@ public class VerScanActivity extends SenateActivity
         String CONDITION;
         String CDSTATUS;
     }
+
+    @Override
+    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
+        InvItem newInvItem = new InvItem();
+        int newBarcodenum = countOf(invList, "NEW")+1;
+/*        DecimalFormat numberFormat = new DecimalFormat("0000");
+        
+           String formattedNumber = numberFormat.format(newBarcodenum);
+           newInvItem.setNusenate("NEW"+formattedNumber);*/
+        
+        newInvItem.setNusenate(holdNusenate);
+        newInvItem.setCdcategory(commoditySelected.getCdcategory());
+        newInvItem.setType("NEW");
+        newInvItem.setDecommodityf(commoditySelected.getDecommodityf()+" *** NEW ITEM ***");
+        addNewItem(newInvItem);
+        if (newInvDialog!=null) {
+            newInvDialog.dismiss();
+        }
+        holdNusenate = null;
+    }
+    
+
 }

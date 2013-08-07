@@ -108,7 +108,13 @@ public class Verification extends SenateActivity
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
                                 autoCompleteTextView1.getWindowToken(), 0);
+                        Log.i("autocomplete clicked", "Before selection");
                         autoCompleteTextView1.setSelection(0);
+                        Log.i("autocomplete clicked", "Before getLocationDetails");
+                        if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                            getLocationDetails();
+                        }
+                        Log.i("autocomplete clicked", "After getLocationDetails");
                         locationBeingTyped = false;
                     }
                 });
@@ -171,12 +177,21 @@ public class Verification extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            locationBeingTyped = true;
-            if (autoCompleteTextView1.getText().toString().length() >= 3) {
-                getLocationDetails();
+            locationBeingTyped = true;        
+            Log.i("autocomplete", "autocomplete list count:"+autoCompleteTextView1.getAdapter().getCount());
+            if (autoCompleteTextView1.getAdapter().getCount()==1) {
+                autoCompleteTextView1.setSelection(0);
+                if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                    getLocationDetails();
+                }
+            }
+            if (autoCompleteTextView1.getText().toString().trim().length()==0) {
+                clearLocationDetails();
             }
         }
     };
+    
+   
 
     public void locationDetailTimeout() {
         System.out.println("TIME OUT SCREEN");
@@ -251,7 +266,18 @@ public class Verification extends SenateActivity
         }
     }
 
+    public void clearLocationDetails() {
+        tvOffice.setText("N/A");
+        tvDescript.setText("N/A");
+        tvCount.setText("N/A");
+        
+    }
+    
     public void getLocationDetails() {
+        Log.i("getLocationDetails","("+autoCompleteTextView1.getText()+") autocomplete list count:"+autoCompleteTextView1.getAdapter().getCount());
+        if (autoCompleteTextView1.getAdapter().getCount()==0) {
+            return;
+        }
         String barcodeNumberDetails[] = autoCompleteTextView1.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
@@ -260,12 +286,20 @@ public class Verification extends SenateActivity
         loc_code_str = barcodeNumberDetails[0];// this will be passed to
                                                // next activity with
                                                // intent
-        String[] nextSplit = barcodeNumberDetails[1].split(":");
-        if (nextSplit!= null && nextSplit.length>0)
-            cdloctype = nextSplit[0];
+        String[] nextSplit = null;
+        if (barcodeNumberDetails.length>1) { 
+        nextSplit =barcodeNumberDetails[1].split(":");
+            if (nextSplit!= null && nextSplit.length>0)
+                cdloctype = nextSplit[0];
+            else {
+                Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1).");
+                cdloctype = null;
+            }
+        }
         else {
-            Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1).");
+            Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1b).");
             cdloctype = null;
+            
         }
 
         // check network connection
@@ -304,8 +338,14 @@ public class Verification extends SenateActivity
                     JSONObject object = (JSONObject) new JSONTokener(res)
                             .nextValue();
                     // tvLocCd.setText( object.getString("cdlocat"));
-                    tvOffice.setText(object.getString("cdrespctrhd"));
-                    tvDescript.setText(object.getString("adstreet1")
+                    String cdrespcrthd = object.getString("cdrespctrhd");
+                    if (cdrespcrthd==null||cdrespcrthd.trim().length()==0||cdrespcrthd.equals("~")) {
+                        tvOffice.setText("N/A");                  
+                    }
+                    else {
+                        tvOffice.setText(object.getString("cdrespctrhd"));
+                    }
+                    String descript = object.getString("adstreet1")
                             .replaceAll("&#34;", "\"")
                             + " ,"
                             + object.getString("adcity").replaceAll("&#34;",
@@ -315,8 +355,20 @@ public class Verification extends SenateActivity
                                     "\"")
                             + " "
                             + object.getString("adzipcode").replaceAll("&#34;",
-                                    "\""));
-                    tvCount.setText(object.getString("nucount"));
+                                    "\"");
+                    if (descript==null||descript.trim().length()==0||descript.equals("~")||descript.trim().equals(",,")) {
+                        tvDescript.setText("N/A");
+                    }
+                    else {
+                        tvDescript.setText(descript);
+                    }
+                    String nucount = object.getString("nucount");
+                    if (nucount==null||nucount.trim().length()==0||nucount.equals("~")) {
+                        tvCount.setText("N/A");
+                    }
+                    else {
+                        tvCount.setText(nucount);
+                    }
 
                 } catch (JSONException e) {
                     tvOffice.setText("!!ERROR: " + e.getMessage());

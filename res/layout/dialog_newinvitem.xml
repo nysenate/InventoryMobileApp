@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <TableLayout
+	    android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"    >
+            >
+        <TableRow>
+        	<TextView
+        		android:id="@+id/tvKeywordsToBlock"
+        		android:hint="Enter 1 or more keywords. Use space berween two keywords"
+        		android:layout_width="530sp"
+        		android:layout_height="wrap_content" 
+		        android:textAppearance="?android:attr/textAppearanceMedium" 
+		        >
+   			</TextView>
+	    	<ImageView
+        		android:id="@+id/btnKeywordSpeech"
+        		android:layout_width="40sp"
+        		android:layout_height="40sp"
+        		android:clickable="true"
+        		android:onClick="startKeywordSpeech"   		
+        		android:src="@drawable/speech2txt"             		
+        		 />   		            
+        </TableRow>
+        <TableRow>   		            
+        </TableRow>
+        
+        <TableRow>
+            <ListView
+				android:id="@+id/searchResults"
+        		android:layout_width="match_parent"
+             	android:layout_height="240sp"
+             	   >
+                
+            </ListView>
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/etNewItemComments"
+            android:layout_width="530sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Enter Comments here" />
+
+        <ImageView
+            android:id="@+id/btnNewItemCommentSpeech"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="startNewItemSpeech"
+            android:src="@drawable/speech2txt" />
+      
+     </LinearLayout>
+
+</LinearLayout>

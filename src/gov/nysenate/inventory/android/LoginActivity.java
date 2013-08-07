@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.app.FragmentManager;
+import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,6 +54,8 @@ import android.widget.Toast;
 
 public class LoginActivity extends SenateActivity
 {
+
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;    
     // WIFI Code Added Below
     WifiManager mainWifi;
     // WifiReceiver receiverWifi;
@@ -555,6 +560,8 @@ public class LoginActivity extends SenateActivity
             e.printStackTrace();
         }
     }
+    
+   
 
     private void login(String user_name, String password) {
         try {
@@ -810,6 +817,7 @@ public class LoginActivity extends SenateActivity
             }
         }
     }
+    
 
     @Override
     public void onBackPressed() {
@@ -1000,7 +1008,7 @@ public class LoginActivity extends SenateActivity
         }
 
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection

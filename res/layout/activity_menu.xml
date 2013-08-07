@@ -42,5 +42,5 @@
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
-
+   
 </RelativeLayout>
