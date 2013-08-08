@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -476,6 +478,29 @@ public class LoginActivity extends SenateActivity
         }
     }
 
+    public void testPost(View view) {
+        BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM", "THIS WAS FROM ANDROID");
+        AsyncTask<String, String, String> resr1 = new RequestTask(nameValuePair)
+        .execute(URL + "/TestPostServlet");
+        String res;
+        try {
+            res = null;
+            res = resr1.get().trim().toString();
+            if (res == null) {
+                return;
+            }
+            System.out.println("res:"+res);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }    }
+        
+    
     // Self Explanatory
 
     private void checkInitialAudioLevel() {

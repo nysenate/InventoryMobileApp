@@ -3,6 +3,9 @@ package gov.nysenate.inventory.android;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -223,6 +226,21 @@ public class VerSummaryActivity extends SenateActivity
                     } catch (Exception e2) {
                         e2.printStackTrace();
                     }
+
+                    try {
+                        curInvItem.setDecomments(jsonObject
+                                .getString("decomments"));
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+
+                    try {
+                        curInvItem.setCdcommodity(jsonObject
+                                .getString("cdcommodity"));
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+                    
                     returnList.add(curInvItem);
 
                 } catch (JSONException e) {
@@ -308,15 +326,15 @@ public class VerSummaryActivity extends SenateActivity
 
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
-            Log.i("continueButton",
-                    "Check for Session by using KeepSessionAlive");
+            /*Log.i("continueButton",
+                    "Check for Session by using KeepSessionAlive");*/
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/KeepSessionAlive");
             String response = null;
             try {
                 response = resr1.get().toString();
-                Log.i("continueButton", "KeepSessionAlive RESPONSE:" + response);
+                //Log.i("continueButton", "KeepSessionAlive RESPONSE:" + response);
                 if (resr1 == null || response == null
                         || response.trim().length() == 0) {
                     this.noServerResponse();
@@ -533,15 +551,25 @@ public class VerSummaryActivity extends SenateActivity
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                Log.i("submitVerification", "URL:" + URL + "/VerificationReports?loc_code=" + loc_code
+                //URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+               /* Log.i("submitVerification", "URL:" + URL + "/VerificationReports?loc_code=" + loc_code
                         + "&cdloctype="+ cdloctype
                         + "&barcodes=" + barcodeNum);
                 resr1 = new RequestTask().execute(URL
                         + "/VerificationReports?loc_code=" + loc_code
                         + "&cdloctype="+ cdloctype
-                        + "&barcodes=" + barcodeNum);
+                        + "&barcodes=" + barcodeNum);*/
+                
+                JSONArray jsonArray = new JSONArray();
+                for (int i=0; i < scannedBarcodeNumbers.size(); i++) {
+                        jsonArray.put(scannedBarcodeNumbers.get(i).getJSONObject());
+                }                
+                ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
+                postParams.add( new BasicNameValuePair("cdlocat", loc_code));
+                postParams.add( new BasicNameValuePair("cdloctype", cdloctype));
+                postParams.add( new BasicNameValuePair("scannedItems", jsonArray.toString()));
+                resr1 = new RequestTask(postParams).execute("/VerificationReports");
+                
                 Log.i("submitVerification", "SUBMIT TO URL");
 
                 try {

@@ -55,7 +55,6 @@ public class NewInvDialog extends DialogFragment  {
      this.msg = msg;
  }
 
- 
  @Override
  public Dialog onCreateDialog(Bundle savedInstanceState) {
       
@@ -91,6 +90,7 @@ public class NewInvDialog extends DialogFragment  {
             .setMessage(Html.fromHtml(msg))
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    currentCommodity.setDecomments(etNewItemComments.getText().toString());
                     for (CommodityDialogListener commodityDialogListener : listeners)
                         commodityDialogListener.commoditySelected(position, currentCommodity);                    
                     dismiss();

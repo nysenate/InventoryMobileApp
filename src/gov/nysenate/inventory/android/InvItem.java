@@ -5,12 +5,14 @@ import org.json.JSONObject;
 
 public class InvItem
 {
-    String decommodityf = "blah blah blah";
-    String type = "blah"; // set to NEW if entered/saved from inside app.
-    String nusenate = "blah";
-    String cdcategory = "blah";
-    String cdlocat = "blah";
+    String decommodityf = "";
+    String type = ""; // set to NEW if entered/saved from inside app.
+    String nusenate = "";
+    String cdcategory = "";
+    String cdlocat = "";
     String cdintransit = "N";
+    String cdcommodity = "";
+    String decomments = "";
 
     boolean selected = false;
 
@@ -20,6 +22,8 @@ public class InvItem
     final int CDCATEGORY = -104;
     final int SELECTED = -105;
     final int INTRANSIT = -106;
+    final int CDCOMMODITY = -107;
+    final int DECOMMENTS = -108;
 
     public InvItem(String nusenate, String cdcategory, String type,
             String decommodityf, String cdlocat) {
@@ -94,7 +98,24 @@ public class InvItem
     public String toString() {
         return decommodityf;
     }
+    
+    public void setCdcommodity(String cdcommodity) {
+        this.cdcommodity = cdcommodity;
+    }
 
+    public String getCdcommodity() {
+        return cdcommodity;
+    }
+    
+    public void setDecomments(String decomments) {
+        this.decomments = decomments;
+    }
+
+    public String getDecomments() {
+        return decomments;
+    }
+           
+       
     public String toJSON() {
 
         /*
@@ -102,6 +123,18 @@ public class InvItem
          * external libraries.
          */
 
+         try {
+      
+            return getJSONObject().toString();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+    
+    public JSONObject getJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("nusenate", getNusenate());
@@ -110,18 +143,19 @@ public class InvItem
             jsonObject.put("decommodityf", getDecommodityf());
             jsonObject.put("cdlocat", getCdlocat());
             jsonObject.put("cdintransit", getCdintransit());
+            jsonObject.put("cdcommodity", getCdcommodity());
+            jsonObject.put("decomments", getDecomments());
             jsonObject.put("selected", getSelected());
 
             // Log.i("InvItem ToJSON", jsonObject.toString());
 
-            return jsonObject.toString();
+            return jsonObject;
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return "";
+            return null;
         }
-
-    }
+    }    
 
     public void parseJSON(String JSONString) {
 
@@ -164,7 +198,19 @@ public class InvItem
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
+            
+            try {
+                this.setCdcommodity(jsonObject.getString("cdcommodity"));
+            } catch (JSONException e2) {
+                this.setCdcommodity("");  // No Error msgs since cdcommodity may or may not be included
+            }
 
+            try {
+                this.setDecomments(jsonObject.getString("decomments"));
+            } catch (JSONException e2) {
+                this.setDecomments("");  // No Error msgs since decomments may or may not be included
+            }
+            
             try {
                 if (jsonObject.getString("selected").trim().toUpperCase()
                         .startsWith("T")) {

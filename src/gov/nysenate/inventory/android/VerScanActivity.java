@@ -1414,22 +1414,32 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
     @Override
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
-        InvItem newInvItem = new InvItem();
-        int newBarcodenum = countOf(invList, "NEW")+1;
-/*        DecimalFormat numberFormat = new DecimalFormat("0000");
+        try {
+            InvItem newInvItem = new InvItem();
+            /* int newBarcodenum = countOf(invList, "NEW")+1;
+               DecimalFormat numberFormat = new DecimalFormat("0000");
+               String formattedNumber = numberFormat.format(newBarcodenum);
+               newInvItem.setNusenate("NEW"+formattedNumber);*/
         
-           String formattedNumber = numberFormat.format(newBarcodenum);
-           newInvItem.setNusenate("NEW"+formattedNumber);*/
+            newInvItem.setNusenate(holdNusenate);
+            newInvItem.setCdcategory(commoditySelected.getCdcategory());
+            newInvItem.setCdlocat(tvCdlocat.getText().toString());
+            newInvItem.setType("NEW");
+            newInvItem.setCdcommodity(commoditySelected.getCdcommodty());
+            newInvItem.setDecommodityf(commoditySelected.getDecommodityf()+" *** NEW ITEM ***");
+            newInvItem.setDecomments(commoditySelected.getDecomments());
+            addNewItem(newInvItem);
+            //Log.i("commoditySelected", "NEW INV ITEM COMMENTS:"+newInvItem.getDecomments());
         
-        newInvItem.setNusenate(holdNusenate);
-        newInvItem.setCdcategory(commoditySelected.getCdcategory());
-        newInvItem.setType("NEW");
-        newInvItem.setDecommodityf(commoditySelected.getDecommodityf()+" *** NEW ITEM ***");
-        addNewItem(newInvItem);
-        if (newInvDialog!=null) {
-            newInvDialog.dismiss();
+            if (newInvDialog!=null) {
+                newInvDialog.dismiss();
+            }
+            holdNusenate = null;
         }
-        holdNusenate = null;
+        catch (NullPointerException e) {
+            new MsgAlert(this, "!!ERROR Occurred in adding new Senate Tag#.", "!!ERROR: An error occured in adding a new Senate Tag Number. "+e.getMessage()+" Please contact STS/BAC.");
+            this.reOpenNewInvDialog();
+        }
     }
     
 

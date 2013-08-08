@@ -2,7 +2,9 @@ package gov.nysenate.inventory.android;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -24,19 +26,48 @@ public class RequestTask extends AsyncTask<String, String, String>
     public final int POST = -3;
     List<NameValuePair> nameValuePairs;
     
+    Properties properties;
+    
     public int currentMode = -2;
     
+    boolean allowURLModification = true;
+
     public RequestTask() {
-        this(-2);
+        this(true);
+    }
+    
+    public RequestTask(boolean allowURLModification) {
+        this(-2, allowURLModification);
     }
     
     public RequestTask(int mode) {
+        this(-2, true);
+    }
+    
+    public RequestTask(int mode, boolean allowURLModification) {
         this.currentMode = currentMode;
+        this.allowURLModification = allowURLModification;
     }   
     
+    public RequestTask(NameValuePair nameValuePair) {
+        this(nameValuePair, true);
+    }
+    
+    public RequestTask(NameValuePair nameValuePair, boolean allowURLModification) {
+        this.currentMode = POST;
+        this.nameValuePairs = new ArrayList<NameValuePair>();
+        this.nameValuePairs.add(nameValuePair);
+        this.allowURLModification = allowURLModification;
+    }
+
     public RequestTask(List<NameValuePair> nameValuePairs) {
+        this(nameValuePairs, true);
+    }
+
+    public RequestTask(List<NameValuePair> nameValuePairs, boolean allowURLModification) {
         this.currentMode = POST;
         this.nameValuePairs = nameValuePairs;
+        this.allowURLModification = allowURLModification;
     }
     
     @Override
@@ -53,7 +84,43 @@ public class RequestTask extends AsyncTask<String, String, String>
         HttpResponse response;
         String responseString = null;
         StringBuilder url = new StringBuilder();
-        url.append(uri[0].trim());
+        String currentURI = uri[0].trim();
+        
+        if (allowURLModification) {
+            Log.i("RequestTask", "(1)allowURLModification=true");
+            if (!currentURI.toLowerCase().startsWith("http")) {
+                Log.i("RequestTask", "(2)allowURLModification=true MISSING HTTP");
+                String URL = null;
+                try {
+                    URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                            .toString().trim();
+                    Log.i("RequestTask", "(3)allowURLModification=true URL to add:"+URL);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                if (URL.endsWith("/")) {
+                    if (currentURI.startsWith("/")) {
+                        currentURI = currentURI.substring(1);
+                        Log.i("RequestTask", "(4)allowURLModification=true currentURI:"+currentURI);
+                    }
+                    url.append(URL);
+                }
+                else {
+                    if (!currentURI.startsWith("/")) {
+                        url.append(URL);
+                        url.append("/");
+                        Log.i("RequestTask", "(5)allowURLModification=true url added:"+url.toString());
+                    }
+                    else {
+                        url.append(URL);
+                    }
+                    
+                }
+
+            }
+        }
+        url.append(currentURI);
+        Log.i("RequestTask", "URL TO CALL:"+url);
         if (uri[0].indexOf("?") > -1) {
             if (!uri[0].trim().endsWith("?")) {
                 url.append("&");
