@@ -33,7 +33,7 @@ import android.widget.CheckBox;
 
 //...
 @SuppressLint("ValidFragment")
-public class NewInvDialog extends DialogFragment  {
+public class NewInvDialog extends DialogFragment implements OnKeywordChangeListener  {
 
  public static TextView tvKeywordsToBlock;
  public static EditText etNewItemComments;
@@ -63,6 +63,7 @@ public class NewInvDialog extends DialogFragment  {
      tvKeywordsToBlock = (TextView) dialogView.findViewById(R.id.tvKeywordsToBlock);
      commodityList = (ListView) dialogView.findViewById(R.id.searchResults);
      etNewItemComments = (EditText)dialogView.findViewById(R.id.etNewItemComments);
+     
      if (senateActivity.dialogKeywords!=null) {
          tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
          senateActivity.getDialogDataFromServer();
@@ -167,6 +168,7 @@ public class NewInvDialog extends DialogFragment  {
      }
  }
  
+ 
   private void doNotShowAgain() {
      // persist shared preference to prevent dialog from showing again.
      Log.d("MainActivity", "TODO: Persist shared preferences.");
@@ -245,6 +247,16 @@ public class NewInvDialog extends DialogFragment  {
          
          return true;
      }
- }  
+ }
+
+
+@Override
+public void OnKeywordChange(KeywordDialog keywordDialog, ListView lvKeywords,
+        String keywords) {
+    // TODO Auto-generated method stub
+    
+}
+
+
  
 }

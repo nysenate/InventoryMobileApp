@@ -25,10 +25,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public abstract class SenateActivity extends Activity implements CommodityDialogListener
+public abstract class SenateActivity extends Activity implements CommodityDialogListener, OnKeywordChangeListener
 {
     public String timeoutFrom = "N/A";
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
@@ -532,5 +533,12 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
             toast.show();
         }
     }
+    
+    @Override
+    public void OnKeywordChange(KeywordDialog keywordDialog, ListView lvKeywords, String keywords) {
+        newInvDialog.tvKeywordsToBlock.setText(keywords);
+        getDialogDataFromServer();
+        
+    }      
 
 }

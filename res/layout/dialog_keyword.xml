@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/lvKeywords"
+        android:layout_width="match_parent"
+        android:layout_height="288dp" 
+        android:background="@drawable/customshape">
+    </ListView>
+
+    <EditText
+        android:id="@+id/etDummy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="returnToList"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnAddKeyword"
+    	android:layout_width="200dp"
+    	android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="addKeyword"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Add Keyword" 
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"         
+        />
+
+</LinearLayout>

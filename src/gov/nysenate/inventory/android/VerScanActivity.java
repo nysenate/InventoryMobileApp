@@ -1,3 +1,4 @@
+
 package gov.nysenate.inventory.android;
 
 import java.text.DecimalFormat;
@@ -31,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -105,7 +107,11 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     int lastRowFound = -1;
        
     CommodityListViewAdapter commodityAdapter;     
-    CommodityDialogListener commodityDialogListener;    
+    CommodityDialogListener commodityDialogListener;   
+    KeywordDialog keywordDialog;    
+    
+    android.app.FragmentManager fragmentManager = this.getFragmentManager();
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -506,13 +512,30 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         // show it
         alertDialog.show();
     }
+    
+    public void editKeywordList(View view) {
+        if (newInvDialog!=null) {
+            //newInvDialog.dismiss();
+        }
+        //android.app.FragmentManager fm = this.getFragmentManager();
+
+        dialogKeywords =NewInvDialog.tvKeywordsToBlock.getText().toString();
+        Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
+        keywordDialog = new KeywordDialog(this, "Modify Commodity Keywords" , 
+                "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
+        Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
+        keywordDialog.setRetainInstance(true);
+        Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
+        keywordDialog.show(fragmentManager, "keyword_dialog");        
+        Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog DONE");
+
+    }    
        
     public void barcodeDidNotExist(final String barcode_num) {
         Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         playSound(R.raw.error);
         
         holdNusenate = barcode_num;
-        android.app.FragmentManager fm = this.getFragmentManager();
         newInvDialog = new NewInvDialog(this, "Senate Tag#: " + barcode_num
                 + " DOES NOT EXIST IN SFMS", 
                 "!!ERROR: Tag#: <b>"
@@ -522,7 +545,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                  + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
-        newInvDialog.show(fm, "fragment_name");        
+        newInvDialog.show(fragmentManager, "fragment_name");        
         
 /*        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -1010,6 +1033,18 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         }
     }
     
+    public void addKeyword(View view) {
+        Log.i("addKeyword", "addKeyword adding row");
+        int rowAdded = keywordDialog.adapter.addRow();
+        View view1 = new View(currentActivity);
+        Log.i("addKeyword", "ROW#:"+rowAdded+", ACTUAL FIELD COUNT:"+keywordDialog.adapter.etKeywordFields.size());
+            
+        //keywordDialog.adapter.etKeywordFields.get(rowAdded).requestFocus();
+        
+        Log.i("addKeyword", "addKeyword adding row done");
+    }
+    
+    
     public void getDialogDataFromServer() {
         // check network connection
 
@@ -1440,6 +1475,13 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             new MsgAlert(this, "!!ERROR Occurred in adding new Senate Tag#.", "!!ERROR: An error occured in adding a new Senate Tag Number. "+e.getMessage()+" Please contact STS/BAC.");
             this.reOpenNewInvDialog();
         }
+    }
+    
+    public void returnToList(View view) {
+        if (keywordDialog==null) {
+            return;
+        }
+        keywordDialog.adapter.returnToSelectedRow();
     }
     
 
