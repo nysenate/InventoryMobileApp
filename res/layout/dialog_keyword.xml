@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/lvKeywords"
         android:layout_width="match_parent"
-        android:layout_height="288dp" 
+        android:layout_height="250dp" 
         android:background="@drawable/customshape">
     </ListView>
 
@@ -23,8 +23,8 @@
 
     <Button
         android:id="@+id/btnAddKeyword"
-    	android:layout_width="200dp"
-    	android:layout_height="50dp"
+        android:layout_width="150sp"
+        android:layout_height="28sp"
         android:layout_gravity="center"
         android:background="@drawable/buttonshapeblue"
         android:onClick="addKeyword"
@@ -34,7 +34,8 @@
         android:shadowRadius="5"
         android:text="Add Keyword" 
         android:textColor="#FFFFFF"
-        android:textSize="30sp"         
+        android:textSize="20sp"         
+        android:layout_marginBottom="20dp"
         />
 
 </LinearLayout>

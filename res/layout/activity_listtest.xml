@@ -154,5 +154,21 @@
     android:layout_alignTop="@+id/textView1"
     android:background="@drawable/customshape"
     android:text="" />
+
+<Button
+    android:id="@+id/btnNoSenateTagAdd"
+    android:layout_width="100dp"
+    android:layout_height="45dp"
+    android:layout_above="@+id/tvLblSortBy"
+    android:layout_alignRight="@+id/btnVerListCont"
+    android:background="@drawable/buttonshapeblue"
+    android:onClick="noSenateTagAdd"
+    android:layout_alignBottom="@+id/tvCdlocat"
+    android:shadowColor="#000000"
+    android:shadowDx="01"
+    android:shadowDy="1"
+    android:shadowRadius="5"
+    android:text="No Sen Tag#"
+    android:textColor="#FFFFFF" />
         
 </RelativeLayout>

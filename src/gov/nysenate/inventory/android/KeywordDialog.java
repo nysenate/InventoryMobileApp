@@ -39,29 +39,33 @@ public class KeywordDialog extends DialogFragment  {
  public String msg = null;
  public String keywordList = null;
  public String keywordListOrig = null;
+ public String[] originalKeywordList = null;
  KeywordListViewAdapter adapter = null;
+ NewInvDialog newInvDialog = null;
  List<OnKeywordChangeListener> listeners = new ArrayList<OnKeywordChangeListener>();
  int position = -1;
  
- public KeywordDialog(SenateActivity senateActivity, String title, String msg, String keywordList) {
+ public KeywordDialog(SenateActivity senateActivity,NewInvDialog newInvDialog, String title, String msg, String keywordList) {
      this.senateActivity = senateActivity;
      this.title = title;
      this.msg = msg;
      this.keywordList = keywordList;
      this.keywordListOrig = keywordList;
-     Log.i("KeywordDialog", "START KEYWORDLIST:"+keywordList);
+     this.originalKeywordList = keywordList.split(",");
+     this.newInvDialog = newInvDialog;
+     //Log.i("KeywordDialog", "START KEYWORDLIST:"+keywordList);
  }
  
  @Override
  public Dialog onCreateDialog(Bundle savedInstanceState) {
       
-     Log.i("onCreateDialog", "START KEYWORDLIST:"+keywordList);
+     //Log.i("onCreateDialog", "START KEYWORDLIST:"+keywordList);
      LayoutInflater inflater = getActivity().getLayoutInflater();
      View dialogView = inflater.inflate(R.layout.dialog_keyword, null);
      btnAddKeyword = (Button) dialogView.findViewById(R.id.btnAddKeyword);
      lvKeywords = (ListView) dialogView.findViewById(R.id.lvKeywords);
      etDummy = (EditText) dialogView.findViewById(R.id.etDummy);
-     adapter = new KeywordListViewAdapter(senateActivity.getApplicationContext(), R.layout.row_keyword, arrayListFromString(this.keywordList));
+     adapter = new KeywordListViewAdapter(senateActivity.getApplicationContext(), newInvDialog,R.layout.row_keyword, arrayListFromString(this.keywordList));
      lvKeywords.setAdapter(adapter);
      //adapter.unselectRow();
      
@@ -69,7 +73,13 @@ public class KeywordDialog extends DialogFragment  {
 
          public void onFocusChange(View v, boolean hasFocus) {
              if(hasFocus) {
-                 adapter.returnToSelectedRow();
+                 if (adapter.getCount()==0) {
+                     adapter.add(" ");
+                     adapter.returnToSelectedRow();
+                 }
+                 else {
+                     adapter.returnToSelectedRow();
+                 }
              }
          }
      });     
@@ -82,10 +92,14 @@ public class KeywordDialog extends DialogFragment  {
             .setMessage(Html.fromHtml(msg))
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    adapter.notifyDataSetChanged();
                     senateActivity.dialogKeywords =  adapter.toString();
-                    if (senateActivity.dialogKeywords.equalsIgnoreCase(keywordListOrig)) {
-                        for (OnKeywordChangeListener onKeywordChangeListener : listeners)
+                    //Log.i("OK Button", "KeywordsSet:"+senateActivity.dialogKeywords);
+                    if (!senateActivity.dialogKeywords.equalsIgnoreCase(keywordListOrig)) {
+                        for (OnKeywordChangeListener onKeywordChangeListener : listeners) {
+                            //Log.i("OK Button", "onKeywordChangeListener.OnKeywordChange:"+senateActivity.dialogKeywords);
                             onKeywordChangeListener.OnKeywordChange(KeywordDialog.this, lvKeywords, senateActivity.dialogKeywords);  
+                        }
                     }
 
                     dismiss();
@@ -103,13 +117,40 @@ public class KeywordDialog extends DialogFragment  {
      
      return dialog;
  }
+
+ public void clearListenters() {
+     listeners = new ArrayList<OnKeywordChangeListener>();
+ }
+ 
+ public int originalKeyword(String keyword) {
+     for (int x=0;x<originalKeywordList.length;x++) {
+         if (originalKeywordList[x].equalsIgnoreCase(keyword)) {
+             return x;
+         }
+     }
+     return -1;
+ }
+ 
  
  public void addListener(OnKeywordChangeListener addListener) {
+     //Log.i("addListener", "Adding a listener");
      listeners.add(addListener);
- } 
+ }
  
-
-
+ public boolean isListening(OnKeywordChangeListener addListener) {
+     if (listeners==null||listeners.size()==0) {
+         return false;
+     }
+     else {
+         for (int x=0;x<listeners.size();x++) {
+             if (listeners.get(x)==addListener) {
+                 return true;
+             }
+         }
+         return false;
+     }
+     
+ }
  
  public ArrayList<String> arrayListFromString(String values) {
      String[] valuesList = values.split(",");

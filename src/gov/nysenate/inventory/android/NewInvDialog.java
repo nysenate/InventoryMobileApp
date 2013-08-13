@@ -22,6 +22,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -31,12 +32,13 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.CheckBox;
 
-//...
+//...G
 @SuppressLint("ValidFragment")
 public class NewInvDialog extends DialogFragment implements OnKeywordChangeListener  {
 
  public static TextView tvKeywordsToBlock;
  public static EditText etNewItemComments;
+ public static ProgressBar progBarNewInvItem;
  SenateActivity senateActivity;
  public static ListView commodityList = null;
  private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -63,6 +65,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      tvKeywordsToBlock = (TextView) dialogView.findViewById(R.id.tvKeywordsToBlock);
      commodityList = (ListView) dialogView.findViewById(R.id.searchResults);
      etNewItemComments = (EditText)dialogView.findViewById(R.id.etNewItemComments);
+     progBarNewInvItem = (ProgressBar)dialogView.findViewById(R.id.progBarNewInvItem);
      
      if (senateActivity.dialogKeywords!=null) {
          tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
@@ -77,12 +80,12 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      adapter = (CommodityListViewAdapter)commodityList.getAdapter();
      //adapter.unselectRow();
      
-     if (commodityList==null) {
+/*     if (commodityList==null) {
          Log.i("commodityList", "*****commodityList IS NULL");
      }
      else {
          Log.i("commodityList", "commodityList IS NOT NULL");
-     }
+     }*/
 
      // Use the Builder class for convenient dialog construction
      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -91,10 +94,20 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
             .setMessage(Html.fromHtml(msg))
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    currentCommodity.setDecomments(etNewItemComments.getText().toString());
-                    for (CommodityDialogListener commodityDialogListener : listeners)
-                        commodityDialogListener.commoditySelected(position, currentCommodity);                    
-                    dismiss();
+                    
+                    if (adapter!=null && adapter.getRowSelected()>-1 && adapter.getCount()> 0) {
+                        currentCommodity.setDecomments(etNewItemComments.getText().toString());
+                        for (CommodityDialogListener commodityDialogListener : listeners)
+                            commodityDialogListener.commoditySelected(position, currentCommodity);                    
+                        dismiss();
+                    }
+                    else {
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(senateActivity.getApplicationContext(), "!!ERRROR: No Commodity Code Selected.", duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
                 }
             })            
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -253,7 +266,11 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
 @Override
 public void OnKeywordChange(KeywordDialog keywordDialog, ListView lvKeywords,
         String keywords) {
-    // TODO Auto-generated method stub
+    //Log.i("OnKeywordChange", "keywords:"+keywords+"    senateActivity.dialogKeywords:"+senateActivity.dialogKeywords );
+    tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
+    senateActivity.getDialogDataFromServer();
+    checkKeywordsFound();
+    senateActivity.dialogKeywords = null;    
     
 }
 

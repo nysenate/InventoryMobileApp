@@ -48,6 +48,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
     public String dialogComments = null;
     public String dialogTitle = null;
     public String dialogMsg = null;
+    public boolean senateTagNum = false;
     
     public NewInvDialog newInvDialog = null;
 

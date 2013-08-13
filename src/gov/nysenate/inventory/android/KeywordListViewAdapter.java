@@ -7,8 +7,10 @@ import java.util.TimerTask;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,21 +23,30 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnItemDoubleTapListener
 {
 
     Context context;
     List<String> items;
-    public List<EditText> etKeywordFields = new ArrayList<EditText>();
+    List<String> originalKeywordList = null;
+    ClearableEditText etKeywordCurrent = null;
+    public List<ClearableEditText> etKeywordFields = new ArrayList<ClearableEditText>();
+    NewInvDialog newInvDialog = null;
     int rowSelected = -1;
 
     
-    public KeywordListViewAdapter(Context context, int resourceId,
+    public KeywordListViewAdapter(Context context, NewInvDialog newInvDialog, int resourceId,
             List<String> items) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
+        originalKeywordList = new ArrayList<String>();
+        for (int x=0;x<items.size();x++) {
+            this.originalKeywordList.add(items.get(x));
+        }
+        this.newInvDialog = newInvDialog;
         //System.out.println("COMMODITY LIST ITEMS SIZE:" + items.size());
     }
     
@@ -44,7 +55,8 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
     private class ViewHolder
     {
         LinearLayout rlkeywordlistrow;
-        EditText etKeyword;
+        ClearableEditText etKeyword;
+        TextView tvKeywordCnt;
         Button btnDeleteKeyword;
     }
 
@@ -60,8 +72,9 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
             holder = new ViewHolder();
             holder.rlkeywordlistrow = (LinearLayout) convertView
                     .findViewById(R.id.rlkeywordlistrow);
-            holder.etKeyword = (EditText) convertView
+            holder.etKeyword = (ClearableEditText) convertView
                     .findViewById(R.id.etKeyword);
+            holder.tvKeywordCnt = (TextView) convertView.findViewById(R.id.tvKeywordCnt);
             holder.btnDeleteKeyword = (Button)convertView.findViewById(R.id.btnDeleteKeyword);
             convertView.setTag(holder);
         } else {
@@ -69,16 +82,32 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
         }
         
         holder.etKeyword.setText(rowItem);
+        if (this.originalKeyword(rowItem)>-1) {
+            int wordRowCount = newInvDialog.adapter.wordRowCount(rowItem);
+            if (wordRowCount==0) {
+                holder.tvKeywordCnt.setText(Html.fromHtml("<font color='red'><b>("+wordRowCount+")</b></font>"));
+            }
+            else {
+                holder.tvKeywordCnt.setText(Html.fromHtml("<font color='#005500'><b>("+wordRowCount+")</b></font>"));
+            }
+            
+        }
+        else {
+            holder.tvKeywordCnt.setText("(***)");
+        }
+        
         
         final EditText currentEtKeyword = holder.etKeyword;
+        final TextView currentTvKeywordCnt = holder.tvKeywordCnt;
         final int currentPosition = position;
         
         OnClickListener l = new OnClickListener()
         {
             @Override
             public void onClick(View v) {
-                 Log.i("DELETEKEYWORD", rowItem);
-                 removeKeyword(rowItem);
+                 //Log.i("DELETEKEYWORD", rowItem);
+                 //removeKeyword(rowItem);
+                removeRow(currentPosition);
             }
         };
         
@@ -97,6 +126,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
 
             @Override
             public void afterTextChanged(Editable s) {
+                currentTvKeywordCnt.setText("(***)");
                 items.set(currentPosition, currentEtKeyword.getText().toString());
                 rowSelected = currentPosition;
                 //notifyDataSetChanged();
@@ -113,6 +143,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
         }
 
         
+        etKeywordCurrent = holder.etKeyword;
         
         if (etKeywordFields.size()-1<position) {
             etKeywordFields.add(holder.etKeyword);
@@ -120,7 +151,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
         else {
             etKeywordFields.set(position, holder.etKeyword);
         }
-        
+       
         return convertView;
     }
     
@@ -128,6 +159,27 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
         return items.get(y);
     }
 
+    public boolean removeRow(int row) {
+        boolean rowRemoved = false;
+        
+        if (items!=null && items.size()>1 && row<items.size()) {
+            this.items.remove(row);
+            this.setNotifyOnChange(true);
+            this.notifyDataSetChanged();
+            rowRemoved = true;
+        }
+        else if (items!=null && items.size()==1) {
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, "At least one Keyword row must exist.", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+        
+        return rowRemoved;
+    }
+    
+    
     public int removeKeyword(String keyword) {
         int itemsRemoved = 0;
         this.setNotifyOnChange(true);
@@ -145,10 +197,50 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements OnIt
         return itemsRemoved;
     }
     
+    public int originalKeyword(String keyword) {
+        for (int x=0;x<originalKeywordList.size();x++) {
+            if (originalKeywordList.get(x).equalsIgnoreCase(keyword)) {
+                return x;
+            }
+        }
+        return -1;
+    }    
+    
+   public int findBlankKeyword(){
+        for (int x=0;x<this.items.size();x++) {
+            if (this.items.get(x).trim().length()==0) {
+                return x;
+            }
+        }
+        return -1;
+   }
+   
+   public int getCurPosition(EditText etKeyword) {
+       for (int x=0;x<etKeywordFields.size();x++) {
+           if (etKeyword==etKeywordFields.get(x)) {
+               return x;
+           }
+       }
+       
+       return -1;
+   }
+    
    public int addRow() {
-       this.items.add(""); // Add a Row with a blank value
-       this.notifyDataSetChanged();
-       return this.items.size()-1;
+       int blankRow = findBlankKeyword();
+       if (blankRow==-1) {
+           this.items.add(""); // Add a Row with a blank value
+           this.notifyDataSetChanged();
+           return this.items.size()-1;
+       }
+       else {
+           
+           int duration = Toast.LENGTH_SHORT;
+
+           Toast toast = Toast.makeText(context, "A blank keyword row was already added.", duration);
+           toast.setGravity(Gravity.CENTER, 0, 0);
+           toast.show();
+           return blankRow;
+       }
    }
     
    public String toString() {

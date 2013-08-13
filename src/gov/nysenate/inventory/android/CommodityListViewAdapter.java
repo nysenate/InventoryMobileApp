@@ -1,8 +1,11 @@
 package gov.nysenate.inventory.android;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,13 +21,15 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
 
     Context context;
     List<Commodity> items;
+    String[] keywords = null;
     int rowSelected = -1;
 
     public CommodityListViewAdapter(Context context, int resourceId,
-            List<Commodity> items) {
+            List<Commodity> items, String[] keywords) {
         super(context, resourceId, items);
         this.context = context;
-        this.items = items;
+        this.keywords = keywords;
+        this.items = formatCommodityList((ArrayList<Commodity>)items);
         //System.out.println("COMMODITY LIST ITEMS SIZE:" + items.size());
     }
 
@@ -37,6 +42,15 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         TextView commodityListDecommodityf;
     }
 
+    
+    public ArrayList<Commodity> formatCommodityList(ArrayList<Commodity> commodityList) {
+        
+        for (int x=0;x<commodityList.size();x++) {
+            commodityList.get(x).setDecommodityf(this.returnFormated(commodityList.get(x).getDecommodityf(), keywords));
+        }
+        return commodityList;
+    }
+    
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
@@ -61,7 +75,7 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         }
         holder.commodityListNucnt.setText(rowItem.getNucnt());
         holder.commodityListCdcommodity.setText(rowItem.getCdcommodty());
-        holder.commodityListDecommodityf.setText(rowItem.getDecommodityf());        
+        holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem.getDecommodityf()));        
 
         if (position==this.rowSelected) {
             holder.rlcomlist.setBackgroundColor(context.getResources().getColor(
@@ -84,6 +98,37 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         };
 
         return convertView;
+    }
+    
+    public String returnFormated(String inValue, String[] currentList) {
+        String formattedResults = inValue;
+        if (currentList==null) { // Return Early to avoid NullPointerException
+            return formattedResults;
+        }
+        
+        
+        StringBuffer sb = null;
+        for (int x=0;x<currentList.length;x++) {
+            String currentValue = currentList[x].trim().toUpperCase();
+            //Log.i("returnFormated", "currentValue:"+currentValue);
+            int startPos = formattedResults.toUpperCase().indexOf(currentValue);
+            int endPos = startPos + currentValue.length();
+            //Log.i("returnFormated", "startPos:"+startPos+", endPos:"+endPos+" formatedResults Length:"+formattedResults.length());
+            if (startPos>-1) {
+                sb = new StringBuffer();
+                if (startPos>0) {
+                    sb.append(formattedResults.substring(0, startPos));
+                }
+                sb.append("<b>");
+                sb.append(formattedResults.substring(startPos, endPos));
+                sb.append("</b>");
+                if (endPos<formattedResults.length()) {
+                    sb.append(formattedResults.substring(endPos));
+                }
+                formattedResults = sb.toString();
+            }
+         }
+        return formattedResults;
     }
     
     public Commodity getCommodityAt(int y) {
