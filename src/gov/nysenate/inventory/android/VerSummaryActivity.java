@@ -541,7 +541,7 @@ public class VerSummaryActivity extends SenateActivity
         // Send it to the server
 
         // check network connection
-        Log.i("submitVerification", "connection");
+        //Log.i("submitVerification", "connection");
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Log.i("submitVerification", "network");
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -551,14 +551,6 @@ public class VerSummaryActivity extends SenateActivity
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                //URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-               /* Log.i("submitVerification", "URL:" + URL + "/VerificationReports?loc_code=" + loc_code
-                        + "&cdloctype="+ cdloctype
-                        + "&barcodes=" + barcodeNum);
-                resr1 = new RequestTask().execute(URL
-                        + "/VerificationReports?loc_code=" + loc_code
-                        + "&cdloctype="+ cdloctype
-                        + "&barcodes=" + barcodeNum);*/
                 
                 JSONArray jsonArray = new JSONArray();
                 for (int i=0; i < scannedBarcodeNumbers.size(); i++) {
@@ -603,6 +595,7 @@ public class VerSummaryActivity extends SenateActivity
         Context context = getApplicationContext();
         CharSequence text = res;
         int duration = Toast.LENGTH_LONG;
+        Log.i("SubmitVerification", "Server Response:"+res);
         if (res == null) {
             text = "!!ERROR: NO RESPONSE FROM SERVER";
         } else if (res.length() == 0) {

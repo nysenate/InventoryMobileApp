@@ -602,8 +602,6 @@ public class LoginActivity extends SenateActivity
                     // Get the URL from the properties
                     String URL = LoginActivity.properties
                             .get("WEBAPP_BASE_URL").toString();
-                    Log.i("Login test", URL + "/Login?user=" + user_name
-                            + "&pwd=" + password);
                     AsyncTask<String, String, String> resr1 = new RequestTask()
                             .execute(URL + "/Login?user=" + user_name + "&pwd="
                                     + password);

@@ -81,6 +81,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     int cntScanned = 0;
     Activity currentActivity;
     int currentState;
+    InvItem inactiveInvItem;    
     
     String holdNusenate = null;
 
@@ -538,10 +539,10 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         senateTagNum = false;
         newInvDialog = new NewInvDialog(this, "No Senate Tag#", 
                    "You have clicked on <b>No Senate Tag#.<b><br><br>"
-                 + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.");
+                 + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.<b><font color='RED'>Item will will be held for review!</font></b>");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
-        newInvDialog.show(fragmentManager, "fragment_name");        
+        newInvDialog.show(fragmentManager, "newInvDialog");        
     }
     
     public void barcodeDidNotExist(final String barcode_num) {
@@ -603,6 +604,80 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         alertDialog.show();
     }
 
+    
+    public void inactiveMessage(final String barcode_num, final String title,
+            final String message) {
+        Log.i("TESTING", "****errorMessgae MESSAGE");
+        playSound(R.raw.error);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle(title);
+
+        // set dialog message
+        alertDialogBuilder.setMessage(Html.fromHtml(message))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        inactiveInvItem.setDecommodityf(inactiveInvItem.getDecommodityf()+" *** INACTIVE ITEM ***");  
+                        invList.add(inactiveInvItem);
+                        cntScanned++;
+
+                        scannedItems.add(inactiveInvItem);
+                        AllScannedItems.add(inactiveInvItem);
+                        newItems.add(inactiveInvItem); // to keep track of (number+details)
+                                               // for summary
+                        currentState = NONE;
+                        
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Senate Tag#: " + barcode_num
+                                + " was added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        
+                        barcode.setText("");
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Senate Tag#: " + barcode_num
+                                + " was NOT added";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+
+                        barcode.setText("");
+
+                        dialog.dismiss();
+                    }
+                })                
+                ;
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+    
     public void getItemsList() {
         // check network connection
 
@@ -881,8 +956,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
         String serverResponse = getItemDetails(nusenate, false);
 
-        Log.i("AddItem", "nusenate:" + nusenate + " Server RESPONSE:"
-                + serverResponse);
+        /*Log.i("AddItem", "nusenate:" + nusenate + " Server RESPONSE:"
+                + serverResponse);*/
 
         if (serverResponse == null) {
             noServerResponse();
@@ -891,7 +966,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             startTimeout(ITEMDETAILS_TIMEOUT);
             return SERVER_SESSION_TIMED_OUT;
         } else if (res.contains("Does not exist in system")) {
-            Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
+            //Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
             barcodeDidNotExist(nusenate);
             return SENTAG_NOT_FOUND;
         } else {
@@ -913,13 +988,18 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     return SENTAG_NOT_FOUND;
                 } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                     vl.DECOMMODITYF = jo.getString("decommodityf");
-                    errorMessage(
+                    inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                            vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+                    
+                    inactiveInvItem.setType("NEW");
+                    
+                    inactiveMessage(
                             nusenate,
-                            "!!ERROR: Senate#: " + nusenate
+                            "***WARNING: Senate#: " + nusenate
                                     + " has been Inactivated.",
                             "The <b>\""
                                     + vl.DECOMMODITYF
-                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will will be held for review!</font></b></div>");
                     return -4;
 
                 } else {
