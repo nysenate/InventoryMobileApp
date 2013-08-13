@@ -40,7 +40,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.app.FragmentManager;
 import android.speech.RecognizerIntent;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -77,6 +79,8 @@ public class LoginActivity extends SenateActivity
     static ClearableEditText user_name;
     static ClearableEditText password;
     String URL = "";
+    long allNumericPwdAlert = -1;
+    int lastNumericErrorLength = 0;
     public static Properties properties; // Since we want to refer to this in
                                          // other activities
     static AssetManager assetManager;
@@ -134,6 +138,7 @@ public class LoginActivity extends SenateActivity
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
+        password.addTextChangedListener(senateTagWatcher);
 
         if (timeoutActivity) {
             user_name.setKeyListener(null);
@@ -169,6 +174,72 @@ public class LoginActivity extends SenateActivity
             checkInitialAudioLevel();
         }
     }
+    
+    private TextWatcher senateTagWatcher = new TextWatcher()
+    {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before,
+                int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                int after) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (isNumeric(s.toString(), 6) && s.toString().length()>lastNumericErrorLength+5) {
+                playSound(R.raw.error);
+                lastNumericErrorLength = s.toString().length();
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = null;
+                if (LoginActivity.this.timeoutActivity) {
+                    toast = Toast.makeText(context, "***WARNING: You may be scanning Senate Tag#s in Timeout Screen.", duration);
+                }
+                else {
+                    toast = Toast.makeText(context, "***WARNING: You may be scanning Senate Tag#s in Login Screen.", duration);
+                }
+                
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                
+            }
+            else if(s.toString().length()<lastNumericErrorLength-5) {
+                if (s.toString().length()==0) {
+                    lastNumericErrorLength = 0; 
+                }
+                else {
+                    lastNumericErrorLength = lastNumericErrorLength-6;
+                }
+                if (lastNumericErrorLength<0) {
+                    lastNumericErrorLength = 0;
+                }
+            }
+        }
+    };    
+    
+    public static boolean isNumeric(String str, int lastDigitlength)  
+    { 
+        
+      if (str==null||str.trim().length()==0) {
+          return false;
+      }
+      
+      try  
+      {  
+        if (str.length()> lastDigitlength) {
+            str = str.substring(str.length()-lastDigitlength);
+        }
+        long l = Long.parseLong(str);  
+      }  
+      catch(NumberFormatException nfe)  
+      {  
+        return false;  
+      }  
+      return true;  
+    }       
 
     // Self Explanatory
 
@@ -477,6 +548,8 @@ public class LoginActivity extends SenateActivity
             startService(msgIntent);
         }
     }
+    
+ 
 
     public void testPost(View view) {
         BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM", "THIS WAS FROM ANDROID");
@@ -489,7 +562,6 @@ public class LoginActivity extends SenateActivity
             if (res == null) {
                 return;
             }
-            System.out.println("res:"+res);
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -630,7 +702,6 @@ public class LoginActivity extends SenateActivity
                     user_name = "height";
                 }
                 LoginActivity.nauser = user_name;
-                System.out.println("NAUSER NOW SET TO " + user_name);
             } else {
                 // display error
                 status = "no";
@@ -645,7 +716,6 @@ public class LoginActivity extends SenateActivity
             textView.setTextSize(40);
 
             // calling the menu activity after validation
-            System.out.println("RES:" + res);
             if (res.equals("VALID")) {
                 // If LoginActivity was called because the App Timed Out..,
                 // Go back to the activity of the timeout.
@@ -851,39 +921,6 @@ public class LoginActivity extends SenateActivity
                     "!!ERROR: You must first enter you password.", duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-        }
-
-    }
-
-    public void testSessions(View view) {
-        AsyncTask<String, String, String> resr1 = new RequestTask()
-                .execute("http://10.26.3.74:8080/WebApplication1/TestServlet?user=android1&password=test");
-
-        String res1;
-        try {
-            res1 = resr1.get().toString();
-            System.out.println("resr1:" + res1);
-        } catch (InterruptedException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (ExecutionException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        AsyncTask<String, String, String> resr2 = new RequestTask()
-                .execute("http://10.26.3.74:8080/WebApplication1/GetSessionServlet");
-
-        String res2;
-        try {
-            res2 = resr2.get().toString();
-            System.out.println("resr2:" + res2);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
 
     }

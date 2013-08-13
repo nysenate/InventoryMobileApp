@@ -87,21 +87,21 @@ public class RequestTask extends AsyncTask<String, String, String>
         String currentURI = uri[0].trim();
         
         if (allowURLModification) {
-            Log.i("RequestTask", "(1)allowURLModification=true");
+            //Log.i("RequestTask", "(1)allowURLModification=true");
             if (!currentURI.toLowerCase().startsWith("http")) {
-                Log.i("RequestTask", "(2)allowURLModification=true MISSING HTTP");
+                //Log.i("RequestTask", "(2)allowURLModification=true MISSING HTTP");
                 String URL = null;
                 try {
                     URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                             .toString().trim();
-                    Log.i("RequestTask", "(3)allowURLModification=true URL to add:"+URL);
+                    //Log.i("RequestTask", "(3)allowURLModification=true URL to add:"+URL);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
                 if (URL.endsWith("/")) {
                     if (currentURI.startsWith("/")) {
                         currentURI = currentURI.substring(1);
-                        Log.i("RequestTask", "(4)allowURLModification=true currentURI:"+currentURI);
+                        //Log.i("RequestTask", "(4)allowURLModification=true currentURI:"+currentURI);
                     }
                     url.append(URL);
                 }
@@ -109,7 +109,7 @@ public class RequestTask extends AsyncTask<String, String, String>
                     if (!currentURI.startsWith("/")) {
                         url.append(URL);
                         url.append("/");
-                        Log.i("RequestTask", "(5)allowURLModification=true url added:"+url.toString());
+                        //Log.i("RequestTask", "(5)allowURLModification=true url added:"+url.toString());
                     }
                     else {
                         url.append(URL);
@@ -120,7 +120,6 @@ public class RequestTask extends AsyncTask<String, String, String>
             }
         }
         url.append(currentURI);
-        Log.i("RequestTask", "URL TO CALL:"+url);
         if (uri[0].indexOf("?") > -1) {
             if (!uri[0].trim().endsWith("?")) {
                 url.append("&");

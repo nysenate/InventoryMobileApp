@@ -119,7 +119,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listtest);
+        setContentView(R.layout.activity_verscan);
         registerBaseActivityReceiver();
         currentActivity = this;
 
@@ -631,6 +631,10 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                         AllScannedItems.add(inactiveInvItem);
                         newItems.add(inactiveInvItem); // to keep track of (number+details)
                                                // for summary
+                        adapter = new InvListViewAdapter(VerScanActivity.this, R.layout.invlist_item, invList);
+
+                        listView.setAdapter(adapter);
+                        updateChanges();                        
                         currentState = NONE;
                         
                         Context context = getApplicationContext();
@@ -999,7 +1003,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                                     + " has been Inactivated.",
                             "The <b>\""
                                     + vl.DECOMMODITYF
-                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will will be held for review!</font></b></div>");
+                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will will be held for review!</font><br/><br/>Do you want to add this item?</b></div>");
                     return -4;
 
                 } else {
