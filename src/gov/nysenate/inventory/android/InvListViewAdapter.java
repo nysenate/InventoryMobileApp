@@ -138,4 +138,18 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         }
         return -1;
     }
+    
+    public int findTypePosNOTEqualTo(String type) {
+        return findTypePosNOTEqualTo(type, 0);
+    }
+
+    public int findTypePosNOTEqualTo(String type, int startAt) {
+        for (int x = startAt; x < this.items.size(); x++) {
+            if (!this.items.get(x).getType().equals(type)) {
+                return x;
+            }
+        }
+        return -1;
+    }
+    
 }

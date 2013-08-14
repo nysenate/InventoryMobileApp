@@ -183,7 +183,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     if (lastClickedTo.equals("EXISTING")) {
                         lastRowFound = -1;
                     }
-                    foundAt = adapter.findTypePos("NEW", lastRowFound + 1);
+                    foundAt = adapter.findTypePosNOTEqualTo("EXISTING", lastRowFound + 1);
                     lastRowFound = foundAt;
                     listView.setSelection(lastRowFound);
                     lastClickedTo = "v";
