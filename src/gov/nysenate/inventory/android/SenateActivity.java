@@ -167,6 +167,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fm, "fragment_name");        
+        //newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
         
     public void reOpenCommentsDialog(){
@@ -177,6 +178,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
         commentsDialog = new CommentsDialog(this, dialogTitle, dialogMsg);
         commentsDialog.setRetainInstance(true);
         commentsDialog.show(fm, "fragment_name");        
+        //commentsDialog.getDialog().setCanceledOnTouchOutside(false);
     }
         
     public void startKeywordSpeech(View view) {

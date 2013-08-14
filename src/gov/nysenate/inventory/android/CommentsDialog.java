@@ -48,6 +48,7 @@ public class CommentsDialog extends DialogFragment   {
      builder.setView(dialogView)
             .setTitle(title)
             .setMessage(Html.fromHtml(msg))
+            .setCancelable(false)
             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {                 
                     for (CommentsDialogListener commentsDialogListener : listeners)
@@ -65,9 +66,12 @@ public class CommentsDialog extends DialogFragment   {
          senateActivity.dialogComments = null;
      }
 
+     this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo);
      
+     Dialog dialog = builder.create();
+     dialog.setCanceledOnTouchOutside(false);
      // Create the AlertDialog object and return it
-     return builder.create();
+     return dialog;
  }
    
  public void cancelMsg() {  

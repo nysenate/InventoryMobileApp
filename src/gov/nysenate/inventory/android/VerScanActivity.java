@@ -541,7 +541,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
         keywordDialog.show(fragmentManager, "keyword_dialog");  
         keywordDialog.addListener(newInvDialog);
-        //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog DONE");
+        //keywordDialog.getDialog().setCanceledOnTouchOutside(false);
+               //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog DONE");
 
     }    
        
@@ -553,6 +554,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fragmentManager, "newInvDialog");        
+        //newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
     
     public void barcodeDidNotExist(final String barcode_num) {
@@ -571,6 +573,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fragmentManager, "fragment_name");        
+        //newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
 
     public void errorMessage(final String barcode_num, final String title,
@@ -627,6 +630,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         commentsDialog.addListener(this);
         commentsDialog.setRetainInstance(true);
         commentsDialog.show(fragmentManager, "comments_dialog");                
+        //commentsDialog.getDialog().setCanceledOnTouchOutside(false);
         
        /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 

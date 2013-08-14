@@ -114,7 +114,8 @@ public class KeywordDialog extends DialogFragment  {
      // Create the AlertDialog object and return it
      AlertDialog dialog = builder.create();
      dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-     
+     dialog.setCanceledOnTouchOutside(false);
+     // Create the AlertDialog object and return it
      return dialog;
  }
 
