@@ -86,7 +86,7 @@
         			android:layout_marginRight="15dp"
         			android:layout_marginTop="10dp"
             		android:gravity="right"
-        			android:text="Senate Tag #:"
+        			android:text="Senate Tag#:"
         			style="@style/NormalText"   
         			android:textStyle="bold" />
        
