@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -47,19 +48,24 @@ public class CommentsDialog extends DialogFragment   {
      builder.setView(dialogView)
             .setTitle(title)
             .setMessage(Html.fromHtml(msg))
-            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {                 
                     for (CommentsDialogListener commentsDialogListener : listeners)
                         commentsDialogListener.onCommentOKButtonClicked (etComments.getText().toString());                         dismiss();
                 }
             })            
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            .setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     cancelMsg();
                 }
             });
      
-   
+     if (senateActivity.dialogComments!=null) {
+         etComments.setText(senateActivity.dialogComments);
+         senateActivity.dialogComments = null;
+     }
+
+     
      // Create the AlertDialog object and return it
      return builder.create();
  }
@@ -69,7 +75,7 @@ public class CommentsDialog extends DialogFragment   {
 
          String cancelTitle =  "Cancel";
 
-         String  cancelMsg = "***WARNING: Senate Tag# will not be added if you cancel. Do you want to cancel?";
+         String  cancelMsg = "***WARNING: You have chosen not to add this Senate Tag#. Continue?";
 
          // set title
          alertDialogBuilder.setTitle(cancelTitle);
@@ -94,6 +100,7 @@ public class CommentsDialog extends DialogFragment   {
                          senateActivity.dialogTitle = title;
                          senateActivity.dialogMsg = msg;
                          senateActivity.dialogComments = etComments.getText().toString();
+                         senateActivity.reOpenCommentsDialog();
                      }
                  });
 

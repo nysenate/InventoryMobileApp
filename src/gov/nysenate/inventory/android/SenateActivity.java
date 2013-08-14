@@ -51,6 +51,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
     public boolean senateTagNum = false;
     
     public NewInvDialog newInvDialog = null;
+    public CommentsDialog commentsDialog = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,7 +168,17 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fm, "fragment_name");        
     }
-    
+        
+    public void reOpenCommentsDialog(){
+        if (newInvDialog!=null) {
+            newInvDialog.dismiss();
+        }
+        android.app.FragmentManager fm = this.getFragmentManager();
+        commentsDialog = new CommentsDialog(this, dialogTitle, dialogMsg);
+        commentsDialog.setRetainInstance(true);
+        commentsDialog.show(fm, "fragment_name");        
+    }
+        
     public void startKeywordSpeech(View view) {
         if (view.getId() == R.id.btnKeywordSpeech) {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

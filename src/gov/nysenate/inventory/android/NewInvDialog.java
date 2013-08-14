@@ -91,7 +91,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      builder.setView(dialogView)
             .setTitle(title)
             .setMessage(Html.fromHtml(msg))
-            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     
                     if (adapter!=null && adapter.getRowSelected()>-1 && adapter.getCount()> 0) {
@@ -109,7 +109,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
                     }
                 }
             })            
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            .setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     cancelMsg();
                 }
@@ -185,7 +185,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
 
          String cancelTitle =  "Cancel";
 
-         String  cancelMsg = "***WARNING: Senate Tag# will not be added if you cancel. Do you want to cancel?";
+         String  cancelMsg = "***WARNING: You have chosen not to add this Senate Tag#. Continue?";
 
          // set title
          alertDialogBuilder.setTitle(cancelTitle);
@@ -209,6 +209,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
                          // if this button is clicked, we need to reopen the original Dialog
                          senateActivity.dialogTitle = title;
                          senateActivity.dialogMsg = msg;
+                         
                          if (adapter==null) {
                              senateActivity.dialogSelectedRow = -1;
                          }
