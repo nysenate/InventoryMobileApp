@@ -219,7 +219,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -464,7 +464,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
                 context);
 
         // set title
-        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg)).setCancelable(false)

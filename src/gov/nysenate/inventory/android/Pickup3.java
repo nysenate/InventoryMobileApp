@@ -413,7 +413,7 @@ public class Pickup3 extends SenateActivity
             }
 
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-            confirmDialog.setTitle("Pickup Confirmation");
+            confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Pickup Confirmation</font>"));
             confirmDialog.setMessage("Are you sure you want to pickup these "
                     + scannedBarcodeNumbers.size() + " items?");
             confirmDialog.setPositiveButton("Yes",
@@ -467,7 +467,7 @@ public class Pickup3 extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder

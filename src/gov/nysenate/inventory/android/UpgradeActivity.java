@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
@@ -159,7 +160,7 @@ public class UpgradeActivity extends Activity
                                                         Download_Uri);
                                                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
                                                 request.setAllowedOverRoaming(false);
-                                                request.setTitle("My Andorid App Download");
+                                                request.setTitle(Html.fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
                                                 request.setDestinationInExternalFilesDir(
                                                         UpgradeActivity.this,
                                                         Environment.DIRECTORY_DOWNLOADS,

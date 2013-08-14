@@ -89,7 +89,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      // Use the Builder class for convenient dialog construction
      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
      builder.setView(dialogView)
-            .setTitle(title)
+            .setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"))
             .setMessage(Html.fromHtml(msg))
             .setCancelable(false)
             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -188,12 +188,12 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
  public void cancelMsg() {  
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(senateActivity);
 
-         String cancelTitle =  "Cancel";
+         String cancelTitle =  "<font color='#000055'>Cancel</font>";
 
          String  cancelMsg = "***WARNING: You have chosen not to add this Senate Tag#. Continue?";
 
          // set title
-         alertDialogBuilder.setTitle(cancelTitle);
+         alertDialogBuilder.setTitle(Html.fromHtml(cancelTitle) );
 
          // set dialog message
          alertDialogBuilder.setMessage(Html.fromHtml(cancelMsg))

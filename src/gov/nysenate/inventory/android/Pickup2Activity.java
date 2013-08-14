@@ -230,8 +230,8 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
+                + " DOES NOT EXIST IN SFMS</font>"));
 
         playSound(R.raw.error);
         // set dialog message
@@ -340,8 +340,8 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("Senate Tag#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
+                + " DOES NOT EXIST IN SFMS</font>"));
         playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
@@ -386,7 +386,7 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))

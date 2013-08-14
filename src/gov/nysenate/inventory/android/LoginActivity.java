@@ -334,7 +334,8 @@ public class LoginActivity extends SenateActivity
                     // dialog characteristics
                     builder.setMessage(
                             "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
-                            .setTitle("Connect to NY Senate Network");
+                            .setTitle(Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
+
                     // Add the buttons
                     builder.setPositiveButton("Yes",
                             new DialogInterface.OnClickListener()
@@ -424,7 +425,7 @@ public class LoginActivity extends SenateActivity
                         // dialog characteristics
                         builder.setMessage(
                                 "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
-                                .setTitle("Connect to NY Senate Network");
+                                .setTitle(Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
                         // Add the buttons
                         builder.setPositiveButton("Yes",
                                 new DialogInterface.OnClickListener()
@@ -603,7 +604,12 @@ public class LoginActivity extends SenateActivity
                         this);
 
                 // set title
-                alertDialogBuilder.setTitle("");
+                if (currentVolume == 0) {
+                    alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: NO SOUND</font>") );
+                }
+                else if (currentVolume < .4 * maxVolume) {
+                    alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: LOW SOUND</font>") );
+               }
 
                 // set dialog message
                 alertDialogBuilder
@@ -765,7 +771,7 @@ public class LoginActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -1034,8 +1040,8 @@ public class LoginActivity extends SenateActivity
                                                 DownloadManager.Request request = new DownloadManager.Request(
                                                         Download_Uri);
                                                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-                                                request.setAllowedOverRoaming(false);
-                                                request.setTitle("My Andorid App Download");
+                                                request.setAllowedOverRoaming(false);                                                
+                                                request.setTitle(Html.fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
                                                 request.setDestinationInExternalFilesDir(
                                                         LoginActivity.this,
                                                         Environment.DIRECTORY_DOWNLOADS,

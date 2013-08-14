@@ -291,7 +291,7 @@ public class VerSummaryActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -373,7 +373,7 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayFoundItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Warning");
+        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Warning</font>"));
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>**WARNING:</font> The "
@@ -411,7 +411,7 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayNewItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Warning");
+        dialogBuilder.setTitle("<font color='#000055'>Warning</font>");
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>**WARNING:</font> The "
@@ -447,7 +447,7 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayVerificationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setTitle("Verification Confirmation");
+        confirmDialog.setTitle("<font color='#000055'>Verification Confirmation</font>");
         confirmDialog
                 .setMessage("Are you sure you want to submit this verification?");
         confirmDialog.setPositiveButton("Yes",

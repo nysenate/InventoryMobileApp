@@ -209,7 +209,7 @@ public class Delivery3 extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle("NO SERVER RESPONSE");
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -303,7 +303,7 @@ public class Delivery3 extends SenateActivity
 
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setTitle("Delivery Confirmation");
+        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
         confirmDialog.setMessage("Are you sure you want to deliver these "
                 + numItemsDelivered + " items?");
         confirmDialog.setPositiveButton("Yes",

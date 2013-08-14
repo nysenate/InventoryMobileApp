@@ -88,7 +88,7 @@ public class KeywordDialog extends DialogFragment  {
      // Use the Builder class for convenient dialog construction
      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
      builder.setView(dialogView)
-            .setTitle(title)
+            .setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"))
             .setMessage(Html.fromHtml(msg))
             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {

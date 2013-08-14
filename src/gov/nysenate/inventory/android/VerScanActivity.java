@@ -471,12 +471,13 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         StringBuilder title = new StringBuilder();
+        title.append("<font color='#000055'>");
         if (barcode_num != null && barcode_num.trim().length() > 0) {
             title.append("Barcode#: ");
             title.append(barcode_num);
             title.append(" ");
         }
-        title.append("NO SERVER RESPONSE");
+        title.append("NO SERVER RESPONSE</font>");
 
         StringBuilder msg = new StringBuilder();
         msg.append("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>.");
@@ -488,7 +489,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         msg.append("<br/> Please contact STS/BAC.");
 
         // set title
-        alertDialogBuilder.setTitle(title.toString());
+        alertDialogBuilder.setTitle(Html.fromHtml(title.toString()) );
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
@@ -534,7 +535,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
         dialogKeywords =NewInvDialog.tvKeywordsToBlock.getText().toString();
         //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
-        keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords" , 
+        keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords"  , 
                 "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
         //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
         keywordDialog.setRetainInstance(true);
@@ -583,7 +584,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))
@@ -623,86 +624,12 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         Log.i("TESTING", "****errorMessgae MESSAGE");
         playSound(R.raw.error);
 
-        
         senateTagNum = true;
         holdNusenate = barcode_num;
         commentsDialog = new CommentsDialog(this, title, message);
         commentsDialog.addListener(this);
         commentsDialog.setRetainInstance(true);
         commentsDialog.show(fragmentManager, "comments_dialog");                
-        //commentsDialog.getDialog().setCanceledOnTouchOutside(false);
-        
-       /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        // set title
-        alertDialogBuilder.setTitle(title);
-
-        // set dialog message
-        alertDialogBuilder.setMessage(Html.fromHtml(message))
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        inactiveInvItem.setDecommodityf(inactiveInvItem.getDecommodityf()+" *** INACTIVE ITEM ***");  
-                        invList.add(inactiveInvItem);
-                        cntScanned++;
-
-                        scannedItems.add(inactiveInvItem);
-                        AllScannedItems.add(inactiveInvItem);
-                        newItems.add(inactiveInvItem); // to keep track of (number+details)
-                                               // for summary
-                        adapter = new InvListViewAdapter(VerScanActivity.this, R.layout.invlist_item, invList);
-
-                        listView.setAdapter(adapter);
-                        updateChanges();                        
-                        currentState = NONE;
-                        
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "Senate Tag#: " + barcode_num
-                                + " was added";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-                        
-                        barcode.setText("");
-
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "Senate Tag#: " + barcode_num
-                                + " was NOT added";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        barcode.setText("");
-
-                        dialog.dismiss();
-                    }
-                })                
-                ;
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();*/
     }
     
     public void getItemsList() {
