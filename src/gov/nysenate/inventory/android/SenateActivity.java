@@ -36,7 +36,7 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
     public final int OK = 100, SERVER_SESSION_TIMED_OUT = 1000,
             NO_SERVER_RESPONSE = 1001, EXCEPTION_IN_CODE = 1002;    
     public final int CHECK_SERVER_RESPONSE = 200;
-    public static final int COMMODITYLIST = 3030, NEWITEMCOMMENTS = 3031;       
+    public static final int COMMODITYLIST = 3030, NEWITEMCOMMENTS = 3031, ITEMCOMMENTS = 3032;       
 
     private BaseActivityReceiver baseActivityReceiver = new BaseActivityReceiver();
     // private CheckInternet receiver;
@@ -188,7 +188,20 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
                     "New Item Comments");
             startActivityForResult(intent, NEWITEMCOMMENTS);
         }     
-    }       
+    }    
+
+    public void startItemCommentSpeech(View view) {
+        if (view.getId() == R.id.btnItemCommentSpeech) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                    "Item Comments");
+            startActivityForResult(intent, ITEMCOMMENTS);
+        }     
+    }    
+
+        
     public void noServerResponseMsg() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 

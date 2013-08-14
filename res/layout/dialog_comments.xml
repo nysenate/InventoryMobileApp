@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+     <gov.nysenate.inventory.android.ClearableEditText
+          android:id="@+id/etComments"
+          android:layout_width="530sp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:ems="10"
+          android:hint="Enter Comments here" />
+
+      <ImageView
+          android:id="@+id/btnItemCommentSpeech"
+          android:layout_width="40sp"
+          android:layout_height="40sp"
+          android:layout_weight="1"
+          android:clickable="true"
+          android:onClick="startItemCommentSpeech"
+          android:src="@drawable/speech2txt" />
+
+</LinearLayout>

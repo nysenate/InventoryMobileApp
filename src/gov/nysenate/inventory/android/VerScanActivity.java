@@ -44,7 +44,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VerScanActivity extends SenateActivity implements CommodityDialogListener
+public class VerScanActivity extends SenateActivity implements CommodityDialogListener, CommentsDialogListener
 {
 
     public ClearableEditText barcode;
@@ -66,6 +66,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
+    CommentsDialog commentsDialog = null;
 
     public final int ITEMLIST_TIMEOUT = 101, ITEMDETAILS_TIMEOUT = 102,
             KEEPALIVE_TIMEOUT = 103;
@@ -354,6 +355,15 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                                 
                 NewInvDialog.etNewItemComments.setText(matches.get(0));
             } 
+            break;
+        case ITEMCOMMENTS:
+            if (resultCode == RESULT_OK) {
+                ArrayList<String> matches = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                                
+                commentsDialog.etComments.setText(matches.get(0));
+            } 
+            break;
         }
         
         super.onActivityResult(requestCode, resultCode, data);
@@ -609,7 +619,16 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             final String message) {
         Log.i("TESTING", "****errorMessgae MESSAGE");
         playSound(R.raw.error);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        
+        senateTagNum = true;
+        holdNusenate = barcode_num;
+        commentsDialog = new CommentsDialog(this, title, message);
+        commentsDialog.addListener(this);
+        commentsDialog.setRetainInstance(true);
+        commentsDialog.show(fragmentManager, "comments_dialog");                
+        
+       /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
         alertDialogBuilder.setTitle(title);
@@ -679,7 +698,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
-        alertDialog.show();
+        alertDialog.show();*/
     }
     
     public void getItemsList() {
@@ -1563,6 +1582,39 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             return;
         }
         keywordDialog.adapter.returnToSelectedRow();
+    }
+
+    @Override
+    public void onCommentOKButtonClicked(String decomments) {
+        // if this button is clicked, just close
+        // the dialog box and do nothing
+        inactiveInvItem.setDecommodityf(inactiveInvItem.getDecommodityf()+" *** INACTIVE ITEM ***"); 
+        inactiveInvItem.setDecomments(decomments);
+        invList.add(inactiveInvItem);
+        cntScanned++;
+
+        scannedItems.add(inactiveInvItem);
+        AllScannedItems.add(inactiveInvItem);
+        newItems.add(inactiveInvItem); // to keep track of (number+details)
+                               // for summary
+        adapter = new InvListViewAdapter(VerScanActivity.this, R.layout.invlist_item, invList);
+
+        listView.setAdapter(adapter);
+        updateChanges();                        
+        currentState = NONE;
+        
+        Context context = getApplicationContext();
+
+        CharSequence text = "Senate Tag#: " + inactiveInvItem.getNusenate()
+                + " was added";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+        
+        barcode.setText("");
+        
     }
     
 

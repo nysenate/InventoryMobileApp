@@ -41,7 +41,6 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
  public static ProgressBar progBarNewInvItem;
  SenateActivity senateActivity;
  public static ListView commodityList = null;
- private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
  public String title = null;
  public String msg = null;
  GestureDetector gestureDectector = null;
@@ -180,13 +179,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
          senateActivity.dialogSelectedRow = -1;
      }
  }
- 
- 
-  private void doNotShowAgain() {
-     // persist shared preference to prevent dialog from showing again.
-     Log.d("MainActivity", "TODO: Persist shared preferences.");
- }
- 
+  
  public void cancelMsg() {  
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(senateActivity);
 
