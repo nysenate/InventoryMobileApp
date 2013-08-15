@@ -2,7 +2,6 @@
 package gov.nysenate.inventory.android;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -471,7 +469,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         StringBuilder title = new StringBuilder();
-        title.append("<font color='#000055'>");
+        title.append("<font size='5' color='#000055'>");
         if (barcode_num != null && barcode_num.trim().length() > 0) {
             title.append("Barcode#: ");
             title.append(barcode_num);
@@ -621,7 +619,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     
     public void inactiveMessage(final String barcode_num, final String title,
             final String message) {
-        Log.i("TESTING", "****errorMessgae MESSAGE");
         playSound(R.raw.error);
 
         senateTagNum = true;

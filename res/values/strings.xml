@@ -30,8 +30,8 @@
     <string name="details">Details </string>
     <string name="title_activity_close">CloseActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>
-    <string name="add_item_activity">Scan the location barcode or enter location code</string>
-    <string name="location_code">Location code </string>
+    <string name="add_item_activity">Scan the Location Senate Tag# or enter Location Code</string>
+    <string name="location_code">Location Code </string>
     <string name="title_activity_add_item_activity2">AddItemActivity2</string>
     <string name="title_activity_mov_pick1">MovPick1</string>
     <string name="title_activity_movp1">Movp1</string>
@@ -67,12 +67,12 @@
     <string name="pickup2Msg2">Origin and Destination</string>
     <string name="title_activity_pickup3">Pickup</string>
     <string name="title_activity_delivery1">Delivery</string>
-    <string name="delivery1_msg">Select Pickup for delivery to:</string>
-    <string name="delivery1_hint">Scan or enter location code</string>
+    <string name="delivery1_msg">Select Pickup for Delivery To:</string>
+    <string name="delivery1_hint">Scan or enter Location Code</string>
     <string name="title_activity_delivery2">Delivery</string>
-    <string name="delivery2_msg">Please select pickup for delivery to:</string>
+    <string name="delivery2_msg">Please select pickup for Delivery To:</string>
     <string name="title_activity_delivery3">Delivery</string>
-    <string name="delivery3_msg">Delivery confirmation</string>
+    <string name="delivery3_msg">Delivery Confirmation</string>
     <string name="employee_list_hint">Name of Signer</string>
     <string name="title_activity_user_action">Current Activity</string>
     <string name="action_settings">Settings</string>
