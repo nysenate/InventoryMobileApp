@@ -104,6 +104,9 @@ public class LoginActivity extends SenateActivity
     boolean timeoutActivity = false;
     String timeoutFrom = null;
     public static TextView tvWarnLabel;
+    
+    public long lastTimeCheck = 0;
+    public int lastLengthCheck = 0;
 
     public static DefaultHttpClient httpClient;
 
@@ -147,7 +150,7 @@ public class LoginActivity extends SenateActivity
             user_name.setBackgroundResource(R.drawable.customshape);
             password.requestFocus();
             tvWarnLabel.setText("TIME OUT\r\nPlease enter your password");
-            this.playSound(R.raw.timeout);
+            this.playSound(R.raw.timeout_julie);
         } else {
             tvWarnLabel.setText("");
         }
@@ -190,33 +193,38 @@ public class LoginActivity extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (isNumeric(s.toString(), 6) && s.toString().length()>lastNumericErrorLength+5) {
-                playSound(R.raw.error);
+            if (lastTimeCheck>0) {
+                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastLengthCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
+            }
+            
+            if (lastTimeCheck==0) {
+                playSound(R.raw.timeout_julie);
+                lastNumericErrorLength = s.toString().length();                    
+                lastTimeCheck = System.currentTimeMillis();
+                lastLengthCheck = s.toString().length();                
+                System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
+            }
+            else if (s.length()>lastLengthCheck+4) {
+                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
+                if (System.currentTimeMillis()-lastTimeCheck<300) {
+                    playSound(R.raw.timeout_julie);
+                    lastNumericErrorLength = s.toString().length();                    
+                    lastTimeCheck = System.currentTimeMillis();
+                    lastLengthCheck = s.toString().length();                
+                }
+            
+            }
+            else if (System.currentTimeMillis()-lastTimeCheck>=300 && s.length()>lastLengthCheck+5) {
+                System.out.println("LAST CHECK 5 GREATER THAN 1/3 SECOND OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
+                lastTimeCheck = System.currentTimeMillis();
+                lastLengthCheck = s.toString().length();                
+            }
+            else if (s.toString().length()==0) {            
+                System.out.println("CHECK SET BACK TO 0 LENGTH"+(System.currentTimeMillis()-lastTimeCheck));
                 lastNumericErrorLength = s.toString().length();
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = null;
-                if (LoginActivity.this.timeoutActivity) {
-                    toast = Toast.makeText(context, "***WARNING: You may be scanning Senate Tag#s in Timeout Screen.", duration);
-                }
-                else {
-                    toast = Toast.makeText(context, "***WARNING: You may be scanning Senate Tag#s in Login Screen.", duration);
-                }
-                
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                
+                lastTimeCheck = System.currentTimeMillis();
             }
-            else if(s.toString().length()<lastNumericErrorLength-5) {
-                if (s.toString().length()==0) {
-                    lastNumericErrorLength = 0; 
-                }
-                else {
-                    lastNumericErrorLength = lastNumericErrorLength-6;
-                }
-                if (lastNumericErrorLength<0) {
-                    lastNumericErrorLength = 0;
-                }
-            }
+            
         }
     };    
     
