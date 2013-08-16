@@ -141,7 +141,7 @@ public class LoginActivity extends SenateActivity
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
-        password.addTextChangedListener(senateTagWatcher);
+        password.addTextChangedListener(senateTagPWDWatcher);
 
         if (timeoutActivity) {
             user_name.setKeyListener(null);
@@ -150,9 +150,12 @@ public class LoginActivity extends SenateActivity
             user_name.setBackgroundResource(R.drawable.customshape);
             password.requestFocus();
             tvWarnLabel.setText("TIME OUT\r\nPlease enter your password");
-            this.playSound(R.raw.timeout_julie);
+            if (timeoutActivity) {
+                this.playSound(R.raw.timeout_julie);
+            }
         } else {
             tvWarnLabel.setText("");
+            user_name.addTextChangedListener(senateTagUSRWatcher);
         }
 
         // Read from the /assets directory for properties of the project
@@ -178,7 +181,7 @@ public class LoginActivity extends SenateActivity
         }
     }
     
-    private TextWatcher senateTagWatcher = new TextWatcher()
+    private TextWatcher senateTagPWDWatcher = new TextWatcher()
     {
 
         @Override
@@ -189,40 +192,117 @@ public class LoginActivity extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+            lastTimeCheck = System.currentTimeMillis();
+            lastLengthCheck = s.toString().length();                
         }
 
         @Override
         public void afterTextChanged(Editable s) {
+            
+            
             if (lastTimeCheck>0) {
-                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastLengthCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
+                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastTimeCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
             }
             
             if (lastTimeCheck==0) {
-                playSound(R.raw.timeout_julie);
-                lastNumericErrorLength = s.toString().length();                    
-                lastTimeCheck = System.currentTimeMillis();
-                lastLengthCheck = s.toString().length();                
-                System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
-            }
-            else if (s.length()>lastLengthCheck+4) {
-                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
-                if (System.currentTimeMillis()-lastTimeCheck<300) {
-                    playSound(R.raw.timeout_julie);
+                if (s.toString().length()>lastLengthCheck+4) {
+                    if (timeoutActivity) {
+                        playSound(R.raw.timeout_julie);
+                    }
+                    else {
+                        playSound(R.raw.login_julie);
+                    }
+                    lastNumericErrorLength = s.toString().length();                    
+                    lastTimeCheck = System.currentTimeMillis();
+                    lastLengthCheck = s.toString().length();                
+                    System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
+                }
+                else {
                     lastNumericErrorLength = s.toString().length();                    
                     lastTimeCheck = System.currentTimeMillis();
                     lastLengthCheck = s.toString().length();                
                 }
+            }
+            else if (s.toString().length()>lastLengthCheck+4) {
+                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
+                if (System.currentTimeMillis()-lastTimeCheck<300) {
+                    if (timeoutActivity) {
+                        playSound(R.raw.timeout_julie);
+                    }
+                    else {
+                        playSound(R.raw.login_julie);
+                    }
+                }
             
             }
-            else if (System.currentTimeMillis()-lastTimeCheck>=300 && s.length()>lastLengthCheck+5) {
-                System.out.println("LAST CHECK 5 GREATER THAN 1/3 SECOND OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
+            else if (s.length()==0) {
+                lastNumericErrorLength = s.toString().length();                    
+                lastTimeCheck = System.currentTimeMillis();
+                lastLengthCheck = s.toString().length();          
+                System.out.println("CHECK LENGTH SET BACK TO:"+lastLengthCheck);
+            }
+            
+        }
+    };    
+    
+
+    private TextWatcher senateTagUSRWatcher = new TextWatcher()
+    {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before,
+                int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                int after) {
+            if (!timeoutActivity) {
                 lastTimeCheck = System.currentTimeMillis();
                 lastLengthCheck = s.toString().length();                
             }
-            else if (s.toString().length()==0) {            
-                System.out.println("CHECK SET BACK TO 0 LENGTH"+(System.currentTimeMillis()-lastTimeCheck));
-                lastNumericErrorLength = s.toString().length();
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            
+            if (!timeoutActivity) {
+                if (lastTimeCheck>0) {
+                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastTimeCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
+                }
+            
+            if (lastTimeCheck==0) {
+                if (s.toString().length()>lastLengthCheck+4) {
+                    playSound(R.raw.login_julie);
+                    lastNumericErrorLength = s.toString().length();                    
+                    lastTimeCheck = System.currentTimeMillis();
+                    lastLengthCheck = s.toString().length();                
+                    System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
+                }
+                else {
+                    lastNumericErrorLength = s.toString().length();                    
+                    lastTimeCheck = System.currentTimeMillis();
+                    lastLengthCheck = s.toString().length();                
+                }
+            }
+            else if (s.toString().length()>lastLengthCheck+4) {
+                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
+                if (System.currentTimeMillis()-lastTimeCheck<300) {
+                    if (timeoutActivity) {
+                        playSound(R.raw.timeout_julie);
+                    }
+                    else {
+                        playSound(R.raw.login_julie);
+                    }
+                }
+            
+            }
+            else if (s.length()==0) {
+                lastNumericErrorLength = s.toString().length();                    
                 lastTimeCheck = System.currentTimeMillis();
+                lastLengthCheck = s.toString().length();          
+                System.out.println("CHECK LENGTH SET BACK TO:"+lastLengthCheck);
+            }
             }
             
         }
