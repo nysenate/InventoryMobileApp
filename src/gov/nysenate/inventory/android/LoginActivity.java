@@ -198,12 +198,7 @@ public class LoginActivity extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            
-            
-            if (lastTimeCheck>0) {
-                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastTimeCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
-            }
-            
+                       
             if (lastTimeCheck==0) {
                 if (s.toString().length()>lastLengthCheck+4) {
                     if (timeoutActivity) {
@@ -212,10 +207,10 @@ public class LoginActivity extends SenateActivity
                     else {
                         playSound(R.raw.login_julie);
                     }
+                    s.clear();
                     lastNumericErrorLength = s.toString().length();                    
                     lastTimeCheck = System.currentTimeMillis();
-                    lastLengthCheck = s.toString().length();                
-                    System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
+                    lastLengthCheck = s.toString().length();     
                 }
                 else {
                     lastNumericErrorLength = s.toString().length();                    
@@ -224,7 +219,6 @@ public class LoginActivity extends SenateActivity
                 }
             }
             else if (s.toString().length()>lastLengthCheck+4) {
-                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
                 if (System.currentTimeMillis()-lastTimeCheck<300) {
                     if (timeoutActivity) {
                         playSound(R.raw.timeout_julie);
@@ -232,6 +226,7 @@ public class LoginActivity extends SenateActivity
                     else {
                         playSound(R.raw.login_julie);
                     }
+                    s.clear();
                 }
             
             }
@@ -239,7 +234,6 @@ public class LoginActivity extends SenateActivity
                 lastNumericErrorLength = s.toString().length();                    
                 lastTimeCheck = System.currentTimeMillis();
                 lastLengthCheck = s.toString().length();          
-                System.out.println("CHECK LENGTH SET BACK TO:"+lastLengthCheck);
             }
             
         }
@@ -267,17 +261,14 @@ public class LoginActivity extends SenateActivity
         public void afterTextChanged(Editable s) {
             
             if (!timeoutActivity) {
-                if (lastTimeCheck>0) {
-                 System.out.println ("LAST CHECK:"+(System.currentTimeMillis()-lastTimeCheck)+" Milliseconds ago changed by "+(s.toString().length()-lastLengthCheck));
-                }
             
             if (lastTimeCheck==0) {
                 if (s.toString().length()>lastLengthCheck+4) {
                     playSound(R.raw.login_julie);
+                    s.clear();
                     lastNumericErrorLength = s.toString().length();                    
                     lastTimeCheck = System.currentTimeMillis();
                     lastLengthCheck = s.toString().length();                
-                    System.out.println("INITIAL LENGTH CHECK:"+lastLengthCheck);
                 }
                 else {
                     lastNumericErrorLength = s.toString().length();                    
@@ -286,22 +277,18 @@ public class LoginActivity extends SenateActivity
                 }
             }
             else if (s.toString().length()>lastLengthCheck+4) {
-                System.out.println("LAST CHECK 5 OR MORE CHARACTHERS:"+(System.currentTimeMillis()-lastTimeCheck));
                 if (System.currentTimeMillis()-lastTimeCheck<300) {
-                    if (timeoutActivity) {
-                        playSound(R.raw.timeout_julie);
-                    }
-                    else {
-                        playSound(R.raw.login_julie);
-                    }
+                      playSound(R.raw.login_julie);
+                      s.clear();
+                      lastNumericErrorLength = s.toString().length();                    
+                      lastTimeCheck = System.currentTimeMillis();
+                      lastLengthCheck = s.toString().length();                
                 }
-            
             }
             else if (s.length()==0) {
                 lastNumericErrorLength = s.toString().length();                    
                 lastTimeCheck = System.currentTimeMillis();
                 lastLengthCheck = s.toString().length();          
-                System.out.println("CHECK LENGTH SET BACK TO:"+lastLengthCheck);
             }
             }
             
