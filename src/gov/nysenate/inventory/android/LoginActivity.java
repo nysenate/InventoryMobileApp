@@ -47,7 +47,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -148,6 +151,15 @@ public class LoginActivity extends SenateActivity
             user_name.setText(nauser);
             user_name.removeClearButton();
             user_name.setBackgroundResource(R.drawable.customshape);
+            user_name.setOnTouchListener(new OnTouchListener(){
+
+                @Override
+                public boolean onTouch(View arg0, MotionEvent arg1) {
+                    password.requestFocus();
+                    return true;
+                }
+                
+            });
             password.requestFocus();
             tvWarnLabel.setText("TIME OUT\r\nPlease enter your password");
             if (timeoutActivity) {
@@ -155,8 +167,8 @@ public class LoginActivity extends SenateActivity
             }
         } else {
             tvWarnLabel.setText("");
-            user_name.addTextChangedListener(senateTagUSRWatcher);
         }
+        user_name.addTextChangedListener(senateTagUSRWatcher);
 
         // Read from the /assets directory for properties of the project
         // we can modify this file and the URL will be changed
@@ -251,21 +263,23 @@ public class LoginActivity extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
-            if (!timeoutActivity) {
-                lastTimeCheck = System.currentTimeMillis();
-                lastLengthCheck = s.toString().length();                
-            }
+             lastTimeCheck = System.currentTimeMillis();
+             lastLengthCheck = s.toString().length();                
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             
-            if (!timeoutActivity) {
             
             if (lastTimeCheck==0) {
                 if (s.toString().length()>lastLengthCheck+4) {
                     playSound(R.raw.login_julie);
-                    s.clear();
+                    if (timeoutActivity) {
+                        s.clear();
+                    }
+                    else {
+                        user_name.setText(nauser);
+                    }
                     lastNumericErrorLength = s.toString().length();                    
                     lastTimeCheck = System.currentTimeMillis();
                     lastLengthCheck = s.toString().length();                
@@ -279,7 +293,12 @@ public class LoginActivity extends SenateActivity
             else if (s.toString().length()>lastLengthCheck+4) {
                 if (System.currentTimeMillis()-lastTimeCheck<300) {
                       playSound(R.raw.login_julie);
-                      s.clear();
+                      if (timeoutActivity) {
+                          s.clear();
+                      }
+                      else {
+                          user_name.setText(nauser);
+                      }
                       lastNumericErrorLength = s.toString().length();                    
                       lastTimeCheck = System.currentTimeMillis();
                       lastLengthCheck = s.toString().length();                
@@ -292,7 +311,6 @@ public class LoginActivity extends SenateActivity
             }
             }
             
-        }
     };    
     
     public static boolean isNumeric(String str, int lastDigitlength)  
