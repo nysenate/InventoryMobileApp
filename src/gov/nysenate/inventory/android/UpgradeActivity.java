@@ -178,11 +178,12 @@ public class UpgradeActivity extends SenateActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 UpgradeActivity.this);
                         builder.setMessage(
-                                Html.fromHtml("There is newer version "
+                                Html.fromHtml("There is newer version <b>"
                                         + latestVersionName
-                                        + " <b>("
+                                        + " ("
                                         + latestVersion
-                                        + ")</b> of this application available. In order to use this app, you <b>MUST</b> update. Click OK to upgrade now?"))
+                                        + ")</b> of this application available. In order to use this app, you <b>MUST</b> update. Click <b>OK</b> to update now?"))
+                                .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO VERSION "+latestVersionName+"  ("+latestVersion+")</font>"))                                        
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener()
                                         {
