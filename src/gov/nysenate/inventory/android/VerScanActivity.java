@@ -946,11 +946,11 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     
                     inactiveMessage(
                             nusenate,
-                            "***WARNING: Senate Tag#: " + nusenate
-                                    + " has been Inactivated.",
-                            "Item Description: " 
+                            "<b>***WARNING</b>: Senate Tag#: <b>" + nusenate
+                                    + "</b> has been Inactivated.",
+                            "Item Description: <b>" 
                                     + vl.DECOMMODITYF
-                                    + "<br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
+                                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
                     return -4;
 
                 } else {
