@@ -411,11 +411,10 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayNewItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING</font>") );
+        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: New items will not be tagged to location</font>") );
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>***WARNING:</font> The "
-                                + numNewItems()
                                 + " NEW Items scanned will "
                                 + "NOT be tagged to location: "
                                 + loc_code
