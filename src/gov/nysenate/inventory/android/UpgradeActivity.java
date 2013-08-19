@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -237,7 +238,9 @@ public class UpgradeActivity extends SenateActivity
                                             }
                                         });
                         // show the alert message
-                        builder.create().show();
+                        Dialog dialog = builder.create(); 
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
                     } else {
                         returnToLoginScreen(null);
                     }
