@@ -411,7 +411,7 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayNewItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("<font color='#000055'>Warning</font>");
+        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Warning</font>") );
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>**WARNING:</font> The "
