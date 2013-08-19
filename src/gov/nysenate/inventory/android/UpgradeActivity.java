@@ -178,12 +178,9 @@ public class UpgradeActivity extends SenateActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 UpgradeActivity.this);
                         builder.setMessage(
-                                Html.fromHtml("There is newer version <b>"
-                                        + latestVersionName
-                                        + " ("
-                                        + latestVersion
-                                        + ")</b> of this application available. In order to use this app, you <b>MUST</b> update. Click <b>OK</b> to update now?"))
-                                .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO VERSION "+latestVersionName+"  ("+latestVersion+")</font>"))                                        
+                                Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
+                                        + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
+                                .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["+latestVersionName+"."+latestVersion+"] </font>"))                                        
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener()
                                         {
@@ -262,8 +259,8 @@ public class UpgradeActivity extends SenateActivity
 
         // 2. Chain together various setter methods to set the dialog
         // characteristics
-        builder.setMessage("Do you really close the Inventory App?").setTitle(
-                Html.fromHtml("<font color='#000055'>Close App</font>"));
+        builder.setMessage("Do you really close the Inventory Mobile App?").setTitle(
+                Html.fromHtml("<font color='#000055'>CLOSE APP</font>"));
         // Add the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
         {
