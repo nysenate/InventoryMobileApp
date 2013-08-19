@@ -384,8 +384,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         @Override
         public void afterTextChanged(Editable s) {
             if (barcode.getText().toString().length() >= 6) {
-                Log.i("TESTING", " getItemDetails:" + barcode.getText() + " ("
-                        + barcode.getText().length() + ")");
+                /*Log.i("TESTING", " getItemDetails:" + barcode.getText() + " ("
+                        + barcode.getText().length() + ")");*/
                 // loc_details.setText(loc_code.getText().toString());
                 // listView.
                 String barcode_num = barcode.getText().toString().trim();
@@ -577,7 +577,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
     public void errorMessage(final String barcode_num, final String title,
             final String message) {
-        Log.i("TESTING", "****errorMessgae MESSAGE");
+        //Log.i("TESTING", "****errorMessgae MESSAGE");
         playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -668,7 +668,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                 if (this.testResNull) { // Testing Purposes Only
                     res = null;
                     resr1 = null;
-                    Log.i("TEST RESNULL", "RES SET TO NULL");
+                    //Log.i("TEST RESNULL", "RES SET TO NULL");
                 }
 
                 JSONArray jsonArray = new JSONArray(jsonString);
@@ -774,11 +774,11 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             }
 
             if ((curInvItem.getNusenate().equals(nusenate))) {
-                Log.i("TEST", nusenate + " BEFORE REMOVE BARCODE INVLIST SIZE:"
-                        + invList.size());
+                /*Log.i("TEST", nusenate + " BEFORE REMOVE BARCODE INVLIST SIZE:"
+                        + invList.size());*/
                 adapter.removeBarCode(nusenate);
-                Log.i("TEST", nusenate + " AFTER REMOVE BARCODE INVLIST SIZE:"
-                        + invList.size());
+                /*Log.i("TEST", nusenate + " AFTER REMOVE BARCODE INVLIST SIZE:"
+                        + invList.size());*/
 
                 // display toster
                 Context context = getApplicationContext();
@@ -799,8 +799,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                 AllScannedItems.add(curInvItem);// to keep track of
                                                 // (number+details)
                                                 // for summary
-                Log.i("TEST", nusenate + " BEFORE REMOVE(" + i
-                        + ") INVLIST SIZE:" + invList.size() + "");
+                /*Log.i("TEST", nusenate + " BEFORE REMOVE(" + i
+                        + ") INVLIST SIZE:" + invList.size() + "");*/
                 // invList.remove(i);
                 scannedItems.add(curInvItem);// to keep track of all
                                              // scanned items
@@ -946,11 +946,11 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     
                     inactiveMessage(
                             nusenate,
-                            "***WARNING: Senate#: " + nusenate
+                            "***WARNING: Senate Tag#: " + nusenate
                                     + " has been Inactivated.",
-                            "The <b>\""
+                            "Item Description: " 
                                     + vl.DECOMMODITYF
-                                    + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will will be held for review!</font><br/><br/>Do you want to add this item?</b></div>");
+                                    + "<br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
                     return -4;
 
                 } else {
@@ -1003,7 +1003,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     }
     
     public void addKeyword(View view) {
-        Log.i("addKeyword", "addKeyword adding row");
+        //Log.i("addKeyword", "addKeyword adding row");
         int rowAdded = keywordDialog.adapter.addRow();
         View view1 = new View(currentActivity);
         //Log.i("addKeyword", "ROW#:"+rowAdded+", ACTUAL FIELD COUNT:"+keywordDialog.adapter.etKeywordFields.size());
@@ -1034,15 +1034,15 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
              
-            Log.i("getCommodityList", URL + "/getCommodityList?keywords=" + NewInvDialog.tvKeywordsToBlock.getText().toString());
+            //Log.i("getCommodityList", URL + "/getCommodityList?keywords=" + NewInvDialog.tvKeywordsToBlock.getText().toString());
             AsyncTask<String, String, String> resr1 = new RequestTask() {
                                         public void onPreExecute() {
-                                            Log.i("onPreExecute", "Progress Bar Visible");
+                                            //Log.i("onPreExecute", "Progress Bar Visible");
                                             newInvDialog.progBarNewInvItem.setVisibility(ProgressBar.VISIBLE);
                                         }
                 
                                         public void onPostExecute() {
-                                            Log.i("onPostExecute","Progress Bar INVisible");
+                                            //Log.i("onPostExecute","Progress Bar INVisible");
                                             newInvDialog.progBarNewInvItem.setVisibility(ProgressBar.INVISIBLE);
                                         }
                 
@@ -1058,7 +1058,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     res = null;
                     res = resr1.get().trim().toString();
                     endTime = System.currentTimeMillis();
-                    Log.i("Time Test", "GetCommodityList "+((endTime-startTime)/1000.0));
+                    //Log.i("Time Test", "GetCommodityList "+((endTime-startTime)/1000.0));
                     startTime = System.currentTimeMillis();
                     
                     if (res == null) {
@@ -1112,7 +1112,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             // display error
         }
         endTime = System.currentTimeMillis();
-        Log.i("Time Test", "add Commodity List "+((endTime-startTime)/1000.0));
+        //Log.i("Time Test", "add Commodity List "+((endTime-startTime)/1000.0));
         startTime = System.currentTimeMillis();
 
         commodityAdapter = new CommodityListViewAdapter(this, R.layout.commoditylist_row, commodityList, handleKeywords(NewInvDialog.tvKeywordsToBlock.getText().toString()));
@@ -1140,13 +1140,13 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
         newInvDialog.commodityList.setAdapter(commodityAdapter);
         endTime = System.currentTimeMillis();
-        Log.i("Time Test", "Commodity List adapter "+((endTime-startTime)/1000.0));
+        //Log.i("Time Test", "Commodity List adapter "+((endTime-startTime)/1000.0));
         startTime = System.currentTimeMillis();
 
         newInvDialog.checkKeywordsFound();
         newInvDialog.progBarNewInvItem.setVisibility(ProgressBar.INVISIBLE);
         endTime = System.currentTimeMillis();
-        Log.i("Time Test", "Commodity List checkKeywordsFound "+((endTime-startTime)/1000.0));
+        //Log.i("Time Test", "Commodity List checkKeywordsFound "+((endTime-startTime)/1000.0));
         startTime = System.currentTimeMillis();
         
     }        
@@ -1250,9 +1250,9 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     public void handleItem(boolean resumeFromTimeout) {
         // TODO resumeFromTimeout Code
 
-        Log.i("TESTING", " handleItem:(resumeFromTimeout:" + resumeFromTimeout
+        /*Log.i("TESTING", " handleItem:(resumeFromTimeout:" + resumeFromTimeout
                 + ")  " + barcode.getText() + " (" + barcode.getText().length()
-                + ")");
+                + ")");*/
 
         String nusenate = barcode.getText().toString().trim();
 
@@ -1277,7 +1277,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
 
         if ((resumeFromTimeout && currentState == ADDITEM_STATE)
                 || invItemIndex == -1) { // Item not found, so Add Item to list
-            Log.i("TESTING", "Adding item " + nusenate);
+            //Log.i("TESTING", "Adding item " + nusenate);
             int addItemResults = -1;
             addItemResults = addItem(nusenate);
             if (addItemResults == SERVER_SESSION_TIMED_OUT) {
@@ -1286,7 +1286,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         }
 
         updateChanges();
-        Log.i("TESTING", "State set back to NONE");
+        //Log.i("TESTING", "State set back to NONE");
         currentState = NONE;
         // Clear Barcode after all actions are done
         barcode.setText("");

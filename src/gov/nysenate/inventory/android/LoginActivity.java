@@ -70,6 +70,7 @@ public class LoginActivity extends SenateActivity
     ScanResult currentWifiResult;
     int senateWifiFound = -1;
     int senateVisitorWifiFound = -1;
+    boolean updateChecked = false;
     int connectedTo = -1;
     String senateSSID = "";
     String senateSSIDpwd = "";
@@ -128,9 +129,20 @@ public class LoginActivity extends SenateActivity
             Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
         } catch (Exception e) {
             timeoutFrom = null;
-            Log.i("MAIN", "TIMEOUTFROM WILL BE NULL");
         }
 
+        try {
+            Intent fromIntent = getIntent();
+            updateChecked =  new Boolean(fromIntent.getStringExtra("UPDATECHECKED")).booleanValue();
+            Log.i("UPDATECHECKED", "RETURNED:"+updateChecked);
+        }
+        catch (Exception e2) {
+            updateChecked = false;
+            Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
+        }
+        
+        
+        
         // Red Text Message
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
 
@@ -641,9 +653,10 @@ public class LoginActivity extends SenateActivity
                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
             startService(msgIntent);
         }*/
-        this.startUpdate(null);
+        if (!timeoutActivity && !updateChecked) {
+            this.startUpdate(null);
+        }
     }
-    
 
     public void testPost(View view) {
         BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM", "THIS WAS FROM ANDROID");
@@ -1066,6 +1079,7 @@ public class LoginActivity extends SenateActivity
     }
 
     public void startUpdate(View View) {
+        updateChecked = true;
         Intent intent = new Intent(this, UpgradeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_down, R.anim.out_down);

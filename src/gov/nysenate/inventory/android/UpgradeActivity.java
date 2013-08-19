@@ -244,6 +244,9 @@ public class UpgradeActivity extends SenateActivity
                     }
 
                 }
+                else {
+                    returnToLoginScreen(null);                    
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -285,6 +288,7 @@ public class UpgradeActivity extends SenateActivity
 
     public void returnToLoginScreen(View View) {
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra("UPDATECHECKED", "TRUE");
         startActivity(intent);
         overridePendingTransition(R.anim.in_up, R.anim.out_up);
     }

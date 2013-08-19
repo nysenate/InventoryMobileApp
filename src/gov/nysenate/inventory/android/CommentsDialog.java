@@ -57,7 +57,8 @@ public class CommentsDialog extends DialogFragment   {
             })            
             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    cancelMsg();
+                    //cancelMsg();
+                    dismiss();
                 }
             });
      

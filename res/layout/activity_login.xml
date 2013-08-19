@@ -93,29 +93,4 @@
     android:textColor="@color/red"
     android:textStyle="bold" />
 
-<TextView
-    android:id="@+id/textView2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignTop="@+id/tvWarnLabel"
-    android:layout_toRightOf="@+id/tvWarnLabel"
-    android:text="TESTING UPDATE"
-    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-<Button
-    android:id="@+id/Button01"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:background="@drawable/buttonshapeblue"
-    android:onClick="startUpdate"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Login"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
-
 </RelativeLayout>
