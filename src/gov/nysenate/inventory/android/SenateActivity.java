@@ -138,8 +138,11 @@ public abstract class SenateActivity extends Activity implements CommodityDialog
     }
 
     protected void closeAllActivities() {
+        Log.i("SenateActivity", "closeAllActivities");
         sendBroadcast(new Intent(FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION));
+        Log.i("SenateActivity", "closeAllActivities 2");
         InvApplication.activityDestroyed();
+        Log.i("SenateActivity", "closeAllActivities 3");
     }
 
     public void startTimeout(int timeoutType) {

@@ -93,7 +93,7 @@ public class LoginActivity extends SenateActivity
     public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
 
     private static final String LOG_TAG = "AppUpgrade";
-    private MyWebReceiver receiver;
+    //private MyWebReceiver receiver;
     private int versionCode = 0;
     String appURI = "";
     static String latestVersionName;
@@ -607,7 +607,7 @@ public class LoginActivity extends SenateActivity
             t.setTextColor(Color.RED);
 
         }
-        // Overall information about the contents of a package
+     /*   // Overall information about the contents of a package
         // This corresponds to all of the information collected from
         // AndroidManifest.xml.
         PackageInfo pInfo = null;
@@ -640,10 +640,10 @@ public class LoginActivity extends SenateActivity
             msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
             startService(msgIntent);
-        }
+        }*/
+        this.startUpdate(null);
     }
     
- 
 
     public void testPost(View view) {
         BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM", "THIS WAS FROM ANDROID");
@@ -910,13 +910,13 @@ public class LoginActivity extends SenateActivity
         // unregister your receivers
         if (!this.timeoutActivity) {
             try {
-                this.unregisterReceiver(receiver);
+            //    this.unregisterReceiver(receiver);
             } catch (Exception e) {
                 Log.w("LoginActivity",
                         "**WARNING: unable to unregister Internet Connection Receiver.");
             }
             try {
-                this.unregisterReceiver(downloadReceiver);
+                //this.unregisterReceiver(downloadReceiver);
             } catch (Exception e) {
                 Log.w("LoginActivity",
                         "**WARNING: unable to unregister Download Receiver.");
@@ -1069,11 +1069,10 @@ public class LoginActivity extends SenateActivity
         Intent intent = new Intent(this, UpgradeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_down, R.anim.out_down);
-
     }
 
     // broadcast receiver to get notification when the web request finishes
-    public class MyWebReceiver extends BroadcastReceiver
+   /* public class MyWebReceiver extends BroadcastReceiver
     {
 
         public static final String PROCESS_RESPONSE = "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
@@ -1166,7 +1165,7 @@ public class LoginActivity extends SenateActivity
 
         }
 
-    }
+    }*/
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1180,7 +1179,7 @@ public class LoginActivity extends SenateActivity
         }
     }
 
-    // broadcast receiver to get notification about ongoing downloads
+    /*// broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
     {
 
@@ -1209,7 +1208,7 @@ public class LoginActivity extends SenateActivity
 
             }
         }
-    };
+    };*/
     // our code ends
 
 }

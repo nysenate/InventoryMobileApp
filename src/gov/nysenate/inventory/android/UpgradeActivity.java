@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,24 +13,40 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileObserver;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class UpgradeActivity extends Activity
+public class UpgradeActivity extends SenateActivity
 {
     private static final String LOG_TAG = "AppUpgrade";
     private MyWebReceiver receiver;
     private int versionCode = 0;
     String appURI = "";
+    public final int INSTALL_INTENT = 2001;
+    int latestVersion;
+    String latestVersionName;
+    final long downloadId = -1;
+    TextView newVersion;
+    TextView currentVersion;
+    public TextView tvDownloadProgress = null;
+
+    Thread downloadStatusThread = null;
 
     private DownloadManager downloadManager;
     private long downloadReference;
@@ -36,6 +54,7 @@ public class UpgradeActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerBaseActivityReceiver();
         setContentView(R.layout.activity_upgrade);
         // Overall information about the contents of a package
         // This corresponds to all of the information collected from
@@ -51,8 +70,10 @@ public class UpgradeActivity extends Activity
         // get the app version Code for checking
         versionCode = pInfo.versionCode;
         // display the current version in a TextView
-        TextView versionText = (TextView) findViewById(R.id.versionName);
-        versionText.setText(version);
+        currentVersion = (TextView) findViewById(R.id.currentVersion);
+        currentVersion.setText("Current Version: " + version + " ("
+                + versionCode + ") ");
+        tvDownloadProgress = (TextView) findViewById(R.id.tvDownloadProgress);
 
         // Broadcast receiver for our Web Request
         IntentFilter filter = new IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
@@ -132,17 +153,35 @@ public class UpgradeActivity extends Activity
                 // if the reponse was successful check further
                 if (success) {
                     // get the latest version from the JSON string
-                    int latestVersion = responseObj.getInt("latestVersion");
+                    latestVersion = responseObj.getInt("latestVersion");
+
                     // get the lastest application URI from the JSON string
                     appURI = responseObj.getString("appURI");
+                    latestVersionName = responseObj
+                            .getString("latestVersionName");
+                    /*
+                     * Log.i(LOG_TAG, "latestVersion:" + latestVersion +
+                     * " > versionCode:" + versionCode);
+                     */
                     // check if we need to upgrade?
+                    newVersion = (TextView) findViewById(R.id.newVersion);
+                    newVersion.setText("Updating to Version: "
+                            + latestVersionName + " (" + latestVersion + ")");
+
                     if (latestVersion > versionCode) {
+                        // buttonLogin.setText("Close");
+                        // progressBarLogin.setVisibility(View.VISIBLE);
+
                         // oh yeah we do need an upgrade, let the user know send
                         // an alert message
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 UpgradeActivity.this);
                         builder.setMessage(
-                                "There is newer version of this application available, click OK to upgrade now?")
+                                Html.fromHtml("There is newer version "
+                                        + latestVersionName
+                                        + " <b>("
+                                        + latestVersion
+                                        + ")</b> of this application available. In order to use this app, you <b>MUST</b> update. Click OK to upgrade now?"))
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener()
                                         {
@@ -160,16 +199,32 @@ public class UpgradeActivity extends Activity
                                                         Download_Uri);
                                                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
                                                 request.setAllowedOverRoaming(false);
-                                                request.setTitle(Html.fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
+                                                request.setTitle(Html
+                                                        .fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
                                                 request.setDestinationInExternalFilesDir(
                                                         UpgradeActivity.this,
                                                         Environment.DIRECTORY_DOWNLOADS,
                                                         "InventoryMobileApp.apk");
                                                 downloadReference = downloadManager
                                                         .enqueue(request);
+                                                checkDownloadStatus(
+                                                        downloadManager,
+                                                        request);
+                                                /*
+                                                 * fileObserver = new
+                                                 * DownloadsObserver(
+                                                 * getExternalFilesDir
+                                                 * (Environment
+                                                 * .DIRECTORY_DOWNLOADS
+                                                 * ).getAbsolutePath(),
+                                                 * downloadManager, request,
+                                                 * downloadReference);
+                                                 * fileObserver.startWatching();
+                                                 */
+
                                             }
                                         })
-                                .setNegativeButton("Remind Later",
+                                .setNegativeButton("Close App",
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -177,10 +232,14 @@ public class UpgradeActivity extends Activity
                                                     DialogInterface dialog,
                                                     int id) {
                                                 // User cancelled the dialog
+                                                // finish();
+                                                closeAllActivities();
                                             }
                                         });
                         // show the alert message
                         builder.create().show();
+                    } else {
+                        returnToLoginScreen(null);
                     }
 
                 }
@@ -189,8 +248,93 @@ public class UpgradeActivity extends Activity
             }
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        final Activity currentActivity = this;
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog
+        // characteristics
+        builder.setMessage("Do you really close the Inventory App?").setTitle(
+                Html.fromHtml("<font color='#000055'>Close App</font>"));
+        // Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                closeAllActivities();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
+
+    public void returnToLoginScreen(View View) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_up, R.anim.out_up);
+    }
+
+    /* Does not work because the setShorcut is fired prior to the new version 
+     * of the App being installed so it appears to do nothing. (Brian H)
+    */   
+    
+   /* public boolean setShortCut(Context context, String appName) {
+        System.out.println("in the shortcutapp on create method ");
+        boolean flag = false;
+        int app_id = -1;
+        PackageManager p = context.getPackageManager();
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> res = p.queryIntentActivities(i, 0);
+        System.out.println("the res size is: " + res.size());
+
+        for (int k = 0; k < res.size(); k++) {
+            System.out.println("the application name is: "
+                    + res.get(k).activityInfo.loadLabel(p));
+            if (res.get(k).activityInfo.loadLabel(p).toString().equals(appName)) {
+                flag = true;
+                app_id = k;
+                break;
+            }
+        }
+
+        if (flag) {
+            ActivityInfo ai = res.get(app_id).activityInfo;
+
+            Intent shortcutIntent = new Intent();
+            shortcutIntent.setClassName(ai.packageName, ai.name);
+            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = new Intent();
+            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+
+            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, appName);
+
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                    Intent.ShortcutIconResource.fromContext(context,
+                            R.drawable.invapplogo));
+            // intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+            context.sendBroadcast(intent);
+            System.out.println("in the shortcutapp on create method completed");
+        } else
+            System.out.println("appllicaton not found");
+        return true;
+    }*/
 
     // broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
@@ -206,15 +350,91 @@ public class UpgradeActivity extends Activity
 
                 Log.v(LOG_TAG, "Downloading of the new app version complete");
                 // start the installation of the latest version
+                if (downloadStatusThread != null) {
+                    try {
+                        downloadStatusThread.interrupt();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 Intent installIntent = new Intent(Intent.ACTION_VIEW);
                 installIntent.setDataAndType(downloadManager
                         .getUriForDownloadedFile(downloadReference),
                         "application/vnd.android.package-archive");
                 installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(installIntent);
+                startActivityForResult(installIntent, INSTALL_INTENT);
 
             }
         }
     };
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case INSTALL_INTENT:
+            /* Does not work because the setShorcut is fired prior to the new version 
+             * of the App being installed so it appears to do nothing. (Brian H)
+            */
+            //setShortCut(this, "Inventory App");
+            closeAllActivities();
+            break;
+        }
+    }
+
+    void checkDownloadStatus(final DownloadManager downloadManager,
+            DownloadManager.Request request) {
+        final ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.pbDownloadProgress);
+
+        downloadStatusThread = new Thread(new Runnable()
+        {
+
+            @Override
+            public void run() {
+
+                boolean downloading = true;
+
+                while (downloading) {
+
+                    DownloadManager.Query q = new DownloadManager.Query();
+                    q.setFilterById(downloadReference);
+
+                    Cursor cursor = downloadManager.query(q);
+                    cursor.moveToFirst();
+                    final double bytes_downloaded = cursor.getLong(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    final double bytes_total = cursor.getLong(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    final double mb_downloaded = Math
+                            .round((bytes_downloaded * 100.0)
+                                    / (1024.0 * 1024.0)) / 100.0;
+                    final double mb_total = Math.round((bytes_total * 100.0)
+                            / (1024.0 * 1024.0)) / 100.0;
+
+                    if (cursor.getInt(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                        downloading = false;
+                    }
+
+                    final double dl_progress = (bytes_downloaded / bytes_total) * 100.0;
+
+                    runOnUiThread(new Runnable()
+                    {
+
+                        @Override
+                        public void run() {
+
+                            mProgressBar.setProgress((int) dl_progress);
+                            tvDownloadProgress.setText(mb_downloaded + " mb / "
+                                    + mb_total + " mb    (" + (int) dl_progress
+                                    + ")%");
+
+                        }
+                    });
+
+                    cursor.close();
+                }
+
+            }
+        });
+        downloadStatusThread.start();
+    }
 }

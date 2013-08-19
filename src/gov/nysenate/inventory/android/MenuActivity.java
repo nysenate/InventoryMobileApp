@@ -191,7 +191,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
         // overridePendingTransition(R.anim.slide_in_left,
         // R.anim.slide_out_left);
-
+        
     }
 
     public void addItem(View view) {
@@ -224,12 +224,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // avoid the data being passed to the login activity
     }
 
- 
-    
-
     public void noServerResponse() {
         noServerResponse(null);
-
     }
 
     public void noServerResponse(final String barcode_num) {
@@ -278,9 +274,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                                     duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                        }
-;
-
+                        };
                         dialog.dismiss();
                     }
                 });
@@ -291,13 +285,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // show it
         alertDialog.show();
     }
-    
-        
+           
     public String stripHtml(String html) {
         return Html.fromHtml(html).toString();
     }    
-    
-
     
     /*
      * 
