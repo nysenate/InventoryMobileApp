@@ -376,7 +376,6 @@ public class Delivery3 extends SenateActivity
             DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -487,6 +486,7 @@ public class Delivery3 extends SenateActivity
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+        returnToMoveMenu();
     }
         
    public void returnToMoveMenu() {
