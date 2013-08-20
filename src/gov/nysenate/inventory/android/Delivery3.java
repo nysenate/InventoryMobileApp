@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -414,8 +416,45 @@ public class Delivery3 extends SenateActivity
                     } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(this.POSITIVEDIALOG_TIMEOUT);
                         return;
-                    }
+                    } else if (res.startsWith("***WARNING:")||res.startsWith("!!ERROR:")) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
+                        // set title
+                        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+res.trim()+"</font>"));
+
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage(
+                                        Html.fromHtml(res.trim()+"<br/> Continue (Y/N)?"))
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        returnToMoveMenu();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setPositiveButton("No", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+
+                        // show it
+                        alertDialog.show();
+                        return;
+                    }
+                    
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -446,14 +485,15 @@ public class Delivery3 extends SenateActivity
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
-
-        // 3. send the intent to the Move Menu Activity
-
-        // Intent intent = new Intent(this, MenuActivity.class);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
+        
+   public void returnToMoveMenu() {
+   // 3. send the intent to the Move Menu Activity
+       // Intent intent = new Intent(this, MenuActivity.class);
+       Intent intent = new Intent(this, Move.class);
+       startActivity(intent);
+       overridePendingTransition(R.anim.in_right, R.anim.out_left);
+   }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -693,6 +733,14 @@ public class Delivery3 extends SenateActivity
                     }
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+                //Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+                //Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                 }
@@ -755,6 +803,14 @@ public class Delivery3 extends SenateActivity
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+                //Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+                //Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
@@ -781,7 +837,16 @@ public class Delivery3 extends SenateActivity
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
-                } catch (IOException e) {
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+                //Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+                //Log.e("SOCK TIMEOUT", e.toString());
+                }                
+                catch (IOException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
                 }

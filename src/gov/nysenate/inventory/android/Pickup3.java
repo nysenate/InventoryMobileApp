@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -694,6 +696,14 @@ public class Pickup3 extends SenateActivity
                     }
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                    //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    //Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                    //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+                    //Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                 }
@@ -729,7 +739,15 @@ public class Pickup3 extends SenateActivity
                     }
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
-                } catch (IOException e) {
+            } catch (ConnectTimeoutException e) {
+                return "***WARNING: Server Connection timeout";
+            //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+            //Log.e("CONN TIMEOUT", e.toString());
+            } catch (SocketTimeoutException e) {
+                return "***WARNING: Server Socket timeout";
+            //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+            //Log.e("SOCK TIMEOUT", e.toString());
+            }   catch (IOException e) {
                     // TODO Handle problems..
                 }
                 res = responseString;
@@ -751,7 +769,15 @@ public class Pickup3 extends SenateActivity
                         response.getEntity().getContent().close();
                         throw new IOException(statusLine.getReasonPhrase());
                     }
-                } catch (ClientProtocolException e) {
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
+                //Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
+                //Log.e("SOCK TIMEOUT", e.toString());
+                }   catch (ClientProtocolException e) {
                     // TODO Handle problems..
                 } catch (IOException e) {
                     // TODO Handle problems..
@@ -870,7 +896,45 @@ public class Pickup3 extends SenateActivity
                     } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(POSITIVEDIALOG_TIMEOUT);
                         return;
+                    } else if (res.startsWith("***WARNING:")||res.startsWith("!!ERROR:")) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+                        // set title
+                        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+res.trim()+"</font>"));
+
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage(
+                                        Html.fromHtml(res.trim()+"<br/> Continue (Y/N)?"))
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        returnToMoveMenu();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setPositiveButton("No", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+
+                        // show it
+                        alertDialog.show();
+                        return;
                     }
+                    
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -892,7 +956,8 @@ public class Pickup3 extends SenateActivity
         Context context = getApplicationContext();
         CharSequence text = res;
         if (res.length() == 0) {
-            text = "Database not updated";
+            noServerResponse();
+            return;
         }
 
         int duration = Toast.LENGTH_SHORT;
@@ -900,6 +965,12 @@ public class Pickup3 extends SenateActivity
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
 
+        // ===================ends
+        // Intent intent = new Intent(this, MenuActivity.class);
+        returnToMoveMenu();
+    }
+    
+    public void returnToMoveMenu() {
         // ===================ends
         // Intent intent = new Intent(this, MenuActivity.class);
         Intent intent = new Intent(this, Move.class);

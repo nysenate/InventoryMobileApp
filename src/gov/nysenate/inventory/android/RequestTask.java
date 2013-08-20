@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -15,10 +16,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class RequestTask extends AsyncTask<String, String, String>
 {
@@ -156,10 +159,14 @@ public class RequestTask extends AsyncTask<String, String, String>
         } catch (ClientProtocolException e) {
             // TODO Handle problems..
             Log.w("HTTP2:", e);
+        }catch (ConnectTimeoutException e) {
+            return "***WARNING: Server Connection timeout";
+        } catch (SocketTimeoutException e) {
+            return "***WARNING: Server Socket timeout";
         } catch (IOException e) {
             // TODO Handle problems..
             Log.w("HTTP3:", e);
-        } catch (Exception e) {
+        }      catch (Exception e) {
             Log.w("HTTP4:", e);
         }
         res = responseString;
