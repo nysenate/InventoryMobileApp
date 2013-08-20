@@ -81,6 +81,7 @@ public class Delivery3 extends SenateActivity
     int nuxrefem = -1;
     public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
     public ArrayList<String> employeeNameList = new ArrayList<String>();
+    TextView tvItemCount;
     ClearableAutoCompleteTextView naemployeeView;
     String deliveryRequestTaskType = "";
     String employeeList = "";
@@ -117,6 +118,7 @@ public class Delivery3 extends SenateActivity
         // Set the location in textview
         loc_details = (TextView) findViewById(R.id.textView2);
         loc_details.setText("Delivery to: " + location);
+        tvItemCount = (TextView) findViewById(R.id.tvItemCount);
         // Get the barcode numbers from the server and set it to the listview
 
         // Configure Image Buttons
@@ -923,6 +925,17 @@ public class Delivery3 extends SenateActivity
                 // set everything as checked
                 invAdapter.setAllSelected(true);
                 invAdapter.setNotifyOnChange(true);
+                try {
+                    tvItemCount.setText("Item Count:  "+invList.size());
+                } catch (Exception e) {
+                    try {
+                    tvItemCount.setText("Item Count:   N/A");
+                    }
+                    catch (Exception e2) {
+                        e.printStackTrace();
+                    }
+                }
+                
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block

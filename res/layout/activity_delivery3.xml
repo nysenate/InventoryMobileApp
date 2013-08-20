@@ -23,12 +23,22 @@
         			android:layout_marginTop="18dp"
         			android:text="@string/delivery3_msg"
         			style="@style/NormalText"    />
-		 	</TableRow>
+    			<TextView
+       		 		android:id="@+id/tvItemCount"
+        			android:layout_width="match_parent"
+       	 			android:layout_height="wrap_content"
+        			android:layout_alignParentTop="true"
+        			android:layout_marginLeft="98dp"
+        			android:layout_marginTop="18dp"
+        			android:text="Item Count:"
+        			style="@style/NormalText"    />
+    		</TableRow>
     	  	<TableRow>
     	  		<TextView
         			android:id="@+id/textView2"
         			android:layout_width="wrap_content"
         			android:layout_height="wrap_content"
+        			android:layout_span="2"
         			android:layout_marginTop="10dp"
         			android:layout_alignParentLeft="true"
         			android:layout_alignParentTop="true"
