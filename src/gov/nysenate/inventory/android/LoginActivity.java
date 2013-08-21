@@ -96,9 +96,11 @@ public class LoginActivity extends SenateActivity
     private static final String LOG_TAG = "AppUpgrade";
     //private MyWebReceiver receiver;
     private int versionCode = 0;
-    String appURI = "";
+    private String versionName = null;
+    static String appURI = "";
     static String latestVersionName;
     static int latestVersion;
+    static String currentVersionName;
 
     private DownloadManager downloadManager;
     private long downloadReference;
@@ -108,11 +110,13 @@ public class LoginActivity extends SenateActivity
     boolean timeoutActivity = false;
     String timeoutFrom = null;
     public static TextView tvWarnLabel;
+    boolean updateApp = false;
     
     public long lastTimeCheck = 0;
     public int lastLengthCheck = 0;
 
     public static DefaultHttpClient httpClient;
+    AlertDialog alertDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,15 +137,13 @@ public class LoginActivity extends SenateActivity
 
         try {
             Intent fromIntent = getIntent();
-            updateChecked =  new Boolean(fromIntent.getStringExtra("UPDATECHECKED")).booleanValue();
+            updateChecked =   Boolean.valueOf(fromIntent.getStringExtra("UPDATECHECKED"));
             Log.i("UPDATECHECKED", "RETURNED:"+updateChecked);
         }
         catch (Exception e2) {
             updateChecked = false;
             Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
         }
-        
-        
         
         // Red Text Message
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
@@ -262,7 +264,6 @@ public class LoginActivity extends SenateActivity
             
         }
     };    
-    
 
     private TextWatcher senateTagUSRWatcher = new TextWatcher()
     {
@@ -337,6 +338,7 @@ public class LoginActivity extends SenateActivity
         if (str.length()> lastDigitlength) {
             str = str.substring(str.length()-lastDigitlength);
         }
+        @SuppressWarnings("unused")
         long l = Long.parseLong(str);  
       }  
       catch(NumberFormatException nfe)  
@@ -387,7 +389,7 @@ public class LoginActivity extends SenateActivity
                         .makeText(
                                 context,
                                 "Unable to Enable Wifi Connection necessary to login to this app. Please fix before continuing or contact STS/BAC.",
-                                3000);
+                                duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
@@ -619,7 +621,7 @@ public class LoginActivity extends SenateActivity
             t.setTextColor(Color.RED);
 
         }
-     /*   // Overall information about the contents of a package
+       // Overall information about the contents of a package
         // This corresponds to all of the information collected from
         // AndroidManifest.xml.
         PackageInfo pInfo = null;
@@ -629,30 +631,87 @@ public class LoginActivity extends SenateActivity
             e.printStackTrace();
         }
         // get the app version Code for checking
-        versionCode = pInfo.versionCode;
+        this.versionCode = pInfo.versionCode;
+        this.versionName = pInfo.versionName;
         Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
         // display the current version in a TextView
 
         // Broadcast receiver for our Web Request
-        IntentFilter filter = new IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new MyWebReceiver();
-        registerReceiver(receiver, filter);
+//        IntentFilter filter = new IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
+ //       filter.addCategory(Intent.CATEGORY_DEFAULT);
+ //       receiver = new MyWebReceiver();
+ //       registerReceiver(receiver, filter);
 
         // Broadcast receiver for the download manager
-        filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        registerReceiver(downloadReceiver, filter);
+   //     filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+   //     registerReceiver(downloadReceiver, filter);
 
         // check of internet is available before making a web service request
+        updateApp=false;
+
         if (isNetworkAvailable(this)) {
             Intent msgIntent = new Intent(this, InvWebService.class);
-            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                    .toString();
+            
+            try {
+                // Get the URL from the properties
+                String URL = LoginActivity.properties
+                        .get("WEBAPP_BASE_URL").toString();
+                AsyncTask<String, String, String> resr1 = new RequestTask()
+                        .execute(URL + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+                try {
+                    String res = resr1.get().trim().toString();
+                    if (res == null) {
+                        noServerResponse();
+                    }
+                    else if (res.trim().length()==0) {
+                        noServerResponse();
+                    }
+                    else {
+                        
+                        JSONObject responseObj;
+                        try {
+                            responseObj = new JSONObject(res);
+                            boolean success = responseObj.getBoolean("success");
+                            Log.i("LoginActivity", "CheckAppVersion returned success:"+success);
+                            // if the reponse was successful check further
+                            if (success) {
+                                // get the latest version from the JSON string
+                                latestVersion = responseObj.getInt("latestVersion");
 
-            msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
-                    + "/CheckAppVersion?appName=InventoryMobileApp.apk");
-            startService(msgIntent);
-        }*/
+                                // get the lastest application URI from the JSON string
+                                appURI = responseObj.getString("appURI");
+                                latestVersionName = responseObj
+                                        .getString("latestVersionName");
+                                appURI = responseObj.getString("appURI");
+                                // check if we need to upgrade?
+                                Log.i("LoginActivity", "CheckAppVersion: Is latestVersion:"+latestVersion+" > versionCode:"+versionCode);
+                                
+                                if (latestVersion > versionCode) {
+                                    updateApp = true;
+                                }
+                                }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        
+                    }
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    // TODO Auto-generated catch block
+                    noServerResponse();
+                }
+            } catch (Exception e) {
+
+            }
+            //msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
+            //        + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+            //startService(msgIntent);
+        }
         if (!timeoutActivity && !updateChecked) {
             this.startUpdate(null);
         }
@@ -680,6 +739,14 @@ public class LoginActivity extends SenateActivity
         }    }
         
     
+    @Override  
+    protected void onStop() {  
+     super.onStop();  
+     if (alertDialog != null) {  
+         alertDialog.dismiss();  
+         alertDialog = null;  
+     }  
+    }      
     // Self Explanatory
 
     private void checkInitialAudioLevel() {
@@ -759,7 +826,7 @@ public class LoginActivity extends SenateActivity
                                 });
 
                 // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog = alertDialogBuilder.create();
 
                 // show it
                 alertDialog.show();
@@ -1079,10 +1146,12 @@ public class LoginActivity extends SenateActivity
     }
 
     public void startUpdate(View View) {
-        updateChecked = true;
-        Intent intent = new Intent(this, UpgradeActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_down, R.anim.out_down);
+        if (updateApp) {
+            updateChecked = true;
+            Intent intent = new Intent(this, UpgradeActivity.class);            
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_down, R.anim.out_down);
+        }
     }
 
     // broadcast receiver to get notification when the web request finishes

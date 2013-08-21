@@ -42,6 +42,7 @@ public class UpgradeActivity extends SenateActivity
     public final int INSTALL_INTENT = 2001;
     int latestVersion;
     String latestVersionName;
+   
     final long downloadId = -1;
     TextView newVersion;
     TextView currentVersion;
@@ -86,15 +87,28 @@ public class UpgradeActivity extends SenateActivity
         filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
 
-        // check of internet is available before making a web service request
-        if (isNetworkAvailable(this)) {
-            Intent msgIntent = new Intent(this, InvWebService.class);
-            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                    .toString();
+        // First check to see if the Login activity has the latest version info of this App
+        // If it does, we don't need to connect to the web service simply to get the
+        // version info, instead, we can simply compare.. 
+        // if login activity does  not have 
+        // the latest version info of this App, check of internet is available before 
+        // making a web service request to get the latest version info from the web service
+        
+        if (LoginActivity.latestVersionName!=null) {
+            this.latestVersionName = LoginActivity.latestVersionName;
+            this.latestVersion = LoginActivity.latestVersion;
+            this.appURI = LoginActivity.appURI;
+            this.compareVersions(true);
+        }
+        else if (isNetworkAvailable(this)) {
+            
+           Intent msgIntent = new Intent(this, InvWebService.class);
+           String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                      .toString();
 
-            msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
-                    + "/CheckAppVersion?appName=InventoryMobileApp.apk");
-            startService(msgIntent);
+           msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
+                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+           startService(msgIntent);
         }
 
     }
@@ -165,93 +179,100 @@ public class UpgradeActivity extends SenateActivity
                      * " > versionCode:" + versionCode);
                      */
                     // check if we need to upgrade?
-                    newVersion = (TextView) findViewById(R.id.newVersion);
-                    newVersion.setText("Updating to Version: "
-                            + latestVersionName + " (" + latestVersion + ")");
 
-                    if (latestVersion > versionCode) {
-                        // buttonLogin.setText("Close");
-                        // progressBarLogin.setVisibility(View.VISIBLE);
-
-                        // oh yeah we do need an upgrade, let the user know send
-                        // an alert message
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                UpgradeActivity.this);
-                        builder.setMessage(
-                                Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
-                                        + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
-                                .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["+latestVersionName+"."+latestVersion+"] </font>"))                                        
-                                .setPositiveButton("OK",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            // if the user agrees to upgrade
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // start downloading the file
-                                                // using the download manager
-                                                downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                                                Uri Download_Uri = Uri
-                                                        .parse(appURI);
-                                                DownloadManager.Request request = new DownloadManager.Request(
-                                                        Download_Uri);
-                                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-                                                request.setAllowedOverRoaming(false);
-                                                request.setTitle(Html
-                                                        .fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
-                                                request.setDestinationInExternalFilesDir(
-                                                        UpgradeActivity.this,
-                                                        Environment.DIRECTORY_DOWNLOADS,
-                                                        "InventoryMobileApp.apk");
-                                                downloadReference = downloadManager
-                                                        .enqueue(request);
-                                                checkDownloadStatus(
-                                                        downloadManager,
-                                                        request);
-                                                /*
-                                                 * fileObserver = new
-                                                 * DownloadsObserver(
-                                                 * getExternalFilesDir
-                                                 * (Environment
-                                                 * .DIRECTORY_DOWNLOADS
-                                                 * ).getAbsolutePath(),
-                                                 * downloadManager, request,
-                                                 * downloadReference);
-                                                 * fileObserver.startWatching();
-                                                 */
-
-                                            }
-                                        })
-                                .setNegativeButton("Close App",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // User cancelled the dialog
-                                                // finish();
-                                                closeAllActivities();
-                                            }
-                                        });
-                        // show the alert message
-                        Dialog dialog = builder.create(); 
-                        dialog.setCanceledOnTouchOutside(false);
-                        dialog.show();
-                    } else {
-                        returnToLoginScreen(null);
-                    }
-
+                    compareVersions(success);
                 }
-                else {
-                    returnToLoginScreen(null);                    
-                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
+    }
+    
+    public void compareVersions(boolean success) {
+        if (success) {
+        if (latestVersion > versionCode) {
+            newVersion = (TextView) findViewById(R.id.newVersion);
+            newVersion.setText("Updating to Version: "
+                    + latestVersionName + " (" + latestVersion + ")");
+                // buttonLogin.setText("Close");
+            // progressBarLogin.setVisibility(View.VISIBLE);
+
+            // oh yeah we do need an upgrade, let the user know send
+            // an alert message
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    UpgradeActivity.this);
+            builder.setMessage(
+                    Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
+                            + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
+                    .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["+latestVersionName+"."+latestVersion+"] </font>"))                                        
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener()
+                            {
+                                // if the user agrees to upgrade
+                                @Override
+                                public void onClick(
+                                        DialogInterface dialog,
+                                        int id) {
+                                    // start downloading the file
+                                    // using the download manager
+                                    downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                    Uri Download_Uri = Uri
+                                            .parse(appURI);
+                                    DownloadManager.Request request = new DownloadManager.Request(
+                                            Download_Uri);
+                                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+                                    request.setAllowedOverRoaming(false);
+                                    request.setTitle(Html
+                                            .fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
+                                    request.setDestinationInExternalFilesDir(
+                                            UpgradeActivity.this,
+                                            Environment.DIRECTORY_DOWNLOADS,
+                                            "InventoryMobileApp.apk");
+                                    downloadReference = downloadManager
+                                            .enqueue(request);
+                                    checkDownloadStatus(
+                                            downloadManager,
+                                            request);
+                                    /*
+                                     * fileObserver = new
+                                     * DownloadsObserver(
+                                     * getExternalFilesDir
+                                     * (Environment
+                                     * .DIRECTORY_DOWNLOADS
+                                     * ).getAbsolutePath(),
+                                     * downloadManager, request,
+                                     * downloadReference);
+                                     * fileObserver.startWatching();
+                                     */
+
+                                }
+                            })
+                    .setNegativeButton("Close App",
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(
+                                        DialogInterface dialog,
+                                        int id) {
+                                    // User cancelled the dialog
+                                    // finish();
+                                    closeAllActivities();
+                                }
+                            });
+            // show the alert message
+            Dialog dialog = builder.create(); 
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        } else {
+            returnToLoginScreen(null);
+        }
+
+    }
+    else {
+        returnToLoginScreen(null);                    
+    }
     }
 
     @Override
