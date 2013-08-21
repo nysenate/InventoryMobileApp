@@ -250,7 +250,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         btnVerListCont.getBackground().setAlpha(255);
         btnVerListCancel = (Button) findViewById(R.id.btnVerListCancel);
         btnVerListCancel.getBackground().setAlpha(255);
-
+        
         // Force Keyboard to Popup
 
         if (barcode == null) {
@@ -1298,11 +1298,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         getMenuInflater().inflate(R.menu.activity_ver_scan, menu);
         return true;
     }
-
-    /*
-     * @Override public void onBackPressed() { super.onBackPressed();
-     * overridePendingTransition(R.anim.in_left, R.anim.out_right); }
-     */
 
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {

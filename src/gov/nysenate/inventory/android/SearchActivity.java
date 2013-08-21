@@ -72,6 +72,15 @@ public class SearchActivity extends SenateActivity
         // Suppress the Menu ProgressBar
         MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (btnSrchBck==null) {
+            btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
+        }
+        btnSrchBck.getBackground().setAlpha(255);
+     }    
 
     private final TextWatcher filterTextWatcher = new TextWatcher()
     {

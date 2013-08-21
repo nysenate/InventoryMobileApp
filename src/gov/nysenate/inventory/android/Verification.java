@@ -124,6 +124,19 @@ public class Verification extends SenateActivity
         // Suppress the Menu ProgressBar
         MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (this.btnVerify1Cancel==null) {
+            this.btnVerify1Cancel = (Button) this.findViewById(R.id.btnVerify1Cancel);
+        }
+        if (this.btnVerify1Cont==null) {
+            this.btnVerify1Cont = (Button) this.findViewById(R.id.btnVerify1Cont);
+        }
+        this.btnVerify1Cancel.getBackground().setAlpha(255);
+        this.btnVerify1Cont.getBackground().setAlpha(255);
+    }
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);

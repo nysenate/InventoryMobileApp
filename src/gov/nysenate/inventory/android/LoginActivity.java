@@ -983,6 +983,8 @@ public class LoginActivity extends SenateActivity
     protected void onResume(Bundle savedInstanceState) {
         super.onResume(savedInstanceState);
         httpClient = new DefaultHttpClient();
+        buttonLogin.getBackground().setAlpha(255);
+        progressBarLogin.setVisibility(View.INVISIBLE);
     }
 
     @Override

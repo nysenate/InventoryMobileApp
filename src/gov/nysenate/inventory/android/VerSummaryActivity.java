@@ -272,6 +272,10 @@ public class VerSummaryActivity extends SenateActivity
         VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(255);
         VerSummaryActivity.btnVerSumCont = (Button) findViewById(R.id.btnVerSumCont);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
+        if (progressVerSum ==null) {
+            progressVerSum = (ProgressBar) this.findViewById(R.id.progressVerSum);
+        }            
+        progressVerSum.setVisibility(ProgressBar.INVISIBLE);          
     }
 
     public void backButton(View view) {

@@ -206,6 +206,23 @@ public class Delivery3 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
+            if (this.btnDeliv3ClrSig  ==null) {
+                this.btnDeliv3ClrSig = (Button) this.findViewById(R.id.btnDeliv3ClrSig);
+            }
+            if (this.btnDelivery3Back  ==null) {
+                this.btnDelivery3Back = (Button) this.findViewById(R.id.btnDelivery3Back);
+            }
+            if (this.btnDelivery3Cont  ==null) {
+                this.btnDelivery3Cont = (Button) this.findViewById(R.id.btnDelivery3Cont);
+            }
+            if (this.progBarDelivery3  ==null) {
+                this.progBarDelivery3 = (ProgressBar) this.findViewById(R.id.progBarDelivery3);
+            }            
+            this.btnDeliv3ClrSig.getBackground().setAlpha(255);
+            this.btnDelivery3Back.getBackground().setAlpha(255);
+            this.btnDelivery3Cont.getBackground().setAlpha(255);
+            this.progBarDelivery3.setVisibility(ProgressBar.INVISIBLE);
+        
         positiveButtonPressed = false;
     }
 

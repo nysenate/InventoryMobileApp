@@ -255,6 +255,10 @@ public class Pickup3 extends SenateActivity
         btnPickup3Back.getBackground().setAlpha(255);
         btnPickup3ClrSig = (Button) findViewById(R.id.btnPickup3ClrSig);
         btnPickup3ClrSig.getBackground().setAlpha(255);
+        if (progBarPickup3 ==null) {
+            progBarPickup3 = (ProgressBar) this.findViewById(R.id.progBarPickup3);
+        }            
+        progBarPickup3.getBackground().setAlpha(255);         
     }
 
     public int findEmployee(String employeeName) {

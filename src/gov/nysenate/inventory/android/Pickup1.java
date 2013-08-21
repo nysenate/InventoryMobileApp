@@ -190,6 +190,10 @@ public class Pickup1 extends SenateActivity
         btnPickup1Cont.getBackground().setAlpha(255);
         btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
         btnPickup1Cancel.getBackground().setAlpha(255);
+        if (progBarPickup1 ==null) {
+            progBarPickup1 = (ProgressBar) this.findViewById(R.id.progBarPickup1);
+        }            
+        progBarPickup1.setVisibility(ProgressBar.INVISIBLE);     
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher()

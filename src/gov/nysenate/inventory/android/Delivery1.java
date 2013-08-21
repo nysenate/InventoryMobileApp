@@ -112,6 +112,10 @@ public class Delivery1 extends SenateActivity
         btnDelivery1Cont.getBackground().setAlpha(255);
         btnDelivery1Cancel = (Button) findViewById(R.id.btnDelivery1Cancel);
         btnDelivery1Cancel.getBackground().setAlpha(255);
+        if (this.progBarDelivery1 ==null) {
+            this.progBarDelivery1 = (ProgressBar) this.findViewById(R.id.progBarDelivery1);
+        }            
+        this.progBarDelivery1.setVisibility(ProgressBar.INVISIBLE);
     }
 
     public void startTimeout(int timeoutType) {

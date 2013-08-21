@@ -143,7 +143,11 @@ public class Delivery2 extends SenateActivity
     protected void onResume() {
         super.onResume();
         btnDelivery2Cancel = (Button) findViewById(R.id.btnDelivery2Cancel);
+        if (this.progBarDelivery2 ==null) {
+            this.progBarDelivery2 = (ProgressBar) this.findViewById(R.id.progBarDelivery2);
+        }            
         btnDelivery2Cancel.getBackground().setAlpha(255);
+        progBarDelivery2.getBackground().setAlpha(255);
     }
 
     @Override

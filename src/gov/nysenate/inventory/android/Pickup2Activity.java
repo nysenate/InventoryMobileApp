@@ -143,6 +143,10 @@ public class Pickup2Activity extends SenateActivity
         btnPickup2Cont.getBackground().setAlpha(255);
         btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
         btnPickup2Cancel.getBackground().setAlpha(255);
+        if (progBarPickup2 ==null) {
+            progBarPickup2 = (ProgressBar) this.findViewById(R.id.progBarPickup2);
+        }            
+        progBarPickup2.setVisibility(ProgressBar.INVISIBLE);     
     }
 
     @Override
