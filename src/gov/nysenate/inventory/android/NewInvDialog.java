@@ -22,7 +22,9 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ListView;
@@ -32,6 +34,7 @@ import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
 import android.widget.CheckBox;
+import android.widget.AdapterView.OnItemClickListener;
 
 //...G
 @SuppressLint("ValidFragment")
@@ -40,6 +43,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
  public static ClearableTextView tvKeywordsToBlock;
  public static ClearableEditText etNewItemComments;
  public static ProgressBar progBarNewInvItem;
+ public static ImageView btnKeywordSpeech;
  SenateActivity senateActivity;
  public static ListView commodityList = null;
  public String title = null;
@@ -68,8 +72,29 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      View dialogView = inflater.inflate(R.layout.dialog_newinvitem, null);
      tvKeywordsToBlock = (ClearableTextView) dialogView.findViewById(R.id.tvKeywordsToBlock);
      commodityList = (ListView) dialogView.findViewById(R.id.searchResults);
+     commodityList.setOnItemClickListener(new OnItemClickListener()
+     {
+
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view,
+                 int position, long id) {
+             if(position<0) {
+                 return;
+             }
+             
+             adapter = (CommodityListViewAdapter)commodityList.getAdapter();
+             
+             currentCommodity = adapter.getCommodityAt(position);
+             adapter.setRowSelected(position);
+             flipMode();         
+             
+         }
+
+     });     
+     
      etNewItemComments = (ClearableEditText)dialogView.findViewById(R.id.etNewItemComments);
      progBarNewInvItem = (ProgressBar)dialogView.findViewById(R.id.progBarNewInvItem);
+     btnKeywordSpeech = (ImageView)dialogView.findViewById(R.id.btnKeywordSpeech);
      
      if (senateActivity.dialogKeywords!=null) {
          tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
@@ -91,20 +116,29 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
             .setCancelable(false)
             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    
+                    // Don't write any code here.. but coded here for now
                     if (adapter!=null && adapter.getRowSelected()>-1 && adapter.getCount()> 0) {
                         currentCommodity.setDecomments(etNewItemComments.getText().toString());
                         for (CommodityDialogListener commodityDialogListener : listeners)
                             commodityDialogListener.commoditySelected(position, currentCommodity);                    
-                        dismiss();
+                        dialog.dismiss();
+                    }
+                    else if (etNewItemComments.getText().toString().trim().length()>0) {
+                        currentCommodity = new Commodity();
+                        currentCommodity.setDecomments(etNewItemComments.getText().toString());
+                        for (CommodityDialogListener commodityDialogListener : listeners)
+                            commodityDialogListener.commoditySelected(position, currentCommodity);                    
+                        dialog.dismiss();
                     }
                     else {
                         int duration = Toast.LENGTH_SHORT;
 
-                        Toast toast = Toast.makeText(senateActivity.getApplicationContext(), "!!ERRROR: No Commodity Code Selected.", duration);
+                        Toast toast = Toast.makeText(senateActivity.getApplicationContext(), "!!ERRROR: No Commodity Code selected or Comments entered.", duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                     }
+                    
+
                 }
             })            
             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -114,25 +148,36 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
                 }
             });
      
-     gestureDectector = new GestureDetector(senateActivity, new GestureListener());  
+     /*gestureDectector = new GestureDetector(senateActivity, new GestureListener());  
      commodityList.setOnTouchListener(new OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            gestureDectector.onTouchEvent(event);
+            if(position<0) {
+                return false;
+            }
+            
+            adapter = (CommodityListViewAdapter)commodityList.getAdapter();
+            
+            currentCommodity = adapter.getCommodityAt(position);
+            adapter.setRowSelected(position);
+            flipMode();         
             return false;
         }
 
-      });
+      });*/
      
      this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo);
      tvKeywordsToBlock.addClearButtonListener(this);
      
      Dialog dialog = builder.create();
      dialog.setCanceledOnTouchOutside(false);
+
      // Create the AlertDialog object and return it
      return dialog;
  }
+ 
+ 
  
  public void setNusenate(String nusenate) {
      this.nusenate = nusenate;
@@ -235,7 +280,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
  }
   
   
- public class GestureListener extends GestureDetector.SimpleOnGestureListener {
+/* public class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
      public boolean onDown(MotionEvent e) {
          return true;
@@ -259,7 +304,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
          flipMode();         
          return true;
      }
- }
+ }*/
 
  public void flipMode() {
      if (currentMode==MODE_KEYWORD_SEARCH) {
@@ -271,15 +316,19 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
  }
 
  public void setMode(int setMode) {
+     currentMode = setMode;
      if (currentMode==MODE_KEYWORD_SEARCH) {
-         Commodity currentCommodity = adapter.getCommodityAt(adapter.getRowSelected());
-         currentMode = MODE_COMMODITY_PICKED;
-         tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getCdcommodty()+": "+currentCommodity.getDecommodityf()));
+         tvKeywordsToBlock.setText("");
+         tvKeywordsToBlock.setBackgroundColor(0);
+         adapter.clearData();
+         btnKeywordSpeech.setVisibility(View.VISIBLE);
      }
      else {
-         currentMode = MODE_KEYWORD_SEARCH;
-         tvKeywordsToBlock.setText("");
-         adapter.clearData();
+         Commodity currentCommodity = adapter.getCommodityAt(adapter.getRowSelected());
+         tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getCdcommodty()+": &nbsp;&nbsp;&nbsp;"+currentCommodity.getDecommodityf()));
+         tvKeywordsToBlock.setBackgroundColor(senateActivity.getApplicationContext().getResources().getColor(
+                 R.color.yellow));
+         btnKeywordSpeech.setVisibility(View.INVISIBLE);
      }
      setDisplayBasedonCurrentMode();
  }
@@ -313,6 +362,37 @@ public void onClearButtonPressed(AdapterView parent, View view) {
     }
 }
 
+class OKButtonListener implements View.OnClickListener {
+    private final Dialog dialog;
+    public OKButtonListener(Dialog dialog) {
+        this.dialog = dialog;
+    }
+    @Override
+    public void onClick(View v) {
+        if (adapter!=null && adapter.getRowSelected()>-1 && adapter.getCount()> 0) {
+            currentCommodity.setDecomments(etNewItemComments.getText().toString());
+            for (CommodityDialogListener commodityDialogListener : listeners)
+                commodityDialogListener.commoditySelected(position, currentCommodity);                    
+            dialog.dismiss();
+        }
+        else if (etNewItemComments.getText().toString().trim().length()>0) {
+            currentCommodity = new Commodity();
+            currentCommodity.setDecomments(etNewItemComments.getText().toString());
+            for (CommodityDialogListener commodityDialogListener : listeners)
+                commodityDialogListener.commoditySelected(position, currentCommodity);                    
+            dialog.dismiss();
+        }
+        else {
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(senateActivity.getApplicationContext(), "!!ERRROR: No Commodity Code selected or Comments entered.", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+
+
+    }
+}
 
  
 }

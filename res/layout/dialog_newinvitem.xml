@@ -14,7 +14,7 @@
         		android:hint="Enter 1 or more keywords. Use space berween two keywords"
         		android:onClick="editKeywordList"
         		android:clickable="true"
-        		android:layout_width="520sp"
+        		android:layout_width="530sp"
         		android:layout_height="wrap_content" 
 		        android:textAppearance="?android:attr/textAppearanceMedium" 
 		        >
@@ -34,8 +34,9 @@
         <TableRow>
             <ListView
 				android:id="@+id/searchResults"
-        		android:layout_width="match_parent"
+        		android:layout_width="fill_parent"
              	android:layout_height="240sp"
+             	android:layout_span="2"
              	   >
                 
             </ListView>

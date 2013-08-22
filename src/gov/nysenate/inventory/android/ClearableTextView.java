@@ -120,6 +120,9 @@ public class ClearableTextView extends TextView
 
                     }
                 }
+                else {
+                    clearField = false;
+                }
                 return false;
             }
         });

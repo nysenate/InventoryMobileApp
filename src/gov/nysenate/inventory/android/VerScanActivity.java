@@ -1,6 +1,8 @@
 
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.android.NewInvDialog.OKButtonListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -537,15 +540,33 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         }
         //android.app.FragmentManager fm = this.getFragmentManager();
         if (newInvDialog.currentMode==newInvDialog.MODE_KEYWORD_SEARCH) {
-            dialogKeywords =NewInvDialog.tvKeywordsToBlock.getText().toString();
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
-            keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords"  , 
-                    "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
-            keywordDialog.setRetainInstance(true);
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
-            keywordDialog.show(fragmentManager, "keyword_dialog");  
-            keywordDialog.addListener(newInvDialog);
+            if (newInvDialog.tvKeywordsToBlock.clearField) {
+                adapter = null;
+                newInvDialog.commodityList.setAdapter(null);
+            }
+            else {
+                dialogKeywords = NewInvDialog.tvKeywordsToBlock.getText().toString();
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
+                keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords"  , 
+                        "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
+                keywordDialog.setRetainInstance(true);
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
+                keywordDialog.show(fragmentManager, "keyword_dialog");  
+                keywordDialog.addListener(newInvDialog);
+            }
+           
+        }
+        else {
+            if (newInvDialog.tvKeywordsToBlock.clearField) {
+                adapter = null;
+                newInvDialog.commodityList.setAdapter(null);                
+                newInvDialog.setMode(newInvDialog.MODE_KEYWORD_SEARCH);
+                //newInvDialog.adapter.clearData();
+            }
+            else {
+                
+            }
         }
         //keywordDialog.getDialog().setCanceledOnTouchOutside(false);
                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog DONE");
@@ -559,7 +580,12 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                  + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.<b><font color='RED'>Item will will be held for review!</font></b>");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
-        newInvDialog.show(fragmentManager, "newInvDialog");        
+        newInvDialog.show(fragmentManager, "newInvDialog");
+        /*Dialog dialog = (AlertDialog) newInvDialog.getDialog();
+        Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+        OKButtonListener okButtonListener = new OKButtonListener(dialog);
+        positiveButton.setOnClickListener(okButtonListener);*/
+
         //newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
     
