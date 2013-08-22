@@ -1526,16 +1526,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             catch (Exception e) {
                 e.printStackTrace();
             }
-            if (commoditySelected.getDecomments()==null||commoditySelected.getDecomments().length()==0) {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** CC:"+commoditySelected.getCdcommodty()).toString());
-            }
-            else if (commoditySelected.getCdcommodty()==null||commoditySelected.getCdcommodty().length()==0) {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** Comments:"+commoditySelected.getDecomments()).toString());
-            }
-            else {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** CC:"+commoditySelected.getCdcommodty()+": "+decomments).toString());
-            }
-            //newInvItem.setDecommodityf(Html.fromHtml(commoditySelected.getDecommodityf()).toString() +" *** NEW ITEM ***");
+            newInvItem.setDecommodityf(Html.fromHtml(commoditySelected.getDecommodityf()).toString());
             newInvItem.setDecomments(commoditySelected.getDecomments());
             addNewItem(newInvItem);
             //Log.i("commoditySelected", "NEW INV ITEM COMMENTS:"+newInvItem.getDecomments());
