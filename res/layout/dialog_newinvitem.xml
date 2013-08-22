@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dgNewInvItem"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -8,16 +9,16 @@
     	android:layout_height="wrap_content"    >
             >
         <TableRow>
-        	<TextView
+        	<gov.nysenate.inventory.android.ClearableTextView
         		android:id="@+id/tvKeywordsToBlock"
         		android:hint="Enter 1 or more keywords. Use space berween two keywords"
         		android:onClick="editKeywordList"
         		android:clickable="true"
-        		android:layout_width="530sp"
+        		android:layout_width="520sp"
         		android:layout_height="wrap_content" 
 		        android:textAppearance="?android:attr/textAppearanceMedium" 
 		        >
-   			</TextView>
+   			</gov.nysenate.inventory.android.ClearableTextView>
 	    	<ImageView
         		android:id="@+id/btnKeywordSpeech"
         		android:layout_width="40sp"
@@ -47,7 +48,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
-        <EditText
+        <gov.nysenate.inventory.android.ClearableEditText
             android:id="@+id/etNewItemComments"
             android:layout_width="530sp"
             android:layout_height="wrap_content"

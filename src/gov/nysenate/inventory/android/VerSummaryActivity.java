@@ -66,9 +66,13 @@ public class VerSummaryActivity extends SenateActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("VerSumActivity", "onCreate");
         super.onCreate(savedInstanceState);
+        Log.i("VerSumActivity", "onCreate 2");
         setContentView(R.layout.activity_ver_summary);
+        Log.i("VerSumActivity", "onCreate 3");
         registerBaseActivityReceiver();
+        Log.i("VerSumActivity", "onCreate 4");
         currentActivity = this;
 
         // Summary Fields
@@ -118,15 +122,18 @@ public class VerSummaryActivity extends SenateActivity
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
 
         // get Lists from intent of previous activity
-
-        AllScannedItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("scannedList"));
-        missingItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("missingList"));
-        newItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("newItems"));
-        scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("scannedBarcodeNumbers"));
+        AllScannedItems = VerScanActivity.AllScannedItems;
+        /*AllScannedItems = this.getInvArrayListFromJSON(getIntent()
+                .getStringArrayListExtra("scannedList"));*/
+        missingItems = VerScanActivity.missingItems;
+        /*missingItems = this.getInvArrayListFromJSON(getIntent()
+                .getStringArrayListExtra("missingList"));*/
+        newItems = VerScanActivity.newItems;
+        /*newItems = this.getInvArrayListFromJSON(getIntent()
+                .getStringArrayListExtra("newItems"));*/
+        scannedBarcodeNumbers = VerScanActivity.scannedItems;
+        /*scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
+                .getStringArrayListExtra("scannedBarcodeNumbers"));*/
         loc_code = getIntent().getStringExtra("loc_code");
         cdloctype = getIntent().getStringExtra("cdloctype");
         String summary = getIntent().getStringExtra("summary");
@@ -167,16 +174,21 @@ public class VerSummaryActivity extends SenateActivity
         locCodeView.setText(Verification.autoCompleteTextView1.getText());
 
         // Create ArrayAdapter using the planet list.
+        Log.i("VerSumActivity", "onCreate before listAdapter1");
         InvListViewAdapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, AllScannedItems);
+        Log.i("VerSumActivity", "onCreate before listAdapter2");
         InvListViewAdapter listAdapter2 = new InvListViewAdapter(this,
                 R.layout.invlist_item, missingItems);
+        Log.i("VerSumActivity", "onCreate before listAdapter3");
         InvListViewAdapter listAdapter3 = new InvListViewAdapter(this,
                 R.layout.invlist_item, newItems);
         // Set the ArrayAdapter as the ListView's adapter.
         ListViewTab1.setAdapter(listAdapter1);
         ListViewTab2.setAdapter(listAdapter2);
         ListViewTab3.setAdapter(listAdapter3);
+        Log.i("VerSumActivity", "onCreate done");
+        
     }
 
     @Override

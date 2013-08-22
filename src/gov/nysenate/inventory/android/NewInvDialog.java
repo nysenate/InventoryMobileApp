@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,21 +35,25 @@ import android.widget.CheckBox;
 
 //...G
 @SuppressLint("ValidFragment")
-public class NewInvDialog extends DialogFragment implements OnKeywordChangeListener  {
+public class NewInvDialog extends DialogFragment implements OnKeywordChangeListener, ClearButtonListener  {
 
- public static TextView tvKeywordsToBlock;
- public static EditText etNewItemComments;
+ public static ClearableTextView tvKeywordsToBlock;
+ public static ClearableEditText etNewItemComments;
  public static ProgressBar progBarNewInvItem;
  SenateActivity senateActivity;
  public static ListView commodityList = null;
  public String title = null;
  public String msg = null;
+ public final int MODE_KEYWORD_SEARCH = -200;
+ public final int MODE_COMMODITY_PICKED = -201;
+ 
  GestureDetector gestureDectector = null;
  List<CommodityDialogListener> listeners = new ArrayList<CommodityDialogListener>();
  Commodity currentCommodity = null;
  CommodityListViewAdapter adapter = null;
  int position = -1;
  String nusenate = null;
+ public int currentMode = MODE_KEYWORD_SEARCH;
  
  public NewInvDialog(SenateActivity senateActivity, String title, String msg) {
      this.senateActivity = senateActivity;
@@ -61,9 +66,9 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
       
      LayoutInflater inflater = getActivity().getLayoutInflater();
      View dialogView = inflater.inflate(R.layout.dialog_newinvitem, null);
-     tvKeywordsToBlock = (TextView) dialogView.findViewById(R.id.tvKeywordsToBlock);
+     tvKeywordsToBlock = (ClearableTextView) dialogView.findViewById(R.id.tvKeywordsToBlock);
      commodityList = (ListView) dialogView.findViewById(R.id.searchResults);
-     etNewItemComments = (EditText)dialogView.findViewById(R.id.etNewItemComments);
+     etNewItemComments = (ClearableEditText)dialogView.findViewById(R.id.etNewItemComments);
      progBarNewInvItem = (ProgressBar)dialogView.findViewById(R.id.progBarNewInvItem);
      
      if (senateActivity.dialogKeywords!=null) {
@@ -77,14 +82,6 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
          senateActivity.dialogComments = null;
      }
      adapter = (CommodityListViewAdapter)commodityList.getAdapter();
-     //adapter.unselectRow();
-     
-/*     if (commodityList==null) {
-         Log.i("commodityList", "*****commodityList IS NULL");
-     }
-     else {
-         Log.i("commodityList", "commodityList IS NOT NULL");
-     }*/
 
      // Use the Builder class for convenient dialog construction
      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -129,6 +126,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
       });
      
      this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo);
+     tvKeywordsToBlock.addClearButtonListener(this);
      
      Dialog dialog = builder.create();
      dialog.setCanceledOnTouchOutside(false);
@@ -242,8 +240,12 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      public boolean onDown(MotionEvent e) {
          return true;
      }
+     public boolean onSingeTap(MotionEvent e) {               
+         // Notify everybody that may be interested.
+         return true;
+     }
 
-     public boolean onDoubleTap(MotionEvent e) {
+     public boolean onDoubleTap(MotionEvent e) {        
          position = commodityList.pointToPosition((int)e.getX(), (int)e.getY());
          
          if(position<0) {
@@ -254,15 +256,45 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
          
          currentCommodity = adapter.getCommodityAt(position);
          adapter.setRowSelected(position);
-         
-         //Log.d("Double_Tap", "Yes, Clicked on "+currencCommodity.getDecommodityf());
-         // Notify everybody that may be interested.
-         
+         flipMode();         
          return true;
      }
  }
 
+ public void flipMode() {
+     if (currentMode==MODE_KEYWORD_SEARCH) {
+         setMode(MODE_COMMODITY_PICKED);
+     }
+     else {
+         setMode(MODE_KEYWORD_SEARCH);
+     }
+ }
 
+ public void setMode(int setMode) {
+     if (currentMode==MODE_KEYWORD_SEARCH) {
+         Commodity currentCommodity = adapter.getCommodityAt(adapter.getRowSelected());
+         currentMode = MODE_COMMODITY_PICKED;
+         tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getCdcommodty()+": "+currentCommodity.getDecommodityf()));
+     }
+     else {
+         currentMode = MODE_KEYWORD_SEARCH;
+         tvKeywordsToBlock.setText("");
+         adapter.clearData();
+     }
+     setDisplayBasedonCurrentMode();
+ }
+ 
+ public void setDisplayBasedonCurrentMode() {
+     if (currentMode==MODE_COMMODITY_PICKED) { 
+         commodityList.setVisibility(View.GONE);
+     }
+     else {
+         commodityList.setVisibility(View.VISIBLE);
+     }
+     View v = (View)this.getDialog().findViewById(R.id.dgNewInvItem);
+     v.invalidate();
+ }
+ 
 @Override
 public void OnKeywordChange(KeywordDialog keywordDialog, ListView lvKeywords,
         String keywords) {
@@ -272,6 +304,13 @@ public void OnKeywordChange(KeywordDialog keywordDialog, ListView lvKeywords,
     checkKeywordsFound();
     senateActivity.dialogKeywords = null;    
     
+}
+
+@Override
+public void onClearButtonPressed(AdapterView parent, View view) {
+    if (view == tvKeywordsToBlock) {
+        this.flipMode();
+    }
 }
 
 

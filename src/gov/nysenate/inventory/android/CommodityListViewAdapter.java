@@ -176,6 +176,13 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
        return this.rowSelected;
    }
    
+   public void clearData() {
+       items = new ArrayList<Commodity>();
+       keywords = null;
+       rowSelected = -1;
+       this.notifyDataSetChanged();
+   }
+   
    @Override
    public void OnDoubleTap(AdapterView parent, View view, int position, long id) {
         System.out.println("Double Clicked on "+position+": "+items.get(position).getDecommodityf());

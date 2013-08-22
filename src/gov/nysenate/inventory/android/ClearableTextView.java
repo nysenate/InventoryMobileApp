@@ -12,9 +12,9 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
-public class ClearableEditText extends EditText
+public class ClearableTextView extends TextView
 {
 
     public String defaultValue = "";
@@ -26,7 +26,7 @@ public class ClearableEditText extends EditText
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
-    public ClearableEditText(Context context) {
+    public ClearableTextView(Context context) {
         super(context);
 
         this.context = context;
@@ -34,7 +34,7 @@ public class ClearableEditText extends EditText
         init();
     }
 
-    public ClearableEditText(Context context, AttributeSet attrs, int defStyle) {
+    public ClearableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         this.context = context;
@@ -42,7 +42,7 @@ public class ClearableEditText extends EditText
         init();
     }
 
-    public ClearableEditText(Context context, AttributeSet attrs) {
+    public ClearableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         this.context = context;
@@ -65,16 +65,16 @@ public class ClearableEditText extends EditText
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                final ClearableEditText et = ClearableEditText.this;
+                final ClearableTextView tv = ClearableTextView.this;
 
                 // Is there an X showing?
-                if (et.getCompoundDrawables()[2] == null)
+                if (tv.getCompoundDrawables()[2] == null)
                     return false;
                 // Only do this for up touches
                 if (event.getAction() != MotionEvent.ACTION_UP)
                     return false;
                 // Is touch on our clear button?
-                if (event.getX() > et.getWidth() - et.getPaddingRight()
+                if (event.getX() > tv.getWidth() - tv.getPaddingRight()
                         - imgX.getIntrinsicWidth()) {
                     clearField = true;
                     if (showClearMsg) {
@@ -93,8 +93,8 @@ public class ClearableEditText extends EditText
                                                     int id) {
                                                 // User clicked OK button
                                                 clearField = true;
-                                                et.setText("");
-                                                ClearableEditText.this
+                                                tv.setText("");
+                                                ClearableTextView.this
                                                         .removeClearButton();
                                             }
                                         })
@@ -115,8 +115,8 @@ public class ClearableEditText extends EditText
                         dialog.show();
                     }
                     if (clearField) {
-                        et.setText("");
-                        ClearableEditText.this.removeClearButton();
+                        tv.setText("");
+                        ClearableTextView.this.removeClearButton();
 
                     }
                 }
@@ -130,7 +130,7 @@ public class ClearableEditText extends EditText
             public void onTextChanged(CharSequence s, int start, int before,
                     int count) {
 
-                ClearableEditText.this.manageClearButton();
+                ClearableTextView.this.manageClearButton();
             }
 
             @Override
@@ -182,6 +182,6 @@ public class ClearableEditText extends EditText
     
     public void addClearButtonListener(ClearButtonListener listener) {
         listeners.add(listener);
-    }    
-
+    }
+       
 }

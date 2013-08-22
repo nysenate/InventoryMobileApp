@@ -499,6 +499,7 @@ public class Verification extends SenateActivity
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
             } else {
+
                 progBarVerify.setVisibility(View.VISIBLE);
                 btnVerify1Cont.getBackground().setAlpha(45);
                 Intent intent = new Intent(this, VerScanActivity.class);
