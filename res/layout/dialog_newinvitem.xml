@@ -11,7 +11,7 @@
         <TableRow>
         	<gov.nysenate.inventory.android.ClearableTextView
         		android:id="@+id/tvKeywordsToBlock"
-        		android:hint="Enter 1 or more keywords. Use space berween two keywords"
+        		android:hint="Enter or speak one or more Commodity Keywords to tag Commodity Code."
         		android:onClick="editKeywordList"
         		android:clickable="true"
         		android:layout_width="530sp"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Enter Comments here" />
+            android:hint="Enter or speak additional information here." />
 
         <ImageView
             android:id="@+id/btnNewItemCommentSpeech"

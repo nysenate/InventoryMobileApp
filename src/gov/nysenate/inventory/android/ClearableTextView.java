@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -68,14 +69,17 @@ public class ClearableTextView extends TextView
                 final ClearableTextView tv = ClearableTextView.this;
 
                 // Is there an X showing?
-                if (tv.getCompoundDrawables()[2] == null)
+                if (tv.getCompoundDrawables()[2] == null) {
+                    clearField = false;
                     return false;
+                }
                 // Only do this for up touches
                 if (event.getAction() != MotionEvent.ACTION_UP)
                     return false;
                 // Is touch on our clear button?
                 if (event.getX() > tv.getWidth() - tv.getPaddingRight()
                         - imgX.getIntrinsicWidth()) {
+                    
                     clearField = true;
                     if (showClearMsg) {
                         clearField = false;
@@ -114,14 +118,16 @@ public class ClearableTextView extends TextView
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
+                    Log.i("ClearableTextView", "In X spot: ClearField:"+clearField);
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
-
                     }
+                    
                 }
                 else {
                     clearField = false;
+                    Log.i("ClearableTextView", "NOT In X spot: ClearField:"+clearField);
                 }
                 return false;
             }

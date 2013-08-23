@@ -325,7 +325,7 @@ public class NewInvDialog extends DialogFragment implements OnKeywordChangeListe
      }
      else {
          Commodity currentCommodity = adapter.getCommodityAt(adapter.getRowSelected());
-         tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getCdcommodty()+": &nbsp;&nbsp;&nbsp;"+currentCommodity.getDecommodityf()));
+         tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getNucnt()+" &nbsp;&nbsp;&nbsp;&nbsp;"+currentCommodity.getCdcommodty()+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+currentCommodity.getDecommodityf()));
          tvKeywordsToBlock.setBackgroundColor(senateActivity.getApplicationContext().getResources().getColor(
                  R.color.yellow));
          btnKeywordSpeech.setVisibility(View.INVISIBLE);

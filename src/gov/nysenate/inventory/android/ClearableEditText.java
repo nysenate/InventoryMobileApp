@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -68,8 +69,10 @@ public class ClearableEditText extends EditText
                 final ClearableEditText et = ClearableEditText.this;
 
                 // Is there an X showing?
-                if (et.getCompoundDrawables()[2] == null)
+                if (et.getCompoundDrawables()[2] == null) {
+                    clearField = false;
                     return false;
+                }
                 // Only do this for up touches
                 if (event.getAction() != MotionEvent.ACTION_UP)
                     return false;
@@ -112,14 +115,20 @@ public class ClearableEditText extends EditText
 
                         // Create the AlertDialog
                         AlertDialog dialog = builder.create();
-                        dialog.show();
+                        dialog.show();                        
                     }
                     if (clearField) {
                         et.setText("");
                         ClearableEditText.this.removeClearButton();
 
                     }
+                    
                 }
+                else {
+                    
+                    clearField = false;
+                }                    
+                
                 return false;
             }
         });
