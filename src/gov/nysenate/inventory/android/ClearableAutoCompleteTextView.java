@@ -65,8 +65,10 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                 final ClearableAutoCompleteTextView et = ClearableAutoCompleteTextView.this;
 
                 // Is there an X showing?
-                if (et.getCompoundDrawables()[2] == null)
+                if (et.getCompoundDrawables()[2] == null) {
+                    clearField = false;
                     return false;
+                }
                 // Only do this for up touches
                 if (event.getAction() != MotionEvent.ACTION_UP)
                     return false;
@@ -115,8 +117,13 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     if (clearField) {
                         et.setText("");
                         ClearableAutoCompleteTextView.this.removeClearButton();
-                    }
+                    }                        
+
                 }
+                else {
+                    clearField = false;
+                }                    
+                
                 return false;
             }
         });

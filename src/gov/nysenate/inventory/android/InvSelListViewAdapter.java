@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +84,17 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
             holder.invSelListBarcode.setText(rowItem.getNusenate());
             holder.invSelListBarcode.setTextColor(context.getResources()
                     .getColor(R.color.blue)); // blue
-            holder.invSelListDescr.setText(rowItem.getDecommodityf());
+            String cdcommodity = rowItem.getCdcommodity();
+            String decomments = rowItem.getDecomments();
+            		
+            if (cdcommodity==null||cdcommodity.trim().length()==0){
+               	holder.invSelListBarcode.setText("*** NEW ITEM ***    "+Html.escapeHtml(decomments));
+            } else if (decomments==null||decomments.trim().length()==0) {
+               	holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"+cdcommodity);
+            }
+            else {
+               	holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"+cdcommodity+": "+Html.escapeHtml(decomments));
+            }
             holder.invSelListDescr.setTextColor(context.getResources()
                     .getColor(R.color.blue)); // blue
         } else {
@@ -106,7 +117,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
             @Override
             public void onClick(View arg0) {
                 CheckBox cb = (CheckBox) arg0;
-                // InvItem curInvItem = (InvItem) cb.getTag(); 
+                // InvItem curInvItem = (InvItem) cb.getTag();ï¿½
                 items.get(pos).setSelected(cb.isChecked());
 
                 notifyDataSetChanged();

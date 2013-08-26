@@ -243,9 +243,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                 return true;
             }
         });
-
-        // listView = (ListView) findViewById(R.id.listView1 );
-
     }
 
     @Override
@@ -285,10 +282,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     count++;
                 }
             }
-
         }
         return count;
-
     }
 
     private void startVoiceRecognitionActivity() {
@@ -535,17 +530,38 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         if (newInvDialog!=null) {
             //newInvDialog.dismiss();
         }
-        //android.app.FragmentManager fm = this.getFragmentManager();
         if (newInvDialog.currentMode==newInvDialog.MODE_KEYWORD_SEARCH) {
-            dialogKeywords =NewInvDialog.tvKeywordsToBlock.getText().toString();
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
-            keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords"  , 
-                    "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
-            keywordDialog.setRetainInstance(true);
-            //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
-            keywordDialog.show(fragmentManager, "keyword_dialog");  
-            keywordDialog.addListener(newInvDialog);
+            if (newInvDialog.tvKeywordsToBlock.clearField) {
+                Log.i("editKeywordList", "MODE_KEYWORD_SEARCH clearField");
+                adapter = null;
+                newInvDialog.commodityList.setAdapter(null);
+            }
+            else {
+                Log.i("editKeywordList", "MODE_KEYWORD_SEARCH NOT clearField");
+                dialogKeywords = NewInvDialog.tvKeywordsToBlock.getText().toString();
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 2 KEYWORDS:" +dialogKeywords);
+                keywordDialog = new KeywordDialog(this, newInvDialog, "Modify Commodity Keywords"  , 
+                        "<h1>Edit/Add/Delete Keywords Below</h1>", this.dialogKeywords);
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 3");
+                keywordDialog.setRetainInstance(true);
+                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog 4");
+                keywordDialog.show(fragmentManager, "keyword_dialog");  
+                keywordDialog.addListener(newInvDialog);
+            }
+           
+        }
+        else {
+            if (newInvDialog.tvKeywordsToBlock.clearField) {
+                Log.i("editKeywordList", "(1) SET MODE_KEYWORD_SEARCH clearField");
+                adapter = null;
+                newInvDialog.commodityList.setAdapter(null);                
+                newInvDialog.setMode(newInvDialog.MODE_KEYWORD_SEARCH);
+                //newInvDialog.adapter.clearData();
+            }
+            else {
+                Log.i("editKeywordList", "(2)MODE_KEYWORD_SEARCH NOT clearField");
+                
+            }
         }
         //keywordDialog.getDialog().setCanceledOnTouchOutside(false);
                //Log.i("editKeywordList", "trying to display the Keywords Fragment Dialog DONE");
@@ -554,12 +570,18 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
        
     public void noSenateTagAdd(View view) {
         senateTagNum = false;
-        newInvDialog = new NewInvDialog(this, "No Senate Tag#", 
-                   "You have clicked on <b>No Senate Tag#.<b><br><br>"
-                 + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.<b><font color='RED'>Item will will be held for review!</font></b>");
+        newInvDialog = new NewInvDialog(this, "***WARNING: No Senate Tag# Button was pressed", 
+                   "All tagged Senate equipment should be entered into SFMS."
+                 + "If you choose to SAVE the item information it will be saved as a Verification  Exception Item. New items should be initially issued out of the Senate Warehouse.  Further action may be required by Management to bring the item into the SFMS Tracking System.  You must tag either a Commodity Code or Descriptive information to the Senate Tag#  for future reference before saving."
+                 + "<br/><br/>Do you want to save this Item for further review?");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
-        newInvDialog.show(fragmentManager, "newInvDialog");        
+        newInvDialog.show(fragmentManager, "newInvDialog");
+        /*Dialog dialog = (AlertDialog) newInvDialog.getDialog();
+        Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+        OKButtonListener okButtonListener = new OKButtonListener(dialog);
+        positiveButton.setOnClickListener(okButtonListener);*/
+
         //newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
     
@@ -569,13 +591,9 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         
         senateTagNum = true;
         holdNusenate = barcode_num;
-        newInvDialog = new NewInvDialog(this, "Senate Tag#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS", 
-                "!!ERROR: Tag#: <b>"
-                 + barcode_num
-                 + "</b> does not exist in SFMS.<br><br>"
-                 + "This should not occur when entering/scanning a Senate Tag#. "
-                 + "Please report Location, Senate Tag# and Item Description to Inventory Control Management.");
+        newInvDialog = new NewInvDialog(this, " **WARNING:   Senate Tag#: "+barcode_num+" Does not exist in SFMS Tracking System.", 
+                "All tagged Senate equipment should be entered into SFMS. If you choose to SAVE the item information it will be saved as a Verification Exception Item. New items should be initially issued out of the Senate Warehouse. urther action may be required by Management to bring the item into the SFMS Tracking System. "
+                 + "<br/><br/>Do you want to save this Item for further review?");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fragmentManager, "fragment_name");        
@@ -985,7 +1003,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
-                String invStatus;
 
                 // 3/15/13 BH Coded below to use InvItem Objects to display
                 // the list.
@@ -1155,7 +1172,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         endTime = System.currentTimeMillis();
         //Log.i("Time Test", "Commodity List checkKeywordsFound "+((endTime-startTime)/1000.0));
         startTime = System.currentTimeMillis();
-        
     }        
     
     public String[] handleKeywords (String keywords) {
@@ -1247,7 +1263,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
                 + cntScanned));
         Log.i("check", "listview updated");
-
     }
 
     public void handleItem() {
@@ -1365,7 +1380,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
-
     }
 
     @Override
@@ -1500,16 +1514,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
             catch (Exception e) {
                 e.printStackTrace();
             }
-            if (commoditySelected.getDecomments()==null||commoditySelected.getDecomments().length()==0) {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** CC:"+commoditySelected.getCdcommodty()).toString());
-            }
-            else if (commoditySelected.getCdcommodty()==null||commoditySelected.getCdcommodty().length()==0) {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** Comments:"+commoditySelected.getDecomments()).toString());
-            }
-            else {
-                newInvItem.setDecommodityf(Html.fromHtml(" *** NEW ITEM *** CC:"+commoditySelected.getCdcommodty()+": "+decomments).toString());
-            }
-            //newInvItem.setDecommodityf(Html.fromHtml(commoditySelected.getDecommodityf()).toString() +" *** NEW ITEM ***");
+            newInvItem.setDecommodityf(Html.fromHtml(commoditySelected.getDecommodityf()).toString());
             newInvItem.setDecomments(commoditySelected.getDecomments());
             addNewItem(newInvItem);
             //Log.i("commoditySelected", "NEW INV ITEM COMMENTS:"+newInvItem.getDecomments());
@@ -1562,8 +1567,5 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         toast.show();
         
         barcode.setText("");
-        
     }
-    
-
 }

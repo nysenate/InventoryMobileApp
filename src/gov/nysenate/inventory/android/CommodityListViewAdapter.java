@@ -54,11 +54,11 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Commodity rowItem = items.get(position);
-
-        LayoutInflater mInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Commodity rowItem = null;
         if (convertView == null) {
+            LayoutInflater mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            
             convertView = mInflater.inflate(R.layout.commoditylist_row, null);
             holder = new ViewHolder();
             holder.rlcomlist = (RelativeLayout) convertView
@@ -72,10 +72,19 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
+        }        
+        if (position > -1 && items != null && position < items.size()) {        
+            rowItem =  items.get(position);
+        
+            holder.commodityListNucnt.setText(rowItem.getNucnt());
+            holder.commodityListCdcommodity.setText(rowItem.getCdcommodty());
+            holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem.getDecommodityf()));        
         }
-        holder.commodityListNucnt.setText(rowItem.getNucnt());
-        holder.commodityListCdcommodity.setText(rowItem.getCdcommodty());
-        holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem.getDecommodityf()));        
+        else {
+            holder.commodityListNucnt.setText("");
+            holder.commodityListCdcommodity.setText("");
+            holder.commodityListDecommodityf.setText("");        
+        }
 
         if (position==this.rowSelected) {
             holder.rlcomlist.setBackgroundColor(context.getResources().getColor(
@@ -87,15 +96,6 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             holder.rlcomlist.setBackgroundColor(context.getResources().getColor(
                     R.color.blueveryverylight));
         }
-
-        OnClickListener l = new OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                 
-
-            }
-        };
 
         return convertView;
     }

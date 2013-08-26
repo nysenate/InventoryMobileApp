@@ -3,6 +3,7 @@ package gov.nysenate.inventory.android;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,7 +71,17 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
-            holder.invListDescr.setText(rowItem.getDecommodityf());
+            String cdcommodity = rowItem.getCdcommodity();
+            String decomments = rowItem.getDecomments();
+            		
+            if (cdcommodity==null||cdcommodity.trim().length()==0){
+               	holder.invListDescr.setText("*** NEW ITEM ***    "+Html.escapeHtml(decomments));
+            } else if (decomments==null||decomments.trim().length()==0) {
+               	holder.invListDescr.setText("*** NEW ITEM ***    CC:"+cdcommodity);
+            }
+            else {
+               	holder.invListDescr.setText("*** NEW ITEM ***    CC:"+cdcommodity+": "+Html.escapeHtml(decomments));
+            }
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
         } else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
