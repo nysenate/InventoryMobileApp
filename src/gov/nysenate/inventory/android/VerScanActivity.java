@@ -570,9 +570,9 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
        
     public void noSenateTagAdd(View view) {
         senateTagNum = false;
-        newInvDialog = new NewInvDialog(this, "***WARNING: No Senate Tag# Button was pressed", 
-                   "All tagged Senate equipment should be entered into SFMS."
-                 + "If you choose to SAVE the item information it will be saved as a Verification  Exception Item. New items should be initially issued out of the Senate Warehouse.  Further action may be required by Management to bring the item into the SFMS Tracking System.  You must tag either a Commodity Code or Descriptive information to the Senate Tag#  for future reference before saving."
+        newInvDialog = new NewInvDialog(this, "<b>***WARNING: NO SENATE TAG#</b> Button was pressed", 
+                   "<font color='RED'>All tagged Senate equipment should be entered into SFMS."
+                 + "If you choose to SAVE the item information it will be saved as a Verification  Exception Item. <b>New items should be initially issued out of the Senate Warehouse</b>. Further action may be required by Management to bring the item into the SFMS Tracking System.  You must tag either a Commodity Code or Descriptive information to the Senate Tag#  for future reference before saving.</font>"
                  + "<br/><br/>Do you want to save this Item for further review?");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
@@ -591,8 +591,8 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         
         senateTagNum = true;
         holdNusenate = barcode_num;
-        newInvDialog = new NewInvDialog(this, " **WARNING:   Senate Tag#: "+barcode_num+" Does not exist in SFMS Tracking System.", 
-                "All tagged Senate equipment should be entered into SFMS. If you choose to SAVE the item information it will be saved as a Verification Exception Item. New items should be initially issued out of the Senate Warehouse. urther action may be required by Management to bring the item into the SFMS Tracking System. "
+        newInvDialog = new NewInvDialog(this, "<b>***WARNING:</b> Senate Tag#:<b>"+barcode_num+" DOES NOT EXIST</b> in SFMS Tracking System.", 
+                "<font color='RED'>All tagged Senate equipment should be entered into SFMS. If you choose to SAVE the item information it will be saved as a Verification Exception Item. <b>New items should be initially issued out of the Senate Warehouse.</b> Further action may be required by Management to bring the item into the SFMS Tracking System.</font>"
                  + "<br/><br/>Do you want to save this Item for further review?");
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
@@ -967,12 +967,12 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
                             vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
                     
-                    inactiveInvItem.setType("NEW");
+                    inactiveInvItem.setType("INACTIVE");
                     
                     inactiveMessage(
                             nusenate,
-                            "<b>***WARNING</b>: Senate Tag#: <b>" + nusenate
-                                    + "</b> has been Inactivated.",
+                            "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
+                                    + "</b> has been <b>INACTIVATED</b>.",
                             "Item Description: <b>" 
                                     + vl.DECOMMODITYF
                                     + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
@@ -1255,9 +1255,10 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
         count = adapter.getCount();
         int cntExisting = countOf(invList, "EXISTING");
         int cntNew = countOf(invList, "NEW");
+        int cntInactive = countOf(invList, "INACTIVE");
         int cntDiffLoc = countOf(invList, "DIFFERENT LOCATION");
         tv_counts_new.setText(Html.fromHtml("<b>New/Found</b><br/>"
-                + (cntNew + cntDiffLoc)));
+                + (cntNew + cntDiffLoc +cntInactive )));
         tv_counts_existing.setText(Html.fromHtml("<b>Unscanned</b><br/>"
                 + cntExisting));
         tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
@@ -1373,10 +1374,6 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
                     getJSONArrayList(newItems));// new
                                                 // items
                                                 // list
-
-            /*
-             * if (1==1) { // Testing return; }
-             */
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -1541,7 +1538,7 @@ public class VerScanActivity extends SenateActivity implements CommodityDialogLi
     public void onCommentOKButtonClicked(String decomments) {
         // if this button is clicked, just close
         // the dialog box and do nothing
-        inactiveInvItem.setDecommodityf(inactiveInvItem.getDecommodityf()+" *** INACTIVE ITEM ***"); 
+        inactiveInvItem.setDecommodityf(inactiveInvItem.getDecommodityf()); 
         inactiveInvItem.setDecomments(decomments);
         invList.add(inactiveInvItem);
         cntScanned++;

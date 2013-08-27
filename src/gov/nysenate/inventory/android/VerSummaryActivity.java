@@ -66,13 +66,9 @@ public class VerSummaryActivity extends SenateActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("VerSumActivity", "onCreate");
         super.onCreate(savedInstanceState);
-        Log.i("VerSumActivity", "onCreate 2");
         setContentView(R.layout.activity_ver_summary);
-        Log.i("VerSumActivity", "onCreate 3");
         registerBaseActivityReceiver();
-        Log.i("VerSumActivity", "onCreate 4");
         currentActivity = this;
 
         // Summary Fields
@@ -188,7 +184,6 @@ public class VerSummaryActivity extends SenateActivity
         ListViewTab2.setAdapter(listAdapter2);
         ListViewTab3.setAdapter(listAdapter3);
         Log.i("VerSumActivity", "onCreate done");
-        
     }
 
     @Override

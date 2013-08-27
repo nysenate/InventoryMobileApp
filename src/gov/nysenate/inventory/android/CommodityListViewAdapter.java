@@ -37,7 +37,7 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
     private class ViewHolder
     {
         RelativeLayout rlcomlist;
-        TextView commodityListNucnt;
+        //TextView commodityListNucnt;
         TextView commodityListCdcommodity;
         TextView commodityListDecommodityf;
     }
@@ -63,8 +63,8 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             holder = new ViewHolder();
             holder.rlcomlist = (RelativeLayout) convertView
                     .findViewById(R.id.rlcomlist);
-            holder.commodityListNucnt = (TextView) convertView
-                    .findViewById(R.id.commodityListNucnt);
+            /*holder.commodityListNucnt = (TextView) convertView
+                    .findViewById(R.id.commodityListNucnt);*/
             holder.commodityListCdcommodity = (TextView) convertView
                     .findViewById(R.id.commodityListCdcommodity);
             holder.commodityListDecommodityf = (TextView) convertView
@@ -76,12 +76,12 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         if (position > -1 && items != null && position < items.size()) {        
             rowItem =  items.get(position);
         
-            holder.commodityListNucnt.setText(rowItem.getNucnt());
+            //holder.commodityListNucnt.setText(rowItem.getNucnt());
             holder.commodityListCdcommodity.setText(rowItem.getCdcommodty());
             holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem.getDecommodityf()));        
         }
         else {
-            holder.commodityListNucnt.setText("");
+            //holder.commodityListNucnt.setText("");
             holder.commodityListCdcommodity.setText("");
             holder.commodityListDecommodityf.setText("");        
         }

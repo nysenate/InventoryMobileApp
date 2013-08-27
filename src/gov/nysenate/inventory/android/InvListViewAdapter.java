@@ -84,6 +84,16 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
             }
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
+        }        if (rowItem.getType().equalsIgnoreCase("INACTIVE")) {
+            holder.invListBarcode.setText(rowItem.getNusenate());
+            holder.invListBarcode.setTextColor(context.getResources().getColor(
+                    R.color.red)); // blue
+            String cdcommodity = rowItem.getCdcommodity();
+            String decomments = rowItem.getDecomments();
+                    
+            holder.invListDescr.setText("*** INACTIVE ITEM *** "+rowItem.getDecommodityf());
+            holder.invListDescr.setTextColor(context.getResources().getColor(
+                    R.color.red)); // blue
         } else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
