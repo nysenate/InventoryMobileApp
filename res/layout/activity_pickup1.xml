@@ -16,19 +16,6 @@
         android:layout_marginTop="17dp"
         android:text="@string/pickup1_header_text" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_alignLeft="@+id/autoCompleteTextView1"
-        android:layout_alignRight="@+id/autoCompleteTextView1"
-        android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="21dp"
-        android:hint="@string/details"
-        android:singleLine="true"
-        style="@style/NormalText"
-        android:text="@string/details" />
-
     <LinearLayout
         android:id="@+id/pickup_info1"        
         android:layout_width="550dp"
@@ -212,8 +199,9 @@
         android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_alignRight="@+id/textView2"
+        android:layout_marginTop="5dp"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/textView1"
         android:layout_below="@+id/pickup_info1"
         android:ems="10"
         android:hint="@string/select_dest_loc"

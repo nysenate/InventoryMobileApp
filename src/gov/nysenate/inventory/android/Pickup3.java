@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.Location;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -68,29 +70,14 @@ import android.widget.Toast;
 
 public class Pickup3 extends SenateActivity
 {
-
-    ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();// for saving
-                                                                  // items which
-                                                                  // are not
-                                                                  // allocated
-                                                                  // to that
-                                                                  // location
     ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
     public String res = null;
-    String loc_code = null;
-    String originLocation = null;
-    String destinationLocation = null;
-    String count = null;
+    String pickupCount = null;
     private SignatureView sign;
     private byte[] imageInByte = {};
-    Intent intent = getIntent();
-    String originLocationCode = "";
-    String destinationLocationCode = "";
-    String cdloctypeto = "";
-    String cdloctypefrm = "";
     public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
     public ArrayList<String> employeeNameList = new ArrayList<String>();
-    ClearableAutoCompleteTextView naemployeeView;
+    ClearableAutoCompleteTextView employeeNamesView;
     int nuxrefem = -1;
     String pickupRequestTaskType = "";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -98,28 +85,28 @@ public class Pickup3 extends SenateActivity
     private String DECOMMENTS = null;
     public String status = null;
     String URL;
-    static Button btnPickup3Cont;
-    static Button btnPickup3Back;
+    static Button continueBtn;
+    static Button cancelBtn;
     static Button btnPickup3ClrSig;
 
-    public TextView tv_count_pickup3;
+    public TextView pickupCountTV;
     public TextView tvOriginPickup3;
     public TextView tvDestinationPickup3;
 
     public static ProgressBar progBarPickup3;
     boolean positiveButtonPressed = false;
-    Activity currentActivity;
     public final int CONTINUEBUTTON_TIMEOUT = 101,
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
     public String timeoutFrom = "pickup3";
+    private Location origin;
+    private Location destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup3);
         registerBaseActivityReceiver();
-        currentActivity = this;
 
         sign = (SignatureView) findViewById(R.id.blsignImageView);
         sign.setMinDimensions(200, 100);
@@ -128,65 +115,43 @@ public class Pickup3 extends SenateActivity
                 .setClearMsg("Do you want to clear the Pickup Comments?");
         commentsEditText.showClearMsg(true);
 
-        // Find the ListView resource.
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
-        // get data from intent of previous activity
-        AllScannedItems = getInvItemArrayList(getIntent()
-                .getStringArrayListExtra("scannedList"));
-        originLocation = getIntent().getStringExtra("originLocation");
-        destinationLocation = getIntent().getStringExtra("destinationLocation");
-        count = getIntent().getStringExtra("count");
+        origin = (Location) getIntent().getSerializableExtra("origin");
+        destination = (Location) getIntent().getSerializableExtra("destination");
+
+        pickupCount = getIntent().getStringExtra("pickupCount");
         scannedBarcodeNumbers = getInvItemArrayList(getIntent()
                 .getStringArrayListExtra("scannedBarcodeNumbers"));
-        loc_code = getIntent().getStringExtra("loc_code");
-        String originLocationCodeArr[] = originLocation.split("-");
-        originLocationCode = originLocationCodeArr[0];
-        cdloctypefrm = getIntent().getStringExtra("cdloctypefrm");
-        String destinationLocationCodeArr[] = destinationLocation.split("-");
-        destinationLocationCode = destinationLocationCodeArr[0];
-        cdloctypeto = getIntent().getStringExtra("cdloctypeto");
 
-        // Create summary from the given information
-        /*
-         * String summary="Origin Location      : "+ originLocation+"\n"+
-         * "Destination location : "+destinationLocation+"\n"+"\n"+
-         * "Total items          : "+count;
-         */
-
-        // Set the summary to the textview
-        // TextView summaryView = (TextView)findViewById(R.id.textView3 );
-        // summaryView.setText(summary);
-
-        // Display the origin and destination
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
-        tvOriginPickup3.setText(originLocation);
-        tvDestinationPickup3.setText(destinationLocation);
+        tvOriginPickup3.setText(origin.getAddressLine1());
+        tvDestinationPickup3.setText(destination.getAddressLine1());
         // display the count on screen
-        tv_count_pickup3 = (TextView) findViewById(R.id.tv_count_pickup3);
-        tv_count_pickup3.setText(count);
+        pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
+        pickupCountTV.setText(pickupCount);
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
-                R.layout.invlist_item, AllScannedItems);
+                R.layout.invlist_item, scannedBarcodeNumbers);
 
         // Set the ArrayAdapter as the ListView's adapter.
         ListViewTab1.setAdapter((ListAdapter) listAdapter1);
 
         // Brian code starts
-        Pickup2Activity.btnPickup2Cont.getBackground().setAlpha(255);
+        Pickup2Activity.continueBtn.getBackground().setAlpha(255);
 
-        btnPickup3Cont = (Button) findViewById(R.id.btnPickup3Cont);
-        btnPickup3Cont.getBackground().setAlpha(255);
-        btnPickup3Back = (Button) findViewById(R.id.btnPickup3Back);
-        btnPickup3Back.getBackground().setAlpha(255);
+        continueBtn = (Button) findViewById(R.id.btnPickup3Cont);
+        continueBtn.getBackground().setAlpha(255);
+        cancelBtn = (Button) findViewById(R.id.btnPickup3Back);
+        cancelBtn.getBackground().setAlpha(255);
         btnPickup3ClrSig = (Button) findViewById(R.id.btnPickup3ClrSig);
         btnPickup3ClrSig.getBackground().setAlpha(255);
-        naemployeeView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
-        naemployeeView
+        employeeNamesView = (ClearableAutoCompleteTextView) findViewById(R.id.naemployee);
+        employeeNamesView
                 .setClearMsg("Do you want to clear the name of the signer?");
-        naemployeeView.showClearMsg(true);
-        naemployeeView
+        employeeNamesView.showClearMsg(true);
+        employeeNamesView
                 .setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
@@ -194,7 +159,7 @@ public class Pickup3 extends SenateActivity
                             int position, long id) {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
-                                naemployeeView.getWindowToken(), 0);
+                                employeeNamesView.getWindowToken(), 0);
                     }
                 });
 
@@ -249,10 +214,10 @@ public class Pickup3 extends SenateActivity
     protected void onResume() {
         super.onResume();
         positiveButtonPressed = false;
-        btnPickup3Cont = (Button) findViewById(R.id.btnPickup3Cont);
-        btnPickup3Cont.getBackground().setAlpha(255);
-        btnPickup3Back = (Button) findViewById(R.id.btnPickup3Back);
-        btnPickup3Back.getBackground().setAlpha(255);
+        continueBtn = (Button) findViewById(R.id.btnPickup3Cont);
+        continueBtn.getBackground().setAlpha(255);
+        cancelBtn = (Button) findViewById(R.id.btnPickup3Back);
+        cancelBtn.getBackground().setAlpha(255);
         btnPickup3ClrSig = (Button) findViewById(R.id.btnPickup3ClrSig);
         btnPickup3ClrSig.getBackground().setAlpha(255);
         if (progBarPickup3 ==null) {
@@ -329,7 +294,7 @@ public class Pickup3 extends SenateActivity
                 public void run() {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(
-                            naemployeeView.getWindowToken(), 0);
+                            employeeNamesView.getWindowToken(), 0);
                 }
             }, 50);
             break;
@@ -343,7 +308,7 @@ public class Pickup3 extends SenateActivity
                     // "KEEPALIVE_TIMEOUT Hide Keyboard");
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(
-                            naemployeeView.getWindowToken(), 0);
+                            employeeNamesView.getWindowToken(), 0);
                 }
             }, 50);
             break;
@@ -365,7 +330,7 @@ public class Pickup3 extends SenateActivity
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
 
-            String employeePicked = naemployeeView.getEditableText().toString();
+            String employeePicked = employeeNamesView.getEditableText().toString();
             if (employeePicked.trim().length() > 0) {
                 int foundEmployee = this.findEmployee(employeePicked);
 
@@ -382,7 +347,7 @@ public class Pickup3 extends SenateActivity
             if (nuxrefem < 0) {
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
-                if (naemployeeView.getEditableText().toString().trim().length() > 0) {
+                if (employeeNamesView.getEditableText().toString().trim().length() > 0) {
                     Toast toast = Toast.makeText(context,
                             "!!ERROR: No xref# found for employee", duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -469,7 +434,7 @@ public class Pickup3 extends SenateActivity
 
     public void noServerResponse() {
         progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
-        btnPickup3Cont.getBackground().setAlpha(255);
+        continueBtn.getBackground().setAlpha(255);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
@@ -800,7 +765,7 @@ public class Pickup3 extends SenateActivity
 
     private void positiveDialog() {
         progBarPickup3.setVisibility(ProgressBar.VISIBLE);
-        btnPickup3Cont.getBackground().setAlpha(45);
+        continueBtn.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
         // String jsonString = null;
         String status = null;
@@ -841,7 +806,7 @@ public class Pickup3 extends SenateActivity
          */
 
         try {
-            NARELEASEBY = URLEncoder.encode(this.naemployeeView.getText()
+            NARELEASEBY = URLEncoder.encode(this.employeeNamesView.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
@@ -882,14 +847,14 @@ public class Pickup3 extends SenateActivity
                                 + "&nuxrefem=" + nuxrefem,
                         URL
                                 + "/Pickup?originLocation="
-                                + originLocationCode
+                                + origin.getCdLoc()
                                 + "&destinationLocation="
-                                + destinationLocationCode
+                                + destination.getCdLoc()
                                 + Formatter.generateGetArray("barcode[]",
                                         scannedBarcodeNumbers) + "&NAPICKUPBY="
                                 + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                                + "&cdloctypeto=" + cdloctypeto
-                                + "&cdloctypefrm=" + cdloctypefrm);
+                                + "&cdloctypeto=" + destination.getCdLocType()
+                                + "&cdloctypefrm=" + origin.getCdLocType());
 
                 try {
                     res = null;
@@ -981,6 +946,7 @@ public class Pickup3 extends SenateActivity
         startActivity(intent);
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
@@ -1087,8 +1053,8 @@ public class Pickup3 extends SenateActivity
                         employeeNameList);
 
                 // for origin dest code
-                naemployeeView.setThreshold(1);
-                naemployeeView.setAdapter(adapter);
+                employeeNamesView.setThreshold(1);
+                employeeNamesView.setAdapter(adapter);
                 // for destination code
 
             } catch (InterruptedException e) {
