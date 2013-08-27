@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.Location;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -33,47 +35,31 @@ import android.widget.Toast;
 
 public class Pickup2Activity extends SenateActivity
 {
-    public ClearableEditText etNusenate;
-    public TextView tv_count_pickup2;
-    public TextView loc_details;
-    public TextView TextView2;
-    public TextView tvOriginPickup2;
-    public TextView tvDestinationPickup2;
+    public ClearableEditText senateTagTV;
+    public TextView pickupCountTV;
+    public TextView originSummary;
+    public TextView destinationSummary;
     public String res = null;
     public String status = null;
-    public ListView listView;
+    public ListView pickedUpItemsLV;
     boolean testResNull = false;
-    public String loc_code = null; // populate this from the location code from
-                                   // previous activity
+
     ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<VerList> list = new ArrayList<VerList>();
-    ArrayList<InvItem> dispList = new ArrayList<InvItem>();
-    ArrayAdapter<InvItem> adapter;
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
-    int count;
+
+    ArrayAdapter<InvItem> adapter;
+    int pickupCount;
     int numItems;
-    public String originLocation = null;
-    public String destinationLocation = null;
-    public String cdlocatto = null;
-    public String cdlocatfrm = null;
-    public String cdloctypeto = null;
-    public String cdloctypefrm = null;
+    private Location origin;
+    private Location destination;
+
     // These 3 ArrayLists will be used to transfer data to next activity and to
     // the server
-    ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();// for saving
-                                                                  // items which
-                                                                  // are not
-                                                                  // allocated
-                                                                  // to that
-                                                                  // location
-    ArrayList<InvItem> newItems = new ArrayList<InvItem>();// for saving items
-                                                           // which are not
-                                                           // allocated to that
-                                                           // location
-    static Button btnPickup2Cont;
-    static Button btnPickup2Cancel;
+    ArrayList<InvItem> newItems = new ArrayList<InvItem>();
+    static Button continueBtn;
+    static Button cancelBtn;
     static ProgressBar progBarPickup2;
-    Activity currentActivity;
     String timeoutFrom = "pickup2";
     public final int ITEMDETAILS_TIMEOUT = 101;
     public final int SENTAG_NOT_FOUND = 2001, INACTIVE_SENTAG = 2002, SENTAG_IN_TRANSIT = 2003;
@@ -84,50 +70,27 @@ public class Pickup2Activity extends SenateActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
-        currentActivity = this;
 
-        // Get the origin and destination location from the previous activity
+        origin = (Location) getIntent().getSerializableExtra("origin");
+        destination = (Location) getIntent().getSerializableExtra("destination");
 
-        Intent intent = getIntent();
-        originLocation = intent.getStringExtra("originLocation");
-        destinationLocation = intent.getStringExtra("destinationLocation");
-        cdlocatfrm = intent.getStringExtra("cdlocatfrm");
-        cdloctypefrm = intent.getStringExtra("cdloctypefrm");
-        cdlocatto = intent.getStringExtra("cdlocatto");
-        cdloctypeto = intent.getStringExtra("cdloctypeto");
-
-        listView = (ListView) findViewById(R.id.listView1);
-
-        // code for textwatcher
-        etNusenate = (ClearableEditText) findViewById(R.id.etNusenate);
-        etNusenate.addTextChangedListener(filterTextWatcher);
-
-        count = 0;// for initialization
-        /*
-         * adapter = new ArrayAdapter<StringBuilder>(this,
-         * android.R.layout.simple_list_item_1, dispList);
-         */
+        pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
+        senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
+        senateTagTV.addTextChangedListener(filterTextWatcher);
+        pickupCount = 0;
         adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
-
+        pickedUpItemsLV.setAdapter(adapter);
         progBarPickup2 = (ProgressBar) findViewById(R.id.progBarPickup2);
-
-        // Display the origin and destination
-        tvOriginPickup2 = (TextView) findViewById(R.id.tv_origin_pickup2);
-        tvDestinationPickup2 = (TextView) findViewById(R.id.tv_destination_pickup2);
-        tvOriginPickup2.setText(originLocation);
-        tvDestinationPickup2.setText(destinationLocation);
-        // display the count on screen
-        tv_count_pickup2 = (TextView) findViewById(R.id.tv_count_pickup2);
-
-        tv_count_pickup2.setText(Integer.toString(count));
-        // populate the listview
-        listView.setAdapter(adapter);
-
-        // Button Setup
-        btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
-        btnPickup2Cont.getBackground().setAlpha(255);
-        btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
-        btnPickup2Cancel.getBackground().setAlpha(255);
+        pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup2);
+        pickupCountTV.setText(Integer.toString(pickupCount));
+        originSummary = (TextView) findViewById(R.id.tv_origin_pickup2);
+        originSummary.setText(origin.getAddressLine1());
+        destinationSummary = (TextView) findViewById(R.id.tv_destination_pickup2);
+        destinationSummary.setText(destination.getAddressLine1());
+        continueBtn = (Button) findViewById(R.id.btnPickup2Cont);
+        continueBtn.getBackground().setAlpha(255);
+        cancelBtn = (Button) findViewById(R.id.btnPickup2Cancel);
+        cancelBtn.getBackground().setAlpha(255);
 
         try {
             Pickup1.progBarPickup1.setVisibility(View.INVISIBLE);
@@ -139,10 +102,10 @@ public class Pickup2Activity extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
-        btnPickup2Cont = (Button) findViewById(R.id.btnPickup2Cont);
-        btnPickup2Cont.getBackground().setAlpha(255);
-        btnPickup2Cancel = (Button) findViewById(R.id.btnPickup2Cancel);
-        btnPickup2Cancel.getBackground().setAlpha(255);
+        continueBtn = (Button) findViewById(R.id.btnPickup2Cont);
+        continueBtn.getBackground().setAlpha(255);
+        cancelBtn = (Button) findViewById(R.id.btnPickup2Cancel);
+        cancelBtn.getBackground().setAlpha(255);
         if (progBarPickup2 ==null) {
             progBarPickup2 = (ProgressBar) this.findViewById(R.id.progBarPickup2);
         }            
@@ -177,8 +140,8 @@ public class Pickup2Activity extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (etNusenate.getText().toString().length() >= 6) {
-                String barcode_num = etNusenate.getText().toString().trim();
+            if (senateTagTV.getText().toString().length() >= 6) {
+                String barcode_num = senateTagTV.getText().toString().trim();
                 String barcode_number = barcode_num;
 
                 int flag = 0;
@@ -218,13 +181,13 @@ public class Pickup2Activity extends SenateActivity
 
     public void updateChanges() {
         adapter.notifyDataSetChanged();
-        count = list.size();
-        tv_count_pickup2.setText(Integer.toString(count));
-        listView.setAdapter(adapter);
+        pickupCount = list.size();
+        pickupCountTV.setText(Integer.toString(pickupCount));
+        pickedUpItemsLV.setAdapter(adapter);
         try {
-            etNusenate.setText("");
+            senateTagTV.setText("");
         } catch (NullPointerException e) {
-            etNusenate = (ClearableEditText) findViewById(R.id.etNusenate);
+            senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
             e.printStackTrace();
         }
     }
@@ -296,7 +259,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        etNusenate.setText("");
+                        senateTagTV.setText("");
 
                         dialog.dismiss();
 
@@ -337,7 +300,7 @@ public class Pickup2Activity extends SenateActivity
                         + "   "
                         + vl.DECOMMODITYF
                         + "</b> has  already been picked up and was marked as <font color='RED'><b>IN TRANSIT</b></font> and cannot be picked up.");
-        etNusenate.setText("");
+        senateTagTV.setText("");
     }
 
     public void noServerResponse(final String barcode_num) {
@@ -370,7 +333,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        etNusenate.setText("");
+                        senateTagTV.setText("");
 
                         dialog.dismiss();
                     }
@@ -411,7 +374,7 @@ public class Pickup2Activity extends SenateActivity
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        etNusenate.setText("");
+                        senateTagTV.setText("");
 
                         dialog.dismiss();
                     }
@@ -465,12 +428,10 @@ public class Pickup2Activity extends SenateActivity
         // Save UI state changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
-        savedInstanceState.putString("savedOriginLoc", originLocation);
-        savedInstanceState.putString("savedDestLoc", destinationLocation);
+        savedInstanceState.putString("savedOriginLoc", origin.getAddressLine1());
+        savedInstanceState.putString("savedDestLoc", destination.getAddressLine1());
         savedInstanceState.putStringArrayList("savedScannedItems",
                 getJSONArrayList(scannedItems));
-        savedInstanceState.putStringArrayList("savedallScannedItems",
-                getJSONArrayList(allScannedItems));
         savedInstanceState.putStringArrayList("savedNewItems",
                 getJSONArrayList(newItems));
     }
@@ -481,38 +442,27 @@ public class Pickup2Activity extends SenateActivity
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
-        originLocation = savedInstanceState.getString("savedOriginLoc");
+        origin.setAddressLine1(savedInstanceState.getString("savedOriginLoc"));
         scannedItems = getInvItemArrayList(savedInstanceState
                 .getStringArrayList("savedScannedItems"));
-        allScannedItems = getInvItemArrayList(savedInstanceState
-                .getStringArrayList("savedallScannedItems"));
         newItems = getInvItemArrayList(savedInstanceState
                 .getStringArrayList("savedNewItems"));
         TextView TextView2 = (TextView) findViewById(R.id.textView2);
-        TextView2.setText("Origin : " + originLocation + "\n"
-                + "Destination : " + destinationLocation);
+        TextView2.setText("Origin : " + origin.getAddressLine1() + "\n"
+                + "Destination : " + destination.getAddressLine1());
 
     }
 
     public void continueButton(View view) {
-        // send the data to Pickup3 activity
         Log.i("continueButton", "BEFORE checkServerResponse(true)");
-        //Log.i("continueButton", "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
             progBarPickup2.setVisibility(View.VISIBLE);
-            btnPickup2Cont.getBackground().setAlpha(70);
+            continueBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Pickup3.class);
-            intent.putExtra("originLocation", originLocation);
-            intent.putExtra("destinationLocation", destinationLocation);
-            intent.putExtra("cdloctypefrm", cdloctypefrm);
-            intent.putExtra("cdloctypeto", cdloctypeto);
-            String countStr = Integer.toString(count);
-            intent.putExtra("count", countStr);
-            intent.putStringArrayListExtra("scannedBarcodeNumbers",
-                    getJSONArrayList(scannedItems));
-            intent.putStringArrayListExtra("scannedList",
-                    getJSONArrayList(allScannedItems));// scanned items list
-
+            intent.putExtra("origin", origin);
+            intent.putExtra("destination", destination);
+            intent.putExtra("pickupCount", Integer.toString(pickupCount));
+            intent.putStringArrayListExtra("scannedBarcodeNumbers", getJSONArrayList(scannedItems));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -524,7 +474,7 @@ public class Pickup2Activity extends SenateActivity
 
         //Log.i("cancelButton", "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
-            btnPickup2Cancel.getBackground().setAlpha(70);
+            cancelBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Move.class);
             startActivity(intent);
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
@@ -553,12 +503,14 @@ public class Pickup2Activity extends SenateActivity
         String CDSTATUS;
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case ITEMDETAILS_TIMEOUT:
@@ -572,7 +524,7 @@ public class Pickup2Activity extends SenateActivity
     }
 
     public int getItemDetails() {
-        String barcode_num = etNusenate.getText().toString().trim();
+        String barcode_num = senateTagTV.getText().toString().trim();
         String barcode_number = barcode_num;
         VerList vl = new VerList();
 
@@ -655,10 +607,11 @@ public class Pickup2Activity extends SenateActivity
                         return SENTAG_IN_TRANSIT;
                     }
 
-                    if (cdlocatfrm.equalsIgnoreCase(vl.CDLOCAT)) {
+                    if (origin.getCdLoc().equalsIgnoreCase(vl.CDLOCAT)) {
                         vl.CONDITION = "EXISTING";
                         playSound(R.raw.ok);
-                    } else if (cdlocatto.equalsIgnoreCase(vl.CDLOCAT)) {
+                    }
+                    else if (destination.getCdLoc().equalsIgnoreCase(vl.CDLOCAT)) {
                         playSound(R.raw.honk);
                         vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: "
                                 + vl.CDLOCAT;
@@ -692,9 +645,10 @@ public class Pickup2Activity extends SenateActivity
             invStatus = "NOT IN SFMS";
         }
         // This is what should be expected. Trying to move the
-        else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatfrm)) {
+        else if (vl.CDLOCATTO.equalsIgnoreCase(origin.getCdLoc())) {
             invStatus = vl.CONDITION;
-        } else if (vl.CDLOCATTO.equalsIgnoreCase(cdlocatto)) { //
+        }
+        else if (vl.CDLOCATTO.equalsIgnoreCase(destination.getCdLoc())) { //
             invStatus = "AT DESTINATION";
         } else {
             invStatus = "Found in: " + vl.CDLOCATTO;
@@ -725,16 +679,8 @@ public class Pickup2Activity extends SenateActivity
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
 
-        // dispList.add(s_new); // this list will display the
-        // contents
-        // on screen
         scannedItems.add(invItem);
-        allScannedItems.add(invItem);
-        newItems.add(invItem);// to keep
-                              // track of
-                              // (number+details)
-                              // for
-                              // summary
+        newItems.add(invItem);
         return OK;
     }
 
