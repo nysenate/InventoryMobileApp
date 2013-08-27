@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,7 +68,16 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
                     R.color.blueveryverylight));
         }
 
-        if (rowItem.getType().equalsIgnoreCase("NEW")) {
+        if (rowItem.getType().trim().equalsIgnoreCase("NEW")) {
+            Log.i("TEST INVLISTVIEWADAPTER", "rowItem.getType().trim().equalsIgnoreCase(\"NEW\") WORKED!!!" );
+        }
+        else if (rowItem.getType().toUpperCase().indexOf("NEW")>-1) {
+            Log.i("TEST INVLISTVIEWADAPTER", "rowItem.getType().toUpperCase().indexOf(\"NEW\")>-1 WORKED!!!" );
+        }
+        
+        String rowItemType = rowItem.getType().trim();
+        
+        if (rowItemType.equalsIgnoreCase("NEW")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
@@ -84,7 +94,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
             }
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
-        }        if (rowItem.getType().equalsIgnoreCase("INACTIVE")) {
+        } else if (rowItemType.equalsIgnoreCase("INACTIVE")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
@@ -94,14 +104,14 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
             holder.invListDescr.setText("*** INACTIVE ITEM *** "+rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
-        } else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
+        } else if (rowItemType.equalsIgnoreCase("EXISTING")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.black)); // blue
             holder.invListDescr.setText(rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.black)); // black
-        } else if (rowItem.getType().equalsIgnoreCase("AT DESTINATION")) {
+        } else if (rowItemType.equalsIgnoreCase("AT DESTINATION")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.graydark)); // blue
