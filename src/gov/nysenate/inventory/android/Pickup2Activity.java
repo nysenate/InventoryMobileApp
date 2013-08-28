@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.model.Pickup;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -181,7 +182,7 @@ public class Pickup2Activity extends SenateActivity
 
     public void updateChanges() {
         adapter.notifyDataSetChanged();
-        pickupCount = list.size();
+        pickupCount = scannedItems.size();
         pickupCountTV.setText(Integer.toString(pickupCount));
         pickedUpItemsLV.setAdapter(adapter);
         try {
@@ -459,10 +460,9 @@ public class Pickup2Activity extends SenateActivity
             progBarPickup2.setVisibility(View.VISIBLE);
             continueBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Pickup3.class);
-            intent.putExtra("origin", origin);
-            intent.putExtra("destination", destination);
-            intent.putExtra("pickupCount", Integer.toString(pickupCount));
-            intent.putStringArrayListExtra("scannedBarcodeNumbers", getJSONArrayList(scannedItems));
+            Pickup pickup = new Pickup(origin, destination);
+            pickup.setPickupItems(getJSONArrayList(scannedItems));
+            intent.putExtra("pickup", pickup);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }

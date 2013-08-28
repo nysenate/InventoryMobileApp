@@ -23,6 +23,16 @@ public class Pickup extends Transaction implements Serializable {
         pickupItems = new ArrayList<String>();
     }
 
+    public Pickup(Location origin, Location destination) {
+        comments = "";
+        naPickupBy = "";
+        naReleaseBy = "";
+        nuxrRelSign = "";
+        super.origin = origin;
+        super.destination = destination;
+        pickupItems = new ArrayList<String>();
+    }
+
     public ArrayList<String> getPickupItems() {
         return pickupItems;
     }

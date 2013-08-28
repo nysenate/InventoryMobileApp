@@ -1,7 +1,10 @@
 package gov.nysenate.inventory.model;
 
-public abstract class Transaction {
+import java.io.Serializable;
 
+public abstract class Transaction implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     protected int nuxrpd;
     protected Location origin;
     protected Location destination;

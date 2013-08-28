@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.model.Pickup;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -72,7 +73,6 @@ public class Pickup3 extends SenateActivity
 {
     ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
     public String res = null;
-    String pickupCount = null;
     private SignatureView sign;
     private byte[] imageInByte = {};
     public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
@@ -99,8 +99,7 @@ public class Pickup3 extends SenateActivity
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
     public String timeoutFrom = "pickup3";
-    private Location origin;
-    private Location destination;
+    private Pickup pickup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,21 +115,14 @@ public class Pickup3 extends SenateActivity
         commentsEditText.showClearMsg(true);
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
-
-        origin = (Location) getIntent().getSerializableExtra("origin");
-        destination = (Location) getIntent().getSerializableExtra("destination");
-
-        pickupCount = getIntent().getStringExtra("pickupCount");
-        scannedBarcodeNumbers = getInvItemArrayList(getIntent()
-                .getStringArrayListExtra("scannedBarcodeNumbers"));
-
+        pickup = (Pickup) getIntent().getSerializableExtra("pickup");
+        scannedBarcodeNumbers = getInvItemArrayList(pickup.getPickupItems());
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
-        tvOriginPickup3.setText(origin.getAddressLine1());
-        tvDestinationPickup3.setText(destination.getAddressLine1());
-        // display the count on screen
+        tvOriginPickup3.setText(pickup.getOrigin().getAddressLine1());
+        tvDestinationPickup3.setText(pickup.getDestination().getAddressLine1());
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
-        pickupCountTV.setText(pickupCount);
+        pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, scannedBarcodeNumbers);
@@ -847,14 +839,14 @@ public class Pickup3 extends SenateActivity
                                 + "&nuxrefem=" + nuxrefem,
                         URL
                                 + "/Pickup?originLocation="
-                                + origin.getCdLoc()
+                                + pickup.getOrigin().getCdLoc()
                                 + "&destinationLocation="
-                                + destination.getCdLoc()
+                                + pickup.getDestination().getCdLoc()
                                 + Formatter.generateGetArray("barcode[]",
                                         scannedBarcodeNumbers) + "&NAPICKUPBY="
                                 + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                                + "&cdloctypeto=" + destination.getCdLocType()
-                                + "&cdloctypefrm=" + origin.getCdLocType());
+                                + "&cdloctypeto=" + pickup.getDestination().getCdLocType()
+                                + "&cdloctypefrm=" + pickup.getOrigin().getCdLocType());
 
                 try {
                     res = null;
