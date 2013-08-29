@@ -1,12 +1,13 @@
 package gov.nysenate.inventory.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Pickup extends Transaction implements Serializable {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private static final long serialVersionUID = 1L;
+public class Pickup extends Transaction {
+
     private ArrayList<String> pickupItems;
     private String comments;
     private String naPickupBy;
@@ -14,22 +15,20 @@ public class Pickup extends Transaction implements Serializable {
     private String nuxrRelSign;
 
     public Pickup() {
+        super();
         comments = "";
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
-        origin = new Location();
-        destination = new Location();
         pickupItems = new ArrayList<String>();
     }
 
     public Pickup(Location origin, Location destination) {
+        super(origin, destination);
         comments = "";
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
-        super.origin = origin;
-        super.destination = destination;
         pickupItems = new ArrayList<String>();
     }
 
@@ -77,4 +76,48 @@ public class Pickup extends Transaction implements Serializable {
         this.nuxrRelSign = nuxrRelSign;
     }
 
+    // ---------- Code for Parcelable interface ----------
+
+    public Pickup(Parcel in) {
+        pickupItems = new ArrayList<String>();
+        readFromParcel(in);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeStringList(pickupItems);
+        dest.writeString(comments);
+        dest.writeString(naPickupBy);
+        dest.writeString(naReleaseBy);
+        dest.writeString(nuxrRelSign);
+    }
+
+    @Override
+    public void readFromParcel(Parcel in) {
+        super.readFromParcel(in);
+        in.readStringList(pickupItems);
+        comments = in.readString();
+        naPickupBy = in.readString();
+        naReleaseBy = in.readString();
+        nuxrRelSign = in.readString();
+    }
+
+    public static final Parcelable.Creator<Pickup> CREATOR =
+            new Parcelable.Creator<Pickup>() {
+                @Override
+                public Pickup createFromParcel(Parcel in) {
+                    return new Pickup(in);
+                }
+
+                @Override
+                public Pickup[] newArray(int size) {
+                    return new Pickup[size];
+                }
+            };
 }

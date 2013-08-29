@@ -115,12 +115,12 @@ public class Pickup3 extends SenateActivity
         commentsEditText.showClearMsg(true);
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
-        pickup = (Pickup) getIntent().getSerializableExtra("pickup");
+        pickup = getIntent().getParcelableExtra("pickup");
         scannedBarcodeNumbers = getInvItemArrayList(pickup.getPickupItems());
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
-        tvOriginPickup3.setText(pickup.getOrigin().getAddressLine1());
-        tvDestinationPickup3.setText(pickup.getDestination().getAddressLine1());
+        tvOriginPickup3.setText(pickup.getOriginAddressLine1());
+        tvDestinationPickup3.setText(pickup.getDestinationAddressLine1());
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
         pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
 
@@ -839,14 +839,14 @@ public class Pickup3 extends SenateActivity
                                 + "&nuxrefem=" + nuxrefem,
                         URL
                                 + "/Pickup?originLocation="
-                                + pickup.getOrigin().getCdLoc()
+                                + pickup.getOriginCdLoc()
                                 + "&destinationLocation="
-                                + pickup.getDestination().getCdLoc()
+                                + pickup.getDestinationCdLoc()
                                 + Formatter.generateGetArray("barcode[]",
                                         scannedBarcodeNumbers) + "&NAPICKUPBY="
                                 + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                                + "&cdloctypeto=" + pickup.getDestination().getCdLocType()
-                                + "&cdloctypefrm=" + pickup.getOrigin().getCdLocType());
+                                + "&cdloctypeto=" + pickup.getDestinationCdLocType()
+                                + "&cdloctypefrm=" + pickup.getOriginCdLocType());
 
                 try {
                     res = null;

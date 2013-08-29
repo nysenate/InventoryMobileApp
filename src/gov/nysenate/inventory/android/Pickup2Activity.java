@@ -72,8 +72,8 @@ public class Pickup2Activity extends SenateActivity
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
 
-        origin = (Location) getIntent().getSerializableExtra("origin");
-        destination = (Location) getIntent().getSerializableExtra("destination");
+        origin = getIntent().getParcelableExtra("origin");
+        destination = getIntent().getParcelableExtra("destination");
 
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
