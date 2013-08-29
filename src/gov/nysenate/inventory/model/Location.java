@@ -2,12 +2,14 @@ package gov.nysenate.inventory.model;
 
 import java.io.Serializable;
 
-public class Location implements Serializable {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private static final long serialVersionUID = 1L;
-    private String cdLocType; // location type code
-    private String cdLoc; // location code
-    private String addressLine1; // Used in summary information about the location throughout the app.
+public class Location implements Parcelable {
+
+    private String cdLocType;
+    private String cdLoc;
+    private String addressLine1;
 
     public Location() {
         cdLocType = "";
@@ -51,11 +53,41 @@ public class Location implements Serializable {
         this.addressLine1 = addressLine1;
     }
 
-    public static void main(String[] args) {
-        String a = "A333F-W: THE ALB CENTER FOR DDDEENUTS";
-        Location loc = new Location(a);
-        System.out.println(loc.getCdLoc());
-        System.out.println(loc.getCdLocType());
-        System.out.println(loc.getAddressLine1());
+    // ---------- Code for Parcelable interface --------------
+
+    public Location(Parcel in) {
+        readFromParcel(in);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cdLoc);
+        dest.writeString(cdLocType);
+        dest.writeString(addressLine1);
+    }
+
+    public void readFromParcel(Parcel in) {
+        // Read Parcel in same order we wrote it.
+        cdLoc = in.readString();
+        cdLocType = in.readString();
+        addressLine1 = in.readString();
+    }
+
+    public static final Parcelable.Creator<Location> CREATOR =
+            new Parcelable.Creator<Location>() {
+                @Override
+                public Location createFromParcel(Parcel in) {
+                    return new Location(in);
+                }
+
+                @Override
+                public Location[] newArray(int size) {
+                    return new Location[size];
+                }
+            };
 }
