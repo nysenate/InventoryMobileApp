@@ -40,6 +40,7 @@ public class SignatureView extends View
     private boolean signed = false;
 
     private float curX, curY;
+    private float origCurX, origCurY;
 
     private static final int TOUCH_TOLERANCE = 4;
     private static final int STROKE_WIDTH = 4;
@@ -345,6 +346,8 @@ public class SignatureView extends View
         mPath.moveTo(x, y);
         curX = x;
         curY = y;
+        origCurX = curX;
+        origCurY = curY;
     }
 
     private void touchMove(float x, float y) {
@@ -358,7 +361,13 @@ public class SignatureView extends View
     }
 
     private void touchUp() {
-        mPath.lineTo(curX, curY);
+        if (curX==origCurX && curY==origCurY) {
+            Log.i("SignatureView", "Draw a dot 2 pixels wide");
+            mPath.addCircle(curX, curY, 2, Path.Direction.CW);
+        }
+        else {
+            mPath.lineTo(curX, curY);
+        }
         if (mCanvas == null) {
             mCanvas = new Canvas();
             mCanvas.setBitmap(mBitmap);
