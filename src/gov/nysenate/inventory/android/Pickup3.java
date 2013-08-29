@@ -1,6 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
 
 import java.io.BufferedReader;
@@ -60,7 +59,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -71,30 +69,30 @@ import android.widget.Toast;
 
 public class Pickup3 extends SenateActivity
 {
-    ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
-    public String res = null;
+    private ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
+    private String res = null;
     private SignatureView sign;
     private byte[] imageInByte = {};
-    public ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
-    public ArrayList<String> employeeNameList = new ArrayList<String>();
-    ClearableAutoCompleteTextView employeeNamesView;
-    int nuxrefem = -1;
-    String pickupRequestTaskType = "";
+    private ArrayList<Employee> employeeHiddenList = new ArrayList<Employee>();
+    private ArrayList<String> employeeNameList = new ArrayList<String>();
+    private ClearableAutoCompleteTextView employeeNamesView;
+    private int nuxrefem = -1;
+    private String pickupRequestTaskType = "";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-    ClearableEditText commentsEditText;
+    private ClearableEditText commentsEditText;
     private String DECOMMENTS = null;
-    public String status = null;
-    String URL;
+    String status = null;
+    private String URL;
     static Button continueBtn;
     static Button cancelBtn;
     static Button btnPickup3ClrSig;
 
-    public TextView pickupCountTV;
-    public TextView tvOriginPickup3;
-    public TextView tvDestinationPickup3;
+    private TextView pickupCountTV;
+    private TextView tvOriginPickup3;
+    private TextView tvDestinationPickup3;
 
     public static ProgressBar progBarPickup3;
-    boolean positiveButtonPressed = false;
+    private boolean positiveButtonPressed = false;
     public final int CONTINUEBUTTON_TIMEOUT = 101,
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
@@ -110,8 +108,7 @@ public class Pickup3 extends SenateActivity
         sign = (SignatureView) findViewById(R.id.blsignImageView);
         sign.setMinDimensions(200, 100);
         commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
-        commentsEditText
-                .setClearMsg("Do you want to clear the Pickup Comments?");
+        commentsEditText.setClearMsg("Do you want to clear the Pickup Comments?");
         commentsEditText.showClearMsg(true);
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
@@ -126,8 +123,6 @@ public class Pickup3 extends SenateActivity
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, scannedBarcodeNumbers);
-
-        // Set the ArrayAdapter as the ListView's adapter.
         ListViewTab1.setAdapter((ListAdapter) listAdapter1);
 
         // Brian code starts
@@ -158,6 +153,7 @@ public class Pickup3 extends SenateActivity
         // Setup ProgressBar
         progBarPickup3 = (ProgressBar) findViewById(R.id.progBarPickup3);
 
+        // TODO: Is this what takes so long in loading Pickup3?
         getEmployeeList();
 
         // code for textwatcher
@@ -801,7 +797,6 @@ public class Pickup3 extends SenateActivity
             NARELEASEBY = URLEncoder.encode(this.employeeNamesView.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -809,7 +804,6 @@ public class Pickup3 extends SenateActivity
             DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -901,10 +895,8 @@ public class Pickup3 extends SenateActivity
                     return;
                 }
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             status = "yes1";
@@ -979,10 +971,8 @@ public class Pickup3 extends SenateActivity
                 }
 
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             status = "yes1";
@@ -1050,13 +1040,10 @@ public class Pickup3 extends SenateActivity
                 // for destination code
 
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             status = "yes1";

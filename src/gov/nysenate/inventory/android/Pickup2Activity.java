@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,27 +36,18 @@ import android.widget.Toast;
 public class Pickup2Activity extends SenateActivity
 {
     public ClearableEditText senateTagTV;
-    public TextView pickupCountTV;
-    public TextView originSummary;
-    public TextView destinationSummary;
-    public String res = null;
-    public String status = null;
-    public ListView pickedUpItemsLV;
-    boolean testResNull = false;
-
-    ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
-    ArrayList<VerList> list = new ArrayList<VerList>();
-    ArrayList<InvItem> invList = new ArrayList<InvItem>();
-
-    ArrayAdapter<InvItem> adapter;
-    int pickupCount;
-    int numItems;
+    private TextView pickupCountTV;
+    private TextView originSummary;
+    private TextView destinationSummary;
+    private String res = null;
+    String status = null;
+    private ListView pickedUpItemsLV;
+    private boolean testResNull = false;
+    private ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
+    private ArrayAdapter<InvItem> adapter;
+    private int pickupCount;
     private Location origin;
     private Location destination;
-
-    // These 3 ArrayLists will be used to transfer data to next activity and to
-    // the server
-    ArrayList<InvItem> newItems = new ArrayList<InvItem>();
     static Button continueBtn;
     static Button cancelBtn;
     static ProgressBar progBarPickup2;
@@ -74,12 +64,11 @@ public class Pickup2Activity extends SenateActivity
 
         origin = getIntent().getParcelableExtra("origin");
         destination = getIntent().getParcelableExtra("destination");
-
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
-        senateTagTV.addTextChangedListener(filterTextWatcher);
+        senateTagTV.addTextChangedListener(senateTagTextWatcher);
         pickupCount = 0;
-        adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);
+        adapter = new InvListViewAdapter(this, R.layout.invlist_item, scannedItems);
         pickedUpItemsLV.setAdapter(adapter);
         progBarPickup2 = (ProgressBar) findViewById(R.id.progBarPickup2);
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup2);
@@ -126,7 +115,7 @@ public class Pickup2Activity extends SenateActivity
         }
     }
 
-    private final TextWatcher filterTextWatcher = new TextWatcher()
+    private final TextWatcher senateTagTextWatcher = new TextWatcher()
     {
 
         @Override
@@ -143,14 +132,12 @@ public class Pickup2Activity extends SenateActivity
         public void afterTextChanged(Editable s) {
             if (senateTagTV.getText().toString().length() >= 6) {
                 String barcode_num = senateTagTV.getText().toString().trim();
-                String barcode_number = barcode_num;
-
                 int flag = 0;
                 boolean barcodeFound = false;
 
                 // If the item is already scanned then display a
                 // toster"Already Scanned"
-                if (findBarcode(barcode_num) > -1) {
+                if (findBarcode(barcode_num) > -1) { // TODO: findBarcode() call
                     // display toster
                     barcodeFound = true;
                     Context context = getApplicationContext();
@@ -187,7 +174,8 @@ public class Pickup2Activity extends SenateActivity
         pickedUpItemsLV.setAdapter(adapter);
         try {
             senateTagTV.setText("");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) { // TODO: when does senateTagTV not get initialized??
             senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
             e.printStackTrace();
         }
@@ -389,8 +377,8 @@ public class Pickup2Activity extends SenateActivity
     }
 
     public int findBarcode(String barcode_num) {
-        for (int x = 0; x < invList.size(); x++) {
-            if (invList.get(x).getNusenate().equals(barcode_num)) {
+        for (int x = 0; x < scannedItems.size(); x++) {
+            if (scannedItems.get(x).getNusenate().equals(barcode_num)) {
                 return x;
             }
         }
@@ -433,8 +421,6 @@ public class Pickup2Activity extends SenateActivity
         savedInstanceState.putString("savedDestLoc", destination.getAddressLine1());
         savedInstanceState.putStringArrayList("savedScannedItems",
                 getJSONArrayList(scannedItems));
-        savedInstanceState.putStringArrayList("savedNewItems",
-                getJSONArrayList(newItems));
     }
 
     // 3/15/13 Work in progress. Not fully implemented yet
@@ -446,8 +432,6 @@ public class Pickup2Activity extends SenateActivity
         origin.setAddressLine1(savedInstanceState.getString("savedOriginLoc"));
         scannedItems = getInvItemArrayList(savedInstanceState
                 .getStringArrayList("savedScannedItems"));
-        newItems = getInvItemArrayList(savedInstanceState
-                .getStringArrayList("savedNewItems"));
         TextView TextView2 = (TextView) findViewById(R.id.textView2);
         TextView2.setText("Origin : " + origin.getAddressLine1() + "\n"
                 + "Destination : " + destination.getAddressLine1());
@@ -658,9 +642,6 @@ public class Pickup2Activity extends SenateActivity
         // the list.
         InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY, invStatus,
                 vl.DECOMMODITYF, vl.CDLOCAT);
-        invList.add(invItem);
-
-        list.add(vl);
         StringBuilder s_new = new StringBuilder();
         // s_new.append(vl.NUSENATE); since the desc coming from
         // server already contains barcode number we wont add it
@@ -680,7 +661,6 @@ public class Pickup2Activity extends SenateActivity
         toast.show();
 
         scannedItems.add(invItem);
-        newItems.add(invItem);
         return OK;
     }
 
