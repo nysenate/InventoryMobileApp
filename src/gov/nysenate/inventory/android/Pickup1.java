@@ -1,9 +1,6 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.NetworkManager;
-import gov.nysenate.inventory.util.RequestDispatcher;
-import gov.nysenate.inventory.util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
