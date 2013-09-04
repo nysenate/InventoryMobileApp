@@ -523,7 +523,7 @@ public class VerSummaryActivity extends SenateActivity
     private int numNewItems() {
         int numNewItems = 0;
         for (InvItem item : newItems) {
-            if (item.getType().equalsIgnoreCase("NEW")) {
+            if (item.getType().equalsIgnoreCase("NEW") || item.getType().equalsIgnoreCase("INACTIVE")) {
                 numNewItems++;
             }
         }
