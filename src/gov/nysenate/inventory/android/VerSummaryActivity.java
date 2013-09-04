@@ -457,7 +457,7 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayVerificationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setTitle("<font color='#000055'>Verification Confirmation</font>");
+        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Verification Confirmation</font>"));
         confirmDialog
                 .setMessage("Are you sure you want to submit this verification?");
         confirmDialog.setPositiveButton("Yes",
@@ -512,7 +512,7 @@ public class VerSummaryActivity extends SenateActivity
     private boolean foundItemsScanned() {
         boolean exist = false;
         for (InvItem item : newItems) {
-            if (!item.getType().equalsIgnoreCase("NEW")) {
+            if (!item.getType().equalsIgnoreCase("NEW") && !item.getType().equalsIgnoreCase("INACTIVE")) {
                 exist = true;
                 break;
             }
