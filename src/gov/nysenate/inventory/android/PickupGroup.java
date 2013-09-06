@@ -2,14 +2,14 @@ package gov.nysenate.inventory.android;
 
 public class PickupGroup
 {
-    String pickupDateTime = "blah blah blah";
-    String pickupFrom = "blah";
-    String pickupLocat = "blah";
-    String pickupRelBy = "blah";
-    String pickupAdstreet1 = "blah";
-    String pickupAdcity = "blah";
-    String pickupAdstate = "BL";
-    String pickupAdzipcode = "blah";
+    String pickupDateTime = "";
+    String pickupFrom = "";
+    String pickupLocat = "";
+    String pickupRelBy = "";
+    String pickupAdstreet1 = "";
+    String pickupAdcity = "";
+    String pickupAdstate = "";
+    String pickupAdzipcode = "";
     int pickupItemCount = 0;
     int nuxrpd = 0;
 

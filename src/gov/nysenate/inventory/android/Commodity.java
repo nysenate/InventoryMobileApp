@@ -2,10 +2,10 @@ package gov.nysenate.inventory.android;
 
 public class Commodity
 {
-   String decommodityf = "blah blah blah";
-   String cdtype = "blah";
-   String nusenate = "blah";
-   String cdcategory = "blah";
+   String decommodityf = "";
+   String cdtype = "";
+   String nusenate = "";
+   String cdcategory = "";
    String cdlocat = "";
    String cdlocatto = "";
    String decomments = "";

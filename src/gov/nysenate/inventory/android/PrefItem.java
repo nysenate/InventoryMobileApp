@@ -2,10 +2,10 @@ package gov.nysenate.inventory.android;
 
 public class PrefItem
 {
-    String decommodityf = "blah blah blah";
-    String type = "blah";
-    String nusenate = "blah";
-    String cdcategory = "blah";
+    String decommodityf = "";
+    String type = "";
+    String nusenate = "";
+    String cdcategory = "";
 
     public PrefItem(String nusenate, String cdcategory, String type,
             String decommodityf) {
