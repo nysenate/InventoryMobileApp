@@ -579,11 +579,15 @@ public class Pickup2Activity extends SenateActivity
                     if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                         errorMessage(
                                 barcode_num,
-                                "!!ERROR: Senate Tag#: " + barcode_num
+                                "Senate Tag#: " + barcode_num
                                         + " has been Inactivated.",
-                                "The <b>\""
+                                "!!ERROR: Senate Tag#: <b>" + barcode_num + "</b>" + " has been Inactivated.<br><br>"
+                                        + " <b>This item will not be recorded as being picked up!</b><br><br>"
+                                        + " The <b>\""
                                         + vl.DECOMMODITYF
-                                        + "\"</b> must be brought back into the Senate Tracking System by management via <b>\"Inventory Record Adjustment E/U\"</b>.<br /><br /><div width=100% align='center'><b><font color='RED'>Item will NOT be updated!</font></b></div>");
+                                        + "\"</b>  must be brought back into the Senate Tracking System by management via the"
+                                        + " \"Inventory Record Adjustment E/U\". If you physically MOVE the item please report "
+                                        + " Tag# and new location to Inventory Control Mgnt.");
                         return INACTIVE_SENTAG;
                     }
 
