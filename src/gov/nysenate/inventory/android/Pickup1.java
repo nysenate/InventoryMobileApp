@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -43,13 +42,12 @@ public class Pickup1 extends SenateActivity
 {
     public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
     private String res = null;
-    public String originSummary = null;
-    public String destinationSummary = null;
+    private String URL = "";
+    private String originSummary = null;
+    private String destinationSummary = null;
     private Location origin;
     private Location destination;
-    private ArrayList<String> locCodeList = new ArrayList<String>();
-    private String URL = "";
-
+    private ArrayList<String> allLocations = new ArrayList<String>();
     private ClearableAutoCompleteTextView originLocationTV;
     private ClearableAutoCompleteTextView destinationLocationTV;
     private Button continueBtn;
@@ -60,8 +58,6 @@ public class Pickup1 extends SenateActivity
     private TextView destinationOfficeName;
     private TextView destinationAddress;
     private TextView destinationItemCount;
-    private TextView destItemCount;
-
     private boolean fromLocationBeingTyped = false;
     private boolean toLocationBeingTyped = false;
     public static ProgressBar progBarPickup1;
@@ -87,7 +83,8 @@ public class Pickup1 extends SenateActivity
         cancelBtn = (Button) findViewById(R.id.btnPickup1Cancel);
 
         try {
-            getLocCodeList();
+            // TODO: RequestDispatcher.getInstance() as parameter for tests DI.
+            getAllLocations();
         }
         catch (InterruptedException e1) {
             e1.printStackTrace();
@@ -100,8 +97,7 @@ public class Pickup1 extends SenateActivity
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line,
-                locCodeList);
+                android.R.layout.simple_dropdown_item_1line, allLocations);
 
         setupOriginLocationTV(adapter);
         setupDestinationLocationTV(adapter);
@@ -118,11 +114,7 @@ public class Pickup1 extends SenateActivity
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        // set title
         alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
-
-        // set dialog message
         alertDialogBuilder
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
@@ -134,22 +126,15 @@ public class Pickup1 extends SenateActivity
                         // if this button is clicked, just close
                         // the dialog box and do nothing
                         Context context = getApplicationContext();
-
                         CharSequence text = "No action taken due to NO SERVER RESPONSE";
                         int duration = Toast.LENGTH_SHORT;
-
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
-
                         dialog.dismiss();
                     }
                 });
-
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
         alertDialog.show();
     }
 
@@ -209,14 +194,9 @@ public class Pickup1 extends SenateActivity
     };
 
     public void continueButton(View view) {
+        // For testing... SessionManager.getSessionManager().checkServerResponse(true) == OK
         if (checkServerResponse(true) == OK) {
-
-            float alpha = 0.45f;
-            AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-            alphaUp.setFillAfter(true);
-            continueBtn.startAnimation(alphaUp);
             int duration = Toast.LENGTH_SHORT;
-
             String currentFromLocation = this.originLocationTV.getText().toString();
             String currentToLocation = this.destinationLocationTV.getText().toString();
 
@@ -230,7 +210,7 @@ public class Pickup1 extends SenateActivity
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (locCodeList.indexOf(currentFromLocation) == -1) {
+            } else if (allLocations.indexOf(currentFromLocation) == -1) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: From Location Code \"" + currentFromLocation
                                 + "\" is invalid.", duration);
@@ -249,7 +229,7 @@ public class Pickup1 extends SenateActivity
                 toast.show();
                 boolean focusRequested = destinationLocationTV.requestFocus();
 
-            } else if (locCodeList.indexOf(currentFromLocation) == -1) {
+            } else if (allLocations.indexOf(currentFromLocation) == -1) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: To Location Code \"" + currentToLocation
                                 + "\" is invalid.", duration);
@@ -270,6 +250,7 @@ public class Pickup1 extends SenateActivity
                 boolean focusRequested = destinationLocationTV.requestFocus();
 
             } else {
+                continueBtn.getBackground().setAlpha(70);
                 Intent intent = new Intent(this, Pickup2Activity.class);
                 origin = new Location(originSummary);
                 destination = new Location(destinationSummary);
@@ -278,25 +259,14 @@ public class Pickup1 extends SenateActivity
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
-            alphaUp = new AlphaAnimation(1f, 1f);
-            alphaUp.setFillAfter(true);
-            continueBtn.startAnimation(alphaUp); // TODO why is this called twice
         }
     }
 
     public void cancelButton(View view) {
-
-        float alpha = 0.45f;
-        AlphaAnimation alphaUp = new AlphaAnimation(alpha, alpha);
-        alphaUp.setFillAfter(true);
-        cancelBtn.startAnimation(alphaUp);
+        cancelBtn.getBackground().setAlpha(70);
         Intent intent = new Intent(this, Move.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        alphaUp = new AlphaAnimation(1f, 1f);
-        alphaUp.setFillAfter(true);
-        cancelBtn.startAnimation(alphaUp); // TODO: why called twice?
-
     }
 
     @Override
@@ -319,7 +289,8 @@ public class Pickup1 extends SenateActivity
         case LOCCODELIST_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 try {
-                    getLocCodeList();
+                    // TODO: RequestDispatcher.getInstance() as parameter for testing.
+                    getAllLocations();
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
@@ -370,7 +341,7 @@ public class Pickup1 extends SenateActivity
         }
     }
 
-    public ArrayList<String> getLocCodeList() throws InterruptedException, ExecutionException, JSONException {
+    public ArrayList<String> getAllLocations() throws InterruptedException, ExecutionException, JSONException {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -378,14 +349,12 @@ public class Pickup1 extends SenateActivity
                 URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             }
             else {
-                // TODO: what is this used for?
                 MsgAlert msgAlert = new MsgAlert(this,
                         "Properties cannot be loaded.",
                         "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
             }
-
             AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/LocCodeList");
-            res = resr1.get(); // TODO: can resr1 be null?
+            res = resr1.get();
             if (res == null) {
                 noServerResponse();
             }
@@ -393,14 +362,14 @@ public class Pickup1 extends SenateActivity
                 startTimeout(LOCCODELIST_TIMEOUT);
             }
 
-            JSONArray jsonArray = new JSONArray(res);
+            JSONArray jsonArray = new JSONArray(res); // TODO: ?? catch exception/handle the case where res is invalid JSON ??
             for (int i = 0; i < jsonArray.length(); i++) {
-                locCodeList.add(jsonArray.getString(i));
+                allLocations.add(jsonArray.getString(i));
             }
 
-            Collections.sort(locCodeList);
+            Collections.sort(allLocations);
         }
-        return locCodeList;
+        return allLocations;
     }
 
     public void getOriginLocationDetails() {
