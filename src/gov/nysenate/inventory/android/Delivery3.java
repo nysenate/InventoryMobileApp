@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -197,6 +195,7 @@ public class Delivery3 extends SenateActivity
 
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
@@ -206,23 +205,27 @@ public class Delivery3 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
-            if (this.btnDeliv3ClrSig  ==null) {
-                this.btnDeliv3ClrSig = (Button) this.findViewById(R.id.btnDeliv3ClrSig);
-            }
-            if (this.btnDelivery3Back  ==null) {
-                this.btnDelivery3Back = (Button) this.findViewById(R.id.btnDelivery3Back);
-            }
-            if (this.btnDelivery3Cont  ==null) {
-                this.btnDelivery3Cont = (Button) this.findViewById(R.id.btnDelivery3Cont);
-            }
-            if (this.progBarDelivery3  ==null) {
-                this.progBarDelivery3 = (ProgressBar) this.findViewById(R.id.progBarDelivery3);
-            }            
-            this.btnDeliv3ClrSig.getBackground().setAlpha(255);
-            this.btnDelivery3Back.getBackground().setAlpha(255);
-            this.btnDelivery3Cont.getBackground().setAlpha(255);
-            this.progBarDelivery3.setVisibility(ProgressBar.INVISIBLE);
-        
+        if (this.btnDeliv3ClrSig == null) {
+            this.btnDeliv3ClrSig = (Button) this
+                    .findViewById(R.id.btnDeliv3ClrSig);
+        }
+        if (this.btnDelivery3Back == null) {
+            this.btnDelivery3Back = (Button) this
+                    .findViewById(R.id.btnDelivery3Back);
+        }
+        if (this.btnDelivery3Cont == null) {
+            this.btnDelivery3Cont = (Button) this
+                    .findViewById(R.id.btnDelivery3Cont);
+        }
+        if (Delivery3.progBarDelivery3 == null) {
+            Delivery3.progBarDelivery3 = (ProgressBar) this
+                    .findViewById(R.id.progBarDelivery3);
+        }
+        this.btnDeliv3ClrSig.getBackground().setAlpha(255);
+        this.btnDelivery3Back.getBackground().setAlpha(255);
+        this.btnDelivery3Cont.getBackground().setAlpha(255);
+        Delivery3.progBarDelivery3.setVisibility(View.INVISIBLE);
+
         positiveButtonPressed = false;
     }
 
@@ -230,7 +233,8 @@ public class Delivery3 extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -324,7 +328,9 @@ public class Delivery3 extends SenateActivity
 
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
+        confirmDialog
+                .setTitle(Html
+                        .fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
         confirmDialog.setMessage("Are you sure you want to deliver these "
                 + numItemsDelivered + " items?");
         confirmDialog.setPositiveButton("Yes",
@@ -372,7 +378,7 @@ public class Delivery3 extends SenateActivity
     }
 
     private void positiveDialog() {
-        progBarDelivery3.setVisibility(ProgressBar.VISIBLE);
+        progBarDelivery3.setVisibility(View.VISIBLE);
         this.btnDelivery3Cont.getBackground().setAlpha(45);
 
         try {
@@ -434,36 +440,49 @@ public class Delivery3 extends SenateActivity
                     } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(this.POSITIVEDIALOG_TIMEOUT);
                         return;
-                    } else if (res.startsWith("***WARNING:")||res.startsWith("!!ERROR:")) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    } else if (res.startsWith("***WARNING:")
+                            || res.startsWith("!!ERROR:")) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                this);
 
                         // set title
-                        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+res.trim()+"</font>"));
+                        alertDialogBuilder.setTitle(Html
+                                .fromHtml("<font color='#000055'>" + res.trim()
+                                        + "</font>"));
 
                         // set dialog message
                         alertDialogBuilder
                                 .setMessage(
-                                        Html.fromHtml(res.trim()+"<br/> Continue (Y/N)?"))
+                                        Html.fromHtml(res.trim()
+                                                + "<br/> Continue (Y/N)?"))
                                 .setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        returnToMoveMenu();
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setPositiveButton("No", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        dialog.dismiss();
-                                    }
-                                });
+                                .setPositiveButton("Yes",
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int id) {
+                                                // if this button is clicked,
+                                                // just close
+                                                // the dialog box and do nothing
+                                                returnToMoveMenu();
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                .setPositiveButton("No",
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int id) {
+                                                // if this button is clicked,
+                                                // just close
+                                                // the dialog box and do nothing
+                                                dialog.dismiss();
+                                            }
+                                        });
 
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -472,7 +491,7 @@ public class Delivery3 extends SenateActivity
                         alertDialog.show();
                         return;
                     }
-                    
+
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -505,14 +524,14 @@ public class Delivery3 extends SenateActivity
         toast.show();
         returnToMoveMenu();
     }
-        
-   public void returnToMoveMenu() {
-   // 3. send the intent to the Move Menu Activity
-       // Intent intent = new Intent(this, MenuActivity.class);
-       Intent intent = new Intent(this, Move.class);
-       startActivity(intent);
-       overridePendingTransition(R.anim.in_right, R.anim.out_left);
-   }
+
+    public void returnToMoveMenu() {
+        // 3. send the intent to the Move Menu Activity
+        // Intent intent = new Intent(this, MenuActivity.class);
+        Intent intent = new Intent(this, Move.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -754,12 +773,14 @@ public class Delivery3 extends SenateActivity
                     // TODO Handle problems..
                 } catch (ConnectTimeoutException e) {
                     return "***WARNING: Server Connection timeout";
-                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-                //Log.e("CONN TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
                     return "***WARNING: Server Socket timeout";
-                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-                //Log.e("SOCK TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                 }
@@ -824,12 +845,14 @@ public class Delivery3 extends SenateActivity
                     e.printStackTrace();
                 } catch (ConnectTimeoutException e) {
                     return "***WARNING: Server Connection timeout";
-                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-                //Log.e("CONN TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
                     return "***WARNING: Server Socket timeout";
-                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-                //Log.e("SOCK TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
@@ -858,14 +881,15 @@ public class Delivery3 extends SenateActivity
                     e.printStackTrace();
                 } catch (ConnectTimeoutException e) {
                     return "***WARNING: Server Connection timeout";
-                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-                //Log.e("CONN TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
                     return "***WARNING: Server Socket timeout";
-                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-                //Log.e("SOCK TIMEOUT", e.toString());
-                }                
-                catch (IOException e) {
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
+                } catch (IOException e) {
                     // TODO Handle problems..
                     e.printStackTrace();
                 }
@@ -943,16 +967,14 @@ public class Delivery3 extends SenateActivity
                 invAdapter.setAllSelected(true);
                 invAdapter.setNotifyOnChange(true);
                 try {
-                    tvItemCount.setText("Item Count:  "+invList.size());
+                    tvItemCount.setText("Item Count:  " + invList.size());
                 } catch (Exception e) {
                     try {
-                    tvItemCount.setText("Item Count:   N/A");
-                    }
-                    catch (Exception e2) {
+                        tvItemCount.setText("Item Count:   N/A");
+                    } catch (Exception e2) {
                         e.printStackTrace();
                     }
                 }
-                
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -1069,6 +1091,6 @@ public class Delivery3 extends SenateActivity
     @Override
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
         // TODO Auto-generated method stub
-        
+
     }
 }

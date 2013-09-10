@@ -110,11 +110,14 @@ public class Verification extends SenateActivity
                                 autoCompleteTextView1.getWindowToken(), 0);
                         Log.i("autocomplete clicked", "Before selection");
                         autoCompleteTextView1.setSelection(0);
-                        Log.i("autocomplete clicked", "Before getLocationDetails");
-                        if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                        Log.i("autocomplete clicked",
+                                "Before getLocationDetails");
+                        if (autoCompleteTextView1.getText().toString().trim()
+                                .length() > 0) {
                             getLocationDetails();
                         }
-                        Log.i("autocomplete clicked", "After getLocationDetails");
+                        Log.i("autocomplete clicked",
+                                "After getLocationDetails");
                         locationBeingTyped = false;
                     }
                 });
@@ -122,27 +125,30 @@ public class Verification extends SenateActivity
         loc_details = (TextView) findViewById(R.id.textView2);
 
         // Suppress the Menu ProgressBar
-        MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
+        MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
-        if (this.btnVerify1Cancel==null) {
-            this.btnVerify1Cancel = (Button) this.findViewById(R.id.btnVerify1Cancel);
+        if (Verification.btnVerify1Cancel == null) {
+            Verification.btnVerify1Cancel = (Button) this
+                    .findViewById(R.id.btnVerify1Cancel);
         }
-        if (this.btnVerify1Cont==null) {
-            this.btnVerify1Cont = (Button) this.findViewById(R.id.btnVerify1Cont);
+        if (Verification.btnVerify1Cont == null) {
+            Verification.btnVerify1Cont = (Button) this
+                    .findViewById(R.id.btnVerify1Cont);
         }
-        this.btnVerify1Cancel.getBackground().setAlpha(255);
-        this.btnVerify1Cont.getBackground().setAlpha(255);
+        Verification.btnVerify1Cancel.getBackground().setAlpha(255);
+        Verification.btnVerify1Cont.getBackground().setAlpha(255);
     }
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -190,21 +196,20 @@ public class Verification extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-            locationBeingTyped = true;        
-            Log.i("autocomplete", "autocomplete list count:"+autoCompleteTextView1.getAdapter().getCount());
-            if (autoCompleteTextView1.getAdapter().getCount()==1) {
+            locationBeingTyped = true;
+            Log.i("autocomplete", "autocomplete list count:"
+                    + autoCompleteTextView1.getAdapter().getCount());
+            if (autoCompleteTextView1.getAdapter().getCount() == 1) {
                 autoCompleteTextView1.setSelection(0);
-                if (autoCompleteTextView1.getText().toString().trim().length()>0) {
+                if (autoCompleteTextView1.getText().toString().trim().length() > 0) {
                     getLocationDetails();
                 }
             }
-            if (autoCompleteTextView1.getText().toString().trim().length()==0) {
+            if (autoCompleteTextView1.getText().toString().trim().length() == 0) {
                 clearLocationDetails();
             }
         }
     };
-    
-   
 
     public void locationDetailTimeout() {
         System.out.println("TIME OUT SCREEN");
@@ -213,6 +218,7 @@ public class Verification extends SenateActivity
         startActivityForResult(intentTimeout, LOCATIONDETAILS_TIMEOUT);
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
@@ -283,12 +289,14 @@ public class Verification extends SenateActivity
         tvOffice.setText("N/A");
         tvDescript.setText("N/A");
         tvCount.setText("N/A");
-        
+
     }
-    
+
     public void getLocationDetails() {
-        Log.i("getLocationDetails","("+autoCompleteTextView1.getText()+") autocomplete list count:"+autoCompleteTextView1.getAdapter().getCount());
-        if (autoCompleteTextView1.getAdapter().getCount()==0) {
+        Log.i("getLocationDetails", "(" + autoCompleteTextView1.getText()
+                + ") autocomplete list count:"
+                + autoCompleteTextView1.getAdapter().getCount());
+        if (autoCompleteTextView1.getAdapter().getCount() == 0) {
             return;
         }
         String barcodeNumberDetails[] = autoCompleteTextView1.getText()
@@ -300,19 +308,20 @@ public class Verification extends SenateActivity
                                                // next activity with
                                                // intent
         String[] nextSplit = null;
-        if (barcodeNumberDetails.length>1) { 
-        nextSplit =barcodeNumberDetails[1].split(":");
-            if (nextSplit!= null && nextSplit.length>0)
+        if (barcodeNumberDetails.length > 1) {
+            nextSplit = barcodeNumberDetails[1].split(":");
+            if (nextSplit != null && nextSplit.length > 0)
                 cdloctype = nextSplit[0];
             else {
-                Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1).");
+                Log.w("Verification",
+                        "***WARNING: Could not extract cdloctype from chosen location (a1).");
                 cdloctype = null;
             }
-        }
-        else {
-            Log.w("Verification", "***WARNING: Could not extract cdloctype from chosen location (a1b).");
+        } else {
+            Log.w("Verification",
+                    "***WARNING: Could not extract cdloctype from chosen location (a1b).");
             cdloctype = null;
-            
+
         }
 
         // check network connection
@@ -352,14 +361,14 @@ public class Verification extends SenateActivity
                             .nextValue();
                     // tvLocCd.setText( object.getString("cdlocat"));
                     String cdrespcrthd = object.getString("cdrespctrhd");
-                    if (cdrespcrthd==null||cdrespcrthd.trim().length()==0||cdrespcrthd.equals("~")) {
-                        tvOffice.setText("N/A");                  
-                    }
-                    else {
+                    if (cdrespcrthd == null || cdrespcrthd.trim().length() == 0
+                            || cdrespcrthd.equals("~")) {
+                        tvOffice.setText("N/A");
+                    } else {
                         tvOffice.setText(object.getString("cdrespctrhd"));
                     }
-                    String descript = object.getString("adstreet1")
-                            .replaceAll("&#34;", "\"")
+                    String descript = object.getString("adstreet1").replaceAll(
+                            "&#34;", "\"")
                             + " ,"
                             + object.getString("adcity").replaceAll("&#34;",
                                     "\"")
@@ -369,17 +378,18 @@ public class Verification extends SenateActivity
                             + " "
                             + object.getString("adzipcode").replaceAll("&#34;",
                                     "\"");
-                    if (descript==null||descript.trim().length()==0||descript.equals("~")||descript.trim().equals(",,")) {
+                    if (descript == null || descript.trim().length() == 0
+                            || descript.equals("~")
+                            || descript.trim().equals(",,")) {
                         tvDescript.setText("N/A");
-                    }
-                    else {
+                    } else {
                         tvDescript.setText(descript);
                     }
                     String nucount = object.getString("nucount");
-                    if (nucount==null||nucount.trim().length()==0||nucount.equals("~")) {
+                    if (nucount == null || nucount.trim().length() == 0
+                            || nucount.equals("~")) {
                         tvCount.setText("N/A");
-                    }
-                    else {
+                    } else {
                         tvCount.setText(nucount);
                     }
 

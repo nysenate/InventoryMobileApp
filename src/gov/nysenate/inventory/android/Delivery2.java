@@ -106,7 +106,8 @@ public class Delivery2 extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -143,9 +144,10 @@ public class Delivery2 extends SenateActivity
     protected void onResume() {
         super.onResume();
         btnDelivery2Cancel = (Button) findViewById(R.id.btnDelivery2Cancel);
-        if (this.progBarDelivery2 ==null) {
-            this.progBarDelivery2 = (ProgressBar) this.findViewById(R.id.progBarDelivery2);
-        }            
+        if (Delivery2.progBarDelivery2 == null) {
+            Delivery2.progBarDelivery2 = (ProgressBar) this
+                    .findViewById(R.id.progBarDelivery2);
+        }
         btnDelivery2Cancel.getBackground().setAlpha(255);
         progBarDelivery2.getBackground().setAlpha(255);
     }
@@ -166,12 +168,14 @@ public class Delivery2 extends SenateActivity
         }
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case DELIVERYLIST_TIMEOUT:
@@ -339,7 +343,7 @@ public class Delivery2 extends SenateActivity
     @Override
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

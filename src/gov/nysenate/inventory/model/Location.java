@@ -1,11 +1,10 @@
 package gov.nysenate.inventory.model;
 
-import java.io.Serializable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Location implements Parcelable {
+public class Location implements Parcelable
+{
 
     private String cdLocType;
     private String cdLoc;
@@ -78,16 +77,16 @@ public class Location implements Parcelable {
         addressLine1 = in.readString();
     }
 
-    public static final Parcelable.Creator<Location> CREATOR =
-            new Parcelable.Creator<Location>() {
-                @Override
-                public Location createFromParcel(Parcel in) {
-                    return new Location(in);
-                }
+    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>()
+    {
+        @Override
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
 
-                @Override
-                public Location[] newArray(int size) {
-                    return new Location[size];
-                }
-            };
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
 }

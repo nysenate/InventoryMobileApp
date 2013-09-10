@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,18 +12,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileObserver;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -42,7 +36,7 @@ public class UpgradeActivity extends SenateActivity
     public final int INSTALL_INTENT = 2001;
     int latestVersion;
     String latestVersionName;
-   
+
     final long downloadId = -1;
     TextView newVersion;
     TextView currentVersion;
@@ -87,28 +81,31 @@ public class UpgradeActivity extends SenateActivity
         filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
 
-        // First check to see if the Login activity has the latest version info of this App
-        // If it does, we don't need to connect to the web service simply to get the
-        // version info, instead, we can simply compare.. 
-        // if login activity does  not have 
-        // the latest version info of this App, check of internet is available before 
-        // making a web service request to get the latest version info from the web service
-        
-        if (LoginActivity.latestVersionName!=null) {
+        // First check to see if the Login activity has the latest version info
+        // of this App
+        // If it does, we don't need to connect to the web service simply to get
+        // the
+        // version info, instead, we can simply compare..
+        // if login activity does not have
+        // the latest version info of this App, check of internet is available
+        // before
+        // making a web service request to get the latest version info from the
+        // web service
+
+        if (LoginActivity.latestVersionName != null) {
             this.latestVersionName = LoginActivity.latestVersionName;
             this.latestVersion = LoginActivity.latestVersion;
             this.appURI = LoginActivity.appURI;
             this.compareVersions(true);
-        }
-        else if (isNetworkAvailable(this)) {
-            
-           Intent msgIntent = new Intent(this, InvWebService.class);
-           String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                      .toString();
+        } else if (isNetworkAvailable(this)) {
 
-           msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
-                     + "/CheckAppVersion?appName=InventoryMobileApp.apk");
-           startService(msgIntent);
+            Intent msgIntent = new Intent(this, InvWebService.class);
+            String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                    .toString();
+
+            msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
+                    + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+            startService(msgIntent);
         }
 
     }
@@ -189,90 +186,86 @@ public class UpgradeActivity extends SenateActivity
 
         }
     }
-    
+
     public void compareVersions(boolean success) {
         if (success) {
-        if (latestVersion > versionCode) {
-            newVersion = (TextView) findViewById(R.id.newVersion);
-            newVersion.setText("Updating to Version: "
-                    + latestVersionName + " (" + latestVersion + ")");
+            if (latestVersion > versionCode) {
+                newVersion = (TextView) findViewById(R.id.newVersion);
+                newVersion.setText("Updating to Version: " + latestVersionName
+                        + " (" + latestVersion + ")");
                 // buttonLogin.setText("Close");
-            // progressBarLogin.setVisibility(View.VISIBLE);
+                // progressBarLogin.setVisibility(View.VISIBLE);
 
-            // oh yeah we do need an upgrade, let the user know send
-            // an alert message
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    UpgradeActivity.this);
-            builder.setMessage(
-                    Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
-                            + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
-                    .setTitle(Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["+latestVersionName+"."+latestVersion+"] </font>"))                                        
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener()
-                            {
-                                // if the user agrees to upgrade
-                                @Override
-                                public void onClick(
-                                        DialogInterface dialog,
-                                        int id) {
-                                    // start downloading the file
-                                    // using the download manager
-                                    downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                                    Uri Download_Uri = Uri
-                                            .parse(appURI);
-                                    DownloadManager.Request request = new DownloadManager.Request(
-                                            Download_Uri);
-                                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-                                    request.setAllowedOverRoaming(false);
-                                    request.setTitle(Html
-                                            .fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
-                                    request.setDestinationInExternalFilesDir(
-                                            UpgradeActivity.this,
-                                            Environment.DIRECTORY_DOWNLOADS,
-                                            "InventoryMobileApp.apk");
-                                    downloadReference = downloadManager
-                                            .enqueue(request);
-                                    checkDownloadStatus(
-                                            downloadManager,
-                                            request);
-                                    /*
-                                     * fileObserver = new
-                                     * DownloadsObserver(
-                                     * getExternalFilesDir
-                                     * (Environment
-                                     * .DIRECTORY_DOWNLOADS
-                                     * ).getAbsolutePath(),
-                                     * downloadManager, request,
-                                     * downloadReference);
-                                     * fileObserver.startWatching();
-                                     */
+                // oh yeah we do need an upgrade, let the user know send
+                // an alert message
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        UpgradeActivity.this);
+                builder.setMessage(
+                        Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
+                                + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
+                        .setTitle(
+                                Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["
+                                        + latestVersionName
+                                        + "."
+                                        + latestVersion + "] </font>"))
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    // if the user agrees to upgrade
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        // start downloading the file
+                                        // using the download manager
+                                        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                        Uri Download_Uri = Uri.parse(appURI);
+                                        DownloadManager.Request request = new DownloadManager.Request(
+                                                Download_Uri);
+                                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+                                        request.setAllowedOverRoaming(false);
+                                        request.setTitle(Html
+                                                .fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
+                                        request.setDestinationInExternalFilesDir(
+                                                UpgradeActivity.this,
+                                                Environment.DIRECTORY_DOWNLOADS,
+                                                "InventoryMobileApp.apk");
+                                        downloadReference = downloadManager
+                                                .enqueue(request);
+                                        checkDownloadStatus(downloadManager,
+                                                request);
+                                        /*
+                                         * fileObserver = new DownloadsObserver(
+                                         * getExternalFilesDir (Environment
+                                         * .DIRECTORY_DOWNLOADS
+                                         * ).getAbsolutePath(), downloadManager,
+                                         * request, downloadReference);
+                                         * fileObserver.startWatching();
+                                         */
 
-                                }
-                            })
-                    .setNegativeButton("Close App",
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(
-                                        DialogInterface dialog,
-                                        int id) {
-                                    // User cancelled the dialog
-                                    // finish();
-                                    closeAllActivities();
-                                }
-                            });
-            // show the alert message
-            Dialog dialog = builder.create(); 
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+                                    }
+                                })
+                        .setNegativeButton("Close App",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        // User cancelled the dialog
+                                        // finish();
+                                        closeAllActivities();
+                                    }
+                                });
+                // show the alert message
+                Dialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            } else {
+                returnToLoginScreen(null);
+            }
+
         } else {
             returnToLoginScreen(null);
         }
-
-    }
-    else {
-        returnToLoginScreen(null);                    
-    }
     }
 
     @Override
@@ -283,8 +276,9 @@ public class UpgradeActivity extends SenateActivity
 
         // 2. Chain together various setter methods to set the dialog
         // characteristics
-        builder.setMessage("Do you really close the Inventory Mobile App?").setTitle(
-                Html.fromHtml("<font color='#000055'>CLOSE APP</font>"));
+        builder.setMessage("Do you really close the Inventory Mobile App?")
+                .setTitle(
+                        Html.fromHtml("<font color='#000055'>CLOSE APP</font>"));
         // Add the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
         {
@@ -314,53 +308,45 @@ public class UpgradeActivity extends SenateActivity
         overridePendingTransition(R.anim.in_up, R.anim.out_up);
     }
 
-    /* Does not work because the setShorcut is fired prior to the new version 
-     * of the App being installed so it appears to do nothing. (Brian H)
-    */   
-    
-   /* public boolean setShortCut(Context context, String appName) {
-        System.out.println("in the shortcutapp on create method ");
-        boolean flag = false;
-        int app_id = -1;
-        PackageManager p = context.getPackageManager();
-        Intent i = new Intent(Intent.ACTION_MAIN);
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> res = p.queryIntentActivities(i, 0);
-        System.out.println("the res size is: " + res.size());
+    /*
+     * Does not work because the setShorcut is fired prior to the new version of
+     * the App being installed so it appears to do nothing. (Brian H)
+     */
 
-        for (int k = 0; k < res.size(); k++) {
-            System.out.println("the application name is: "
-                    + res.get(k).activityInfo.loadLabel(p));
-            if (res.get(k).activityInfo.loadLabel(p).toString().equals(appName)) {
-                flag = true;
-                app_id = k;
-                break;
-            }
-        }
-
-        if (flag) {
-            ActivityInfo ai = res.get(app_id).activityInfo;
-
-            Intent shortcutIntent = new Intent();
-            shortcutIntent.setClassName(ai.packageName, ai.name);
-            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            Intent intent = new Intent();
-            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, appName);
-
-            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                    Intent.ShortcutIconResource.fromContext(context,
-                            R.drawable.invapplogo));
-            // intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            context.sendBroadcast(intent);
-            System.out.println("in the shortcutapp on create method completed");
-        } else
-            System.out.println("appllicaton not found");
-        return true;
-    }*/
+    /*
+     * public boolean setShortCut(Context context, String appName) {
+     * System.out.println("in the shortcutapp on create method "); boolean flag
+     * = false; int app_id = -1; PackageManager p = context.getPackageManager();
+     * Intent i = new Intent(Intent.ACTION_MAIN);
+     * i.addCategory(Intent.CATEGORY_LAUNCHER); List<ResolveInfo> res =
+     * p.queryIntentActivities(i, 0); System.out.println("the res size is: " +
+     * res.size());
+     * 
+     * for (int k = 0; k < res.size(); k++) {
+     * System.out.println("the application name is: " +
+     * res.get(k).activityInfo.loadLabel(p)); if
+     * (res.get(k).activityInfo.loadLabel(p).toString().equals(appName)) { flag
+     * = true; app_id = k; break; } }
+     * 
+     * if (flag) { ActivityInfo ai = res.get(app_id).activityInfo;
+     * 
+     * Intent shortcutIntent = new Intent();
+     * shortcutIntent.setClassName(ai.packageName, ai.name);
+     * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+     * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); Intent intent =
+     * new Intent(); intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
+     * shortcutIntent);
+     * 
+     * intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, appName);
+     * 
+     * intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+     * Intent.ShortcutIconResource.fromContext(context, R.drawable.invapplogo));
+     * // intent.addCategory(Intent.CATEGORY_DEFAULT);
+     * intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+     * context.sendBroadcast(intent);
+     * System.out.println("in the shortcutapp on create method completed"); }
+     * else System.out.println("appllicaton not found"); return true; }
+     */
 
     // broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
@@ -394,13 +380,16 @@ public class UpgradeActivity extends SenateActivity
         }
     };
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
         case INSTALL_INTENT:
-            /* Does not work because the setShorcut is fired prior to the new version 
-             * of the App being installed so it appears to do nothing. (Brian H)
-            */
-            //setShortCut(this, "Inventory App");
+            /*
+             * Does not work because the setShorcut is fired prior to the new
+             * version of the App being installed so it appears to do nothing.
+             * (Brian H)
+             */
+            // setShortCut(this, "Inventory App");
             closeAllActivities();
             break;
         }

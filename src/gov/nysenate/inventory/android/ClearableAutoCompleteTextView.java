@@ -117,13 +117,12 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     if (clearField) {
                         et.setText("");
                         ClearableAutoCompleteTextView.this.removeClearButton();
-                    }                        
+                    }
 
-                }
-                else {
+                } else {
                     clearField = false;
-                }                    
-                
+                }
+
                 return false;
             }
         });

@@ -86,14 +86,16 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
                     .getColor(R.color.blue)); // blue
             String cdcommodity = rowItem.getCdcommodity();
             String decomments = rowItem.getDecomments();
-            		
-            if (cdcommodity==null||cdcommodity.trim().length()==0){
-               	holder.invSelListBarcode.setText("*** NEW ITEM ***    "+Html.escapeHtml(decomments));
-            } else if (decomments==null||decomments.trim().length()==0) {
-               	holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"+cdcommodity);
-            }
-            else {
-               	holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"+cdcommodity+": "+Html.escapeHtml(decomments));
+
+            if (cdcommodity == null || cdcommodity.trim().length() == 0) {
+                holder.invSelListBarcode.setText("*** NEW ITEM ***    "
+                        + Html.escapeHtml(decomments));
+            } else if (decomments == null || decomments.trim().length() == 0) {
+                holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"
+                        + cdcommodity);
+            } else {
+                holder.invSelListBarcode.setText("*** NEW ITEM ***    CC:"
+                        + cdcommodity + ": " + Html.escapeHtml(decomments));
             }
             holder.invSelListDescr.setTextColor(context.getResources()
                     .getColor(R.color.blue)); // blue

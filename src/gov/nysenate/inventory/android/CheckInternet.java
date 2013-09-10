@@ -97,7 +97,9 @@ public class CheckInternet extends BroadcastReceiver
          * // 2. Chain together various setter methods to set the dialog
          * characteristics builder.setMessage(
          * "Internet Connection is Lost. Please fix before continuing.")
-         * .setTitle(Html.fromHtml("<font color='#000055>Internet Connection Lost</font>"));
+         * .setTitle
+         * (Html.fromHtml("<font color='#000055>Internet Connection Lost</font>"
+         * ));
          * 
          * // 3. Get the AlertDialog from create() AlertDialog dialog =
          * builder.create(); dialog.show();
@@ -109,7 +111,8 @@ public class CheckInternet extends BroadcastReceiver
                 context);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055>"+title+"</font>"));
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055>"
+                + title + "</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg)).setCancelable(false)

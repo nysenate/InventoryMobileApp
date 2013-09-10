@@ -53,8 +53,8 @@ public class Pickup2Activity extends SenateActivity
     static ProgressBar progBarPickup2;
     String timeoutFrom = "pickup2";
     public final int ITEMDETAILS_TIMEOUT = 101;
-    public final int SENTAG_NOT_FOUND = 2001, INACTIVE_SENTAG = 2002, SENTAG_IN_TRANSIT = 2003;
-
+    public final int SENTAG_NOT_FOUND = 2001, INACTIVE_SENTAG = 2002,
+            SENTAG_IN_TRANSIT = 2003;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,8 @@ public class Pickup2Activity extends SenateActivity
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
         senateTagTV.addTextChangedListener(senateTagTextWatcher);
         pickupCount = 0;
-        adapter = new InvListViewAdapter(this, R.layout.invlist_item, scannedItems);
+        adapter = new InvListViewAdapter(this, R.layout.invlist_item,
+                scannedItems);
         pickedUpItemsLV.setAdapter(adapter);
         progBarPickup2 = (ProgressBar) findViewById(R.id.progBarPickup2);
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup2);
@@ -96,10 +97,11 @@ public class Pickup2Activity extends SenateActivity
         continueBtn.getBackground().setAlpha(255);
         cancelBtn = (Button) findViewById(R.id.btnPickup2Cancel);
         cancelBtn.getBackground().setAlpha(255);
-        if (progBarPickup2 ==null) {
-            progBarPickup2 = (ProgressBar) this.findViewById(R.id.progBarPickup2);
-        }            
-        progBarPickup2.setVisibility(ProgressBar.INVISIBLE);     
+        if (progBarPickup2 == null) {
+            progBarPickup2 = (ProgressBar) this
+                    .findViewById(R.id.progBarPickup2);
+        }
+        progBarPickup2.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -174,8 +176,8 @@ public class Pickup2Activity extends SenateActivity
         pickedUpItemsLV.setAdapter(adapter);
         try {
             senateTagTV.setText("");
-        }
-        catch (NullPointerException e) { // TODO: when does senateTagTV not get initialized??
+        } catch (NullPointerException e) { // TODO: when does senateTagTV not
+                                           // get initialized??
             senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
             e.printStackTrace();
         }
@@ -186,8 +188,9 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
+                        + " DOES NOT EXIST IN SFMS</font>"));
 
         playSound(R.raw.error);
         // set dialog message
@@ -298,8 +301,9 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
-                + " DOES NOT EXIST IN SFMS</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>Senate Tag#: " + barcode_num
+                        + " DOES NOT EXIST IN SFMS</font>"));
         playSound(R.raw.error);
         // set dialog message
         alertDialogBuilder
@@ -344,7 +348,8 @@ public class Pickup2Activity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"));
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"
+                + title + "</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))
@@ -419,8 +424,10 @@ public class Pickup2Activity extends SenateActivity
         // Save UI state changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
-        savedInstanceState.putString("savedOriginLoc", origin.getAddressLine1());
-        savedInstanceState.putString("savedDestLoc", destination.getAddressLine1());
+        savedInstanceState
+                .putString("savedOriginLoc", origin.getAddressLine1());
+        savedInstanceState.putString("savedDestLoc",
+                destination.getAddressLine1());
         savedInstanceState.putStringArrayList("savedScannedItems",
                 getJSONArrayList(scannedItems));
     }
@@ -468,7 +475,8 @@ public class Pickup2Activity extends SenateActivity
         // send back to the Move Menu
         Log.i("cancelButton", "BEFORE checkServerResponse(true)");
 
-        //Log.i("cancelButton", "checkServerResponse(true):"+checkServerResponse(true) );
+        // Log.i("cancelButton",
+        // "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
             cancelBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Move.class);
@@ -591,7 +599,10 @@ public class Pickup2Activity extends SenateActivity
                                 barcode_num,
                                 "Senate Tag#: " + barcode_num
                                         + " has been Inactivated.",
-                                "!!ERROR: Senate Tag#: <b>" + barcode_num + "</b>" + " has been Inactivated.<br><br>"
+                                "!!ERROR: Senate Tag#: <b>"
+                                        + barcode_num
+                                        + "</b>"
+                                        + " has been Inactivated.<br><br>"
                                         + " <b>This item will not be recorded as being picked up!</b><br><br>"
                                         + " The <b>\""
                                         + vl.DECOMMODITYF
@@ -610,8 +621,8 @@ public class Pickup2Activity extends SenateActivity
                     if (origin.getCdLoc().equalsIgnoreCase(vl.CDLOCAT)) {
                         vl.CONDITION = "EXISTING";
                         playSound(R.raw.ok);
-                    }
-                    else if (destination.getCdLoc().equalsIgnoreCase(vl.CDLOCAT)) {
+                    } else if (destination.getCdLoc().equalsIgnoreCase(
+                            vl.CDLOCAT)) {
                         playSound(R.raw.honk);
                         vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: "
                                 + vl.CDLOCAT;
@@ -647,8 +658,7 @@ public class Pickup2Activity extends SenateActivity
         // This is what should be expected. Trying to move the
         else if (vl.CDLOCATTO.equalsIgnoreCase(origin.getCdLoc())) {
             invStatus = vl.CONDITION;
-        }
-        else if (vl.CDLOCATTO.equalsIgnoreCase(destination.getCdLoc())) { //
+        } else if (vl.CDLOCATTO.equalsIgnoreCase(destination.getCdLoc())) { //
             invStatus = "AT DESTINATION";
         } else {
             invStatus = "Found in: " + vl.CDLOCATTO;

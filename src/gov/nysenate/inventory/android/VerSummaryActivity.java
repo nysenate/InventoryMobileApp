@@ -119,17 +119,25 @@ public class VerSummaryActivity extends SenateActivity
 
         // get Lists from intent of previous activity
         AllScannedItems = VerScanActivity.AllScannedItems;
-        /*AllScannedItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("scannedList"));*/
+        /*
+         * AllScannedItems = this.getInvArrayListFromJSON(getIntent()
+         * .getStringArrayListExtra("scannedList"));
+         */
         missingItems = VerScanActivity.missingItems;
-        /*missingItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("missingList"));*/
+        /*
+         * missingItems = this.getInvArrayListFromJSON(getIntent()
+         * .getStringArrayListExtra("missingList"));
+         */
         newItems = VerScanActivity.newItems;
-        /*newItems = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("newItems"));*/
+        /*
+         * newItems = this.getInvArrayListFromJSON(getIntent()
+         * .getStringArrayListExtra("newItems"));
+         */
         scannedBarcodeNumbers = VerScanActivity.scannedItems;
-        /*scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
-                .getStringArrayListExtra("scannedBarcodeNumbers"));*/
+        /*
+         * scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
+         * .getStringArrayListExtra("scannedBarcodeNumbers"));
+         */
         loc_code = getIntent().getStringExtra("loc_code");
         cdloctype = getIntent().getStringExtra("cdloctype");
         String summary = getIntent().getStringExtra("summary");
@@ -247,7 +255,7 @@ public class VerSummaryActivity extends SenateActivity
                     } catch (Exception e2) {
                         e2.printStackTrace();
                     }
-                    
+
                     returnList.add(curInvItem);
 
                 } catch (JSONException e) {
@@ -279,10 +287,11 @@ public class VerSummaryActivity extends SenateActivity
         VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(255);
         VerSummaryActivity.btnVerSumCont = (Button) findViewById(R.id.btnVerSumCont);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
-        if (progressVerSum ==null) {
-            progressVerSum = (ProgressBar) this.findViewById(R.id.progressVerSum);
-        }            
-        progressVerSum.setVisibility(ProgressBar.INVISIBLE);          
+        if (progressVerSum == null) {
+            progressVerSum = (ProgressBar) this
+                    .findViewById(R.id.progressVerSum);
+        }
+        progressVerSum.setVisibility(View.INVISIBLE);
     }
 
     public void backButton(View view) {
@@ -302,7 +311,8 @@ public class VerSummaryActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -337,15 +347,18 @@ public class VerSummaryActivity extends SenateActivity
 
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
-            /*Log.i("continueButton",
-                    "Check for Session by using KeepSessionAlive");*/
+            /*
+             * Log.i("continueButton",
+             * "Check for Session by using KeepSessionAlive");
+             */
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/KeepSessionAlive");
             String response = null;
             try {
                 response = resr1.get().toString();
-                //Log.i("continueButton", "KeepSessionAlive RESPONSE:" + response);
+                // Log.i("continueButton", "KeepSessionAlive RESPONSE:" +
+                // response);
                 if (resr1 == null || response == null
                         || response.trim().length() == 0) {
                     this.noServerResponse();
@@ -384,7 +397,8 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayFoundItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>Warning</font>"));
+        dialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>Warning</font>"));
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>***WARNING:</font> The "
@@ -422,7 +436,9 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayNewItemsDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: New items will not be tagged to location</font>") );
+        dialogBuilder
+                .setTitle(Html
+                        .fromHtml("<font color='#000055'>***WARNING: New items will not be tagged to location</font>"));
         dialogBuilder
                 .setMessage(Html
                         .fromHtml("<font color='RED'><b>***WARNING:</font> The "
@@ -457,7 +473,9 @@ public class VerSummaryActivity extends SenateActivity
 
     private void displayVerificationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Verification Confirmation</font>"));
+        confirmDialog
+                .setTitle(Html
+                        .fromHtml("<font color='#000055'>Verification Confirmation</font>"));
         confirmDialog
                 .setMessage("Are you sure you want to submit this verification?");
         confirmDialog.setPositiveButton("Yes",
@@ -512,7 +530,8 @@ public class VerSummaryActivity extends SenateActivity
     private boolean foundItemsScanned() {
         boolean exist = false;
         for (InvItem item : newItems) {
-            if (!item.getType().equalsIgnoreCase("NEW") && !item.getType().equalsIgnoreCase("INACTIVE")) {
+            if (!item.getType().equalsIgnoreCase("NEW")
+                    && !item.getType().equalsIgnoreCase("INACTIVE")) {
                 exist = true;
                 break;
             }
@@ -523,7 +542,8 @@ public class VerSummaryActivity extends SenateActivity
     private int numNewItems() {
         int numNewItems = 0;
         for (InvItem item : newItems) {
-            if (item.getType().equalsIgnoreCase("NEW") || item.getType().equalsIgnoreCase("INACTIVE")) {
+            if (item.getType().equalsIgnoreCase("NEW")
+                    || item.getType().equalsIgnoreCase("INACTIVE")) {
                 numNewItems++;
             }
         }
@@ -551,7 +571,7 @@ public class VerSummaryActivity extends SenateActivity
         // Send it to the server
 
         // check network connection
-        //Log.i("submitVerification", "connection");
+        // Log.i("submitVerification", "connection");
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Log.i("submitVerification", "network");
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -561,17 +581,19 @@ public class VerSummaryActivity extends SenateActivity
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
-                
+
                 JSONArray jsonArray = new JSONArray();
-                for (int i=0; i < scannedBarcodeNumbers.size(); i++) {
-                        jsonArray.put(scannedBarcodeNumbers.get(i).getJSONObject());
-                }                
+                for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
+                    jsonArray.put(scannedBarcodeNumbers.get(i).getJSONObject());
+                }
                 ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
-                postParams.add( new BasicNameValuePair("cdlocat", loc_code));
-                postParams.add( new BasicNameValuePair("cdloctype", cdloctype));
-                postParams.add( new BasicNameValuePair("scannedItems", jsonArray.toString()));
-                resr1 = new RequestTask(postParams).execute("/VerificationReports");
-                
+                postParams.add(new BasicNameValuePair("cdlocat", loc_code));
+                postParams.add(new BasicNameValuePair("cdloctype", cdloctype));
+                postParams.add(new BasicNameValuePair("scannedItems", jsonArray
+                        .toString()));
+                resr1 = new RequestTask(postParams)
+                        .execute("/VerificationReports");
+
                 Log.i("submitVerification", "SUBMIT TO URL");
 
                 try {
@@ -605,12 +627,13 @@ public class VerSummaryActivity extends SenateActivity
         Context context = getApplicationContext();
         CharSequence text = res;
         int duration = Toast.LENGTH_LONG;
-        Log.i("SubmitVerification", "Server Response:"+res);
+        Log.i("SubmitVerification", "Server Response:" + res);
         if (res == null) {
             text = "!!ERROR: NO RESPONSE FROM SERVER";
         } else if (res.length() == 0) {
             text = "Database not updated";
-        } else if (res.trim().startsWith("!!ERROR:")||res.trim().startsWith("***WARNING:")) {
+        } else if (res.trim().startsWith("!!ERROR:")
+                || res.trim().startsWith("***WARNING:")) {
             text = res.trim();
         } else {
             duration = Toast.LENGTH_SHORT;
@@ -621,14 +644,17 @@ public class VerSummaryActivity extends SenateActivity
         toast.show();
 
         /*
-         * If there was some kind of error, don't leave the Activity. User will have to then call or cancel the 
-         * verification. At least the user will be aware that some problem occured instead of ignoring the message.
+         * If there was some kind of error, don't leave the Activity. User will
+         * have to then call or cancel the verification. At least the user will
+         * be aware that some problem occured instead of ignoring the message.
          */
-        
-        if (text.equals("Database not updated")||text.toString().startsWith("!!ERROR:")||text.toString().startsWith("***WARNING:")) {
-             return;
+
+        if (text.equals("Database not updated")
+                || text.toString().startsWith("!!ERROR:")
+                || text.toString().startsWith("***WARNING:")) {
+            return;
         }
-        
+
         // ===================ends
         Log.i("submitVerification", "go to menu");
         Intent intent = new Intent(this, MenuActivity.class);
@@ -636,8 +662,9 @@ public class VerSummaryActivity extends SenateActivity
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
-        this.progressVerSum.setVisibility(progressVerSum.INVISIBLE);
+        this.progressVerSum.setVisibility(View.INVISIBLE);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);

@@ -6,7 +6,8 @@ import java.util.Arrays;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Pickup extends Transaction {
+public class Pickup extends Transaction
+{
 
     private ArrayList<String> pickupItems;
     private String comments;
@@ -108,16 +109,16 @@ public class Pickup extends Transaction {
         nuxrRelSign = in.readString();
     }
 
-    public static final Parcelable.Creator<Pickup> CREATOR =
-            new Parcelable.Creator<Pickup>() {
-                @Override
-                public Pickup createFromParcel(Parcel in) {
-                    return new Pickup(in);
-                }
+    public static final Parcelable.Creator<Pickup> CREATOR = new Parcelable.Creator<Pickup>()
+    {
+        @Override
+        public Pickup createFromParcel(Parcel in) {
+            return new Pickup(in);
+        }
 
-                @Override
-                public Pickup[] newArray(int size) {
-                    return new Pickup[size];
-                }
-            };
+        @Override
+        public Pickup[] newArray(int size) {
+            return new Pickup[size];
+        }
+    };
 }

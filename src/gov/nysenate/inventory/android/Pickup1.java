@@ -28,12 +28,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +60,8 @@ public class Pickup1 extends SenateActivity
     private boolean toLocationBeingTyped = false;
     public static ProgressBar progBarPickup1;
     String timeoutFrom = "pickup1";
-    public final int LOCCODELIST_TIMEOUT = 101, FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
+    public final int LOCCODELIST_TIMEOUT = 101,
+            FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,14 +84,11 @@ public class Pickup1 extends SenateActivity
         try {
             // TODO: RequestDispatcher.getInstance() as parameter for tests DI.
             getAllLocations();
-        }
-        catch (InterruptedException e1) {
+        } catch (InterruptedException e1) {
             e1.printStackTrace();
-        }
-        catch (ExecutionException e1) {
+        } catch (ExecutionException e1) {
             e1.printStackTrace();
-        }
-        catch (JSONException e1) {
+        } catch (JSONException e1) {
             e1.printStackTrace();
         }
 
@@ -114,7 +110,8 @@ public class Pickup1 extends SenateActivity
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
         alertDialogBuilder
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
@@ -145,10 +142,11 @@ public class Pickup1 extends SenateActivity
         continueBtn.getBackground().setAlpha(255);
         cancelBtn = (Button) findViewById(R.id.btnPickup1Cancel);
         cancelBtn.getBackground().setAlpha(255);
-        if (progBarPickup1 ==null) {
-            progBarPickup1 = (ProgressBar) this.findViewById(R.id.progBarPickup1);
+        if (progBarPickup1 == null) {
+            progBarPickup1 = (ProgressBar) this
+                    .findViewById(R.id.progBarPickup1);
         }
-        progBarPickup1.setVisibility(ProgressBar.INVISIBLE);     
+        progBarPickup1.setVisibility(View.INVISIBLE);
     }
 
     private TextWatcher originTextWatcher = new TextWatcher()
@@ -194,11 +192,14 @@ public class Pickup1 extends SenateActivity
     };
 
     public void continueButton(View view) {
-        // For testing... SessionManager.getSessionManager().checkServerResponse(true) == OK
+        // For testing...
+        // SessionManager.getSessionManager().checkServerResponse(true) == OK
         if (checkServerResponse(true) == OK) {
             int duration = Toast.LENGTH_SHORT;
-            String currentFromLocation = this.originLocationTV.getText().toString();
-            String currentToLocation = this.destinationLocationTV.getText().toString();
+            String currentFromLocation = this.originLocationTV.getText()
+                    .toString();
+            String currentToLocation = this.destinationLocationTV.getText()
+                    .toString();
 
             if (currentFromLocation.trim().length() == 0) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
@@ -289,16 +290,14 @@ public class Pickup1 extends SenateActivity
         case LOCCODELIST_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 try {
-                    // TODO: RequestDispatcher.getInstance() as parameter for testing.
+                    // TODO: RequestDispatcher.getInstance() as parameter for
+                    // testing.
                     getAllLocations();
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
-                catch (ExecutionException e) {
+                } catch (ExecutionException e) {
                     e.printStackTrace();
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -306,10 +305,9 @@ public class Pickup1 extends SenateActivity
         case FROMLOCATIONDETAILS_TIMEOUT:
             if (resultCode == RESULT_OK) {
                 if (fromLocationBeingTyped) {
-                    originLocationTV.setText(originLocationTV
-                            .getText());
-                    originLocationTV.setSelection(originLocationTV
-                            .getText().length());
+                    originLocationTV.setText(originLocationTV.getText());
+                    originLocationTV.setSelection(originLocationTV.getText()
+                            .length());
                 } else {
                     getOriginLocationDetails();
                     destinationLocationTV.requestFocus();
@@ -341,28 +339,33 @@ public class Pickup1 extends SenateActivity
         }
     }
 
-    public ArrayList<String> getAllLocations() throws InterruptedException, ExecutionException, JSONException {
+    public ArrayList<String> getAllLocations() throws InterruptedException,
+            ExecutionException, JSONException {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             if (LoginActivity.properties != null) {
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            }
-            else {
-                MsgAlert msgAlert = new MsgAlert(this,
+                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+            } else {
+                MsgAlert msgAlert = new MsgAlert(
+                        this,
                         "Properties cannot be loaded.",
                         "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
             }
-            AsyncTask<String, String, String> resr1 = new RequestTask().execute(URL + "/LocCodeList");
+            AsyncTask<String, String, String> resr1 = new RequestTask()
+                    .execute(URL + "/LocCodeList");
             res = resr1.get();
             if (res == null) {
                 noServerResponse();
-            }
-            else if (res.indexOf("Session timed out") > -1) {
+            } else if (res.indexOf("Session timed out") > -1) {
                 startTimeout(LOCCODELIST_TIMEOUT);
             }
 
-            JSONArray jsonArray = new JSONArray(res); // TODO: ?? catch exception/handle the case where res is invalid JSON ??
+            JSONArray jsonArray = new JSONArray(res); // TODO: ?? catch
+                                                      // exception/handle the
+                                                      // case where res is
+                                                      // invalid JSON ??
             for (int i = 0; i < jsonArray.length(); i++) {
                 allLocations.add(jsonArray.getString(i));
             }
@@ -457,7 +460,8 @@ public class Pickup1 extends SenateActivity
                 try {
                     JSONObject object = (JSONObject) new JSONTokener(res)
                             .nextValue();
-                    destinationOfficeName.setText(object.getString("cdrespctrhd"));
+                    destinationOfficeName.setText(object
+                            .getString("cdrespctrhd"));
                     // tvLocCd2.setText( object.getString("cdlocat"));
                     destinationAddress.setText(object.getString("adstreet1")
                             .replaceAll("&#34;", "\"")
@@ -489,25 +493,25 @@ public class Pickup1 extends SenateActivity
     private void setupOriginLocationTV(ArrayAdapter<String> adapter) {
         originLocationTV.setThreshold(1);
         originLocationTV.setAdapter(adapter);
-        originLocationTV.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                Log.i("ItemClicked", "ITEM CLICKED");
-                if (destinationLocationTV.getText().toString().trim()
-                        .length() > 0) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            originLocationTV.getWindowToken(), 0);
-                }
-                else {
-                    boolean focusRequested = destinationLocationTV
-                            .requestFocus();
-                }
-                fromLocationBeingTyped = false;
-            }
-        });
+        originLocationTV
+                .setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                            int position, long id) {
+                        Log.i("ItemClicked", "ITEM CLICKED");
+                        if (destinationLocationTV.getText().toString().trim()
+                                .length() > 0) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    originLocationTV.getWindowToken(), 0);
+                        } else {
+                            boolean focusRequested = destinationLocationTV
+                                    .requestFocus();
+                        }
+                        fromLocationBeingTyped = false;
+                    }
+                });
 
         originLocationTV.addTextChangedListener(originTextWatcher);
     }
@@ -515,51 +519,46 @@ public class Pickup1 extends SenateActivity
     private void setupDestinationLocationTV(ArrayAdapter<String> adapter) {
         destinationLocationTV.setThreshold(1);
         destinationLocationTV.setAdapter(adapter);
-        destinationLocationTV.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent,
-                    View view, int position, long id) {
-                int duration = Toast.LENGTH_SHORT;
-                toLocationBeingTyped = false;
-                if (originLocationTV.getText().toString()
-                        .trim().length() == 0) {
-                    boolean focusRequested = originLocationTV
-                            .requestFocus();
-                    Toast toast = Toast.makeText(
-                            getApplicationContext(),
-                            "Please pick a from location.",
-                            duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                }
-                else {
-                    if (originLocationTV.getText()
-                            .toString().trim().length() > 0) {
-                        if (originLocationTV.getText()
-                                .toString().trim().length() > 0) {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(
-                                    originLocationTV
-                                            .getWindowToken(),
-                                    0);
-                        }
-                        else {
+        destinationLocationTV
+                .setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                            int position, long id) {
+                        int duration = Toast.LENGTH_SHORT;
+                        toLocationBeingTyped = false;
+                        if (originLocationTV.getText().toString().trim()
+                                .length() == 0) {
+                            boolean focusRequested = originLocationTV
+                                    .requestFocus();
+                            Toast toast = Toast.makeText(
+                                    getApplicationContext(),
+                                    "Please pick a from location.", duration);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        } else {
+                            if (originLocationTV.getText().toString().trim()
+                                    .length() > 0) {
+                                if (originLocationTV.getText().toString()
+                                        .trim().length() > 0) {
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(
+                                            originLocationTV.getWindowToken(),
+                                            0);
+                                } else {
+
+                                }
+                            } else {
+                                boolean focusRequested = originLocationTV
+                                        .requestFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(0,
+                                        InputMethodManager.SHOW_IMPLICIT);
+                            }
 
                         }
                     }
-                    else {
-                        boolean focusRequested = originLocationTV
-                                .requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(
-                                0,
-                                InputMethodManager.SHOW_IMPLICIT);
-                    }
-
-                }
-            }
-        });
+                });
 
         destinationLocationTV.addTextChangedListener(destinationTextWatcher);
     }

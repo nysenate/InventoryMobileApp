@@ -98,7 +98,7 @@ public class InvItem
     public String toString() {
         return decommodityf;
     }
-    
+
     public void setCdcommodity(String cdcommodity) {
         this.cdcommodity = cdcommodity;
     }
@@ -106,7 +106,7 @@ public class InvItem
     public String getCdcommodity() {
         return cdcommodity;
     }
-    
+
     public void setDecomments(String decomments) {
         this.decomments = decomments;
     }
@@ -114,8 +114,7 @@ public class InvItem
     public String getDecomments() {
         return decomments;
     }
-           
-       
+
     public String toJSON() {
 
         /*
@@ -123,8 +122,8 @@ public class InvItem
          * external libraries.
          */
 
-         try {
-      
+        try {
+
             return getJSONObject().toString();
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -133,7 +132,7 @@ public class InvItem
         }
 
     }
-    
+
     public JSONObject getJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -155,7 +154,7 @@ public class InvItem
             e.printStackTrace();
             return null;
         }
-    }    
+    }
 
     public void parseJSON(String JSONString) {
 
@@ -198,19 +197,21 @@ public class InvItem
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
-            
+
             try {
                 this.setCdcommodity(jsonObject.getString("cdcommodity"));
             } catch (JSONException e2) {
-                this.setCdcommodity("");  // No Error msgs since cdcommodity may or may not be included
+                this.setCdcommodity(""); // No Error msgs since cdcommodity may
+                                         // or may not be included
             }
 
             try {
                 this.setDecomments(jsonObject.getString("decomments"));
             } catch (JSONException e2) {
-                this.setDecomments("");  // No Error msgs since decomments may or may not be included
+                this.setDecomments(""); // No Error msgs since decomments may or
+                                        // may not be included
             }
-            
+
             try {
                 if (jsonObject.getString("selected").trim().toUpperCase()
                         .startsWith("T")) {

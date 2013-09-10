@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -115,20 +114,19 @@ public class ClearableEditText extends EditText
 
                         // Create the AlertDialog
                         AlertDialog dialog = builder.create();
-                        dialog.show();                        
+                        dialog.show();
                     }
                     if (clearField) {
                         et.setText("");
                         ClearableEditText.this.removeClearButton();
 
                     }
-                    
-                }
-                else {
-                    
+
+                } else {
+
                     clearField = false;
-                }                    
-                
+                }
+
                 return false;
             }
         });
@@ -188,9 +186,9 @@ public class ClearableEditText extends EditText
                 this.getCompoundDrawables()[1], null,
                 this.getCompoundDrawables()[3]);
     }
-    
+
     public void addClearButtonListener(ClearButtonListener listener) {
         listeners.add(listener);
-    }    
+    }
 
 }

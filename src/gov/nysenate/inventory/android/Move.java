@@ -60,10 +60,10 @@ public class Move extends SenateActivity implements OnItemClickListener
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
         if (Delivery3.progBarDelivery3 != null) {
-            Delivery3.progBarDelivery3.setVisibility(ProgressBar.INVISIBLE);
+            Delivery3.progBarDelivery3.setVisibility(View.INVISIBLE);
         }
         if (Pickup3.progBarPickup3 != null) {
-            Pickup3.progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+            Pickup3.progBarPickup3.setVisibility(View.INVISIBLE);
         }
 
     }
