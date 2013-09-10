@@ -112,18 +112,21 @@ public class Delivery1 extends SenateActivity
         btnDelivery1Cont.getBackground().setAlpha(255);
         btnDelivery1Cancel = (Button) findViewById(R.id.btnDelivery1Cancel);
         btnDelivery1Cancel.getBackground().setAlpha(255);
-        if (this.progBarDelivery1 ==null) {
-            this.progBarDelivery1 = (ProgressBar) this.findViewById(R.id.progBarDelivery1);
-        }            
-        this.progBarDelivery1.setVisibility(ProgressBar.INVISIBLE);
+        if (Delivery1.progBarDelivery1 == null) {
+            Delivery1.progBarDelivery1 = (ProgressBar) this
+                    .findViewById(R.id.progBarDelivery1);
+        }
+        Delivery1.progBarDelivery1.setVisibility(View.INVISIBLE);
     }
 
+    @Override
     public void startTimeout(int timeoutType) {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, timeoutType);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("onActivityResult", "start");
 
@@ -199,7 +202,8 @@ public class Delivery1 extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -455,7 +459,7 @@ public class Delivery1 extends SenateActivity
     @Override
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /*

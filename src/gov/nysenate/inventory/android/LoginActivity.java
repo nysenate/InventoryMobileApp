@@ -2,12 +2,10 @@ package gov.nysenate.inventory.android;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -16,11 +14,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -30,16 +26,12 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.app.FragmentManager;
-import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -49,10 +41,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +52,7 @@ import android.widget.Toast;
 public class LoginActivity extends SenateActivity
 {
 
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;    
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
     // WIFI Code Added Below
     WifiManager mainWifi;
     // WifiReceiver receiverWifi;
@@ -94,7 +84,7 @@ public class LoginActivity extends SenateActivity
     public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
 
     private static final String LOG_TAG = "AppUpgrade";
-    //private MyWebReceiver receiver;
+    // private MyWebReceiver receiver;
     private int versionCode = 0;
     private String versionName = null;
     static String appURI = "";
@@ -111,7 +101,7 @@ public class LoginActivity extends SenateActivity
     String timeoutFrom = null;
     public static TextView tvWarnLabel;
     boolean updateApp = false;
-    
+
     public long lastTimeCheck = 0;
     public int lastLengthCheck = 0;
 
@@ -137,14 +127,14 @@ public class LoginActivity extends SenateActivity
 
         try {
             Intent fromIntent = getIntent();
-            updateChecked =   Boolean.valueOf(fromIntent.getStringExtra("UPDATECHECKED"));
-            Log.i("UPDATECHECKED", "RETURNED:"+updateChecked);
-        }
-        catch (Exception e2) {
+            updateChecked = Boolean.valueOf(fromIntent
+                    .getStringExtra("UPDATECHECKED"));
+            Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
+        } catch (Exception e2) {
             updateChecked = false;
             Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
         }
-        
+
         // Red Text Message
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
 
@@ -165,14 +155,15 @@ public class LoginActivity extends SenateActivity
             user_name.setText(nauser);
             user_name.removeClearButton();
             user_name.setBackgroundResource(R.drawable.customshape);
-            user_name.setOnTouchListener(new OnTouchListener(){
+            user_name.setOnTouchListener(new OnTouchListener()
+            {
 
                 @Override
                 public boolean onTouch(View arg0, MotionEvent arg1) {
                     password.requestFocus();
                     return true;
                 }
-                
+
             });
             password.requestFocus();
             tvWarnLabel.setText("TIME OUT\r\nPlease enter your password");
@@ -206,7 +197,7 @@ public class LoginActivity extends SenateActivity
             checkInitialAudioLevel();
         }
     }
-    
+
     private TextWatcher senateTagPWDWatcher = new TextWatcher()
     {
 
@@ -219,51 +210,46 @@ public class LoginActivity extends SenateActivity
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
             lastTimeCheck = System.currentTimeMillis();
-            lastLengthCheck = s.toString().length();                
+            lastLengthCheck = s.toString().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-                       
-            if (lastTimeCheck==0) {
-                if (s.toString().length()>lastLengthCheck+4) {
+
+            if (lastTimeCheck == 0) {
+                if (s.toString().length() > lastLengthCheck + 4) {
                     if (timeoutActivity) {
                         playSound(R.raw.timeout_julie);
-                    }
-                    else {
+                    } else {
                         playSound(R.raw.login_julie);
                     }
                     s.clear();
-                    lastNumericErrorLength = s.toString().length();                    
+                    lastNumericErrorLength = s.toString().length();
                     lastTimeCheck = System.currentTimeMillis();
-                    lastLengthCheck = s.toString().length();     
-                }
-                else {
-                    lastNumericErrorLength = s.toString().length();                    
+                    lastLengthCheck = s.toString().length();
+                } else {
+                    lastNumericErrorLength = s.toString().length();
                     lastTimeCheck = System.currentTimeMillis();
-                    lastLengthCheck = s.toString().length();                
+                    lastLengthCheck = s.toString().length();
                 }
-            }
-            else if (s.toString().length()>lastLengthCheck+4) {
-                if (System.currentTimeMillis()-lastTimeCheck<300) {
+            } else if (s.toString().length() > lastLengthCheck + 4) {
+                if (System.currentTimeMillis() - lastTimeCheck < 300) {
                     if (timeoutActivity) {
                         playSound(R.raw.timeout_julie);
-                    }
-                    else {
+                    } else {
                         playSound(R.raw.login_julie);
                     }
                     s.clear();
                 }
-            
-            }
-            else if (s.length()==0) {
-                lastNumericErrorLength = s.toString().length();                    
+
+            } else if (s.length() == 0) {
+                lastNumericErrorLength = s.toString().length();
                 lastTimeCheck = System.currentTimeMillis();
-                lastLengthCheck = s.toString().length();          
+                lastLengthCheck = s.toString().length();
             }
-            
+
         }
-    };    
+    };
 
     private TextWatcher senateTagUSRWatcher = new TextWatcher()
     {
@@ -276,77 +262,67 @@ public class LoginActivity extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
-             lastTimeCheck = System.currentTimeMillis();
-             lastLengthCheck = s.toString().length();                
+            lastTimeCheck = System.currentTimeMillis();
+            lastLengthCheck = s.toString().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            
-            
-            if (lastTimeCheck==0) {
-                if (s.toString().length()>lastLengthCheck+4) {
+
+            if (lastTimeCheck == 0) {
+                if (s.toString().length() > lastLengthCheck + 4) {
                     playSound(R.raw.login_julie);
                     if (timeoutActivity) {
                         s.clear();
-                    }
-                    else {
+                    } else {
                         user_name.setText(nauser);
                     }
-                    lastNumericErrorLength = s.toString().length();                    
+                    lastNumericErrorLength = s.toString().length();
                     lastTimeCheck = System.currentTimeMillis();
-                    lastLengthCheck = s.toString().length();                
-                }
-                else {
-                    lastNumericErrorLength = s.toString().length();                    
+                    lastLengthCheck = s.toString().length();
+                } else {
+                    lastNumericErrorLength = s.toString().length();
                     lastTimeCheck = System.currentTimeMillis();
-                    lastLengthCheck = s.toString().length();                
+                    lastLengthCheck = s.toString().length();
                 }
-            }
-            else if (s.toString().length()>lastLengthCheck+4) {
-                if (System.currentTimeMillis()-lastTimeCheck<300) {
-                      playSound(R.raw.login_julie);
-                      if (timeoutActivity) {
-                          s.clear();
-                      }
-                      else {
-                          user_name.setText(nauser);
-                      }
-                      lastNumericErrorLength = s.toString().length();                    
-                      lastTimeCheck = System.currentTimeMillis();
-                      lastLengthCheck = s.toString().length();                
+            } else if (s.toString().length() > lastLengthCheck + 4) {
+                if (System.currentTimeMillis() - lastTimeCheck < 300) {
+                    playSound(R.raw.login_julie);
+                    if (timeoutActivity) {
+                        s.clear();
+                    } else {
+                        user_name.setText(nauser);
+                    }
+                    lastNumericErrorLength = s.toString().length();
+                    lastTimeCheck = System.currentTimeMillis();
+                    lastLengthCheck = s.toString().length();
                 }
-            }
-            else if (s.length()==0) {
-                lastNumericErrorLength = s.toString().length();                    
+            } else if (s.length() == 0) {
+                lastNumericErrorLength = s.toString().length();
                 lastTimeCheck = System.currentTimeMillis();
-                lastLengthCheck = s.toString().length();          
+                lastLengthCheck = s.toString().length();
             }
-            }
-            
-    };    
-    
-    public static boolean isNumeric(String str, int lastDigitlength)  
-    { 
-        
-      if (str==null||str.trim().length()==0) {
-          return false;
-      }
-      
-      try  
-      {  
-        if (str.length()> lastDigitlength) {
-            str = str.substring(str.length()-lastDigitlength);
         }
-        @SuppressWarnings("unused")
-        long l = Long.parseLong(str);  
-      }  
-      catch(NumberFormatException nfe)  
-      {  
-        return false;  
-      }  
-      return true;  
-    }       
+
+    };
+
+    public static boolean isNumeric(String str, int lastDigitlength) {
+
+        if (str == null || str.trim().length() == 0) {
+            return false;
+        }
+
+        try {
+            if (str.length() > lastDigitlength) {
+                str = str.substring(str.length() - lastDigitlength);
+            }
+            @SuppressWarnings("unused")
+            long l = Long.parseLong(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
 
     // Self Explanatory
 
@@ -441,7 +417,8 @@ public class LoginActivity extends SenateActivity
                     // dialog characteristics
                     builder.setMessage(
                             "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
-                            .setTitle(Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
+                            .setTitle(
+                                    Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
 
                     // Add the buttons
                     builder.setPositiveButton("Yes",
@@ -532,7 +509,8 @@ public class LoginActivity extends SenateActivity
                         // dialog characteristics
                         builder.setMessage(
                                 "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
-                                .setTitle(Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
+                                .setTitle(
+                                        Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
                         // Add the buttons
                         builder.setPositiveButton("Yes",
                                 new DialogInterface.OnClickListener()
@@ -621,7 +599,7 @@ public class LoginActivity extends SenateActivity
             t.setTextColor(Color.RED);
 
         }
-       // Overall information about the contents of a package
+        // Overall information about the contents of a package
         // This corresponds to all of the information collected from
         // AndroidManifest.xml.
         PackageInfo pInfo = null;
@@ -637,63 +615,71 @@ public class LoginActivity extends SenateActivity
         // display the current version in a TextView
 
         // Broadcast receiver for our Web Request
-//        IntentFilter filter = new IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
- //       filter.addCategory(Intent.CATEGORY_DEFAULT);
- //       receiver = new MyWebReceiver();
- //       registerReceiver(receiver, filter);
+        // IntentFilter filter = new
+        // IntentFilter(MyWebReceiver.PROCESS_RESPONSE);
+        // filter.addCategory(Intent.CATEGORY_DEFAULT);
+        // receiver = new MyWebReceiver();
+        // registerReceiver(receiver, filter);
 
         // Broadcast receiver for the download manager
-   //     filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-   //     registerReceiver(downloadReceiver, filter);
+        // filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        // registerReceiver(downloadReceiver, filter);
 
         // check of internet is available before making a web service request
-        updateApp=false;
+        updateApp = false;
 
         if (isNetworkAvailable(this)) {
             Intent msgIntent = new Intent(this, InvWebService.class);
-            
+
             try {
                 // Get the URL from the properties
-                String URL = LoginActivity.properties
-                        .get("WEBAPP_BASE_URL").toString();
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
                 AsyncTask<String, String, String> resr1 = new RequestTask()
-                        .execute(URL + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+                        .execute(URL
+                                + "/CheckAppVersion?appName=InventoryMobileApp.apk");
                 try {
                     String res = resr1.get().trim().toString();
                     if (res == null) {
                         noServerResponse();
-                    }
-                    else if (res.trim().length()==0) {
+                    } else if (res.trim().length() == 0) {
                         noServerResponse();
-                    }
-                    else {
-                        
+                    } else {
+
                         JSONObject responseObj;
                         try {
                             responseObj = new JSONObject(res);
                             boolean success = responseObj.getBoolean("success");
-                            Log.i("LoginActivity", "CheckAppVersion returned success:"+success);
+                            Log.i("LoginActivity",
+                                    "CheckAppVersion returned success:"
+                                            + success);
                             // if the reponse was successful check further
                             if (success) {
                                 // get the latest version from the JSON string
-                                latestVersion = responseObj.getInt("latestVersion");
+                                latestVersion = responseObj
+                                        .getInt("latestVersion");
 
-                                // get the lastest application URI from the JSON string
+                                // get the lastest application URI from the JSON
+                                // string
                                 appURI = responseObj.getString("appURI");
                                 latestVersionName = responseObj
                                         .getString("latestVersionName");
                                 appURI = responseObj.getString("appURI");
                                 // check if we need to upgrade?
-                                Log.i("LoginActivity", "CheckAppVersion: Is latestVersion:"+latestVersion+" > versionCode:"+versionCode);
-                                
+                                Log.i("LoginActivity",
+                                        "CheckAppVersion: Is latestVersion:"
+                                                + latestVersion
+                                                + " > versionCode:"
+                                                + versionCode);
+
                                 if (latestVersion > versionCode) {
                                     updateApp = true;
                                 }
-                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        
+
                     }
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -708,9 +694,9 @@ public class LoginActivity extends SenateActivity
             } catch (Exception e) {
 
             }
-            //msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
-            //        + "/CheckAppVersion?appName=InventoryMobileApp.apk");
-            //startService(msgIntent);
+            // msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
+            // + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+            // startService(msgIntent);
         }
         if (!timeoutActivity && !updateChecked) {
             this.startUpdate(null);
@@ -718,9 +704,10 @@ public class LoginActivity extends SenateActivity
     }
 
     public void testPost(View view) {
-        BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM", "THIS WAS FROM ANDROID");
+        BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM",
+                "THIS WAS FROM ANDROID");
         AsyncTask<String, String, String> resr1 = new RequestTask(nameValuePair)
-        .execute(URL + "/TestPostServlet");
+                .execute(URL + "/TestPostServlet");
         String res;
         try {
             res = null;
@@ -736,17 +723,18 @@ public class LoginActivity extends SenateActivity
         } catch (ExecutionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }    }
-        
-    
-    @Override  
-    protected void onStop() {  
-     super.onStop();  
-     if (alertDialog != null) {  
-         alertDialog.dismiss();  
-         alertDialog = null;  
-     }  
-    }      
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+            alertDialog = null;
+        }
+    }
+
     // Self Explanatory
 
     private void checkInitialAudioLevel() {
@@ -778,11 +766,14 @@ public class LoginActivity extends SenateActivity
 
                 // set title
                 if (currentVolume == 0) {
-                    alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: NO SOUND</font>") );
+                    alertDialogBuilder
+                            .setTitle(Html
+                                    .fromHtml("<font color='#000055'>***WARNING: NO SOUND</font>"));
+                } else if (currentVolume < .4 * maxVolume) {
+                    alertDialogBuilder
+                            .setTitle(Html
+                                    .fromHtml("<font color='#000055'>***WARNING: LOW SOUND</font>"));
                 }
-                else if (currentVolume < .4 * maxVolume) {
-                    alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>***WARNING: LOW SOUND</font>") );
-               }
 
                 // set dialog message
                 alertDialogBuilder
@@ -791,6 +782,7 @@ public class LoginActivity extends SenateActivity
                         .setPositiveButton("Yes",
                                 new DialogInterface.OnClickListener()
                                 {
+                                    @Override
                                     public void onClick(DialogInterface dialog,
                                             int id) {
                                         audio.setStreamVolume(
@@ -810,6 +802,7 @@ public class LoginActivity extends SenateActivity
                         .setNegativeButton("No",
                                 new DialogInterface.OnClickListener()
                                 {
+                                    @Override
                                     public void onClick(DialogInterface dialog,
                                             int id) {
                                         // if this button is clicked, just close
@@ -836,8 +829,6 @@ public class LoginActivity extends SenateActivity
             e.printStackTrace();
         }
     }
-    
-   
 
     private void login(String user_name, String password) {
         try {
@@ -928,7 +919,7 @@ public class LoginActivity extends SenateActivity
                 toast.show();
                 buttonLogin.getBackground().setAlpha(255);
                 progressBarLogin.setVisibility(View.INVISIBLE);
-                this.password.setText("");
+                LoginActivity.password.setText("");
             }
         } catch (Exception e) {
             int duration = Toast.LENGTH_LONG;
@@ -944,7 +935,8 @@ public class LoginActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -965,8 +957,7 @@ public class LoginActivity extends SenateActivity
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
-                        progressBarLogin
-                                .setVisibility(progressBarLogin.INVISIBLE);
+                        progressBarLogin.setVisibility(View.INVISIBLE);
                         buttonLogin.getBackground().setAlpha(255);
                         dialog.dismiss();
                     }
@@ -992,13 +983,13 @@ public class LoginActivity extends SenateActivity
         // unregister your receivers
         if (!this.timeoutActivity) {
             try {
-            //    this.unregisterReceiver(receiver);
+                // this.unregisterReceiver(receiver);
             } catch (Exception e) {
                 Log.w("LoginActivity",
                         "**WARNING: unable to unregister Internet Connection Receiver.");
             }
             try {
-                //this.unregisterReceiver(downloadReceiver);
+                // this.unregisterReceiver(downloadReceiver);
             } catch (Exception e) {
                 Log.w("LoginActivity",
                         "**WARNING: unable to unregister Download Receiver.");
@@ -1091,7 +1082,6 @@ public class LoginActivity extends SenateActivity
             }
         }
     }
-    
 
     @Override
     public void onBackPressed() {
@@ -1150,108 +1140,71 @@ public class LoginActivity extends SenateActivity
     public void startUpdate(View View) {
         if (updateApp) {
             updateChecked = true;
-            Intent intent = new Intent(this, UpgradeActivity.class);            
+            Intent intent = new Intent(this, UpgradeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.in_down, R.anim.out_down);
         }
     }
 
     // broadcast receiver to get notification when the web request finishes
-   /* public class MyWebReceiver extends BroadcastReceiver
-    {
+    /*
+     * public class MyWebReceiver extends BroadcastReceiver {
+     * 
+     * public static final String PROCESS_RESPONSE =
+     * "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
+     * 
+     * @Override public void onReceive(Context context, Intent intent) {
+     * 
+     * String reponseMessage = intent
+     * .getStringExtra(InvWebService.RESPONSE_MESSAGE); Log.v(LOG_TAG,
+     * reponseMessage);
+     * 
+     * // parse the JSON response JSONObject responseObj; try { responseObj =
+     * new JSONObject(reponseMessage); boolean success =
+     * responseObj.getBoolean("success"); // if the reponse was successful check
+     * further if (success) { // get the latest version from the JSON string
+     * latestVersion = responseObj.getInt("latestVersion"); // get the lastest
+     * application URI from the JSON string appURI =
+     * responseObj.getString("appURI"); latestVersionName = responseObj
+     * .getString("latestVersionName"); Log.i(LOG_TAG, "latestVersion:" +
+     * latestVersion + " > versionCode:" + versionCode); // check if we need to
+     * upgrade? if (latestVersion > versionCode) {
+     * user_name.setVisibility(View.INVISIBLE);
+     * password.setVisibility(View.INVISIBLE); buttonLogin.setText("Close");
+     * progressBarLogin.setVisibility(View.VISIBLE);
+     * 
+     * // oh yeah we do need an upgrade, let the user know send // an alert
+     * message AlertDialog.Builder builder = new AlertDialog.Builder(
+     * LoginActivity.this); builder.setMessage( "There is newer version (" +
+     * latestVersionName + ":" + latestVersion +
+     * ") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?"
+     * ) .setPositiveButton("OK", new DialogInterface.OnClickListener() { // if
+     * the user agrees to upgrade
+     * 
+     * @Override public void onClick( DialogInterface dialog, int id) { // start
+     * downloading the file // using the download manager downloadManager =
+     * (DownloadManager) getSystemService(DOWNLOAD_SERVICE); Uri Download_Uri =
+     * Uri .parse(appURI); DownloadManager.Request request = new
+     * DownloadManager.Request( Download_Uri);
+     * request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+     * request.setAllowedOverRoaming(false); request.setTitle(Html.fromHtml(
+     * "<font color='#000055'>Inventory Andorid App Download</font>"));
+     * request.setDestinationInExternalFilesDir( LoginActivity.this,
+     * Environment.DIRECTORY_DOWNLOADS, "InventoryMobileApp.apk");
+     * downloadReference = downloadManager .enqueue(request); } })
+     * .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
+     * 
+     * @Override public void onClick( DialogInterface dialog, int id) { // User
+     * cancelled the dialog // finish(); closeAllActivities(); } }); // show the
+     * alert message builder.create().show(); }
+     * 
+     * } } catch (JSONException e) { e.printStackTrace(); }
+     * 
+     * }
+     * 
+     * }
+     */
 
-        public static final String PROCESS_RESPONSE = "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String reponseMessage = intent
-                    .getStringExtra(InvWebService.RESPONSE_MESSAGE);
-            Log.v(LOG_TAG, reponseMessage);
-
-            // parse the JSON response
-            JSONObject responseObj;
-            try {
-                responseObj = new JSONObject(reponseMessage);
-                boolean success = responseObj.getBoolean("success");
-                // if the reponse was successful check further
-                if (success) {
-                    // get the latest version from the JSON string
-                    latestVersion = responseObj.getInt("latestVersion");
-                    // get the lastest application URI from the JSON string
-                    appURI = responseObj.getString("appURI");
-                    latestVersionName = responseObj
-                            .getString("latestVersionName");
-                    Log.i(LOG_TAG, "latestVersion:" + latestVersion
-                            + " > versionCode:" + versionCode);
-                    // check if we need to upgrade?
-                    if (latestVersion > versionCode) {
-                        user_name.setVisibility(View.INVISIBLE);
-                        password.setVisibility(View.INVISIBLE);
-                        buttonLogin.setText("Close");
-                        progressBarLogin.setVisibility(View.VISIBLE);
-
-                        // oh yeah we do need an upgrade, let the user know send
-                        // an alert message
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                LoginActivity.this);
-                        builder.setMessage(
-                                "There is newer version ("
-                                        + latestVersionName
-                                        + ":"
-                                        + latestVersion
-                                        + ") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?")
-                                .setPositiveButton("OK",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            // if the user agrees to upgrade
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // start downloading the file
-                                                // using the download manager
-                                                downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                                                Uri Download_Uri = Uri
-                                                        .parse(appURI);
-                                                DownloadManager.Request request = new DownloadManager.Request(
-                                                        Download_Uri);
-                                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-                                                request.setAllowedOverRoaming(false);                                                
-                                                request.setTitle(Html.fromHtml("<font color='#000055'>Inventory Andorid App Download</font>"));
-                                                request.setDestinationInExternalFilesDir(
-                                                        LoginActivity.this,
-                                                        Environment.DIRECTORY_DOWNLOADS,
-                                                        "InventoryMobileApp.apk");
-                                                downloadReference = downloadManager
-                                                        .enqueue(request);
-                                            }
-                                        })
-                                .setNegativeButton("Close App",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // User cancelled the dialog
-                                                // finish();
-                                                closeAllActivities();
-                                            }
-                                        });
-                        // show the alert message
-                        builder.create().show();
-                    }
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-    }*/
-    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -1264,36 +1217,30 @@ public class LoginActivity extends SenateActivity
         }
     }
 
-    /*// broadcast receiver to get notification about ongoing downloads
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
-    {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            // check if the broadcast message is for our Enqueued download
-            long referenceId = intent.getLongExtra(
-                    DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (downloadReference == referenceId) {
-
-                Log.v(LOG_TAG, "Downloading of the new app version complete");
-                // start the installation of the latest version
-                Intent installIntent = new Intent(Intent.ACTION_VIEW);
-                installIntent.setDataAndType(downloadManager
-                        .getUriForDownloadedFile(downloadReference),
-                        "application/vnd.android.package-archive");
-                installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(installIntent);
-                TextView t = (TextView) findViewById(R.id.textView1);
-                t.setText("There is newer version ("
-                        + latestVersionName
-                        + ":"
-                        + latestVersion
-                        + ") of this application available. In order to use this app, you MUST upgrade!!!! Next time click OK then INSTALL!!");
-
-            }
-        }
-    };*/
+    /*
+     * // broadcast receiver to get notification about ongoing downloads private
+     * BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
+     * 
+     * @Override public void onReceive(Context context, Intent intent) {
+     * 
+     * // check if the broadcast message is for our Enqueued download long
+     * referenceId = intent.getLongExtra( DownloadManager.EXTRA_DOWNLOAD_ID,
+     * -1); if (downloadReference == referenceId) {
+     * 
+     * Log.v(LOG_TAG, "Downloading of the new app version complete"); // start
+     * the installation of the latest version Intent installIntent = new
+     * Intent(Intent.ACTION_VIEW); installIntent.setDataAndType(downloadManager
+     * .getUriForDownloadedFile(downloadReference),
+     * "application/vnd.android.package-archive");
+     * installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+     * startActivity(installIntent); TextView t = (TextView)
+     * findViewById(R.id.textView1); t.setText("There is newer version (" +
+     * latestVersionName + ":" + latestVersion +
+     * ") of this application available. In order to use this app, you MUST upgrade!!!! Next time click OK then INSTALL!!"
+     * );
+     * 
+     * } } };
+     */
     // our code ends
 
 }

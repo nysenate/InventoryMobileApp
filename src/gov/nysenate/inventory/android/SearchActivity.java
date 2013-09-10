@@ -23,7 +23,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,17 +69,17 @@ public class SearchActivity extends SenateActivity
         btnSrchBck.getBackground().setAlpha(255);
 
         // Suppress the Menu ProgressBar
-        MenuActivity.progBarMenu.setVisibility(ProgressBar.INVISIBLE);
+        MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (btnSrchBck==null) {
+        if (btnSrchBck == null) {
             btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
         }
         btnSrchBck.getBackground().setAlpha(255);
-     }    
+    }
 
     private final TextWatcher filterTextWatcher = new TextWatcher()
     {
@@ -108,7 +107,8 @@ public class SearchActivity extends SenateActivity
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder

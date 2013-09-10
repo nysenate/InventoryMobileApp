@@ -3,7 +3,8 @@ package gov.nysenate.inventory.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public abstract class Transaction implements Parcelable {
+public abstract class Transaction implements Parcelable
+{
 
     protected int nuxrpd;
     protected Location origin;

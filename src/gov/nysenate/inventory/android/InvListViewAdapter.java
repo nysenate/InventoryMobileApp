@@ -69,28 +69,31 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         }
 
         if (rowItem.getType().trim().equalsIgnoreCase("NEW")) {
-            Log.i("TEST INVLISTVIEWADAPTER", "rowItem.getType().trim().equalsIgnoreCase(\"NEW\") WORKED!!!" );
+            Log.i("TEST INVLISTVIEWADAPTER",
+                    "rowItem.getType().trim().equalsIgnoreCase(\"NEW\") WORKED!!!");
+        } else if (rowItem.getType().toUpperCase().indexOf("NEW") > -1) {
+            Log.i("TEST INVLISTVIEWADAPTER",
+                    "rowItem.getType().toUpperCase().indexOf(\"NEW\")>-1 WORKED!!!");
         }
-        else if (rowItem.getType().toUpperCase().indexOf("NEW")>-1) {
-            Log.i("TEST INVLISTVIEWADAPTER", "rowItem.getType().toUpperCase().indexOf(\"NEW\")>-1 WORKED!!!" );
-        }
-        
+
         String rowItemType = rowItem.getType().trim();
-        
+
         if (rowItemType.equalsIgnoreCase("NEW")) {
             holder.invListBarcode.setText(rowItem.getNusenate());
             holder.invListBarcode.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
             String cdcommodity = rowItem.getCdcommodity();
             String decomments = rowItem.getDecomments();
-            		
-            if (cdcommodity==null||cdcommodity.trim().length()==0){
-               	holder.invListDescr.setText("*** NEW ITEM ***    "+Html.escapeHtml(decomments));
-            } else if (decomments==null||decomments.trim().length()==0) {
-               	holder.invListDescr.setText("*** NEW ITEM ***    CC:"+cdcommodity);
-            }
-            else {
-               	holder.invListDescr.setText("*** NEW ITEM ***    CC:"+cdcommodity+": "+Html.escapeHtml(decomments));
+
+            if (cdcommodity == null || cdcommodity.trim().length() == 0) {
+                holder.invListDescr.setText("*** NEW ITEM ***    "
+                        + Html.escapeHtml(decomments));
+            } else if (decomments == null || decomments.trim().length() == 0) {
+                holder.invListDescr.setText("*** NEW ITEM ***    CC:"
+                        + cdcommodity);
+            } else {
+                holder.invListDescr.setText("*** NEW ITEM ***    CC:"
+                        + cdcommodity + ": " + Html.escapeHtml(decomments));
             }
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
@@ -100,8 +103,9 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
                     R.color.red)); // blue
             String cdcommodity = rowItem.getCdcommodity();
             String decomments = rowItem.getDecomments();
-                    
-            holder.invListDescr.setText("*** INACTIVE ITEM *** "+rowItem.getDecommodityf());
+
+            holder.invListDescr.setText("*** INACTIVE ITEM *** "
+                    + rowItem.getDecommodityf());
             holder.invListDescr.setTextColor(context.getResources().getColor(
                     R.color.red)); // blue
         } else if (rowItemType.equalsIgnoreCase("EXISTING")) {
@@ -169,7 +173,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         }
         return -1;
     }
-    
+
     public int findTypePosNOTEqualTo(String type) {
         return findTypePosNOTEqualTo(type, 0);
     }
@@ -182,5 +186,5 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         }
         return -1;
     }
-    
+
 }

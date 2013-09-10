@@ -1,33 +1,20 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.android.VerScanActivity.verList;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,17 +25,16 @@ import android.widget.Toast;
 public class MenuActivity extends SenateActivity implements OnItemClickListener
 {
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-    
 
     private ListView mList;
-        
+
     public static ProgressBar progBarMenu;
 
     public String res = null;
-    
+
     String URL = ""; // this will be initialized once in onCreate() and used for
-    // all server calls.    
-    
+    // all server calls.
+
     public static final String[] titles = new String[] { "Search",
             "Verification", "Move Items", "Logout" };
 
@@ -137,7 +123,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
             // 2. Chain together various setter methods to set the dialog
             // characteristics
-            builder.setTitle(Html.fromHtml("<font color='#000055'>Log Out</font>"));
+            builder.setTitle(Html
+                    .fromHtml("<font color='#000055'>Log Out</font>"));
             builder.setMessage("Do you really want to log out?");
             // Add the buttons
             builder.setPositiveButton("Yes",
@@ -191,7 +178,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
         // overridePendingTransition(R.anim.slide_in_left,
         // R.anim.slide_out_left);
-        
+
     }
 
     public void addItem(View view) {
@@ -274,7 +261,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                                     duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                        };
+                        }
+                        ;
                         dialog.dismiss();
                     }
                 });
@@ -285,17 +273,16 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // show it
         alertDialog.show();
     }
-           
+
     public String stripHtml(String html) {
         return Html.fromHtml(html).toString();
-    }    
-    
+    }
+
     /*
      * 
      * Testing Code above
-     * 
      */
-    
+
     public void logout(View view) {
         final Intent intent = new Intent(this, LoginActivity.class);
 
@@ -378,5 +365,5 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 "Speech recognition demo");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
-    
+
 }

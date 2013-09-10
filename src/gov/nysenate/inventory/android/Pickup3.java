@@ -6,9 +6,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -36,7 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -108,7 +105,8 @@ public class Pickup3 extends SenateActivity
         sign = (SignatureView) findViewById(R.id.blsignImageView);
         sign.setMinDimensions(200, 100);
         commentsEditText = (ClearableEditText) findViewById(R.id.pickupCommentsEditText);
-        commentsEditText.setClearMsg("Do you want to clear the Pickup Comments?");
+        commentsEditText
+                .setClearMsg("Do you want to clear the Pickup Comments?");
         commentsEditText.showClearMsg(true);
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
@@ -208,10 +206,11 @@ public class Pickup3 extends SenateActivity
         cancelBtn.getBackground().setAlpha(255);
         btnPickup3ClrSig = (Button) findViewById(R.id.btnPickup3ClrSig);
         btnPickup3ClrSig.getBackground().setAlpha(255);
-        if (progBarPickup3 ==null) {
-            progBarPickup3 = (ProgressBar) this.findViewById(R.id.progBarPickup3);
-        }            
-        progBarPickup3.getBackground().setAlpha(255);         
+        if (progBarPickup3 == null) {
+            progBarPickup3 = (ProgressBar) this
+                    .findViewById(R.id.progBarPickup3);
+        }
+        progBarPickup3.getBackground().setAlpha(255);
     }
 
     public int findEmployee(String employeeName) {
@@ -318,7 +317,8 @@ public class Pickup3 extends SenateActivity
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
 
-            String employeePicked = employeeNamesView.getEditableText().toString();
+            String employeePicked = employeeNamesView.getEditableText()
+                    .toString();
             if (employeePicked.trim().length() > 0) {
                 int foundEmployee = this.findEmployee(employeePicked);
 
@@ -335,7 +335,8 @@ public class Pickup3 extends SenateActivity
             if (nuxrefem < 0) {
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
-                if (employeeNamesView.getEditableText().toString().trim().length() > 0) {
+                if (employeeNamesView.getEditableText().toString().trim()
+                        .length() > 0) {
                     Toast toast = Toast.makeText(context,
                             "!!ERROR: No xref# found for employee", duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -372,7 +373,9 @@ public class Pickup3 extends SenateActivity
             }
 
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-            confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Pickup Confirmation</font>"));
+            confirmDialog
+                    .setTitle(Html
+                            .fromHtml("<font color='#000055'>Pickup Confirmation</font>"));
             confirmDialog.setMessage("Are you sure you want to pickup these "
                     + scannedBarcodeNumbers.size() + " items?");
             confirmDialog.setPositiveButton("Yes",
@@ -421,12 +424,13 @@ public class Pickup3 extends SenateActivity
     }
 
     public void noServerResponse() {
-        progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+        progBarPickup3.setVisibility(View.INVISIBLE);
         continueBtn.getBackground().setAlpha(255);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
 
         // set dialog message
         alertDialogBuilder
@@ -511,14 +515,15 @@ public class Pickup3 extends SenateActivity
         return returnArray;
     }
 
-   public Bitmap setBackgroundColor(Bitmap image, int backgroundColor) {
-        Bitmap newBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());
+    public Bitmap setBackgroundColor(Bitmap image, int backgroundColor) {
+        Bitmap newBitmap = Bitmap.createBitmap(image.getWidth(),
+                image.getHeight(), image.getConfig());
         Canvas canvas = new Canvas(newBitmap);
         canvas.drawColor(backgroundColor);
         canvas.drawBitmap(image, 0, 0, null);
         return newBitmap;
-   }
-    
+    }
+
     class pickupRequestTask extends AsyncTask<String, String, String>
     {
 
@@ -655,12 +660,14 @@ public class Pickup3 extends SenateActivity
                     // TODO Handle problems..
                 } catch (ConnectTimeoutException e) {
                     return "***WARNING: Server Connection timeout";
-                    //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    //Log.e("CONN TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
                     return "***WARNING: Server Socket timeout";
-                    //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-                    //Log.e("SOCK TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
                 } catch (IOException e) {
                     // TODO Handle problems..
                 }
@@ -696,15 +703,17 @@ public class Pickup3 extends SenateActivity
                     }
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
-            } catch (ConnectTimeoutException e) {
-                return "***WARNING: Server Connection timeout";
-            //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-            //Log.e("CONN TIMEOUT", e.toString());
-            } catch (SocketTimeoutException e) {
-                return "***WARNING: Server Socket timeout";
-            //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-            //Log.e("SOCK TIMEOUT", e.toString());
-            }   catch (IOException e) {
+                } catch (ConnectTimeoutException e) {
+                    return "***WARNING: Server Connection timeout";
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
+                } catch (SocketTimeoutException e) {
+                    return "***WARNING: Server Socket timeout";
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
+                } catch (IOException e) {
                     // TODO Handle problems..
                 }
                 res = responseString;
@@ -728,13 +737,15 @@ public class Pickup3 extends SenateActivity
                     }
                 } catch (ConnectTimeoutException e) {
                     return "***WARNING: Server Connection timeout";
-                //Toast.makeText(getApplicationContext(), "Server Connection timeout", Toast.LENGTH_LONG).show();
-                //Log.e("CONN TIMEOUT", e.toString());
+                    // Toast.makeText(getApplicationContext(),
+                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                    // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
                     return "***WARNING: Server Socket timeout";
-                //Toast.makeText(getApplicationContext(), "Server timeout", Toast.LENGTH_LONG).show();
-                //Log.e("SOCK TIMEOUT", e.toString());
-                }   catch (ClientProtocolException e) {
+                    // Toast.makeText(getApplicationContext(), "Server timeout",
+                    // Toast.LENGTH_LONG).show();
+                    // Log.e("SOCK TIMEOUT", e.toString());
+                } catch (ClientProtocolException e) {
                     // TODO Handle problems..
                 } catch (IOException e) {
                     // TODO Handle problems..
@@ -752,7 +763,7 @@ public class Pickup3 extends SenateActivity
     }
 
     private void positiveDialog() {
-        progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+        progBarPickup3.setVisibility(View.VISIBLE);
         continueBtn.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
         // String jsonString = null;
@@ -839,8 +850,10 @@ public class Pickup3 extends SenateActivity
                                 + Formatter.generateGetArray("barcode[]",
                                         scannedBarcodeNumbers) + "&NAPICKUPBY="
                                 + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                                + "&cdloctypeto=" + pickup.getDestinationCdLocType()
-                                + "&cdloctypefrm=" + pickup.getOriginCdLocType());
+                                + "&cdloctypeto="
+                                + pickup.getDestinationCdLocType()
+                                + "&cdloctypefrm="
+                                + pickup.getOriginCdLocType());
 
                 try {
                     res = null;
@@ -851,36 +864,49 @@ public class Pickup3 extends SenateActivity
                     } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(POSITIVEDIALOG_TIMEOUT);
                         return;
-                    } else if (res.startsWith("***WARNING:")||res.startsWith("!!ERROR:")) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    } else if (res.startsWith("***WARNING:")
+                            || res.startsWith("!!ERROR:")) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                this);
 
                         // set title
-                        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+res.trim()+"</font>"));
+                        alertDialogBuilder.setTitle(Html
+                                .fromHtml("<font color='#000055'>" + res.trim()
+                                        + "</font>"));
 
                         // set dialog message
                         alertDialogBuilder
                                 .setMessage(
-                                        Html.fromHtml(res.trim()+"<br/> Continue (Y/N)?"))
+                                        Html.fromHtml(res.trim()
+                                                + "<br/> Continue (Y/N)?"))
                                 .setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        returnToMoveMenu();
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setPositiveButton("No", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        dialog.dismiss();
-                                    }
-                                });
+                                .setPositiveButton("Yes",
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int id) {
+                                                // if this button is clicked,
+                                                // just close
+                                                // the dialog box and do nothing
+                                                returnToMoveMenu();
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                .setPositiveButton("No",
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(
+                                                    DialogInterface dialog,
+                                                    int id) {
+                                                // if this button is clicked,
+                                                // just close
+                                                // the dialog box and do nothing
+                                                dialog.dismiss();
+                                            }
+                                        });
 
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -889,7 +915,7 @@ public class Pickup3 extends SenateActivity
                         alertDialog.show();
                         return;
                     }
-                    
+
                 } catch (NullPointerException e) {
                     noServerResponse();
                     return;
@@ -922,7 +948,7 @@ public class Pickup3 extends SenateActivity
         // Intent intent = new Intent(this, MenuActivity.class);
         returnToMoveMenu();
     }
-    
+
     public void returnToMoveMenu() {
         // ===================ends
         // Intent intent = new Intent(this, MenuActivity.class);

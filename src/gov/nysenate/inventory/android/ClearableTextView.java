@@ -79,7 +79,7 @@ public class ClearableTextView extends TextView
                 // Is touch on our clear button?
                 if (event.getX() > tv.getWidth() - tv.getPaddingRight()
                         - imgX.getIntrinsicWidth()) {
-                    
+
                     clearField = true;
                     if (showClearMsg) {
                         clearField = false;
@@ -118,16 +118,17 @@ public class ClearableTextView extends TextView
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                    Log.i("ClearableTextView", "In X spot: ClearField:"+clearField);
+                    Log.i("ClearableTextView", "In X spot: ClearField:"
+                            + clearField);
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
                     }
-                    
-                }
-                else {
+
+                } else {
                     clearField = false;
-                    Log.i("ClearableTextView", "NOT In X spot: ClearField:"+clearField);
+                    Log.i("ClearableTextView", "NOT In X spot: ClearField:"
+                            + clearField);
                 }
                 return false;
             }
@@ -188,9 +189,9 @@ public class ClearableTextView extends TextView
                 this.getCompoundDrawables()[1], null,
                 this.getCompoundDrawables()[3]);
     }
-    
+
     public void addClearButtonListener(ClearButtonListener listener) {
         listeners.add(listener);
     }
-       
+
 }

@@ -161,5 +161,5 @@ public class ListActivity extends SenateActivity
         String CDCATEGORY;
         String DECOMMODITYF;
     }
-    
+
 }

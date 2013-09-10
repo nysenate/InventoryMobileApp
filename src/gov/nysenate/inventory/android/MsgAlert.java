@@ -44,7 +44,8 @@ public class MsgAlert
                 context);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"+title+"</font>"));
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'>"
+                + title + "</font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))

@@ -361,11 +361,10 @@ public class SignatureView extends View
     }
 
     private void touchUp() {
-        if (curX==origCurX && curY==origCurY) {
+        if (curX == origCurX && curY == origCurY) {
             Log.i("SignatureView", "Draw a dot 2 pixels wide");
             mPath.addCircle(curX, curY, 2, Path.Direction.CW);
-        }
-        else {
+        } else {
             mPath.lineTo(curX, curY);
         }
         if (mCanvas == null) {

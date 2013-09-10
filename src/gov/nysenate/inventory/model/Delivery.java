@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Delivery extends Transaction implements Serializable {
+public class Delivery extends Transaction implements Serializable
+{
 
     private static final long serialVersionUID = 1L;
     private ArrayList<String> allItems;
@@ -59,7 +60,8 @@ public class Delivery extends Transaction implements Serializable {
     }
 
     public void setNotCheckedItems(String[] notCheckedItems) {
-        this.notCheckedItems = new ArrayList<String>(Arrays.asList(notCheckedItems));
+        this.notCheckedItems = new ArrayList<String>(
+                Arrays.asList(notCheckedItems));
     }
 
     public void setNotCheckedItems(ArrayList<String> notCheckedItems) {
