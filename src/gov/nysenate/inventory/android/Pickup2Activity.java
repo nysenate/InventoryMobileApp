@@ -442,6 +442,16 @@ public class Pickup2Activity extends SenateActivity
 
     public void continueButton(View view) {
         Log.i("continueButton", "BEFORE checkServerResponse(true)");
+
+        if (scannedItems.size() < 1) {
+            CharSequence text = "!!ERROR: You must first scan an item to pickup";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            return;
+        }
+
         if (checkServerResponse(true) == OK) {
             progBarPickup2.setVisibility(View.VISIBLE);
             continueBtn.getBackground().setAlpha(70);
