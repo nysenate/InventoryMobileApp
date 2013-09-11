@@ -154,9 +154,9 @@ public class Move extends SenateActivity implements OnItemClickListener
     }
     
     public void editPickup(View view) {
-        Intent intent = new Intent(this, EditPickup1.class);
+        Intent intent = new Intent(this, EditPickup1Activity.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
 }

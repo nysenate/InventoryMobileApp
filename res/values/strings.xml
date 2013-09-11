@@ -57,6 +57,7 @@
     <string name="title_activity_ver_summary">Verification</string>
     <string name="preferences_title">Your Preferences</string>
     <string name="ver_summary_title">Scanned Summary Confirmation</string>
+    <string name = "title_activity_editpickup1">Edit/Cancel Pickup</string>
 
     <string-array name="verify_sort">
         <item>Description</item>

@@ -25,12 +25,12 @@
 	    style="@style/NormalText"   
 	    android:textStyle="bold" />
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
-        android:id="@+id/autoCompletelblTitleMessage"
+        android:id="@+id/acSearchBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="22dp"
-        android:layout_alignRight="@+id/btnDelivery1Cont"
+        android:layout_alignRight="@+id/btnEditPickup1Cont"
         android:layout_below="@+id/tvLblSearchBy"
         android:layout_marginTop="20dp"
         android:ems="10"
@@ -47,8 +47,8 @@
         android:layout_width="500dp"
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/autoCompletelblTitleMessage"
-        android:layout_alignRight="@+id/btnDelivery1Cont"
-        android:layout_below="@+id/autoCompletelblTitleMessage"
+        android:layout_alignRight="@+id/btnEditPickup1Cont"
+        android:layout_below="@+id/acSearchBy"
         android:layout_marginTop="21dp"
         android:background="@drawable/customshape" >
 
@@ -122,7 +122,7 @@
     </TableLayout>
 
     <Button
-        android:id="@+id/btnDelivery1Cont"
+        android:id="@+id/btnEditPickup1Cont"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -140,11 +140,11 @@
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/btnDelivery1Cancel"
+        android:id="@+id/btnEditPickup1Cancel"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_alignBaseline="@+id/btnDelivery1Cont"
-        android:layout_alignBottom="@+id/btnDelivery1Cont"
+        android:layout_alignBaseline="@+id/btnEditPickup1Cont"
+        android:layout_alignBottom="@+id/btnEditPickup1Cont"
         android:layout_alignLeft="@+id/tableLayout1"
         android:background="@drawable/buttonshapered"
         android:onClick="cancelButton"
@@ -157,7 +157,7 @@
         android:textSize="30sp" />
     
    <ProgressBar
-        android:id="@+id/progBarDelivery1"
+        android:id="@+id/progBarEditPickup1"
         style="?android:attr/progressBarStyleLarge"        
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
