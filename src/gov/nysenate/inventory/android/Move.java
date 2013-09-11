@@ -22,18 +22,19 @@ public class Move extends SenateActivity implements OnItemClickListener
     public String URL = null;
     TextView pickupDeliveryStats;
 
-    public static final String[] titles = new String[] { "Pickup", "Delivery",
+    public static final String[] titles = new String[] { "New Pickup", "Edit Existing Pickup", "Delivery",
             "Main Menu" };/* , "Pickup/Deliver Log" */
 
     public static final String[] descriptions = new String[] {
             "Pickup items from initial location",
+            "Edit/Cancel Pickup or remove Items from Pickup",
             "Deliver items that have been picked up to a new location",
             "Return to the Main Menu" }; /*
                                           * ,
                                           * "Show History on Pickup/Delivered items"
                                           */
 
-    public static final Integer[] images = { R.drawable.pickup3,
+    public static final Integer[] images = { R.drawable.pickup, R.drawable.editpickup,
             R.drawable.delivery2, R.drawable.mainmenu }; /* , R.drawable.log */
 
     ListView listView;
@@ -72,7 +73,7 @@ public class Move extends SenateActivity implements OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id) {
         RowItem curRow = rowItems.get(position);
-        if (curRow.getTitle().equalsIgnoreCase("Pickup")) {
+        if (curRow.getTitle().equalsIgnoreCase("New Pickup")) {
             if (checkServerResponse(true) == OK) {
                 progBarMove.setVisibility(View.VISIBLE);
                 this.pickup(view);
@@ -87,6 +88,9 @@ public class Move extends SenateActivity implements OnItemClickListener
         } else if (curRow.getTitle().equalsIgnoreCase("Main Menu")) {
             this.onBackPressed();
             progBarMove.setVisibility(View.INVISIBLE);
+        } else if (curRow.getTitle().equalsIgnoreCase("Edit Existing Pickup")) {
+            progBarMove.setVisibility(View.INVISIBLE);
+            this.editPickup(view);
         }
 
         /*
@@ -147,6 +151,12 @@ public class Move extends SenateActivity implements OnItemClickListener
         startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
 
+    }
+    
+    public void editPickup(View view) {
+        Intent intent = new Intent(this, EditPickup1.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 
 }

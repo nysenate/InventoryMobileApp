@@ -1,0 +1,170 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditPickup1" >
+	<TextView
+    android:id="@+id/tvLblSearchBy"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_marginLeft="145dp"
+    android:layout_below="@+id/textView1"
+    android:layout_marginTop="3dp"
+    android:text="Search By:"
+    android:textSize="25sp"
+    android:textStyle="bold" />
+    
+    <Spinner
+	    android:id="@+id/spinSearchByList"
+	    android:layout_width="190dp"
+	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@+id/tvLblSearchBy"
+	    android:entries="@array/editpickup_searchby"
+	    android:gravity="center"
+	    style="@style/NormalText"   
+	    android:textStyle="bold" />
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+        android:id="@+id/autoCompletelblTitleMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="22dp"
+        android:layout_alignRight="@+id/btnDelivery1Cont"
+        android:layout_below="@+id/tvLblSearchBy"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/delivery1_hint"
+        android:singleLine="true"
+ 		style="@style/NormalText"   
+        android:textStyle="bold"   >
+
+        <requestFocus />
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="500dp"
+        android:layout_height="200dp"
+        android:layout_alignLeft="@+id/autoCompletelblTitleMessage"
+        android:layout_alignRight="@+id/btnDelivery1Cont"
+        android:layout_below="@+id/autoCompletelblTitleMessage"
+        android:layout_marginTop="21dp"
+        android:background="@drawable/customshape" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvHeadDetailsD"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:gravity="center"
+                android:text="Selected Location Information "
+ 				style="@style/NormalText"   
+                android:textColor="@color/bluedark" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOfficeD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+ 				style="@style/NormalText"   
+                android:text="Resp Center Hd:" />
+
+            <TextView
+                android:id="@+id/tvOfficeD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                style="@style/NormalText"   
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescrD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                style="@style/NormalText"   
+                android:text="Address:" />
+
+            <TextView
+                android:id="@+id/tvDescriptD"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                style="@style/NormalText"   
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tbLabelCountD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                style="@style/NormalText"   
+                android:text="Item Count:" />
+
+            <TextView
+                android:id="@+id/tvCountD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                style="@style/NormalText"   
+                android:text="N/A" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/btnDelivery1Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="34dp"
+        android:layout_marginRight="28dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnDelivery1Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnDelivery1Cont"
+        android:layout_alignBottom="@+id/btnDelivery1Cont"
+        android:layout_alignLeft="@+id/tableLayout1"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+    
+   <ProgressBar
+        android:id="@+id/progBarDelivery1"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+
+</RelativeLayout>
