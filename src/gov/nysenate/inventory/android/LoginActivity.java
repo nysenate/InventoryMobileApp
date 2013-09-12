@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,12 +27,14 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -903,13 +906,38 @@ public class LoginActivity extends SenateActivity
                     overridePendingTransition(R.anim.slide_in_left,
                             R.anim.slide_out_left);
                 }
-            } else if (res.trim().startsWith("!!ERROR :")) {
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(this, res.trim(), duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                buttonLogin.getBackground().setAlpha(255);
-                progressBarLogin.setVisibility(View.INVISIBLE);
+            } else if (res.trim().startsWith("!!ERROR: ")) {
+                if (res.trim().startsWith("!!ERROR: No security clearance has been given")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            LoginActivity.this);
+                    builder.setMessage(
+                            Html.fromHtml(res.trim()))
+                            .setTitle(
+                                    Html.fromHtml("<font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font>"))
+                            .setPositiveButton("Close App",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog,
+                                                int id) {
+                                            // User cancelled the dialog
+                                            // finish();
+                                            closeAllActivities();
+                                        }
+                                    });
+                    // show the alert message
+                    Dialog dialog = builder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();                    
+                }
+                else {
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(this, res.trim(), duration);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                }
 
             } else {
                 int duration = Toast.LENGTH_LONG;

@@ -40,6 +40,7 @@ public class EditPickup1Activity extends SenateActivity
     static ClearableAutoCompleteTextView acSearchBy;// for location
                                                                // code
     public ArrayList<String> locCodeList = new ArrayList<String>();
+    public ArrayList<SimpleListItem> searchByList = new ArrayList<SimpleListItem>();
     String URL = "";
     public String res = null;
     public String status = null;
@@ -55,7 +56,7 @@ public class EditPickup1Activity extends SenateActivity
     public static ProgressBar progBarEditPickup1;
     Activity currentActivity;
     String timeoutFrom = "EditPickup1";
-    public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
+    public final int SEARCHBYLIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
     boolean locationBeingTyped = false;
 
@@ -93,7 +94,7 @@ public class EditPickup1Activity extends SenateActivity
                         locationBeingTyped = false;
                     }
                 });
-        getLocCodeList();
+        getSearchByList();
         // code for textwatcher
         // for origin location code
         // loc_code = (EditText) findViewById(R.id.editText1);
@@ -131,8 +132,8 @@ public class EditPickup1Activity extends SenateActivity
         Log.i("onActivityResult", "start");
 
         switch (requestCode) {
-        case LOCCODELIST_TIMEOUT:
-            Log.i("onActivityResult", "LOCCODELIST WAS TIMED OUT");
+        case SEARCHBYLIST_TIMEOUT:
+            Log.i("onActivityResult", "SEARCHBYLIST WAS TIMED OUT");
             if (resultCode == RESULT_OK) {
                 if (locationBeingTyped) {
                     acSearchBy.setText(acSearchBy
@@ -140,7 +141,7 @@ public class EditPickup1Activity extends SenateActivity
                     acSearchBy.setSelection(acSearchBy
                             .getText().length());
                 } else {
-                    getLocCodeList();
+                    getSearchByList();
                 }
                 break;
             } else {
@@ -392,7 +393,7 @@ public class EditPickup1Activity extends SenateActivity
         }
     }
 
-    public void getLocCodeList() {
+    public void getSearchByList() {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -402,17 +403,20 @@ public class EditPickup1Activity extends SenateActivity
 
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            Log.i("getSearchByList", URL + "/PickupSearchByList");
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocCodeList?NATYPE=DELIVERY");
+                    .execute(URL + "/PickupSearchByList");
+            Log.i("getSearchByList", "CHECK RESULTS:" + URL + "/PickupSearchByList");
             try {
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
+                    Log.i("getSearchByList", "RESULTS:" + res);
                     if (res == null) {
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.LOCCODELIST_TIMEOUT);
+                        startTimeout(this.SEARCHBYLIST_TIMEOUT);
                         return;
                     }
                 } catch (NullPointerException e) {
@@ -423,9 +427,17 @@ public class EditPickup1Activity extends SenateActivity
 
                 String jsonString = resr1.get().trim().toString();
                 JSONArray jsonArray = new JSONArray(jsonString);
+                Log.i("TEST","JSON RETURNED:"+jsonString);
+                
 
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    locCodeList.add(jsonArray.getString(i).toString());
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    SimpleListItem currentItem = new SimpleListItem();
+                    currentItem.setNatype(jsonObject.getString("natype"));
+                    currentItem.setNavalue(jsonObject.getString("navalue"));
+                    searchByList.add(currentItem);
+                    //locCodeList.add(jsonArray.getString(i).toString());
+                    
                 }
 
                 Collections.sort(locCodeList);
