@@ -71,6 +71,7 @@ public class LoginActivity extends SenateActivity
     String senateVisitorSSIDpwd = "";
     String wifiMessage = "" /* "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app." */;
     String currentSSID = "";
+    public static String defrmint = null;
     public static String nauser = null;
     Resources resources = null;
     static ClearableEditText user_name;
@@ -192,6 +193,7 @@ public class LoginActivity extends SenateActivity
                                           // use same object elsewhere in
                                           // project
             URL = properties.get("WEBAPP_BASE_URL").toString();
+            this.defrmint = properties.get("DEFRMINT").toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -849,7 +851,7 @@ public class LoginActivity extends SenateActivity
                             .get("WEBAPP_BASE_URL").toString();
                     AsyncTask<String, String, String> resr1 = new RequestTask()
                             .execute(URL + "/Login?user=" + user_name + "&pwd="
-                                    + password);
+                                    + password+"&defrmint="+defrmint);
                     try {
                         res = resr1.get().trim().toString();
                         if (res == null) {
