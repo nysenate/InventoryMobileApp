@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Delivery2" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="19dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/editpickup2_msg"
+        style="@style/NormalText"    />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="wrap_content"
+        android:layout_height="600dp"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/tvLbDel2Dttime" >
+
+    </ListView>
+     
+    <ProgressBar
+        android:id="@+id/progBarEditPickup2"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvLbDel2Count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvLbDel2PickupBy"
+        android:layout_alignBottom="@+id/tvLbDel2PickupBy"
+        android:layout_alignParentRight="true"
+        android:text="Count"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvLbDel2Dttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/listView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="20dp"
+        android:text="Date/Time"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvLbDel2PickupBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView1"
+        android:layout_marginRight="22dp"
+        android:layout_toLeftOf="@+id/progBarEditPickup2"
+        android:text="Pickup By"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvLbDel2Locat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView1"
+        android:layout_marginLeft="53dip"
+        android:layout_toRightOf="@+id/tvLbDel2PickupBy"
+        android:text="From Location"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnEditPickup2Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/listView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+   
+</RelativeLayout>

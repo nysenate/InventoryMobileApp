@@ -3,15 +3,15 @@ package gov.nysenate.inventory.android;
 
 public class SimpleListItem
 {
-  String natype;
-  String navalue;
+  String natype = "";
+  String navalue = "";
 
  public void setNatype (String natype){
    this.natype = natype;
  }
 
  public void setNavalue(String navalue) {
-   this.natype = natype;
+   this.navalue = navalue;
  }
  
  public String getNatype() {

@@ -32,14 +32,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditPickup1Activity extends SenateActivity
 {
-    static ClearableAutoCompleteTextView acSearchBy;// for location
-                                                               // code
-    public ArrayList<String> locCodeList = new ArrayList<String>();
+    static Spinner spinSearchByList;  // Search Type
+    static ClearableAutoCompleteTextView acSearchBy; // Actual Search Auto Complete
+    public ArrayList<String> searchList = new ArrayList<String>();
     public ArrayList<SimpleListItem> searchByList = new ArrayList<SimpleListItem>();
     String URL = "";
     public String res = null;
@@ -94,6 +95,15 @@ public class EditPickup1Activity extends SenateActivity
                         locationBeingTyped = false;
                     }
                 });
+        spinSearchByList = (Spinner) findViewById(R.id.spinSearchByList); 
+        spinSearchByList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                acSearchBy.setText("");
+                fillSearchByList();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         getSearchByList();
         // code for textwatcher
         // for origin location code
@@ -166,6 +176,47 @@ public class EditPickup1Activity extends SenateActivity
                 Log.i("onActivityResult", "TIMED OUT NOT OK");
             }
         }
+    }
+    
+    public void fillSearchByList() {
+        searchList = new ArrayList<String>();
+        String searchTypeFilter = searchType();
+        System.out.println ("searchTypeFilter:"+searchTypeFilter);
+        for (int x=0;x<searchByList.size();x++){
+            SimpleListItem currentSimpleItem = searchByList.get(x);
+            if (currentSimpleItem.getNatype().equals(searchTypeFilter)) {
+                searchList.add(currentSimpleItem.getNavalue());
+            }
+        }
+        System.out.println("SEARCH TYPE LIST SIZE:"+searchList);
+        Collections.sort(searchList);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line,
+                searchList);
+
+        acSearchBy.setAdapter(adapter);
+        
+    }
+    
+    public String searchType() {
+         String[] labels = {"Origin", "Destination", "Picked Up By", "Date"};
+         String[] values = {"CDLOCATFROM", "CDLOCATTO", "NAPICKUPBY", "DTTXNORIGIN"};
+         String currentType =  spinSearchByList.getSelectedItem().toString();
+         int pos = indexOf(currentType, labels);
+         if (pos==-1) {
+             return null;
+         }
+         return values[pos];
+    }
+    
+    public int indexOf(String value, String[] list) {
+         for (int x=0;x<list.length;x++) {
+             if (value.equals(list[x])) {
+                 return x;
+             }
+         }
+         return -1;
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher()
@@ -241,32 +292,57 @@ public class EditPickup1Activity extends SenateActivity
         if (checkServerResponse(true) == OK) {
             btnEditPickup1Cont.getBackground().setAlpha(45);
             int duration = Toast.LENGTH_SHORT;
-
+            
             String currentLocation = acSearchBy.getText()
                     .toString();
+            
+            String currentType= this.spinSearchByList.getSelectedItem().toString().trim();
 
             if (currentLocation.trim().length() == 0) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: You must first pick a Delivery Location.",
-                        duration);
+                Toast toast = null;
+                String firstChar = currentType.substring(0, 1).toUpperCase();
+                if (firstChar.equals("A")||firstChar.equals("E")||firstChar.equals("I")||firstChar.equals("O")||firstChar.equals("U")) {
+                    toast = Toast.makeText(this.getApplicationContext(),
+                            "!!ERROR: You must first pick an "+currentType+".",
+                            duration);
+                }
+                else {
+                    toast = Toast.makeText(this.getApplicationContext(),
+                            "!!ERROR: You must first pick a "+currentType+".",
+                            duration);
+                }
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-            } else if (locCodeList.indexOf(currentLocation) == -1) {
+            } else if (searchList.indexOf(currentLocation) == -1) {
                 btnEditPickup1Cont.getBackground().setAlpha(255);
-                Toast toast = Toast
-                        .makeText(
-                                this.getApplicationContext(),
-                                "!!ERROR: Location Code \""
-                                        + currentLocation
-                                        + "\" is either invalid or not currently a Delivery Location.",
+                Toast toast = null;
+                String firstChar = currentType.substring(0, 1).toUpperCase();
+                if (firstChar.equals("A")||firstChar.equals("E")||firstChar.equals("I")||firstChar.equals("O")||firstChar.equals("U")) {
+
+                    toast = Toast
+                            .makeText(
+                                    this.getApplicationContext(),
+                                    "!!ERROR: "
+                                            + currentLocation
+                                            + "\" is either invalid or not currently an "+currentType+".",
                                 duration);
+                }
+                else {
+                    toast = Toast
+                            .makeText(
+                                    this.getApplicationContext(),
+                                    "!!ERROR: "
+                                            + currentLocation
+                                            + "\" is either invalid or not currently a "+currentType+".",
+                                duration);
+                }
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
             } else {
                 progBarEditPickup1.setVisibility(View.VISIBLE);
-                Intent intent = new Intent(this, Delivery2.class);
+                Intent intent = new Intent(this, EditPickup2Activity.class);
                 intent.putExtra("location", deliveryLocation); // for location
                                                                // code
                                                                // of delivery
@@ -435,19 +511,14 @@ public class EditPickup1Activity extends SenateActivity
                     SimpleListItem currentItem = new SimpleListItem();
                     currentItem.setNatype(jsonObject.getString("natype"));
                     currentItem.setNavalue(jsonObject.getString("navalue"));
+                    System.out.println ("currentItem TYPE:"+currentItem.getNatype()+", VALUE:"+currentItem.getNavalue());
                     searchByList.add(currentItem);
                     //locCodeList.add(jsonArray.getString(i).toString());
                     
                 }
 
-                Collections.sort(locCodeList);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        locCodeList);
-
-                acSearchBy.setAdapter(adapter);
-
+                fillSearchByList();
+                
                 // for destination code
 
             } catch (InterruptedException e) {
