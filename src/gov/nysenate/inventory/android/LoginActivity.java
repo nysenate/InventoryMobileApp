@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.Toasty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -1100,10 +1102,26 @@ public class LoginActivity extends SenateActivity
                 String pwd = password.getText().toString();
                 
                 if (u_name.trim().length()==0 & pwd.trim().length()==0) {
-                    
+                    new Toasty(getApplicationContext(), "!!ERRROR: Username and password must be entered.").showMessage();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                    return;
                 }
+                else if (u_name.trim().length()==0) {
+                    new Toasty(getApplicationContext(), "!!ERRROR: Username must be entered.").showMessage();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                    return;
+               }
+               else if (pwd.trim().length()==0) {
+                   new Toasty(getApplicationContext(), "!!ERRROR: Password must be entered.").showMessage();
+                   buttonLogin.getBackground().setAlpha(255);
+                   progressBarLogin.setVisibility(View.INVISIBLE);
+                   return;
+               }
                 
-                this.login(u_name, pwd);
+                
+               this.login(u_name, pwd);
                 /*
                  * Intent intent = new Intent(this,
                  * DisplayMessageActivity.class); // Intent intent = new
