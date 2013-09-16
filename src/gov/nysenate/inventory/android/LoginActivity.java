@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.Toasty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,12 +30,14 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -69,6 +74,7 @@ public class LoginActivity extends SenateActivity
     String senateVisitorSSIDpwd = "";
     String wifiMessage = "" /* "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app." */;
     String currentSSID = "";
+    public static String defrmint = null;
     public static String nauser = null;
     Resources resources = null;
     static ClearableEditText user_name;
@@ -190,6 +196,7 @@ public class LoginActivity extends SenateActivity
                                           // use same object elsewhere in
                                           // project
             URL = properties.get("WEBAPP_BASE_URL").toString();
+            this.defrmint = properties.get("DEFRMINT").toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -847,7 +854,7 @@ public class LoginActivity extends SenateActivity
                             .get("WEBAPP_BASE_URL").toString();
                     AsyncTask<String, String, String> resr1 = new RequestTask()
                             .execute(URL + "/Login?user=" + user_name + "&pwd="
-                                    + password);
+                                    + password+"&defrmint="+defrmint);
                     try {
                         res = resr1.get().trim().toString();
                         if (res == null) {
@@ -904,13 +911,38 @@ public class LoginActivity extends SenateActivity
                     overridePendingTransition(R.anim.slide_in_left,
                             R.anim.slide_out_left);
                 }
-            } else if (res.trim().startsWith("!!ERROR :")) {
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(this, res.trim(), duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                buttonLogin.getBackground().setAlpha(255);
-                progressBarLogin.setVisibility(View.INVISIBLE);
+            } else if (res.trim().startsWith("!!ERROR: ")) {
+                if (res.trim().startsWith("!!ERROR: No security clearance has been given")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(
+                            LoginActivity.this);
+                    builder.setMessage(
+                            Html.fromHtml(res.trim()))
+                            .setTitle(
+                                    Html.fromHtml("<font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font>"))
+                            .setPositiveButton("Close App",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog,
+                                                int id) {
+                                            // User cancelled the dialog
+                                            // finish();
+                                            closeAllActivities();
+                                        }
+                                    });
+                    // show the alert message
+                    Dialog dialog = builder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();                    
+                }
+                else {
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(this, res.trim(), duration);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                }
 
             } else {
                 int duration = Toast.LENGTH_LONG;
@@ -1069,7 +1101,28 @@ public class LoginActivity extends SenateActivity
                 progressBarLogin.setVisibility(View.VISIBLE);
                 String u_name = user_name.getText().toString();
                 String pwd = password.getText().toString();
-                this.login(u_name, pwd);
+                
+                if (u_name.trim().length()==0 & pwd.trim().length()==0) {
+                    new Toasty(getApplicationContext(), "!!ERRROR: Username and password must be entered.").showMessage();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                    return;
+                }
+                else if (u_name.trim().length()==0) {
+                    new Toasty(getApplicationContext(), "!!ERRROR: Username must be entered.").showMessage();
+                    buttonLogin.getBackground().setAlpha(255);
+                    progressBarLogin.setVisibility(View.INVISIBLE);
+                    return;
+               }
+               else if (pwd.trim().length()==0) {
+                   new Toasty(getApplicationContext(), "!!ERRROR: Password must be entered.").showMessage();
+                   buttonLogin.getBackground().setAlpha(255);
+                   progressBarLogin.setVisibility(View.INVISIBLE);
+                   return;
+               }
+                
+                
+               this.login(u_name, pwd);
                 /*
                  * Intent intent = new Intent(this,
                  * DisplayMessageActivity.class); // Intent intent = new

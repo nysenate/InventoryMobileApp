@@ -32,14 +32,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EditPickup1 extends SenateActivity
+public class EditPickup1Activity extends SenateActivity
 {
-    static ClearableAutoCompleteTextView autoCompleteTextView1;// for location
-                                                               // code
-    public ArrayList<String> locCodeList = new ArrayList<String>();
+    static Spinner spinSearchByList;  // Search Type
+    static ClearableAutoCompleteTextView acSearchBy; // Actual Search Auto Complete
+    public ArrayList<String> searchList = new ArrayList<String>();
+    public ArrayList<SimpleListItem> searchByList = new ArrayList<SimpleListItem>();
     String URL = "";
     public String res = null;
     public String status = null;
@@ -55,14 +57,14 @@ public class EditPickup1 extends SenateActivity
     public static ProgressBar progBarEditPickup1;
     Activity currentActivity;
     String timeoutFrom = "EditPickup1";
-    public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
+    public final int SEARCHBYLIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
     boolean locationBeingTyped = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_EditPickup1);
+        setContentView(R.layout.activity_editpickup1);
         registerBaseActivityReceiver();
         currentActivity = this;
 
@@ -78,9 +80,9 @@ public class EditPickup1 extends SenateActivity
                 .findViewById(R.id.progBarEditPickup1);
 
         // for origin dest code
-        autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-        autoCompleteTextView1.setThreshold(1);
-        autoCompleteTextView1
+        acSearchBy = (ClearableAutoCompleteTextView) findViewById(R.id.acSearchBy);
+        acSearchBy.setThreshold(1);
+        acSearchBy
                 .setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
@@ -88,17 +90,26 @@ public class EditPickup1 extends SenateActivity
                             int position, long id) {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
-                                autoCompleteTextView1.getWindowToken(), 0);
-                        autoCompleteTextView1.setSelection(0);
+                                acSearchBy.getWindowToken(), 0);
+                        acSearchBy.setSelection(0);
                         locationBeingTyped = false;
                     }
                 });
-        getLocCodeList();
+        spinSearchByList = (Spinner) findViewById(R.id.spinSearchByList); 
+        spinSearchByList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                acSearchBy.setText("");
+                fillSearchByList();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        getSearchByList();
         // code for textwatcher
         // for origin location code
         // loc_code = (EditText) findViewById(R.id.editText1);
         // loc_code.addTextChangedListener(filterTextWatcher);
-        autoCompleteTextView1.addTextChangedListener(filterTextWatcher);
+        acSearchBy.addTextChangedListener(filterTextWatcher);
         // autoCompleteTextView2.addTextChangedListener(filterTextWatcher2);
         loc_details = (TextView) findViewById(R.id.textView2);
         // loc_details.findFocus(); we can use this to find focus
@@ -112,11 +123,11 @@ public class EditPickup1 extends SenateActivity
         btnEditPickup1Cont.getBackground().setAlpha(255);
         btnEditPickup1Cancel = (Button) findViewById(R.id.btnEditPickup1Cancel);
         btnEditPickup1Cancel.getBackground().setAlpha(255);
-        if (EditPickup1.progBarEditPickup1 == null) {
-            EditPickup1.progBarEditPickup1 = (ProgressBar) this
+        if (progBarEditPickup1 == null) {
+            progBarEditPickup1 = (ProgressBar) this
                     .findViewById(R.id.progBarEditPickup1);
         }
-        EditPickup1.progBarEditPickup1.setVisibility(View.INVISIBLE);
+        progBarEditPickup1.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -131,16 +142,16 @@ public class EditPickup1 extends SenateActivity
         Log.i("onActivityResult", "start");
 
         switch (requestCode) {
-        case LOCCODELIST_TIMEOUT:
-            Log.i("onActivityResult", "LOCCODELIST WAS TIMED OUT");
+        case SEARCHBYLIST_TIMEOUT:
+            Log.i("onActivityResult", "SEARCHBYLIST WAS TIMED OUT");
             if (resultCode == RESULT_OK) {
                 if (locationBeingTyped) {
-                    autoCompleteTextView1.setText(autoCompleteTextView1
+                    acSearchBy.setText(acSearchBy
                             .getText());
-                    autoCompleteTextView1.setSelection(autoCompleteTextView1
+                    acSearchBy.setSelection(acSearchBy
                             .getText().length());
                 } else {
-                    getLocCodeList();
+                    getSearchByList();
                 }
                 break;
             } else {
@@ -157,7 +168,7 @@ public class EditPickup1 extends SenateActivity
                     public void run() {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
-                                autoCompleteTextView1.getWindowToken(), 0);
+                                acSearchBy.getWindowToken(), 0);
                     }
                 }, 50);
                 break;
@@ -165,6 +176,47 @@ public class EditPickup1 extends SenateActivity
                 Log.i("onActivityResult", "TIMED OUT NOT OK");
             }
         }
+    }
+    
+    public void fillSearchByList() {
+        searchList = new ArrayList<String>();
+        String searchTypeFilter = searchType();
+        System.out.println ("searchTypeFilter:"+searchTypeFilter);
+        for (int x=0;x<searchByList.size();x++){
+            SimpleListItem currentSimpleItem = searchByList.get(x);
+            if (currentSimpleItem.getNatype().equals(searchTypeFilter)) {
+                searchList.add(currentSimpleItem.getNavalue());
+            }
+        }
+        System.out.println("SEARCH TYPE LIST SIZE:"+searchList);
+        Collections.sort(searchList);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line,
+                searchList);
+
+        acSearchBy.setAdapter(adapter);
+        
+    }
+    
+    public String searchType() {
+         String[] labels = {"Origin", "Destination", "Picked Up By", "Date"};
+         String[] values = {"CDLOCATFROM", "CDLOCATTO", "NAPICKUPBY", "DTTXNORIGIN"};
+         String currentType =  spinSearchByList.getSelectedItem().toString();
+         int pos = indexOf(currentType, labels);
+         if (pos==-1) {
+             return null;
+         }
+         return values[pos];
+    }
+    
+    public int indexOf(String value, String[] list) {
+         for (int x=0;x<list.length;x++) {
+             if (value.equals(list[x])) {
+                 return x;
+             }
+         }
+         return -1;
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher()
@@ -183,7 +235,7 @@ public class EditPickup1 extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             locationBeingTyped = true;
-            int textLength = autoCompleteTextView1.getText().toString()
+            int textLength = acSearchBy.getText().toString()
                     .length();
             if (textLength == 0) {
                 tvOfficeD.setText("N/A");
@@ -193,7 +245,7 @@ public class EditPickup1 extends SenateActivity
                 getLocationDetails();
                 // loc_details.setText(res);
                 // loc_details.append("\n"+loc_code.getText().toString());
-                // autoCompleteTextView1.setText(barcode_num);
+                // acSearchBy.setText(barcode_num);
             }
         }
     };
@@ -238,34 +290,59 @@ public class EditPickup1 extends SenateActivity
 
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
-            EditPickup1.btnEditPickup1Cont.getBackground().setAlpha(45);
+            btnEditPickup1Cont.getBackground().setAlpha(45);
             int duration = Toast.LENGTH_SHORT;
-
-            String currentLocation = EditPickup1.autoCompleteTextView1.getText()
+            
+            String currentLocation = acSearchBy.getText()
                     .toString();
+            
+            String currentType= this.spinSearchByList.getSelectedItem().toString().trim();
 
             if (currentLocation.trim().length() == 0) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: You must first pick a Delivery Location.",
-                        duration);
+                Toast toast = null;
+                String firstChar = currentType.substring(0, 1).toUpperCase();
+                if (firstChar.equals("A")||firstChar.equals("E")||firstChar.equals("I")||firstChar.equals("O")||firstChar.equals("U")) {
+                    toast = Toast.makeText(this.getApplicationContext(),
+                            "!!ERROR: You must first pick an "+currentType+".",
+                            duration);
+                }
+                else {
+                    toast = Toast.makeText(this.getApplicationContext(),
+                            "!!ERROR: You must first pick a "+currentType+".",
+                            duration);
+                }
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-            } else if (locCodeList.indexOf(currentLocation) == -1) {
-                EditPickup1.btnEditPickup1Cont.getBackground().setAlpha(255);
-                Toast toast = Toast
-                        .makeText(
-                                this.getApplicationContext(),
-                                "!!ERROR: Location Code \""
-                                        + currentLocation
-                                        + "\" is either invalid or not currently a Delivery Location.",
+            } else if (searchList.indexOf(currentLocation) == -1) {
+                btnEditPickup1Cont.getBackground().setAlpha(255);
+                Toast toast = null;
+                String firstChar = currentType.substring(0, 1).toUpperCase();
+                if (firstChar.equals("A")||firstChar.equals("E")||firstChar.equals("I")||firstChar.equals("O")||firstChar.equals("U")) {
+
+                    toast = Toast
+                            .makeText(
+                                    this.getApplicationContext(),
+                                    "!!ERROR: "
+                                            + currentLocation
+                                            + "\" is either invalid or not currently an "+currentType+".",
                                 duration);
+                }
+                else {
+                    toast = Toast
+                            .makeText(
+                                    this.getApplicationContext(),
+                                    "!!ERROR: "
+                                            + currentLocation
+                                            + "\" is either invalid or not currently a "+currentType+".",
+                                duration);
+                }
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
             } else {
                 progBarEditPickup1.setVisibility(View.VISIBLE);
-                Intent intent = new Intent(this, Delivery2.class);
+                Intent intent = new Intent(this, EditPickup2Activity.class);
                 intent.putExtra("location", deliveryLocation); // for location
                                                                // code
                                                                // of delivery
@@ -276,7 +353,7 @@ public class EditPickup1 extends SenateActivity
     }
 
     public void cancelButton(View view) {
-        EditPickup1.btnEditPickup1Cancel.getBackground().setAlpha(45);
+        btnEditPickup1Cancel.getBackground().setAlpha(45);
         Intent intent = new Intent(this, Move.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
@@ -291,8 +368,8 @@ public class EditPickup1 extends SenateActivity
     }
 
     public void getLocationDetails() {
-        deliveryLocation = autoCompleteTextView1.getText().toString().trim();
-        String barcodeNumberDetails[] = autoCompleteTextView1.getText()
+        deliveryLocation = acSearchBy.getText().toString().trim();
+        String barcodeNumberDetails[] = acSearchBy.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
                                                      // passed to the
@@ -392,7 +469,7 @@ public class EditPickup1 extends SenateActivity
         }
     }
 
-    public void getLocCodeList() {
+    public void getSearchByList() {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -402,17 +479,20 @@ public class EditPickup1 extends SenateActivity
 
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            Log.i("getSearchByList", URL + "/PickupSearchByList");
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocCodeList?NATYPE=DELIVERY");
+                    .execute(URL + "/PickupSearchByList");
+            Log.i("getSearchByList", "CHECK RESULTS:" + URL + "/PickupSearchByList");
             try {
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
+                    Log.i("getSearchByList", "RESULTS:" + res);
                     if (res == null) {
                         noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.LOCCODELIST_TIMEOUT);
+                        startTimeout(this.SEARCHBYLIST_TIMEOUT);
                         return;
                     }
                 } catch (NullPointerException e) {
@@ -423,19 +503,22 @@ public class EditPickup1 extends SenateActivity
 
                 String jsonString = resr1.get().trim().toString();
                 JSONArray jsonArray = new JSONArray(jsonString);
+                Log.i("TEST","JSON RETURNED:"+jsonString);
+                
 
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    locCodeList.add(jsonArray.getString(i).toString());
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    SimpleListItem currentItem = new SimpleListItem();
+                    currentItem.setNatype(jsonObject.getString("natype"));
+                    currentItem.setNavalue(jsonObject.getString("navalue"));
+                    System.out.println ("currentItem TYPE:"+currentItem.getNatype()+", VALUE:"+currentItem.getNavalue());
+                    searchByList.add(currentItem);
+                    //locCodeList.add(jsonArray.getString(i).toString());
+                    
                 }
 
-                Collections.sort(locCodeList);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        locCodeList);
-
-                autoCompleteTextView1.setAdapter(adapter);
-
+                fillSearchByList();
+                
                 // for destination code
 
             } catch (InterruptedException e) {
