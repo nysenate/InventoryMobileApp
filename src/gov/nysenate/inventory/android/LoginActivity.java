@@ -1098,6 +1098,11 @@ public class LoginActivity extends SenateActivity
                 progressBarLogin.setVisibility(View.VISIBLE);
                 String u_name = user_name.getText().toString();
                 String pwd = password.getText().toString();
+                
+                if (u_name.trim().length()==0 & pwd.trim().length()==0) {
+                    
+                }
+                
                 this.login(u_name, pwd);
                 /*
                  * Intent intent = new Intent(this,
