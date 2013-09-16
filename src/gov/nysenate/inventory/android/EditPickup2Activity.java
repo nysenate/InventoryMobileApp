@@ -34,7 +34,7 @@ public class EditPickup2Activity extends SenateActivity
     String status = null;
     String URL = null;
     String res = null;
-    public ArrayList<String> deliveryList = new ArrayList<String>();
+    public ArrayList<String> editPickupList = new ArrayList<String>();
     public ArrayList<PickupGroup> pickupGroups = new ArrayList<PickupGroup>();
     public String locCode = null;
     ListView listview;
@@ -43,8 +43,8 @@ public class EditPickup2Activity extends SenateActivity
     static ProgressBar progBarEditPickup2;
     static Button btnEditPickupActivity2Cancel;
     Activity currentActivity;
-    String timeoutFrom = "delivery1";
-    public final int DELIVERYLIST_TIMEOUT = 101;
+    String timeoutFrom = "EditPickup2";
+    public final int EDITPICKUPLIST_TIMEOUT = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +59,12 @@ public class EditPickup2Activity extends SenateActivity
 
         // define intent
 
-        intent = new Intent(this, Delivery3.class);
+        intent = new Intent(this, EditPickupMenu.class);
         // 1. Get the intent from Delivery1 activity and display it
 
         StringBuilder sb = new StringBuilder();
         sb.append("Please select pickup for delivery to<br/><b>");
-        sb.append(Delivery1.autoCompleteTextView1.getText().toString());
+        sb.append(EditPickup1Activity.acSearchBy.getText().toString());
         sb.append("</b>");
 
         location = getIntent().getStringExtra("location");
@@ -72,7 +72,7 @@ public class EditPickup2Activity extends SenateActivity
         loc_details.setText(Html.fromHtml(sb.toString()));
         listview = (ListView) findViewById(R.id.listView1);
 
-        getDeliveryList();
+        geteditPickupList();
         // listener for list click
         listview.setTextFilterEnabled(true);
         listview.setOnItemClickListener(new OnItemClickListener()
@@ -98,7 +98,7 @@ public class EditPickup2Activity extends SenateActivity
             }
 
         });
-        Delivery1.progBarDelivery1.setVisibility(View.VISIBLE);
+        EditPickup1Activity.progBarEditPickup1.setVisibility(View.VISIBLE);
 
     }
 
@@ -178,15 +178,15 @@ public class EditPickup2Activity extends SenateActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case DELIVERYLIST_TIMEOUT:
+        case EDITPICKUPLIST_TIMEOUT:
             if (resultCode == RESULT_OK) {
-                getDeliveryList();
+                geteditPickupList();
                 break;
             }
         }
     }
 
-    public void getDeliveryList() {
+    public void geteditPickupList() {
         // separate location code from the description
         String locDesc[] = location.split("-");
         locCode = locDesc[0];
@@ -212,7 +212,7 @@ public class EditPickup2Activity extends SenateActivity
                         this.noServerResponse();
                         return;
                     } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.DELIVERYLIST_TIMEOUT);
+                        startTimeout(this.EDITPICKUPLIST_TIMEOUT);
                         return;
                     }
 
