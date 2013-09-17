@@ -17,6 +17,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -36,9 +37,10 @@ public class EditPickup2Activity extends SenateActivity
     String res = null;
     public ArrayList<String> editPickupList = new ArrayList<String>();
     public ArrayList<PickupGroup> pickupGroups = new ArrayList<PickupGroup>();
-    public String locCode = null;
+    public String searchByCode = null;
     ListView listview;
-    String location = "";
+    String searchBy = "";
+    String searchByType = "";
     Intent intent;
     static ProgressBar progBarEditPickup2;
     static Button btnEditPickupActivity2Cancel;
@@ -67,12 +69,13 @@ public class EditPickup2Activity extends SenateActivity
         sb.append(EditPickup1Activity.acSearchBy.getText().toString());
         sb.append("</b>");
 
-        location = getIntent().getStringExtra("location");
+        searchByType = getIntent().getStringExtra("searchByType");
+        searchBy = getIntent().getStringExtra("searchBy");
         loc_details = (TextView) findViewById(R.id.textView1);
         loc_details.setText(Html.fromHtml(sb.toString()));
         listview = (ListView) findViewById(R.id.listView1);
 
-        geteditPickupList();
+        getEditPickupList();
         // listener for list click
         listview.setTextFilterEnabled(true);
         listview.setOnItemClickListener(new OnItemClickListener()
@@ -89,7 +92,8 @@ public class EditPickup2Activity extends SenateActivity
                     // String [] itemDetails=selectedPickup.split(":");
                     String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
 
-                    intent.putExtra("location", location);
+                    intent.putExtra("searchByType", searchByType);
+                    intent.putExtra("searchBy", searchBy);
                     intent.putExtra("nuxrpd", nuxrpd);
 
                     startActivity(intent);
@@ -180,16 +184,17 @@ public class EditPickup2Activity extends SenateActivity
         switch (requestCode) {
         case EDITPICKUPLIST_TIMEOUT:
             if (resultCode == RESULT_OK) {
-                geteditPickupList();
+                getEditPickupList();
                 break;
             }
         }
     }
 
-    public void geteditPickupList() {
+    public void getEditPickupList() {
         // separate location code from the description
-        String locDesc[] = location.split("-");
-        locCode = locDesc[0];
+        String searchBySplit[] = searchBy.split("-");
+        searchByCode = searchBySplit[0];
+        Log.i("getEditPickupList", "searchBy:"+searchBy+" searchBySplit[0]:"+searchByCode);
 
         // 2. Display all the in transit moves for the current location
         // check network connection
@@ -202,8 +207,9 @@ public class EditPickup2Activity extends SenateActivity
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
+            Log.i("getEditPickupList", URL + "/PickupList?"+searchByType.toLowerCase()+"=" +searchByCode);
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/DeliveryList?loc_code=" + locCode);
+                    .execute(URL + "/PickupList?"+searchByType.toLowerCase()+"=" +searchByCode);
             try {
                 try {
                     res = null;

@@ -47,7 +47,7 @@ public class EditPickup1Activity extends SenateActivity
     public String status = null;
     public String loc_code_str = null;
     public TextView loc_details;
-    public String deliveryLocation = null;
+    public String searchBy = null;
     static Button btnEditPickup1Cont;
     static Button btnEditPickup1Cancel;
     TextView tvOfficeD;
@@ -343,9 +343,8 @@ public class EditPickup1Activity extends SenateActivity
             } else {
                 progBarEditPickup1.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(this, EditPickup2Activity.class);
-                intent.putExtra("location", deliveryLocation); // for location
-                                                               // code
-                                                               // of delivery
+                intent.putExtra("searchByType", searchType());
+                intent.putExtra("searchBy", searchBy); 
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
@@ -368,7 +367,7 @@ public class EditPickup1Activity extends SenateActivity
     }
 
     public void getLocationDetails() {
-        deliveryLocation = acSearchBy.getText().toString().trim();
+        searchBy = acSearchBy.getText().toString().trim();
         String barcodeNumberDetails[] = acSearchBy.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
