@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    
+    <TextView
+    android:id="@+id/edit_pickup_menu_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="50dp"
+    android:text="Edit Pickup Menu"
+    android:textSize="38sp"
+    android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/edit_pickup_menu_list"
+        android:layout_width="400dp"
+        android:layout_height="340dp"
+        android:layout_below="@+id/edit_pickup_menu_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/customshape" >
+    </ListView>
+    
+       <ProgressBar
+        android:id="@+id/edit_pickup_menu_progress_bar"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+    
+</RelativeLayout>
