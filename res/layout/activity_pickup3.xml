@@ -106,13 +106,13 @@
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
-        android:layout_width="300dp"
+        android:layout_width="345dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/blsignImageView"
         android:inputType="textNoSuggestions"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="@string/employee_list_hint" 
+        android:hint="@string/employee_list_hint"
         android:singleLine="true"   >
 
         <requestFocus />
