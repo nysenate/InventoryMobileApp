@@ -13,7 +13,7 @@
         android:layout_below="@+id/tablelayout_header1_pickup2"
         android:layout_above="@+id/btnPickup2Cancel"
         android:layout_marginBottom="18dp"
-        android:layout_marginTop="87dp" >
+        android:layout_marginTop="76dp" >
     </ListView>
 
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="7dp"
 		android:digits="0123456789"
 		android:maxLength="6"        
         android:ems="10"
@@ -39,7 +39,7 @@
     	android:id="@+id/btnPickup2Cont"
     	android:layout_width="200dp"
     	android:layout_height="50dp"
-    	android:layout_marginRight="18dp"
+    	android:layout_marginRight="7dp"
     	android:layout_alignParentBottom="true"
     	android:layout_alignParentRight="true"
     	android:layout_marginBottom="36dp"
@@ -82,13 +82,13 @@
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
-
+   
    <TableLayout
        android:id="@+id/tablelayout_header1_pickup2"       
        android:layout_width="550dp"
        android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"
-       android:layout_marginTop="18dp"
+       android:layout_below="@+id/tvInstructions"
+       android:layout_marginTop="7dp"
        android:layout_centerHorizontal="true"
        android:background="@drawable/customshape" >
 
@@ -155,5 +155,16 @@
 
        
    </TableLayout>
+
+   <TextView
+       android:id="@+id/tvInstructions"
+       style="@style/NormalText"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       android:layout_centerHorizontal="true"
+       android:layout_marginTop="7dp"
+       android:gravity="right"
+       android:text="Please scan or enter item Tag#&apos;s to be Picked Up" />
     
 </RelativeLayout>

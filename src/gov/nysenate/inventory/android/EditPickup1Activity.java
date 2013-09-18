@@ -196,7 +196,7 @@ public class EditPickup1Activity extends SenateActivity
                 searchList);
 
         acSearchBy.setAdapter(adapter);
-        
+       
     }
     
     public String searchType() {
