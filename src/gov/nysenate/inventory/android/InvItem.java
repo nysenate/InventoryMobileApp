@@ -3,7 +3,10 @@ package gov.nysenate.inventory.android;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class InvItem
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class InvItem implements Parcelable
 {
     String decommodityf = "";
     String type = ""; // set to NEW if entered/saved from inside app.
@@ -229,5 +232,55 @@ public class InvItem
         }
 
     }
+
+    // ---------- Code for Parcelable interface ----------
+
+    public InvItem(Parcel in) {
+        readFromParcel(in);
+    }
+
+    public void readFromParcel(Parcel in) {
+        decommodityf = in.readString();
+        type = in.readString();
+        nusenate = in.readString();
+        cdcategory = in.readString();
+        cdlocat = in.readString();
+        cdintransit = in.readString();
+        cdcommodity = in.readString();
+        decomments = in.readString();
+        selected = in.readByte() == 1;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(decommodityf);
+        dest.writeString(type);
+        dest.writeString(nusenate);
+        dest.writeString(cdcategory);
+        dest.writeString(cdlocat);
+        dest.writeString(cdintransit);
+        dest.writeString(cdcommodity);
+        dest.writeString(decomments);
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<InvItem> CREATOR = new Parcelable.Creator<InvItem>()
+    {
+
+        @Override
+        public InvItem createFromParcel(Parcel in) {
+            return new InvItem(in);
+        }
+
+        @Override
+        public InvItem[] newArray(int size) {
+            return new InvItem[size];
+        }
+    };
 
 }
