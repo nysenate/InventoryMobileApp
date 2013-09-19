@@ -3,36 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Delivery3" >
+    
     <TableLayout
         android:id="@+id/delivery_info3"        
         android:layout_width="560dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/tvLblTitle"
         android:layout_marginLeft="18dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="22sp"
         android:background="@drawable/customshape" >
-    		<TableRow>
-    			<TextView
-       		 		android:id="@+id/textView1"
-        			android:layout_width="wrap_content"
-       	 			android:layout_height="wrap_content"
-        			android:layout_alignParentLeft="true"
-        			android:layout_alignParentTop="true"
-        			android:layout_marginLeft="18dp"
-        			android:layout_marginTop="18dp"
-        			android:text="@string/delivery3_msg"
-        			style="@style/NormalText"    />
-    			<TextView
-       		 		android:id="@+id/tvItemCount"
-        			android:layout_width="match_parent"
-       	 			android:layout_height="wrap_content"
-        			android:layout_alignParentTop="true"
-        			android:layout_marginLeft="98dp"
-        			android:layout_marginTop="18dp"
-        			android:text="Item Count:"
-        			style="@style/NormalText"    />
-    		</TableRow>
     	  	<TableRow>
     	  	    <LinearLayout
 				    android:layout_width="fill_parent"
@@ -42,24 +21,38 @@
     	    			android:id="@+id/tvLblDeliveryTo"
        		 			android:layout_width="wrap_content"
         				android:layout_height="wrap_content"
-        				android:layout_span="2"
-        				android:layout_marginTop="10dp"
+        				android:layout_marginTop="7dp"
         				android:layout_alignParentLeft="true"
         				android:layout_alignParentTop="true"
         				android:text="Delivery to:"
         				style="@style/NormalText"    />
+
     	  	        	<TextView
-    	    			android:id="@+id/textView2"
-       		 			android:layout_width="wrap_content"
-        				android:layout_height="wrap_content"
-        				android:layout_span="2"
-        				android:layout_marginTop="10dp"
-        				android:layout_alignParentLeft="true"
-        				android:layout_alignParentTop="true"
-        				android:text="@string/details"
-        				style="@style/NormalText"    />
+    	  	        	    android:id="@+id/textView2"
+    	  	        	    style="@style/NormalText"
+    	  	        	    android:layout_width="420dp"
+    	  	        	    android:layout_height="wrap_content"
+    	  	        	    android:layout_alignParentLeft="true"
+    	  	        	    android:layout_alignParentTop="true"
+    	  	        	    android:layout_marginLeft="10dp"
+    	  	        	    android:layout_marginTop="7dp"
+    	  	        	    android:text="@string/details" />
+
 	    	  	</LinearLayout>
 		 	</TableRow>
+    		<TableRow>
+
+    			<TextView
+    			    android:id="@+id/tvItemCount"
+    			    style="@style/NormalText"
+    			    android:layout_width="match_parent"
+    			    android:layout_height="wrap_content"
+    			    android:layout_alignParentTop="true"
+    			    android:layout_marginLeft="330dp"
+    			    android:layout_marginTop="7dp"
+    			    android:text="Item Count:" />
+
+    		</TableRow>		 	
     </TableLayout>		
     <ListView
         android:id="@+id/listView1"
@@ -173,6 +166,16 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
-        android:visibility="invisible" />    
+        android:visibility="invisible" />
+
+   <TextView
+       android:id="@+id/tvLblTitle"
+       style="@style/NormalText"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_marginTop="22sp"
+       android:text="@string/delivery3_msg"
+       android:textStyle="normal|bold" />
     
 </RelativeLayout>
