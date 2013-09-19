@@ -1,7 +1,12 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.android.VerScanActivity.verList;
+import gov.nysenate.inventory.model.InvSerialNumber;
+
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -22,7 +27,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +48,21 @@ public class SearchActivity extends SenateActivity
     TextView tvCategory;
     TextView tvDateInvntry;
     TextView tvCommodityCd;
+    ClearableAutoCompleteTextView acNuserial;
+    Spinner spinSearchBy;
 
     static Button btnSrchBck;
     Activity currentActivity;
+    
+    ArrayList<InvSerialNumber> serialList = new ArrayList<InvSerialNumber>();
 
+    String URL = ""; // this will be initialized once in onCreate() and used for
+    // all server calls.    
+    
+    ArrayAdapter serialListAdapter;
+    
     String timeoutFrom = "search";
-    public final int SEARCH_TIMEOUT = 101;
+    public final int SEARCH_TIMEOUT = 101, SERIALLIST_TIMEOUT = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +86,46 @@ public class SearchActivity extends SenateActivity
 
         btnSrchBck = (Button) findViewById(R.id.btnSrchBck);
         btnSrchBck.getBackground().setAlpha(255);
+        
+        acNuserial = (ClearableAutoCompleteTextView) findViewById(R.id.acNuserial);
+        acNuserial.setOnItemClickListener (new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                    long arg3) {
+                InvSerialNumber selected = (InvSerialNumber) arg0.getAdapter().getItem(arg2);
+                Toast.makeText(SearchActivity.this,
+                        "Clicked " + arg2 + " name: " + selected.getNusenate(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });        
+        
+        spinSearchBy = (Spinner) findViewById(R.id.spinSearchBy);
+        
+        spinSearchBy.setOnItemSelectedListener(
+                new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                            int arg2, long arg3) {
+                        String selectedValue = (String) spinSearchBy.getItemAtPosition(arg2);
+                        Log.i("Search By Change", "VALUE:"+selectedValue);
+                        if (selectedValue.equalsIgnoreCase("Serial#")) {
+                            Log.i("Search By Change", "Changed to Serial");
+                            barcode.setVisibility(View.GONE);
+                            acNuserial.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            Log.i("Search By Change", "Changed to Senate Tag#");
+                            acNuserial.setVisibility(View.GONE);
+                            barcode.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                });
 
         // Suppress the Menu ProgressBar
         MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
@@ -102,6 +161,65 @@ public class SearchActivity extends SenateActivity
             }
         }
     };
+    
+    
+    public void getSerialList() {
+        status = "yes";
+
+        // Get the URL from the properties
+        URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+
+        AsyncTask<String, String, String> resr1 = new RequestTask()
+                .execute(URL + "/SerialList");
+
+        try {
+
+            // code for JSON
+            try {
+                res = null;
+                res = resr1.get().trim().toString();
+                if (res == null) {
+                    noServerResponse();
+                    return;
+                } else if (res.indexOf("Session timed out") > -1) {
+                    startTimeout(SERIALLIST_TIMEOUT);
+                    return;
+                }
+            } catch (NullPointerException e) {
+                noServerResponse();
+                return;
+            }
+            String jsonString = resr1.get().trim().toString();
+
+            JSONArray jsonArray = new JSONArray(jsonString);
+            // this will populate the lists from the JSON array coming from
+            // server
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject jo = new JSONObject();
+                jo = jsonArray.getJSONObject(i);
+                InvSerialNumber invSerialNumber = new InvSerialNumber();
+                invSerialNumber.setNuxrefsn( jo.getString("nuxrefsn"));
+                invSerialNumber.setNuserial(jo.getString("nuserial"));
+                invSerialNumber.setNusenate(jo.getString("nusenate"));
+                
+                serialList.add(invSerialNumber);
+
+            }
+            // code for JSON ends
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        status = "yes1";
+        serialListAdapter = new ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, serialList);
+    }
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
