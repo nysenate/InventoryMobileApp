@@ -7,7 +7,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import gov.nysenate.inventory.model.Pickup;
 import android.app.AlertDialog;
@@ -16,8 +15,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -33,6 +32,7 @@ public class CancelPickup extends SenateActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cancel_pickup);
+        registerBaseActivityReceiver();
 
         TextView originLocation = (TextView) findViewById(R.id.tv_origin_pickup_cancel);
         TextView destinationLocation = (TextView) findViewById(R.id.tv_destination_pickup_cancel);
@@ -41,9 +41,9 @@ public class CancelPickup extends SenateActivity {
         TextView naPickupBy = (TextView) findViewById(R.id.cancel_pickup_sign);
         ListView items = (ListView) findViewById(R.id.cancel_pickup_listview);
 
-        // TODO: set up adapter with picked up items
-        // Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
-        // items.setAdapter((ListAdapter) listAdapter1);
+        pickup = getIntent().getParcelableExtra("pickup");
+        Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
+        items.setAdapter((ListAdapter) pickupListAdapter);
 
         originLocation.setText(pickup.getOriginAddressLine1());
         destinationLocation.setText(pickup.getDestinationAddressLine1());
@@ -52,7 +52,7 @@ public class CancelPickup extends SenateActivity {
         naPickupBy.setText(pickup.getNaPickupBy());
     }
 
-    public void continueButton() {
+    public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
             confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Cancel Pickup</font>"));
@@ -73,10 +73,11 @@ public class CancelPickup extends SenateActivity {
                     new CancelPickupTask().execute();
                 }
             });
+            confirmDialog.show();
         }
     }
 
-    public void backButton() {
+    public void backButton(View view) {
         if (checkServerResponse(true) == OK) {
             super.onBackPressed();
         }

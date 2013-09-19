@@ -6,11 +6,11 @@ import java.util.Arrays;
 
 public class Delivery extends Transaction implements Serializable
 {
-
+    // TODO: Implement parcelable.
     private static final long serialVersionUID = 1L;
-    private ArrayList<String> allItems;
-    private ArrayList<String> checkedItems;
-    private ArrayList<String> notCheckedItems;
+    private ArrayList<String> allItems; // TODO: change to InvItem?
+    private ArrayList<String> checkedItems; // TODO: this is duplication
+    private ArrayList<String> notCheckedItems; // TODO: this is duplication
     private String comments;
     private String naDeliverBy;
     private String naAcceptBy;
@@ -99,5 +99,4 @@ public class Delivery extends Transaction implements Serializable
     public void setNuxrAccptSign(String nuxrAccptSign) {
         this.nuxrAccptSign = nuxrAccptSign;
     }
-
 }

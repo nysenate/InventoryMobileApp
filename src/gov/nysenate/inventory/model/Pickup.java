@@ -16,6 +16,7 @@ public class Pickup extends Transaction
     private String naPickupBy;
     private String naReleaseBy;
     private String nuxrRelSign;
+    private String date;
 
     public Pickup() {
         super();
@@ -79,6 +80,14 @@ public class Pickup extends Transaction
         this.nuxrRelSign = nuxrRelSign;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     // ---------- Code for Parcelable interface ----------
 
     public Pickup(Parcel in) {
@@ -99,16 +108,18 @@ public class Pickup extends Transaction
         dest.writeString(naPickupBy);
         dest.writeString(naReleaseBy);
         dest.writeString(nuxrRelSign);
+        dest.writeString(date);
     }
 
     @Override
     public void readFromParcel(Parcel in) {
         super.readFromParcel(in);
-        pickupItems = (ArrayList) Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader()));
+        pickupItems = new ArrayList(Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader())));
         comments = in.readString();
         naPickupBy = in.readString();
         naReleaseBy = in.readString();
         nuxrRelSign = in.readString();
+        date = in.readString();
     }
 
     public static final Parcelable.Creator<Pickup> CREATOR = new Parcelable.Creator<Pickup>()

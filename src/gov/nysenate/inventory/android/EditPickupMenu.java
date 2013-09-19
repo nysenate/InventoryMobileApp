@@ -1,7 +1,9 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.JSONParser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,21 +13,25 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.json.JSONException;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class EditPickupMenu extends SenateActivity implements OnItemClickListener
 {
     private Pickup pickup;
-    private static ProgressBar progressBar;
+    private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
     private static final String[] titles = { "Cancel Pickup", " Change Destination", "Change Origin",
             "Remove Items", "Move Menu" };
@@ -36,8 +42,16 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_pickup_menu);
+        registerBaseActivityReceiver();
         progressBar = (ProgressBar) findViewById(R.id.edit_pickup_menu_progress_bar);
         ListView menuRowsListView = (ListView) findViewById(R.id.edit_pickup_menu_list);
+
+        pickup = new Pickup();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            new GetPickup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            new GetPickup().execute();
+        }
 
         menuRowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {
@@ -47,7 +61,6 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         CustomListViewAdapter adapter = new CustomListViewAdapter(this, R.layout.list_item, menuRowItems);
         menuRowsListView.setAdapter(adapter);
         menuRowsListView.setOnItemClickListener(this);
-
     }
 
     @Override
@@ -55,23 +68,18 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         RowItem selected = menuRowItems.get(position);
         if (checkServerResponse(true) == OK) {
             if (selected.getTitle().equalsIgnoreCase(titles[0])) {
-                progressBar.setVisibility(View.VISIBLE);
                 startActivity(CancelPickup.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[1])) {
-                progressBar.setVisibility(View.VISIBLE);
                 startActivity(ChangePickupDestination.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[2])) {
-                progressBar.setVisibility(View.VISIBLE);
                 startActivity(ChangePickupOrigin.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[3])) {
-                progressBar.setVisibility(View.VISIBLE);
                 startActivity(RemovePickupItems.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[4])) {
-                progressBar.setVisibility(View.VISIBLE);
                 startActivity(Move.class);
             }
         }
@@ -85,45 +93,69 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
 
     private void startActivity(Class<?> activity) {
         Intent intent = new Intent(this, activity);
+        intent.putExtra("pickup", pickup);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     private class GetPickup extends AsyncTask<Void, Void, Integer> {
 
-        ProgressBar progressBar;
-
         @Override
         protected void onPreExecute() {
-            progressBar = (ProgressBar) findViewById(R.id.pickup_cancel_progress_bar);
             progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
         @Override
         protected Integer doInBackground(Void... arg0) {
+            if (checkServerResponse(true) != OK) {
+                return 0;
+            }
             HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response;
+            HttpResponse response = null;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
             if (!url.endsWith("/")) {
                 url += "/";
-            } // TODO set servlet info etc..
-              // url += "/CancelPickup?nuxrpd=" + pickup.getNuxrpd();
-              // url += "&userFallback=" + LoginActivity.nauser;
+            }
+            url += "/GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
+            url += "&userFallback=" + LoginActivity.nauser;
 
             try {
                 response = httpClient.execute(new HttpGet(url));
-                return response.getStatusLine().getStatusCode();
+                response.getEntity().writeTo(out);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+
+            try {
+                pickup = JSONParser.parsePickup(out.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return response.getStatusLine().getStatusCode();
         }
 
         @Override
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            if (response == HttpStatus.SC_OK) {
+                return;
+            } else if (response == HttpStatus.SC_BAD_REQUEST) {
+                displayShortToast("!!ERROR: Unable to get pickup info, invalid nuxrpd.");
+            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+                displayShortToast("!!ERROR: Database Error while trying to get pickup info.");
+            } else {
+                displayShortToast("!!ERROR: Unknown Error occured pickup data may be inaccurate.");
+            }
         }
+    }
+
+    public void displayShortToast(CharSequence text) {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }
