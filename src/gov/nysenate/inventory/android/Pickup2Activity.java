@@ -464,7 +464,7 @@ public class Pickup2Activity extends SenateActivity
             continueBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Pickup3.class);
             Pickup pickup = new Pickup(origin, destination);
-            pickup.setPickupItems(getJSONArrayList(scannedItems));
+            pickup.setPickupItems(scannedItems);
             intent.putExtra("pickup", pickup);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

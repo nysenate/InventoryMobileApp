@@ -115,7 +115,7 @@ public class Delivery3 extends SenateActivity
 
         // Set the location in textview
         loc_details = (TextView) findViewById(R.id.textView2);
-        loc_details.setText("Delivery to: " + location);
+        loc_details.setText(location);
         tvItemCount = (TextView) findViewById(R.id.tvItemCount);
         // Get the barcode numbers from the server and set it to the listview
 
@@ -327,16 +327,6 @@ public class Delivery3 extends SenateActivity
         }
 
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
-
-        if (numItemsDelivered < 1) {
-            CharSequence text = "!!ERROR: You must select an item to deliver.";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(this, text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return;
-        }
-
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog
                 .setTitle(Html

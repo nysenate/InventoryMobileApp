@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.model;
 
+import gov.nysenate.inventory.android.InvItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,7 +11,7 @@ import android.os.Parcelable;
 public class Pickup extends Transaction
 {
 
-    private ArrayList<String> pickupItems;
+    private ArrayList<InvItem> pickupItems;
     private String comments;
     private String naPickupBy;
     private String naReleaseBy;
@@ -21,7 +23,7 @@ public class Pickup extends Transaction
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
-        pickupItems = new ArrayList<String>();
+        pickupItems = new ArrayList<InvItem>();
     }
 
     public Pickup(Location origin, Location destination) {
@@ -30,18 +32,18 @@ public class Pickup extends Transaction
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
-        pickupItems = new ArrayList<String>();
+        pickupItems = new ArrayList<InvItem>();
     }
 
-    public ArrayList<String> getPickupItems() {
+    public ArrayList<InvItem> getPickupItems() {
         return pickupItems;
     }
 
-    public void setPickupItems(String[] pickupItems) {
-        this.pickupItems = new ArrayList<String>(Arrays.asList(pickupItems));
+    public void setPickupItems(InvItem[] pickupItems) {
+        this.pickupItems = new ArrayList<InvItem>(Arrays.asList(pickupItems));
     }
 
-    public void setPickupItems(ArrayList<String> pickupItems) {
+    public void setPickupItems(ArrayList<InvItem> pickupItems) {
         this.pickupItems = pickupItems;
     }
 
@@ -80,7 +82,7 @@ public class Pickup extends Transaction
     // ---------- Code for Parcelable interface ----------
 
     public Pickup(Parcel in) {
-        pickupItems = new ArrayList<String>();
+        pickupItems = new ArrayList<InvItem>();
         readFromParcel(in);
     }
 
@@ -92,7 +94,7 @@ public class Pickup extends Transaction
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeStringList(pickupItems);
+        dest.writeParcelableArray(pickupItems.toArray(new InvItem[pickupItems.size()]), flags);
         dest.writeString(comments);
         dest.writeString(naPickupBy);
         dest.writeString(naReleaseBy);
@@ -102,7 +104,7 @@ public class Pickup extends Transaction
     @Override
     public void readFromParcel(Parcel in) {
         super.readFromParcel(in);
-        in.readStringList(pickupItems);
+        pickupItems = new ArrayList(Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader())));
         comments = in.readString();
         naPickupBy = in.readString();
         naReleaseBy = in.readString();

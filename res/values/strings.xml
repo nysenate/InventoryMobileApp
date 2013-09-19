@@ -56,15 +56,21 @@
     <string name="image">Thumbnail</string>
     <string name="title_activity_ver_summary">Verification</string>
     <string name="preferences_title">Your Preferences</string>
-    <string name="ver_summary_title">Pickup Summary Confirmation/Release</string>
+    <string name="ver_summary_title">Scanned Summary Confirmation</string>
     <string name = "title_activity_editpickup1">Edit/Cancel Pickup</string>
-
 
     <string-array name="verify_sort">
         <item>Description</item>
         <item>Senate Tag#</item>
     </string-array>
 
+    <string-array name="editpickup_searchby">
+        <item>Origin</item>
+        <item>Destination</item>
+        <item>Picked Up By</item>
+        <item>Date</item>
+   </string-array>
+    
     <string name="pickup2Msg">Scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
     <string name="title_activity_pickup3">Pickup</string>
@@ -73,9 +79,11 @@
     <string name="delivery1_hint">Scan or enter Location Code</string>
     <string name="title_activity_delivery2">Delivery</string>
     <string name="delivery2_msg">Please select pickup for Delivery To:</string>
+    <string name="editpickup2_msg">Please select pickup to edit:</string>
     <string name="title_activity_delivery3">Delivery</string>
     <string name="delivery3_msg">Delivery Confirmation</string>
-    <string name="employee_list_hint">Name of Employee Releasing Inventory</string>
+    <string name="pickup_emp_list_hint">Name of Employee Accepting Inventory</string>
+    <string name="delivery_emp_list_hint">Name of Employee Accepting Inventory</string>
     <string name="title_activity_user_action">Current Activity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_update_app">UpdateAppActivity</string>
