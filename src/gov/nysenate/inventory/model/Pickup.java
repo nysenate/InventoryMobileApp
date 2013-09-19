@@ -104,7 +104,7 @@ public class Pickup extends Transaction
     @Override
     public void readFromParcel(Parcel in) {
         super.readFromParcel(in);
-        pickupItems = (ArrayList) Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader()));
+        pickupItems = new ArrayList(Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader())));
         comments = in.readString();
         naPickupBy = in.readString();
         naReleaseBy = in.readString();

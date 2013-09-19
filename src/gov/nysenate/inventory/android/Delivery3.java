@@ -115,7 +115,7 @@ public class Delivery3 extends SenateActivity
 
         // Set the location in textview
         loc_details = (TextView) findViewById(R.id.textView2);
-        loc_details.setText("Delivery to: " + location);
+        loc_details.setText(location);
         tvItemCount = (TextView) findViewById(R.id.tvItemCount);
         // Get the barcode numbers from the server and set it to the listview
 

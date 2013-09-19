@@ -34,16 +34,31 @@
         			style="@style/NormalText"    />
     		</TableRow>
     	  	<TableRow>
-    	  		<TextView
-        			android:id="@+id/textView2"
-        			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_span="2"
-        			android:layout_marginTop="10dp"
-        			android:layout_alignParentLeft="true"
-        			android:layout_alignParentTop="true"
-        			android:text="@string/details"
-        			style="@style/NormalText"    />
+    	  	    <LinearLayout
+				    android:layout_width="fill_parent"
+    				android:layout_height="fill_parent"
+    				android:orientation="horizontal" >
+	    	  		<TextView
+    	    			android:id="@+id/tvLblDeliveryTo"
+       		 			android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+        				android:layout_span="2"
+        				android:layout_marginTop="10dp"
+        				android:layout_alignParentLeft="true"
+        				android:layout_alignParentTop="true"
+        				android:text="Delivery to:"
+        				style="@style/NormalText"    />
+    	  	        	<TextView
+    	    			android:id="@+id/textView2"
+       		 			android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+        				android:layout_span="2"
+        				android:layout_marginTop="10dp"
+        				android:layout_alignParentLeft="true"
+        				android:layout_alignParentTop="true"
+        				android:text="@string/details"
+        				style="@style/NormalText"    />
+	    	  	</LinearLayout>
 		 	</TableRow>
     </TableLayout>		
     <ListView
@@ -88,13 +103,13 @@
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
-        android:layout_width="300dp"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/sv_accept_sign_delivery3"
         android:layout_centerHorizontal="true"
         android:inputType="textNoSuggestions"
         android:ems="10"
-        android:hint="@string/employee_list_hint"
+        android:hint="@string/delivery_emp_list_hint"
         android:singleLine="true"
         >
 
