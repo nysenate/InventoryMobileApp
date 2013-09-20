@@ -33,7 +33,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private Pickup pickup;
     private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
-    private static final String[] titles = { "Cancel Pickup", " Change Destination", "Change Origin",
+    private static final String[] titles = { "Cancel Pickup", "Change Destination", "Change Origin",
             "Remove Items", "Move Menu" };
     private static final Integer[] images = { R.drawable.ssearch, R.drawable.ssearch, R.drawable.ssearch,
             R.drawable.ssearch, R.drawable.slogout };

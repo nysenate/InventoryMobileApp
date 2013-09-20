@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
-    android:layout_marginTop="50dp"
+    android:layout_marginTop="70dp"
     android:text="Edit Pickup Menu"
     android:textSize="38sp"
     android:textStyle="bold" />
@@ -19,10 +19,10 @@
     <ListView
         android:id="@+id/edit_pickup_menu_list"
         android:layout_width="400dp"
-        android:layout_height="340dp"
+        android:layout_height="415dp"
         android:layout_below="@+id/edit_pickup_menu_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/customshape" >
     </ListView>
     
