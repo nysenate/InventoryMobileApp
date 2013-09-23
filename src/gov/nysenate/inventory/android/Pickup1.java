@@ -242,13 +242,18 @@ public class Pickup1 extends SenateActivity
                 Toast toast = Toast
                         .makeText(
                                 this.getApplicationContext(),
-                                "!!ERROR: To Location Code \""
+                                "!!ERROR: The Pickup Location \""
                                         + currentToLocation
-                                        + "\" cannot be the same as the From Location Code.",
+                                        + "\" cannot be the same as the Delivery Location.",
                                 duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 boolean focusRequested = destinationLocationTV.requestFocus();
+
+            } else if (Integer.valueOf(originItemCount.getText().toString()) < 1) {
+                Toast toast = Toast.makeText(this, "!!ERROR: Origin Location must have at least one item", duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
 
             } else {
                 continueBtn.getBackground().setAlpha(70);
