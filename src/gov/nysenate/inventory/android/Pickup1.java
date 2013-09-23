@@ -242,9 +242,9 @@ public class Pickup1 extends SenateActivity
                 Toast toast = Toast
                         .makeText(
                                 this.getApplicationContext(),
-                                "!!ERROR: To Location Code \""
+                                "!!ERROR: The Pickup Location \""
                                         + currentToLocation
-                                        + "\" cannot be the same as the From Location Code.",
+                                        + "\" cannot be the same as the Delivery Location.",
                                 duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
