@@ -70,6 +70,10 @@
         <item>Picked Up By</item>
         <item>Date</item>
    </string-array>
+    <string-array name="search_searchby">
+        <item>By Senate Tag#</item>
+        <item>By Serial#</item>
+   </string-array>
     
     <string name="pickup2Msg">Scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>

@@ -15,14 +15,29 @@
         android:layout_height="wrap_content"
         android:text="@string/SearchActivity_MSG"
         style="@style/NormalText"    />
-
+	<Spinner
+	    android:id="@+id/spinSearchBy"
+	    android:layout_width="220dp"
+	    android:layout_height="40dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/textView2"
+	    android:entries="@array/search_searchby"
+	    android:gravity="center"
+	    style="@style/NormalText"
+	    android:textStyle="bold" />    
+    <LinearLayout
+        android:id="@+id/llSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_toRightOf="@+id/spinSearchBy"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:layout_marginTop="7dp">    
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView2"
-        android:layout_marginTop="15dp"
        	android:digits="0123456789"       	
         android:ems="10"
 		android:maxLength="6"        
@@ -34,16 +49,29 @@
         style="@style/NormalText"   
         android:textStyle="bold"         
                  >
-
-        <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
-
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+        android:id="@+id/acNuserial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="20"
+        android:hint="Serial#"
+        android:padding="4dip"
+        android:singleLine="true"  
+        android:maxWidth="10dp"
+        style="@style/NormalText"   
+        android:visibility="invisible"    
+        android:textStyle="bold"       
+	    >
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+        
+    </LinearLayout>
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/barcode"
+        android:layout_below="@+id/llSearch"
         android:layout_marginTop="15dp"
         android:lines="10"
         android:padding="4dip"
@@ -66,7 +94,6 @@
         	android:layout_marginRight="20dp">
   			<TableRow
   		    	android:layout_width="match_parent">
-
             	<TextView
                 	android:id="@+id/tvHeadDetailsS"
                 	android:layout_width="match_parent"
