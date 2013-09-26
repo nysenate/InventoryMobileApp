@@ -15,7 +15,7 @@
         android:layout_marginLeft="21sp"
         android:layout_marginTop="22sp"
         android:gravity="center"
-        android:text="@string/ver_summary_title"
+        android:text="@string/pickup3_title"
         style="@style/NormalText"    />
 
    
