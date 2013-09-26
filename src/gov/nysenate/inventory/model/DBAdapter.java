@@ -1,14 +1,14 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.model;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class InvDB
+public class DBAdapter
 {
 
-    private InvSQLiteHelper dbHelper;
+    private DBHelper dbHelper;
 
     private SQLiteDatabase database;
 
@@ -16,8 +16,8 @@ public class InvDB
      * 
      * @param context
      */
-    public InvDB(Context context) {
-        dbHelper = new InvSQLiteHelper(context);
+    public DBAdapter(Context context) {
+        dbHelper = new DBHelper(context);
         database = dbHelper.getWritableDatabase();
     }
 

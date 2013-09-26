@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.model.Toasty;
 
 import java.io.IOException;
@@ -155,7 +156,7 @@ public class LoginActivity extends SenateActivity
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
         password.addTextChangedListener(senateTagPWDWatcher);
-
+        testSQLlite();
         if (timeoutActivity) {
             user_name.setKeyListener(null);
             user_name.setText(nauser);
@@ -1154,22 +1155,22 @@ public class LoginActivity extends SenateActivity
     }
 
     public void testSQLlite() {
-        InvDB db = new InvDB(this);
+        DBAdapter db = new DBAdapter(this);
         try {
-            // db.resetDB();
-            // db.truncateTable("ad12verinv");
-            /*
-             * long rowsInserted = db.insert("ad12verinv",
-             * "nusenate|cdcond|cdcategory|cdintransit|nuxrpickup|decommodityf|cdlocatfrm|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser"
-             * ,
-             * "111111|NEW|TEST|Y|99999999|THIS IS THE FIRST TEST|AAAA|NOW|HEITNER|NOW|HEITNER"
-             * );
-             * 
-             * Log.i(MainActivity.class.getName(),
-             * "ROWS INSERTED:"+rowsInserted);
-             */
+             db.resetDB();
+             db.truncateTable("ad12verinv");
+            
+             long rowsInserted = db.insert("ad12verinv",
+             "nuserial|nusenate|decommodityf|dttxnorigin|natxnorguser|dttxnupdate|natxnupduser"
+             ,
+             "111111|NEWSDFJS|THIS IS THE FIRST TEST|NOW|HEITNER|NOW|HEITNER"
+             );
+             
+             Log.i(LoginActivity.class.getName(),
+             "ROWS INSERTED:"+rowsInserted);
+             
 
-            Cursor mCursor = db.rawQuery("SELECT * FROM ad12verinv", null);
+            Cursor mCursor = db.rawQuery("SELECT * FROM ad12serial", null);
 
             if (mCursor != null) {
                 if (mCursor.moveToFirst()) {

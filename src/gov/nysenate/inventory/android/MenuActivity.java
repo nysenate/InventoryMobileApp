@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.DBAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     public static final Integer[] images = { R.drawable.ssearch,
             R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
 
-    static InvDB db;
+    static DBAdapter db;
 
     ListView listView;
     List<RowItem> rowItems;
@@ -73,7 +75,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         listView.setOnItemClickListener(this);
 
         // Setup Local Database
-        db = new InvDB(this);
+        db = new DBAdapter(this);
     }
 
     @Override

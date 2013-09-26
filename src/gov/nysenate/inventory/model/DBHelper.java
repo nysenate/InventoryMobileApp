@@ -1,4 +1,4 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class InvSQLiteHelper extends SQLiteOpenHelper
+public class DBHelper extends SQLiteOpenHelper
 {
 
     private static final String DATABASE_NAME = "invApp.db";
@@ -25,20 +25,30 @@ public class InvSQLiteHelper extends SQLiteOpenHelper
             + " dttxnorigin TEXT NOT NULL, natxnorguser TEXT NOT NULL, "
             + " dttxnupdate TEXT NOT NULL, natxnupduser TEXT NOT NULL" + " );";
 
-    public InvSQLiteHelper(Context context) {
+
+    private static final String TABLE_SERIALINV_CREATE = "CREATE TABLE ad12serial "
+            + "( nuxrserial INTEGER PRIMARY KEY AUTOINCREMENT,  nusenate TEXT NOT NULL, "
+            + " nuserial TEXT NOT NULL,  decommodityf TEXT NOT NULL," +
+            " dttxnorigin TEXT NOT NULL, natxnorguser TEXT NOT NULL, "
+            + " dttxnupdate TEXT NOT NULL, natxnupduser TEXT NOT NULL" + " );";
+
+    
+    public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        Log.w(InvSQLiteHelper.class.getName(), "Creating database");
+        Log.w(DBHelper.class.getName(), "Creating database");
         // this.executeSQLScript(database, "create.sql");
         database.execSQL(TABLE_VERIFYINV_CREATE);
+        Log.w(DBHelper.class.getName(), TABLE_SERIALINV_CREATE);
+        database.execSQL(TABLE_SERIALINV_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(InvSQLiteHelper.class.getName(),
+        Log.w(DBHelper.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS ad12verinv");
@@ -51,7 +61,7 @@ public class InvSQLiteHelper extends SQLiteOpenHelper
     }
 
     private void executeSQLScript(SQLiteDatabase database, String dbname) {
-        Log.w(InvSQLiteHelper.class.getName(), "Executing database script");
+        Log.w(DBHelper.class.getName(), "Executing database script");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte buf[] = new byte[1024];
         int len;
@@ -69,10 +79,10 @@ public class InvSQLiteHelper extends SQLiteOpenHelper
 
             String[] createScript = outputStream.toString().split(";");
             for (int i = 0; i < createScript.length; i++) {
-                Log.w(InvSQLiteHelper.class.getName(), "Check script line:"
+                Log.w(DBHelper.class.getName(), "Check script line:"
                         + createScript[i]);
                 String sqlStatement = createScript[i].trim();
-                Log.w(InvSQLiteHelper.class.getName(),
+                Log.w(DBHelper.class.getName(),
                         "Executing database script line:" + sqlStatement);
 
                 // TODO You may want to parse out comments here

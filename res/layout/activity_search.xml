@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
-    android:layout_marginTop="40dp"
+    android:layout_marginTop="7dp"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     tools:context=".SearchActivity" >
@@ -17,9 +17,10 @@
         style="@style/NormalText"    />
 	<Spinner
 	    android:id="@+id/spinSearchBy"
-	    android:layout_width="220dp"
-	    android:layout_height="40dp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
+        android:layout_marginTop="5sp"
         android:layout_alignLeft="@+id/textView2"
 	    android:entries="@array/search_searchby"
 	    android:gravity="center"
@@ -127,7 +128,31 @@
         			style="@style/NormalText"   
         			android:textStyle="bold" />
 			</TableRow>
-
+    		<TableRow
+    		    android:id="@+id/rwNuserial"
+    		    >
+        	     <TextView
+        			android:id="@+id/tvLblNuserial"
+       	 			android:layout_width="wrap_content"
+        			android:layout_height="wrap_content"
+        			android:layout_marginRight="15dp"
+        			android:layout_marginTop="10dp"
+            		android:gravity="right"
+        			android:text="Serial#:"
+        			style="@style/NormalText"   
+        			android:textStyle="bold" />
+       
+    			<TextView
+        			android:id="@+id/tvNuserial"
+        			android:layout_width="355dp"
+        			android:layout_height="wrap_content"
+        			android:layout_marginTop="10dp"
+        			android:width="0dip"
+        			android:text="N/A"
+        			style="@style/NormalText"   
+        			android:textStyle="bold" />
+			</TableRow>
+       	
     		<TableRow>
 				<TextView
 	   				android:id="@+id/tvLabelDescr"
