@@ -54,6 +54,7 @@ public class JSONParser {
     private static Location parseLocation(JSONObject json) throws JSONException {
         Location loc = new Location();
         loc.setCdLoc(json.getString("cdLoc"));
+        loc.setCdLocType(json.getString("cdLocType"));
         loc.setAddressLine1(json.getString("addressStreet1"));
         loc.setCity(json.getString("city"));
         loc.setZip(json.getString("zip"));

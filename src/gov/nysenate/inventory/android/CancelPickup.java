@@ -34,22 +34,26 @@ public class CancelPickup extends SenateActivity {
         setContentView(R.layout.activity_cancel_pickup);
         registerBaseActivityReceiver();
 
-        TextView originLocation = (TextView) findViewById(R.id.tv_origin_pickup_cancel);
-        TextView destinationLocation = (TextView) findViewById(R.id.tv_destination_pickup_cancel);
-        TextView itemCount = (TextView) findViewById(R.id.tv_count_pickup_cancel);
+        TextView oldPickupLocation = (TextView) findViewById(R.id.old_pickup_location);
+        TextView oldDeliveryLocation = (TextView) findViewById(R.id.old_delivery_location);
+        TextView oldPickupBy = (TextView) findViewById(R.id.pickup_by);
+        TextView oldCount = (TextView) findViewById(R.id.pickup_count);
+        TextView oldDate = (TextView) findViewById(R.id.pickup_date);
         TextView comments = (TextView) findViewById(R.id.cancel_pickup_comments);
-        TextView naPickupBy = (TextView) findViewById(R.id.cancel_pickup_sign);
         ListView items = (ListView) findViewById(R.id.cancel_pickup_listview);
 
         pickup = getIntent().getParcelableExtra("pickup");
+        String date = getIntent().getStringExtra("date");
+
         Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
         items.setAdapter((ListAdapter) pickupListAdapter);
 
-        originLocation.setText(pickup.getOriginAddressLine1());
-        destinationLocation.setText(pickup.getDestinationAddressLine1());
-        itemCount.setText(Integer.toString(pickup.getPickupItems().size()));
+        oldPickupLocation.setText(pickup.getOriginAddressLine1());
+        oldDeliveryLocation.setText(pickup.getDestinationAddressLine1());
+        oldPickupBy.setText(pickup.getNaPickupBy());
+        oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
+        oldDate.setText(date);
         comments.setText(pickup.getComments());
-        naPickupBy.setText(pickup.getNaPickupBy());
     }
 
     public void continueButton(View view) {

@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.util.JSONParser;
 
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditPickupMenu extends SenateActivity implements OnItemClickListener
@@ -33,10 +35,15 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private Pickup pickup;
     private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
-    private static final String[] titles = { "Cancel Pickup", "Change Destination", "Change Origin",
+    private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
             "Remove Items", "Move Menu" };
     private static final Integer[] images = { R.drawable.ssearch, R.drawable.ssearch, R.drawable.ssearch,
             R.drawable.ssearch, R.drawable.slogout };
+    private TextView oldPickupLocation;
+    private TextView oldDeliveryLocation;
+    private TextView oldPickupBy;
+    private TextView oldCount;
+    private TextView oldDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,11 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         registerBaseActivityReceiver();
         progressBar = (ProgressBar) findViewById(R.id.edit_pickup_menu_progress_bar);
         ListView menuRowsListView = (ListView) findViewById(R.id.edit_pickup_menu_list);
+        oldPickupLocation = (TextView) findViewById(R.id.old_pickup_location);
+        oldDeliveryLocation = (TextView) findViewById(R.id.old_delivery_location);
+        oldPickupBy = (TextView) findViewById(R.id.pickup_by);
+        oldCount = (TextView) findViewById(R.id.pickup_count);
+        oldDate = (TextView) findViewById(R.id.pickup_date);
 
         pickup = new Pickup();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -58,7 +70,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
             menuRowItems.add(new RowItem(images[i], titles[i]));
         }
 
-        CustomListViewAdapter adapter = new CustomListViewAdapter(this, R.layout.list_item, menuRowItems);
+        CustomListViewAdapter adapter = new CustomListViewAdapter(this, R.layout.edit_pickup_menu, menuRowItems);
         menuRowsListView.setAdapter(adapter);
         menuRowsListView.setOnItemClickListener(this);
     }
@@ -94,6 +106,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private void startActivity(Class<?> activity) {
         Intent intent = new Intent(this, activity);
         intent.putExtra("pickup", pickup);
+        intent.putExtra("date", oldDate.getText());
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
@@ -142,7 +155,11 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             if (response == HttpStatus.SC_OK) {
-                return;
+                oldPickupLocation.setText(pickup.getOriginSummaryString());
+                oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+                oldPickupBy.setText(pickup.getNaPickupBy());
+                oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
+                oldDate.setText(getIntent().getStringExtra("date"));
             } else if (response == HttpStatus.SC_BAD_REQUEST) {
                 displayShortToast("!!ERROR: Unable to get pickup info, invalid nuxrpd.");
             } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {

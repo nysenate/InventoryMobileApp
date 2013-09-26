@@ -95,7 +95,7 @@ public class EditPickup2Activity extends SenateActivity
                     intent.putExtra("searchByType", searchByType);
                     intent.putExtra("searchBy", searchBy);
                     intent.putExtra("nuxrpd", nuxrpd);
-
+                    intent.putExtra("date", selectedPickup.getPickupDateTime());
                     startActivity(intent);
                     overridePendingTransition(R.anim.in_right, R.anim.out_left);
                 }

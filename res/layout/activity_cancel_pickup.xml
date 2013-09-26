@@ -10,76 +10,126 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="Cancel Pickup"
-        android:textSize="38sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TableLayout
-        android:id="@+id/tablelayout_header1_pickup_cancel"
+        android:id="@+id/pickup_info"
         android:layout_width="550dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cancel_pickup_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/customshape" >
 
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_label_origin_pickup_cancel"
-                style="@style/NormalText"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:text="Origin:" />
-
-            <TextView
-                android:id="@+id/tv_origin_pickup_cancel"
-                style="@style/NormalText"
-                android:layout_width="364dp"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="N/A"
-                android:textStyle="bold" />
+                android:id="@+id/old_pickup_info_title"
+                android:layout_span="2"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Original Pickup Information"
+                style="@style/NormalText"   
+                android:textColor="@color/bluedark"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_label_destination_pickup_cancel"
-                style="@style/NormalText"
+                android:id="@+id/old_pickup_location_title"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
-                android:text="Destination:" />
+                android:text="Pickup Location:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
 
             <TextView
-                android:id="@+id/tv_destination_pickup_cancel"
-                style="@style/NormalText"
-                android:layout_width="364dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/old_pickup_location"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
                 android:gravity="left"
-                android:text="N/A"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                style="@style/NormalText" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:id="@+id/tv_label_count_pickup_cancel"
-                style="@style/NormalText"
+                android:id="@+id/old_delivery_location_title"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
-                android:text="Pickup Count:" />
+                android:text="Delivery Location:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
 
             <TextView
-                android:id="@+id/tv_count_pickup_cancel"
-                style="@style/NormalText"
-                android:layout_width="364dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:ems="10"
-                android:hint="@string/count"
-                android:textStyle="bold" />
+                android:id="@+id/old_delivery_location"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_by_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup By:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_by"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_count_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Item Count:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_count"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_date_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Date:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_date"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
         </TableRow>
     </TableLayout>
 
@@ -88,7 +138,7 @@
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tablelayout_header1_pickup_cancel"
+        android:layout_below="@+id/pickup_info"
         android:layout_marginTop="27dp" >
     </ListView>
 
@@ -113,26 +163,6 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/cancel_pickup_sign_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cancel_pickup_comments"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Picked Up By:"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/cancel_pickup_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cancel_pickup_sign_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Johnny A. Smith"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <Button
         android:id="@+id/cancel_pickup_cancel_btn"

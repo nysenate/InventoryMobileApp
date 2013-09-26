@@ -70,6 +70,10 @@ public class Location implements Parcelable
         this.zip = zip;
     }
 
+    public String getLocationSummaryString() {
+        return getCdLoc() + "-" + getCdLocType() + ": " + getAddressLine1();
+    }
+
 
     // ---------- Code for Parcelable interface --------------
 

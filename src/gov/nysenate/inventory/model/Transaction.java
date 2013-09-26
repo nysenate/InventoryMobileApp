@@ -68,6 +68,14 @@ public abstract class Transaction implements Parcelable
         return destination;
     }
 
+    public String getOriginSummaryString() {
+        return origin.getLocationSummaryString();
+    }
+
+    public String getDestinationSummaryString() {
+        return destination.getLocationSummaryString();
+    }
+
     // ---------- Code for Parcelable interface ----------
 
     protected Transaction(Parcel in) {

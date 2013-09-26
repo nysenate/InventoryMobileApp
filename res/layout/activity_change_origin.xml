@@ -5,23 +5,23 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/edit_pickup_menu_title"
+        android:id="@+id/change_origin_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Edit Pickup"
-        android:textSize="28sp"
+        android:text="Change Pickup Location"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TableLayout
         android:id="@+id/pickup_info"
         android:layout_width="550dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_pickup_menu_title"
+        android:layout_below="@+id/change_origin_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/customshape" >
 
         <TableRow>
@@ -132,19 +132,124 @@
                 style="@style/NormalText" />
         </TableRow>
     </TableLayout>
-    
-<ListView
-        android:id="@+id/edit_pickup_menu_list"
-        android:layout_width="400dp"
+
+    <TableLayout
+        android:id="@+id/edit_origin"
+        android:layout_width="550dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pickup_info"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/customshape" >
-    </ListView>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/new_origin_title"
+                android:layout_marginRight="10dp"
+                android:text="New Pickup Location"
+                android:gravity="right"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+                android:id="@+id/autoCompleteTextView1"
+                style="@style/NormalText"
+                android:gravity="left"
+                android:ems="14"
+                android:textSize="20sp"
+                android:hint="Select new pickup location"
+                android:textStyle="bold" >
+
+                <requestFocus />
+            </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+        </TableRow>
+        
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelOfficeD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+ 				style="@style/NormalText"
+ 				android:textSize="20sp"
+                android:text="Resp Center Hd:" />
+
+            <TextView
+                android:id="@+id/tvOfficeD"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                style="@style/NormalText"
+                android:textSize="20sp"   
+                android:text="N/A" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tvLabelDescrD"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="right"
+                style="@style/NormalText"
+                android:textSize="20sp"   
+                android:text="Address:" />
+
+            <TextView
+                android:id="@+id/tvDescriptD"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                style="@style/NormalText"
+                android:textSize="20sp" 
+                android:text="N/A" />
+        </TableRow>
+
+
+    </TableLayout>
+
+ 
+   
+    <Button
+        android:id="@+id/cancel_btn"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/buttonshapeblue"
+        android:layout_marginBottom="36dp"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:onClick="backButton"
+        />
+
+    <Button
+        android:id="@+id/continue_btn"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/buttonshapegreen"
+        android:layout_marginBottom="36dp"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:onClick="continueButton"
+        />
     
-       <ProgressBar
-        android:id="@+id/edit_pickup_menu_progress_bar"
+     <ProgressBar
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"        
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -152,5 +257,5 @@
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
-    
+
 </RelativeLayout>
