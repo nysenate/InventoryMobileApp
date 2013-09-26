@@ -41,11 +41,12 @@ public class NewInvDialog extends DialogFragment implements
     GestureDetector gestureDectector = null;
     List<CommodityDialogListener> listeners = new ArrayList<CommodityDialogListener>();
     Commodity currentCommodity = null;
-    CommodityListViewAdapter adapter = null;
+    public CommodityListViewAdapter adapter = null;
     int position = -1;
     String nusenate = null;
     public int currentMode = MODE_KEYWORD_SEARCH;
 
+    @SuppressLint("ValidFragment")
     public NewInvDialog(SenateActivity senateActivity, String title, String msg) {
         this.senateActivity = senateActivity;
         this.title = title;

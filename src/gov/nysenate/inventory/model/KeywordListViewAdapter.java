@@ -1,4 +1,11 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.model;
+
+import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.NewInvDialog;
+import gov.nysenate.inventory.android.OnItemDoubleTapListener;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.id;
+import gov.nysenate.inventory.android.R.layout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +14,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +39,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
     public List<ClearableEditText> etKeywordFields = new ArrayList<ClearableEditText>();
     NewInvDialog newInvDialog = null;
     int rowSelected = -1;
+    boolean replaceSpace = false;
 
     public KeywordListViewAdapter(Context context, NewInvDialog newInvDialog,
             int resourceId, List<String> items) {
@@ -127,6 +136,15 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
                 items.set(currentPosition, currentEtKeyword.getText()
                         .toString());
                 rowSelected = currentPosition;
+                String result = s.toString().replaceAll(" ", ",");
+                if (result.indexOf(",,")>-1) {
+                    result = result.replaceAll(",,",",");
+                }
+                if (!s.toString().equals(result)) {
+                    currentEtKeyword.setText(result);
+                    currentEtKeyword.setSelection(result.length());
+                    // alert the user
+               }
                 // notifyDataSetChanged();
             }
         };
@@ -236,7 +254,35 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             return blankRow;
         }
     }
+   
+    public ArrayList<String> arrayListFromString(String values) {
+        String[] valuesList = values.split(",");
+        ArrayList<String> items = new ArrayList<String>();
+        for (int x = 0; x < valuesList.length; x++) {
+            String currentValue = valuesList[x].trim();
+            if (currentValue.length() > 0) {
+                items.add(currentValue);
+            }
+        }
+        return items;
+    }    
 
+    public String stringFromArrayList(ArrayList<String> values) {
+        StringBuffer sb = new StringBuffer();
+        ArrayList<String> items = new ArrayList<String>();
+        for (int x = 0; x < values.size(); x++) {
+            String currentValue = values.get(x).trim();
+            if (currentValue!=null && currentValue.length()>0) {
+                if (x>0) {
+                    sb.append(",");
+                }
+                sb.append(currentValue);
+            }
+        }
+        return sb.toString();
+    }    
+    
+    
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
