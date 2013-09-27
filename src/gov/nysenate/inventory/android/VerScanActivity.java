@@ -582,10 +582,9 @@ public class VerScanActivity extends SenateActivity implements
         senateTagNum = false;
         newInvDialog = new NewInvDialog(
                 this,
-                "<b>***WARNING: NO SENATE TAG#</b> Button was pressed",
-                "<font color='RED'>All tagged Senate equipment should be entered into SFMS."
-                        + "If you choose to SAVE the item information it will be saved as a Verification  Exception Item. <b>New items should be initially issued out of the Senate Warehouse</b>. Further action may be required by Management to bring the item into the SFMS Tracking System.  You must tag either a Commodity Code or Descriptive information to the Senate Tag#  for future reference before saving.</font>"
-                        + "<br/><br/>Do you want to save this Item for further review?");
+                "<b>Enter New Senate Inventory Information</b>",
+                "<b><h2>No Senate Tag#"  
+                        + "</h2>Only use this option if you <font color='red'><b>ABSOLUTELY</b></font> do not have a Senate Tag# or replacement Senate Tag#.</b><br />", Gravity.CENTER_HORIZONTAL);
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fragmentManager, "newInvDialog");
@@ -600,23 +599,64 @@ public class VerScanActivity extends SenateActivity implements
         // newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
 
-    public void barcodeDidNotExist(final String barcode_num) {
+    public void nusenateDidNotExist(final String nusenate) {
         // Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         playSound(R.raw.error);
+        playSound(R.raw.error);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
+        // set title
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'><b>***WARNING: Senate Tag#: "+nusenate+" DOES NOT EXIST</b> in the SFMS Tracking System. </font>"));
+
+        // set dialog message
+        alertDialogBuilder.setMessage(Html.fromHtml("The item <b>cannot</b> be tagged to current location at this time. You may Save the Tag# and item information as a Verification Exception.<br /><br /><b>Save New Tag# and item Information?</b>"))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        /*
+                         * if this button is clicked, open the dialog
+                         * to allow entry for the new nusenate#
+                         */                        
+                        getNewNusenateInfo(nusenate);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        /*
+                         *  if this button is clicked, just close
+                         *  the dialog box and do nothing
+                         */
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+        
+
+        // newInvDialog.getDialog().setCanceledOnTouchOutside(false);
+    }
+    
+    public void getNewNusenateInfo(final String nusenate) {
         senateTagNum = true;
-        holdNusenate = barcode_num;
+        holdNusenate = nusenate;
         newInvDialog = new NewInvDialog(
                 this,
-                "<b>***WARNING:</b> Senate Tag#:<b>" + barcode_num
-                        + " DOES NOT EXIST</b> in SFMS Tracking System.",
-                "<font color='RED'>All tagged Senate equipment should be entered into SFMS. If you choose to SAVE the item information it will be saved as a Verification Exception Item. <b>New items should be initially issued out of the Senate Warehouse.</b> Further action may be required by Management to bring the item into the SFMS Tracking System.</font>"
-                        + "<br/><br/>Do you want to save this Item for further review?");
+                "<b>Enter New Senate Inventory Information</b>",
+                "<b><h2>Senate Tag#: " + nusenate 
+                        + "</h2><font color='red'>(Does not exist in SFMS Tracking System)</font></b><br />", Gravity.CENTER_HORIZONTAL);
         newInvDialog.addListener(this);
         newInvDialog.setRetainInstance(true);
         newInvDialog.show(fragmentManager, "fragment_name");
-        // newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
+    
 
     public void errorMessage(final String barcode_num, final String title,
             final String message) {
@@ -967,7 +1007,7 @@ public class VerScanActivity extends SenateActivity implements
             return SERVER_SESSION_TIMED_OUT;
         } else if (res.contains("Does not exist in system")) {
             // Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
-            barcodeDidNotExist(nusenate);
+            nusenateDidNotExist(nusenate);
             return SENTAG_NOT_FOUND;
         } else {
             JSONObject jo;
@@ -984,7 +1024,7 @@ public class VerScanActivity extends SenateActivity implements
                 if (nusenateReturned == null) {
                     vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
                     vl.CONDITION = "NEW";
-                    barcodeDidNotExist(nusenate);
+                    nusenateDidNotExist(nusenate);
                     return SENTAG_NOT_FOUND;
                 } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                     vl.DECOMMODITYF = jo.getString("decommodityf");

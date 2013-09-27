@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //...G
@@ -31,6 +32,8 @@ public class NewInvDialog extends DialogFragment implements
     public static ClearableEditText etNewItemComments;
     public static ProgressBar progBarNewInvItem;
     public static ImageView btnKeywordSpeech;
+    public static TextView tvMsg;
+    private int msgGravity = -1;
     SenateActivity senateActivity;
     public static ListView commodityList = null;
     public String title = null;
@@ -53,6 +56,15 @@ public class NewInvDialog extends DialogFragment implements
         this.msg = msg;
     }
 
+    @SuppressLint("ValidFragment")
+    public NewInvDialog(SenateActivity senateActivity, String title, String msg, int msgGravity) {
+        this.senateActivity = senateActivity;
+        this.title = title;
+        this.msg = msg;
+        this.msgGravity = msgGravity;
+    }
+    
+    
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -87,6 +99,8 @@ public class NewInvDialog extends DialogFragment implements
                 .findViewById(R.id.progBarNewInvItem);
         btnKeywordSpeech = (ImageView) dialogView
                 .findViewById(R.id.btnKeywordSpeech);
+        tvMsg = (TextView) dialogView
+                .findViewById(R.id.tvMsg);
 
         if (senateActivity.dialogKeywords != null) {
             tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
@@ -100,15 +114,15 @@ public class NewInvDialog extends DialogFragment implements
         }
         adapter = (CommodityListViewAdapter) commodityList.getAdapter();
 
+        tvMsg.setText(Html.fromHtml(msg));
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(dialogView)
                 .setTitle(
                         Html.fromHtml("<font color='#000055'>" + title
                                 + "</font>"))
-                .setMessage(Html.fromHtml(msg))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton( Html.fromHtml("<b>Save Tag# Info</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -143,7 +157,7 @@ public class NewInvDialog extends DialogFragment implements
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -173,6 +187,10 @@ public class NewInvDialog extends DialogFragment implements
 
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
+        
+        if (msgGravity!=-1) {
+            tvMsg.setGravity(msgGravity);
+        }
 
         // Create the AlertDialog object and return it
         return dialog;
@@ -331,7 +349,7 @@ public class NewInvDialog extends DialogFragment implements
 
     public void setDisplayBasedonCurrentMode() {
         if (currentMode == MODE_COMMODITY_PICKED) {
-            commodityList.setVisibility(View.GONE);
+            commodityList.setVisibility(View.INVISIBLE);
         } else {
             commodityList.setVisibility(View.VISIBLE);
         }
