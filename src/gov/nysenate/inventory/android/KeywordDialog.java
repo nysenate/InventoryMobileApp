@@ -97,7 +97,7 @@ public class KeywordDialog extends DialogFragment
                         Html.fromHtml("<font color='#000055'>" + title
                                 + "</font>"))
                 .setMessage(Html.fromHtml(msg))
-                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -119,7 +119,7 @@ public class KeywordDialog extends DialogFragment
                         dismiss();
                     }
                 })
-                .setNegativeButton("Cancel",
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"),
                         new DialogInterface.OnClickListener()
                         {
                             @Override

@@ -547,7 +547,7 @@ public class VerScanActivity extends SenateActivity implements
                 // +dialogKeywords);
                 keywordDialog = new KeywordDialog(this, newInvDialog,
                         "Modify Commodity Keywords",
-                        "<h1>Edit/Add/Delete Keywords Below</h1>",
+                        "<h1>Add/Edit/Delete Keywords Below</h1>",
                         this.dialogKeywords);
                 // Log.i("editKeywordList",
                 // "trying to display the Keywords Fragment Dialog 3");
