@@ -4,17 +4,15 @@ import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.OnItemDoubleTapListener;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +38,24 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
     NewInvDialog newInvDialog = null;
     int rowSelected = -1;
     boolean replaceSpace = false;
+    InputFilter keywordFilter = new InputFilter() {   
+        @Override  
+        public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5)  
+            {  
+                 for (int k = arg1; k < arg2; k++) {
+                     if (k>0  && arg0.charAt(k) == ',' && etKeywordCurrent.getText().toString().endsWith(",") ) {
+                         return "";   
+                     }
+                    /* else if (Character.isSpaceChar(arg0.charAt(k))) {
+                         return ",";   
+                     }*/
+                     else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {   
+                         return "";   
+                     }   
+                 }   
+             return null;   
+            }   
+    };       
 
     public KeywordListViewAdapter(Context context, NewInvDialog newInvDialog,
             int resourceId, List<String> items) {
@@ -63,6 +79,8 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
         Button btnDeleteKeyword;
     }
 
+  
+    
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
@@ -136,7 +154,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
                 items.set(currentPosition, currentEtKeyword.getText()
                         .toString());
                 rowSelected = currentPosition;
-                String result = s.toString().replaceAll(" ", ",");
+               /* String result = s.toString().replaceAll(" ", ",");
                 if (result.indexOf(",,")>-1) {
                     result = result.replaceAll(",,",",");
                 }
@@ -144,7 +162,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
                     currentEtKeyword.setText(result);
                     currentEtKeyword.setSelection(result.length());
                     // alert the user
-               }
+               }*/
                 // notifyDataSetChanged();
             }
         };
@@ -157,6 +175,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             holder.btnDeleteKeyword.setOnClickListener(l);
         }
 
+        holder.etKeyword.setFilters(new InputFilter[]{ keywordFilter});
         etKeywordCurrent = holder.etKeyword;
 
         if (etKeywordFields.size() - 1 < position) {
@@ -164,6 +183,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
         } else {
             etKeywordFields.set(position, holder.etKeyword);
         }
+      
 
         return convertView;
     }
