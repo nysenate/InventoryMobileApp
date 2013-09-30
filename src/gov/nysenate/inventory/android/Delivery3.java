@@ -327,6 +327,15 @@ public class Delivery3 extends SenateActivity
         }
 
         int numItemsDelivered = invAdapter.getSelectedItems(true).size();
+        if (numItemsDelivered < 1) {
+            CharSequence text = "!!ERROR: You must select an item to deliver.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            return;
+        }
+
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog
                 .setTitle(Html
