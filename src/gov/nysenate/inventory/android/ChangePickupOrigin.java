@@ -247,6 +247,7 @@ public class ChangePickupOrigin extends SenateActivity {
             return;
         }
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setCancelable(false);
         confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Pickup Location</font>"));
         confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the pickup location to " + newLocation.getCdLoc()));
         confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -59,6 +59,7 @@ public class CancelPickup extends SenateActivity {
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+            confirmDialog.setCancelable(false);
             confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Cancel Pickup</font>"));
             confirmDialog.setMessage(Html.fromHtml("You are about to <b>cancel</b> this pickup.<br><br>"
                     + "Are you sure you want to continue?"));
