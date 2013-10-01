@@ -3,26 +3,25 @@ package gov.nysenate.inventory.android;
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CancelPickup extends SenateActivity {
 
@@ -87,12 +86,6 @@ public class CancelPickup extends SenateActivity {
             super.onBackPressed();
         }
     }
-    
-    public void displayShortToast(CharSequence text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
 
     private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
 
@@ -108,13 +101,8 @@ public class CancelPickup extends SenateActivity {
         protected Integer doInBackground(Void... arg0) {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response;
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            // TODO: move this -------------
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            // -----------------------------
-            url += "/CancelPickup?nuxrpd=" + pickup.getNuxrpd();
+            String url = AppProperties.getBaseUrl(CancelPickup.this);
+            url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
@@ -127,22 +115,15 @@ public class CancelPickup extends SenateActivity {
             }
             return null;
         }
-        
+
         @Override
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(CancelPickup.this, Move.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            if (response == HttpStatus.SC_OK) {
-                displayShortToast("Successfully updated database");
-            } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                displayShortToast("!!ERROR: Invalid nuxrpd");
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                displayShortToast("!!ERROR: Database Error, your update may not have been saved.");
-            } else {
-                displayShortToast("!!ERROR: Unknown Error, your update may not have been saved.");
-            }
+            HttpUtils.displayResponseResults(CancelPickup.this, response);
         }
     }
 }

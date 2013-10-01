@@ -19,12 +19,14 @@ public class Pickup extends Transaction
     private String date;
 
     public Pickup() {
-        super();
+        super(); // needed for parcelable.
         comments = "";
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
         pickupItems = new ArrayList<InvItem>();
+        origin = new Location();
+        destination = new Location();
     }
 
     public Pickup(Location origin, Location destination) {

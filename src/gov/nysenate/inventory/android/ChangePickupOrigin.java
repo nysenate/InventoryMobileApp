@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -20,9 +19,9 @@ import org.json.JSONTokener;
 
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
-import gov.nysenate.inventory.util.JSONParser;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -31,15 +30,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ChangePickupOrigin extends SenateActivity {
 
@@ -92,7 +86,6 @@ public class ChangePickupOrigin extends SenateActivity {
 
     }
 
-    // TODO: extract in class logic to use in other asyctasks.
     private class GetLocations extends AsyncTask<Void, Void, String> {
 
         @Override
@@ -110,11 +103,8 @@ public class ChangePickupOrigin extends SenateActivity {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            url += "/LocCodeList?";
+            String url = AppProperties.getBaseUrl(ChangePickupOrigin.this);
+            url += "LocCodeList?";
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
@@ -142,11 +132,9 @@ public class ChangePickupOrigin extends SenateActivity {
         @Override
         protected void onPostExecute(String response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            // TODO: how to test if /LocCodeList was successful?
         }
     }
 
-    // TODO: extract in class logic to use in other asyctasks.
     private class LocationDetails extends AsyncTask<Void, Map<TextView, String>, String> {
 
         @Override
@@ -163,11 +151,8 @@ public class ChangePickupOrigin extends SenateActivity {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            url += "/LocationDetails?barcode_num=" + parseCdLoc(newPickupLocation.getText().toString());
+            String url = AppProperties.getBaseUrl(ChangePickupOrigin.this);
+            url += "LocationDetails?barcode_num=" + parseCdLoc(newPickupLocation.getText().toString());
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
@@ -196,7 +181,6 @@ public class ChangePickupOrigin extends SenateActivity {
             textViews.put(newLocAddress, adstreet1);
             publishProgress(textViews);
 
-         // TODO: what is returned from /LocationDetails?
             return out.toString();
         }
 
@@ -283,12 +267,8 @@ public class ChangePickupOrigin extends SenateActivity {
         protected Integer doInBackground(Void... params) {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            url += "/ChangePickupLocation?nuxrpd=" + pickup.getNuxrpd() + "&cdloc=" + newLocation.getCdLoc();
+            String url = AppProperties.getBaseUrl(ChangePickupOrigin.this);
+            url += "ChangePickupLocation?nuxrpd=" + pickup.getNuxrpd() + "&cdloc=" + newLocation.getCdLoc();
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
@@ -305,25 +285,14 @@ public class ChangePickupOrigin extends SenateActivity {
         @Override
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(ChangePickupOrigin.this, Move.class);
+            Intent intent = new Intent(ChangePickupOrigin.this, EditPickupMenu.class);
+            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
+            intent.putExtra("date", pickup.getDate());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            if (response == HttpStatus.SC_OK) {
-                displayShortToast("Successfully updated database");
-            } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                displayShortToast("!!ERROR: Invalid nuxrpd or location");
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                displayShortToast("!!ERROR: Database Error, your update may not have been saved.");
-            } else {
-                displayShortToast("!!ERROR: Unknown Error, your update may not have been saved.");
-            }
+            HttpUtils.displayResponseResults(ChangePickupOrigin.this, response);
         }
-    }
-
-    public void displayShortToast(CharSequence text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     private String parseCdLoc(String summary) {

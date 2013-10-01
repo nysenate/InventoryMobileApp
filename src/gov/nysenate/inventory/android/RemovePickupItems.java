@@ -3,31 +3,31 @@ package gov.nysenate.inventory.android;
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Formatter;
+import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RemovePickupItems extends SenateActivity {
 
     Pickup pickup;
     ListView itemList;
     InvSelListViewAdapter adapter;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class RemovePickupItems extends SenateActivity {
         TextView oldCount = (TextView) findViewById(R.id.pickup_count);
         TextView oldDate = (TextView) findViewById(R.id.pickup_date);
         itemList = (ListView) findViewById(R.id.remove_list);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         pickup = getIntent().getParcelableExtra("pickup");
         String date = getIntent().getStringExtra("date");
@@ -126,7 +127,7 @@ public class RemovePickupItems extends SenateActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    // // new CancelPickupTask().execute();
+                    new RemoveItemsTask().execute();
                 }
             });
             confirmDialog.show();
@@ -142,11 +143,8 @@ public class RemovePickupItems extends SenateActivity {
 
     private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
 
-        ProgressBar progressBar;
-
         @Override
         protected void onPreExecute() {
-            progressBar = (ProgressBar) findViewById(R.id.progress_bar);
             progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
@@ -154,13 +152,8 @@ public class RemovePickupItems extends SenateActivity {
         protected Integer doInBackground(Void... arg0) {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response;
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            // TODO: move this -------------
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            // -----------------------------
-            url += "/CancelPickup?nuxrpd=" + pickup.getNuxrpd();
+            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
+            url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
@@ -178,27 +171,17 @@ public class RemovePickupItems extends SenateActivity {
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(RemovePickupItems.this, Move.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            if (response == HttpStatus.SC_OK) {
-                displayShortToast("Successfully updated database");
-            } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                displayShortToast("!!ERROR: Invalid nuxrpd");
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                displayShortToast("!!ERROR: Database Error, your update may not have been saved.");
-            } else {
-                displayShortToast("!!ERROR: Unknown Error, your update may not have been saved.");
-            }
+            HttpUtils.displayResponseResults(RemovePickupItems.this, response);
         }
     }
 
     private class RemoveItemsTask extends AsyncTask<Void, Void, Integer> {
 
-        ProgressBar progressBar;
-
         @Override
         protected void onPreExecute() {
-            progressBar = (ProgressBar) findViewById(R.id.progress_bar);
             progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
@@ -206,16 +189,10 @@ public class RemovePickupItems extends SenateActivity {
         protected Integer doInBackground(Void... arg0) {
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response;
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            // TODO: move this -------------
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            // -----------------------------
-            url += "/RemovePickupItems?nuxrpd=" + pickup.getNuxrpd();
-            url += "&" + Formatter.generateGetArray("items", adapter.getSelectedItems(true));
+            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
+            url += "RemovePickupItems?nuxrpd=" + pickup.getNuxrpd();
+            url += Formatter.generateGetArray("items[]", adapter.getSelectedItems(true));
             url += "&userFallback=" + LoginActivity.nauser;
-
             try {
                 response = httpClient.execute(new HttpGet(url));
                 return response.getStatusLine().getStatusCode();
@@ -230,25 +207,13 @@ public class RemovePickupItems extends SenateActivity {
         @Override
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(RemovePickupItems.this, Move.class);
+            Intent intent = new Intent(RemovePickupItems.this, EditPickupMenu.class);
+            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
+            intent.putExtra("date", pickup.getDate());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            if (response == HttpStatus.SC_OK) {
-                displayShortToast("Successfully updated database");
-            } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                displayShortToast("!!ERROR: Invalid nuxrpd");
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                displayShortToast("!!ERROR: Database Error, your update may not have been saved.");
-            } else {
-                displayShortToast("!!ERROR: Unknown Error, your update may not have been saved.");
-            }
+            HttpUtils.displayResponseResults(RemovePickupItems.this, response);
         }
     }
-
-    public void displayShortToast(CharSequence text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
 }

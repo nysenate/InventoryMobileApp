@@ -1,7 +1,8 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Toasty;
+import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.JSONParser;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +21,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -126,24 +126,18 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = (String) LoginActivity.properties.get("WEBAPP_BASE_URL");
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-            url += "/GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
+            String url = AppProperties.getBaseUrl(EditPickupMenu.this);
+            url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
+                pickup = JSONParser.parsePickup(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-            try {
-                pickup = JSONParser.parsePickup(out.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -161,18 +155,12 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
                 oldDate.setText(getIntent().getStringExtra("date"));
             } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                displayShortToast("!!ERROR: Unable to get pickup info, invalid nuxrpd.");
+                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unable to get pickup info, invalid nuxrpd.", Toast.LENGTH_SHORT);
             } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                displayShortToast("!!ERROR: Database Error while trying to get pickup info.");
+                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
             } else {
-                displayShortToast("!!ERROR: Unknown Error occured pickup data may be inaccurate.");
+                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
             }
         }
-    }
-
-    public void displayShortToast(CharSequence text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
     }
 }
