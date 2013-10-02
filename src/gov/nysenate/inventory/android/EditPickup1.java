@@ -35,7 +35,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Delivery1 extends SenateActivity
+public class EditPickup1 extends SenateActivity
 {
     static ClearableAutoCompleteTextView autoCompleteTextView1;// for location
                                                                // code
@@ -46,14 +46,15 @@ public class Delivery1 extends SenateActivity
     public String loc_code_str = null;
     public TextView loc_details;
     public String deliveryLocation = null;
-    static Button btnDelivery1Cont;
-    static Button btnDelivery1Cancel;
+    static Button btnEditPickup1Cont;
+    static Button btnEditPickup1Cancel;
     TextView tvOfficeD;
     // TextView tvLocCdD;
     TextView tvDescriptD;
-    public static ProgressBar progBarDelivery1;
+    TextView tvCountD;
+    public static ProgressBar progBarEditPickup1;
     Activity currentActivity;
-    String timeoutFrom = "delivery1";
+    String timeoutFrom = "EditPickup1";
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
     boolean locationBeingTyped = false;
@@ -61,7 +62,7 @@ public class Delivery1 extends SenateActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delivery1);
+        // setContentView(R.layout.activity_EditPickup1);
         registerBaseActivityReceiver();
         currentActivity = this;
 
@@ -69,11 +70,12 @@ public class Delivery1 extends SenateActivity
         tvOfficeD = (TextView) this.findViewById(R.id.tvOfficeD);
         // tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
         tvDescriptD = (TextView) this.findViewById(R.id.tvDescriptD);
+        tvCountD = (TextView) this.findViewById(R.id.tvCountD);
 
         // Setup ProgressBar
 
-        progBarDelivery1 = (ProgressBar) this
-                .findViewById(R.id.progBarDelivery1);
+        // progBarEditPickup1 = (ProgressBar) this
+        // .findViewById(R.id.progBarEditPickup1);
 
         // for origin dest code
         autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
@@ -106,15 +108,15 @@ public class Delivery1 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
-        btnDelivery1Cont = (Button) findViewById(R.id.btnDelivery1Cont);
-        btnDelivery1Cont.getBackground().setAlpha(255);
-        btnDelivery1Cancel = (Button) findViewById(R.id.btnDelivery1Cancel);
-        btnDelivery1Cancel.getBackground().setAlpha(255);
-        if (Delivery1.progBarDelivery1 == null) {
-            Delivery1.progBarDelivery1 = (ProgressBar) this
-                    .findViewById(R.id.progBarDelivery1);
+        // btnEditPickup1Cont = (Button) findViewById(R.id.btnEditPickup1Cont);
+        btnEditPickup1Cont.getBackground().setAlpha(255);
+        // btnEditPickup1Cancel = (Button) findViewById(R.id.btnEditPickup1Cancel);
+        btnEditPickup1Cancel.getBackground().setAlpha(255);
+        if (EditPickup1.progBarEditPickup1 == null) {
+            // EditPickup1.progBarEditPickup1 = (ProgressBar) this
+            // .findViewById(R.id.progBarEditPickup1);
         }
-        Delivery1.progBarDelivery1.setVisibility(View.INVISIBLE);
+        EditPickup1.progBarEditPickup1.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -186,6 +188,7 @@ public class Delivery1 extends SenateActivity
             if (textLength == 0) {
                 tvOfficeD.setText("N/A");
                 tvDescriptD.setText("N/A");
+                tvCountD.setText("N/A");
             } else if (textLength >= 3) {
                 getLocationDetails();
                 // loc_details.setText(res);
@@ -235,10 +238,10 @@ public class Delivery1 extends SenateActivity
 
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
-            Delivery1.btnDelivery1Cont.getBackground().setAlpha(45);
+            EditPickup1.btnEditPickup1Cont.getBackground().setAlpha(45);
             int duration = Toast.LENGTH_SHORT;
 
-            String currentLocation = Delivery1.autoCompleteTextView1.getText()
+            String currentLocation = EditPickup1.autoCompleteTextView1.getText()
                     .toString();
 
             if (currentLocation.trim().length() == 0) {
@@ -249,7 +252,7 @@ public class Delivery1 extends SenateActivity
                 toast.show();
 
             } else if (locCodeList.indexOf(currentLocation) == -1) {
-                Delivery1.btnDelivery1Cont.getBackground().setAlpha(255);
+                EditPickup1.btnEditPickup1Cont.getBackground().setAlpha(255);
                 Toast toast = Toast
                         .makeText(
                                 this.getApplicationContext(),
@@ -261,7 +264,7 @@ public class Delivery1 extends SenateActivity
                 toast.show();
 
             } else {
-                progBarDelivery1.setVisibility(View.VISIBLE);
+                progBarEditPickup1.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(this, Delivery2.class);
                 intent.putExtra("location", deliveryLocation); // for location
                                                                // code
@@ -273,7 +276,7 @@ public class Delivery1 extends SenateActivity
     }
 
     public void cancelButton(View view) {
-        Delivery1.btnDelivery1Cancel.getBackground().setAlpha(45);
+        EditPickup1.btnEditPickup1Cancel.getBackground().setAlpha(45);
         Intent intent = new Intent(this, Move.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
@@ -283,7 +286,7 @@ public class Delivery1 extends SenateActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_delivery1, menu);
+        getMenuInflater().inflate(R.menu.activity_editpickup1, menu);
         return true;
     }
 
@@ -346,6 +349,7 @@ public class Delivery1 extends SenateActivity
                             "Does not exist in system")) {
                         tvOfficeD.setText("N/A");
                         tvDescriptD.setText("N/A");
+                        tvCountD.setText("N/A");
                     } else {
                         tvOfficeD.setText(object.getString("cdrespctrhd"));
                         // tvLocCdD.setText(
@@ -361,6 +365,7 @@ public class Delivery1 extends SenateActivity
                                 + " "
                                 + object.getString("adzipcode").replaceAll(
                                         "&#34;", "\""));
+                        tvCountD.setText(object.getString("nucount"));
                     }
 
                 } catch (JSONException e) {
@@ -368,6 +373,7 @@ public class Delivery1 extends SenateActivity
                     tvOfficeD.setText("!!ERROR: " + e.getMessage());
                     // tvLocCdD.setText( "!!ERROR: "+e.getMessage());
                     tvDescriptD.setText("Please contact STS/BAC.");
+                    tvCountD.setText("N/A");
 
                     e.printStackTrace();
                 }

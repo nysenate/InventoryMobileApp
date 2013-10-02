@@ -56,8 +56,24 @@ public abstract class Transaction implements Parcelable
         this.origin = origin;
     }
 
+    public Location getOrigin() {
+        return origin;
+    }
+
     public void setDestination(Location destination) {
         this.destination = destination;
+    }
+
+    public Location getDestination() {
+        return destination;
+    }
+
+    public String getOriginSummaryString() {
+        return origin.getLocationSummaryString();
+    }
+
+    public String getDestinationSummaryString() {
+        return destination.getLocationSummaryString();
     }
 
     // ---------- Code for Parcelable interface ----------

@@ -14,11 +14,13 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem>
 {
 
     Context context;
+    int resource;
 
     public CustomListViewAdapter(Context context, int resourceId,
             List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
+        this.resource = resourceId;
     }
 
     /* private view holder class */
@@ -37,7 +39,7 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem>
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.list_item, null);
+            convertView = mInflater.inflate(resource, null);
             holder = new ViewHolder();
             // holder.txtDesc = (TextView) convertView.findViewById(R.id.desc);
             holder.txtTitle = (TextView) convertView.findViewById(R.id.title);
