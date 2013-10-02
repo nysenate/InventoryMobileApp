@@ -426,10 +426,10 @@ public class LoginActivity extends SenateActivity
                     builder.setMessage(
                             "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
                             .setTitle(
-                                    Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
+                                    Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"))
 
                     // Add the buttons
-                    builder.setPositiveButton("Yes",
+                    .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                             new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -466,7 +466,7 @@ public class LoginActivity extends SenateActivity
 
                                 }
                             });
-                    builder.setNegativeButton("No",
+                    builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                             new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -520,7 +520,7 @@ public class LoginActivity extends SenateActivity
                                 .setTitle(
                                         Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
                         // Add the buttons
-                        builder.setPositiveButton("Yes",
+                        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -559,7 +559,7 @@ public class LoginActivity extends SenateActivity
 
                                     }
                                 });
-                        builder.setNegativeButton("No",
+                        builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -776,18 +776,18 @@ public class LoginActivity extends SenateActivity
                 if (currentVolume == 0) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<font color='#000055'>***WARNING: NO SOUND</font>"));
+                                    .fromHtml("<b><font color='#000055'>***WARNING: NO SOUND</font></b>"));
                 } else if (currentVolume < .4 * maxVolume) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<font color='#000055'>***WARNING: LOW SOUND</font>"));
+                                    .fromHtml("<b><font color='#000055'>***WARNING: LOW SOUND</font></b>"));
                 }
 
                 // set dialog message
                 alertDialogBuilder
                         .setMessage(Html.fromHtml(msg))
                         .setCancelable(false)
-                        .setPositiveButton("Yes",
+                        .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -807,7 +807,7 @@ public class LoginActivity extends SenateActivity
                                         dialog.dismiss();
                                     }
                                 })
-                        .setNegativeButton("No",
+                        .setNegativeButton(Html.fromHtml("No"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -918,7 +918,7 @@ public class LoginActivity extends SenateActivity
                     builder.setMessage(
                             Html.fromHtml(res.trim()))
                             .setTitle(
-                                    Html.fromHtml("<font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font>"))
+                                    Html.fromHtml("<b><font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font></b>"))
                             .setPositiveButton("Close App",
                                     new DialogInterface.OnClickListener()
                                     {
@@ -969,7 +969,7 @@ public class LoginActivity extends SenateActivity
 
         // set title
         alertDialogBuilder.setTitle(Html
-                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+                .fromHtml("<b><font color='#000055'>NO SERVER RESPONSE</font></b>"));
 
         // set dialog message
         alertDialogBuilder

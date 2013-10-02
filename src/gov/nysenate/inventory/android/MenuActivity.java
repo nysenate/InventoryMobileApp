@@ -335,7 +335,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setTitle(Html.fromHtml("<font color='#000055'>Log Out</font>"));
         builder.setMessage("Do you really want to log out?");
         // Add the buttons
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
