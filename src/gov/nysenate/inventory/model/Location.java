@@ -6,42 +6,42 @@ import android.os.Parcelable;
 public class Location implements Parcelable
 {
 
-    private String cdLocType;
-    private String cdLoc;
+    private String cdloctype;
+    private String cdlocat;
     private String addressLine1;
 
     public Location() {
-        cdLocType = "";
-        cdLoc = "";
+        cdloctype = "";
+        cdlocat = "";
         addressLine1 = "";
     }
 
     public Location(String summary) {
         String[] tmp = summary.split("-");
-        cdLoc = tmp[0];
+        cdlocat = tmp[0];
         tmp = tmp[1].split(":");
-        cdLocType = tmp[0];
+        cdloctype = tmp[0];
         addressLine1 = tmp[1].trim();
     }
 
     public String getLocSummary() {
-        return cdLoc + "-" + cdLocType + ": " + addressLine1;
+        return cdlocat + "-" + cdloctype + ": " + addressLine1;
     }
 
     public String getCdLocType() {
-        return cdLocType;
+        return cdloctype;
     }
 
-    public void setCdLocType(String cdLocType) {
-        this.cdLocType = cdLocType;
+    public void setCdLocType(String cdloctype) {
+        this.cdloctype = cdloctype;
     }
 
-    public String getCdLoc() {
-        return cdLoc;
+    public String getCdlocat() {
+        return cdlocat;
     }
 
-    public void setCdLoc(String cdLoc) {
-        this.cdLoc = cdLoc;
+    public void setCdlocat(String cdlocat) {
+        this.cdlocat = cdlocat;
     }
 
     public String getAddressLine1() {
@@ -65,15 +65,15 @@ public class Location implements Parcelable
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cdLoc);
-        dest.writeString(cdLocType);
+        dest.writeString(cdlocat);
+        dest.writeString(cdloctype);
         dest.writeString(addressLine1);
     }
 
     public void readFromParcel(Parcel in) {
         // Read Parcel in same order we wrote it.
-        cdLoc = in.readString();
-        cdLocType = in.readString();
+        cdlocat = in.readString();
+        cdloctype = in.readString();
         addressLine1 = in.readString();
     }
 

@@ -21,7 +21,7 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getOriginCdLoc() {
-        return origin.getCdLoc();
+        return origin.getCdlocat();
     }
 
     public String getOriginCdLocType() {
@@ -33,7 +33,7 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getDestinationCdLoc() {
-        return destination.getCdLoc();
+        return destination.getCdlocat();
     }
 
     public String getDestinationCdLocType() {
