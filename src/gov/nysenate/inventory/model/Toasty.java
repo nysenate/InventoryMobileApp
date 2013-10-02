@@ -77,4 +77,10 @@ public class Toasty
        this.gravity = gravity;
    }
 
+    public static void displayCenteredMessage(Context context, String message, int duration) {
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
 }
