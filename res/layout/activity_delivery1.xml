@@ -35,7 +35,7 @@
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="500dp"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_alignRight="@+id/btnDelivery1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
@@ -86,24 +86,6 @@
                 android:id="@+id/tvDescriptD"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                style="@style/NormalText"   
-                android:text="N/A" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tbLabelCountD"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                style="@style/NormalText"   
-                android:text="Item Count:" />
-
-            <TextView
-                android:id="@+id/tvCountD"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
                 style="@style/NormalText"   

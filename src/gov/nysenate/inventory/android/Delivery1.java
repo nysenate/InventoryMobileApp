@@ -51,7 +51,6 @@ public class Delivery1 extends SenateActivity
     TextView tvOfficeD;
     // TextView tvLocCdD;
     TextView tvDescriptD;
-    TextView tvCountD;
     public static ProgressBar progBarDelivery1;
     Activity currentActivity;
     String timeoutFrom = "delivery1";
@@ -70,7 +69,6 @@ public class Delivery1 extends SenateActivity
         tvOfficeD = (TextView) this.findViewById(R.id.tvOfficeD);
         // tvLocCdD = (TextView)this.findViewById(R.id.tvLocCdD);
         tvDescriptD = (TextView) this.findViewById(R.id.tvDescriptD);
-        tvCountD = (TextView) this.findViewById(R.id.tvCountD);
 
         // Setup ProgressBar
 
@@ -188,7 +186,6 @@ public class Delivery1 extends SenateActivity
             if (textLength == 0) {
                 tvOfficeD.setText("N/A");
                 tvDescriptD.setText("N/A");
-                tvCountD.setText("N/A");
             } else if (textLength >= 3) {
                 getLocationDetails();
                 // loc_details.setText(res);
@@ -349,7 +346,6 @@ public class Delivery1 extends SenateActivity
                             "Does not exist in system")) {
                         tvOfficeD.setText("N/A");
                         tvDescriptD.setText("N/A");
-                        tvCountD.setText("N/A");
                     } else {
                         tvOfficeD.setText(object.getString("cdrespctrhd"));
                         // tvLocCdD.setText(
@@ -365,7 +361,6 @@ public class Delivery1 extends SenateActivity
                                 + " "
                                 + object.getString("adzipcode").replaceAll(
                                         "&#34;", "\""));
-                        tvCountD.setText(object.getString("nucount"));
                     }
 
                 } catch (JSONException e) {
@@ -373,7 +368,6 @@ public class Delivery1 extends SenateActivity
                     tvOfficeD.setText("!!ERROR: " + e.getMessage());
                     // tvLocCdD.setText( "!!ERROR: "+e.getMessage());
                     tvDescriptD.setText("Please contact STS/BAC.");
-                    tvCountD.setText("N/A");
 
                     e.printStackTrace();
                 }
