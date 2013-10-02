@@ -10,7 +10,7 @@ public class Location implements Parcelable
     private String cdlocat;
     private String addressLine1;
     private String city;
-    private String zip;
+    private String adzipcode;
 
     public Location() {
         cdloctype = "";
@@ -30,11 +30,11 @@ public class Location implements Parcelable
         return cdlocat + "-" + cdloctype + ": " + addressLine1;
     }
 
-    public String getCdLocType() {
+    public String getCdloctype() {
         return cdloctype;
     }
 
-    public void setCdLocType(String cdloctype) {
+    public void setCdloctype(String cdloctype) {
         this.cdloctype = cdloctype;
     }
 
@@ -63,15 +63,15 @@ public class Location implements Parcelable
     }
 
     public String getZip() {
-        return zip;
+        return adzipcode;
     }
 
-    public void setZip(String zip) {
-        this.zip = zip;
+    public void setZip(String adzipcode) {
+        this.adzipcode = adzipcode;
     }
 
     public String getLocationSummaryString() {
-        return getCdLoc() + "-" + getCdLocType() + ": " + getAddressLine1();
+        return getCdlocat() + "-" + getCdloctype()+ ": " + getAddressLine1();
     }
 
 
@@ -92,7 +92,7 @@ public class Location implements Parcelable
         dest.writeString(cdloctype);
         dest.writeString(addressLine1);
         dest.writeString(city);
-        dest.writeString(zip);
+        dest.writeString(adzipcode);
     }
 
     public void readFromParcel(Parcel in) {
@@ -101,7 +101,7 @@ public class Location implements Parcelable
         cdloctype = in.readString();
         addressLine1 = in.readString();
         city = in.readString();
-        zip = in.readString();
+        adzipcode = in.readString();
     }
 
     public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>()

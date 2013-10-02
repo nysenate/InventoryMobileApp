@@ -171,7 +171,7 @@ public class ChangePickupDestination extends SenateActivity {
             try {
                 // TODO: Fully implement with Location object.
                 JSONObject json = (JSONObject) new JSONTokener(out.toString()).nextValue();
-                newLocation.setCdLoc(json.getString("cdlocat"));
+                newLocation.setCdlocat(json.getString("cdlocat"));
                 respctrhd = json.getString("cdrespctrhd");
                 adstreet1 = json.getString("adstreet1");
             } catch (JSONException e) {
@@ -237,7 +237,7 @@ public class ChangePickupDestination extends SenateActivity {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setCancelable(false);
         confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Delivery Location</font>"));
-        confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the delivery location to " + newLocation.getCdLoc()));
+        confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the delivery location to " + newLocation.getCdlocat()));
         confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
             @Override
@@ -275,7 +275,7 @@ public class ChangePickupDestination extends SenateActivity {
             if (!url.endsWith("/")) {
                 url += "/";
             }
-            url += "ChangeDeliveryLocation?nuxrpd=" + pickup.getNuxrpd() + "&cdloc=" + newLocation.getCdLoc();
+            url += "ChangeDeliveryLocation?nuxrpd=" + pickup.getNuxrpd() + "&cdloc=" + newLocation.getCdlocat();
             url += "&userFallback=" + LoginActivity.nauser;
 
             try {

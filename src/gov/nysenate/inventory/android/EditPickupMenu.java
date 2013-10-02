@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,7 +39,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
             "Remove Items", "Move Menu" };
     private static final Integer[] images = { R.drawable.ssearch, R.drawable.ssearch, R.drawable.ssearch,
-            R.drawable.ssearch, R.drawable.slogout };
+            R.drawable.ssearch, R.drawable.mainmenu };
     private TextView oldPickupLocation;
     private TextView oldDeliveryLocation;
     private TextView oldPickupBy;
@@ -133,6 +134,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
             try {
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
+                Log.i("EditPickupMenu", "Server Pickup Response:"+out.toString());
                 pickup = JSONParser.parsePickup(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
