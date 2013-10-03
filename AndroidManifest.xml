@@ -207,41 +207,42 @@
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.EditPickup2Activity"
-            android:label="@string/title_activity_delivery2"
+            android:label="@string/title_activity_editpickup1"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickup1Activity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>        
         <activity
             android:name="gov.nysenate.inventory.android.EditPickupMenu"
-            android:label="@string/title_activity_delivery2"
+            android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickup2Activity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>        
         <activity
             android:name="gov.nysenate.inventory.android.CancelPickup"
-            android:label="@string/title_activity_delivery2"
+            android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickupMenu"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>        
         <activity
             android:name="gov.nysenate.inventory.android.ChangePickupDestination"
-            android:label="@string/title_activity_delivery2"
+            android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickupMenu"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>        
         <activity
             android:name="gov.nysenate.inventory.android.ChangePickupOrigin"
-            android:label="@string/title_activity_delivery2"
+            android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickupMenu"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name="gov.nysenate.inventory.android.RemovePickupItems"
+            android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.android.EditPickupMenu"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
