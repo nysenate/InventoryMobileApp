@@ -242,9 +242,9 @@
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
-        android:text="Continue"
+        android:text="Update Location"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textSize="26sp"
         android:onClick="continueButton"
         />
     

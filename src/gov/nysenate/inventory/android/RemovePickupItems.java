@@ -46,8 +46,8 @@ public class RemovePickupItems extends SenateActivity {
         pickup = getIntent().getParcelableExtra("pickup");
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginAddressLine1());
-        oldDeliveryLocation.setText(pickup.getDestinationAddressLine1());
+        oldPickupLocation.setText(pickup.getOriginSummaryString());
+        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNaPickupBy());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         oldDate.setText(date);

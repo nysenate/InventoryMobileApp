@@ -19,6 +19,7 @@ import org.json.JSONTokener;
 
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Toasty;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChangePickupDestination extends SenateActivity {
 
@@ -67,8 +69,8 @@ public class ChangePickupDestination extends SenateActivity {
         pickup = getIntent().getParcelableExtra("pickup");
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginAddressLine1());
-        oldDeliveryLocation.setText(pickup.getDestinationAddressLine1());
+        oldPickupLocation.setText(pickup.getOriginSummaryString());
+        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNaPickupBy());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         oldDate.setText(date);
@@ -234,10 +236,15 @@ public class ChangePickupDestination extends SenateActivity {
         if (checkServerResponse(true) != OK) {
             return;
         }
+
+        if (locations.indexOf(newDeliveryLocation.getText().toString()) == -1) {
+            Toasty.displayCenteredMessage(this, "You must enter a new Delivery Location.", Toast.LENGTH_SHORT);
+            return;
+        }
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setCancelable(false);
         confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Delivery Location</font>"));
-        confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the delivery location to " + newLocation.getCdlocat()));
+        confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the delivery location to " + newLocation.getCdlocat() + "?"));
         confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
             @Override

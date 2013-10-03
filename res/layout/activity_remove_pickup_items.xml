@@ -184,7 +184,7 @@
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
-        android:text="Continue"
+        android:text="Remove Items"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:onClick="continueButton"
