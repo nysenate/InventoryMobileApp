@@ -129,7 +129,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                     .fromHtml("<font color='#000055'>Log Out</font>"));
             builder.setMessage("Do you really want to log out?");
             // Add the buttons
-            builder.setPositiveButton("Yes",
+            builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -137,7 +137,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                             backToParent();
                         }
                     });
-            builder.setNegativeButton("No",
+            builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -245,7 +245,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -297,7 +297,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setMessage("Do you really want to log out?");
 
         // Add the buttons
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -311,7 +311,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 toast.show();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -342,7 +342,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 backToParent();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {

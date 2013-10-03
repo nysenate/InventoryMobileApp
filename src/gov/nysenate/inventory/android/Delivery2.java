@@ -101,6 +101,8 @@ public class Delivery2 extends SenateActivity
         Delivery1.progBarDelivery1.setVisibility(View.VISIBLE);
 
     }
+    
+    //testing git
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -114,7 +116,7 @@ public class Delivery2 extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

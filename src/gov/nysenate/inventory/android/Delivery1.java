@@ -34,7 +34,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-/// testing git
+
 public class Delivery1 extends SenateActivity
 {
     static ClearableAutoCompleteTextView autoCompleteTextView1;// for location
@@ -210,7 +210,7 @@ public class Delivery1 extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
