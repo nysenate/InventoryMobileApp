@@ -496,7 +496,7 @@ public class VerScanActivity extends SenateActivity implements
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -611,7 +611,7 @@ public class VerScanActivity extends SenateActivity implements
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml("The item <b>cannot</b> be tagged to current location at this time. You may Save the Tag# and item information as a Verification Exception.<br /><br /><b>Save New Tag# and item Information?</b>"))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -622,7 +622,7 @@ public class VerScanActivity extends SenateActivity implements
                         getNewNusenateInfo(nusenate);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -671,7 +671,7 @@ public class VerScanActivity extends SenateActivity implements
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
