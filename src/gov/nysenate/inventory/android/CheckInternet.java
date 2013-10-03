@@ -1,4 +1,3 @@
-//Code needs to be merged with Vikram's Code  (3/7/13)
 package gov.nysenate.inventory.android;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 public class CheckInternet extends BroadcastReceiver
 {
     WifiManager mainWifi;
-    // WifiReceiver receiverWifi;  ''
+    // WifiReceiver receiverWifi;
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
     boolean enablingWifi = false;
