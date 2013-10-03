@@ -19,7 +19,7 @@ import android.widget.Toast;
 public class CheckInternet extends BroadcastReceiver
 {
     WifiManager mainWifi;
-    // WifiReceiver receiverWifi;
+    // WifiReceiver receiverWifi;  ''
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
     boolean enablingWifi = false;
