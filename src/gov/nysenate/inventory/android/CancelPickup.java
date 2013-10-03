@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 
 public class CancelPickup extends SenateActivity {
-    ///testing git
+    ///testing git2
 
     private Pickup pickup;
 
