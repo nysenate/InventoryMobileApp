@@ -34,7 +34,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+/// testing git
 public class Delivery1 extends SenateActivity
 {
     static ClearableAutoCompleteTextView autoCompleteTextView1;// for location
