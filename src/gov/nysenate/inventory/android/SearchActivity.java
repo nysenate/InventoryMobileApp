@@ -1,13 +1,10 @@
 package gov.nysenate.inventory.android;
 
-import android.widget.Filter;
-
 import gov.nysenate.inventory.model.InvSerialAdapter;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.model.Toasty;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
@@ -29,23 +26,20 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -72,6 +66,25 @@ public class SearchActivity extends SenateActivity
     private  ArrayList<InvSerialNumber> suggestions;      
     TableRow rwNuserial;
     boolean nuserialLoadDone = false;
+    InputFilter invSerialFilter = new InputFilter() {   
+        @Override  
+        public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5)  
+            {  
+                 for (int k = arg1; k < arg2; k++) {
+                     if (k>0  && arg0.charAt(k) == ',' && acNuserial.getText().toString().endsWith(",") ) {
+                         return "";   
+                     }
+                    /* else if (Character.isSpaceChar(arg0.charAt(k))) {
+                         return ",";   
+                     }*/
+                     else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {   
+                         return "";   
+                     }   
+                 }   
+             return null;   
+            }   
+    };     
+    
     AsyncTask<String, String, String> nuserialResponse = new RequestTask(){
         public void onPreExecute() {
             
@@ -124,6 +137,7 @@ public class SearchActivity extends SenateActivity
         btnSrchBck.getBackground().setAlpha(255);
         
         acNuserial = (ClearableAutoCompleteTextView) findViewById(R.id.acNuserial);
+        acNuserial.setFilters(new InputFilter[]{ invSerialFilter});
         acNuserial.setOnItemClickListener (new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,

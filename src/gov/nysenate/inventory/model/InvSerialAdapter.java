@@ -3,9 +3,6 @@ package gov.nysenate.inventory.model;
 import gov.nysenate.inventory.android.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
 import android.text.Html;
@@ -28,12 +25,13 @@ public class InvSerialAdapter extends ArrayAdapter
     public AutoCompleteTextView acView;
     private boolean setTextColor = false;
     private int viewResourceId;
-    Context context;
+    Context context;     
 
     public InvSerialAdapter(Context context, AutoCompleteTextView acView,  int viewResourceId, ArrayList<InvSerialNumber> items) {
         super(context, viewResourceId, items);
         this.context = context;
         this.acView = acView;
+        
         this.items = items;
         this.itemsAll = (ArrayList<InvSerialNumber>) items.clone();
         this.suggestions = new ArrayList<InvSerialNumber>();
