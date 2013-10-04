@@ -3,6 +3,9 @@ package gov.nysenate.inventory.model;
 import gov.nysenate.inventory.android.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
 import android.text.Html;
@@ -10,22 +13,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class InvSerialAdapter extends ArrayAdapter
 {
     private final String MY_DEBUG_TAG = "CustomerAdapter";
     private ArrayList<InvSerialNumber> items;
     private ArrayList<InvSerialNumber> itemsAll;
-    private ArrayList<InvSerialNumber> suggestions;
+    public ArrayList<InvSerialNumber> suggestions;
+    public AutoCompleteTextView acView;
+    private boolean setTextColor = false;
     private int viewResourceId;
     Context context;
 
-    public InvSerialAdapter(Context context, int viewResourceId, ArrayList<InvSerialNumber> items) {
+    public InvSerialAdapter(Context context, AutoCompleteTextView acView,  int viewResourceId, ArrayList<InvSerialNumber> items) {
         super(context, viewResourceId, items);
         this.context = context;
+        this.acView = acView;
         this.items = items;
         this.itemsAll = (ArrayList<InvSerialNumber>) items.clone();
         this.suggestions = new ArrayList<InvSerialNumber>();
@@ -98,6 +106,34 @@ public class InvSerialAdapter extends ArrayAdapter
 
         return convertView;
     }
+    
+    
+    public void setTextColor(boolean setTextColor) {
+        this.setTextColor = setTextColor;
+    }
+    
+    public boolean getTextColor() {
+        return setTextColor;
+    }
+        
+    public int getFilteredCount(String s) {
+        int cnt = 0;
+        String st = s.toUpperCase();
+        if (suggestions!=null) {
+            for (int x=0;x<suggestions.size();x++) {
+                try {
+                if (suggestions.get(x).getNuserial().startsWith(st)) {
+                    cnt++;
+                }
+                }
+                catch (IndexOutOfBoundsException iobe) {
+                    break;
+                }
+            }
+        }
+        //System.out.println ("getFilteredCount:"+s+" = "+cnt);
+        return cnt;
+    }
 
     @Override
     public Filter getFilter() {
@@ -109,6 +145,7 @@ public class InvSerialAdapter extends ArrayAdapter
             String str = ((InvSerialNumber)(resultValue)).toString(); 
             return str;
         }
+        
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if(constraint != null) {
@@ -122,25 +159,57 @@ public class InvSerialAdapter extends ArrayAdapter
                 synchronized(this) {
                     filterResults.values = suggestions;
                     filterResults.count = suggestions.size();
+                    if (acView!=null && setTextColor) {
+                        if (filterResults.count==0) {
+                            acView.setTextColor(context.getResources().getColor(R.color.redlight));
+                        }
+                        else {
+                            acView.setTextColor(context.getResources().getColor(R.color.black));
+                        }
+                    }
                 }
                 return filterResults;
             } else {
                 return new FilterResults();
             }
         }
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            ArrayList<InvSerialNumber> filteredList = (ArrayList<InvSerialNumber>) results.values;
+        
+     public int getCount(CharSequence constraint) {
+         return performFiltering(constraint).count;
+     }
+        
+   @Override
+        protected synchronized void publishResults(CharSequence constraint, FilterResults results) {
+       try {
+            ArrayList<InvSerialNumber> filteredList = ((ArrayList<InvSerialNumber>) results.values);
+            //filteredList = (ArrayList<InvSerialNumber>)Collections.synchronizedList(filteredList);
+            
+            //int listSize = filteredList.size();
             if(results != null && results.count > 0) {
                 clear();
-                synchronized(this) {                
-                    for (InvSerialNumber c : filteredList) {
-                    add(c);
+                    //InvSerialNumber invSerialNumber;
+//                    for (int x=0;x<listSize;x++) {
+                      for (InvSerialNumber invSerialNumber: filteredList) {
+                        try {
+                            //invSerialNumber = filteredList.get(x);
+                            add(invSerialNumber);
+                        }
+                        catch (Exception e) {
+                                
+                        }
                     }
-                }
+
                 notifyDataSetChanged();
             }
+       }
+       catch (Exception e) {
+           Toasty toasty = new Toasty(context, "An unexpected occured on publishing Serial# results:"+e.getMessage()+": "+e.getStackTrace()[0].toString()+" PLEASE CONTACT STSBAC", Toast.LENGTH_LONG);
+           toasty.showMessage();
+           e.printStackTrace();
+           
+       }
         }
-    };
 
+    };
+    
 }

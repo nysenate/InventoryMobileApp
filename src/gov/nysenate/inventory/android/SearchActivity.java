@@ -4,6 +4,7 @@ import android.widget.Filter;
 
 import gov.nysenate.inventory.model.InvSerialAdapter;
 import gov.nysenate.inventory.model.InvSerialNumber;
+import gov.nysenate.inventory.model.Toasty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +68,7 @@ public class SearchActivity extends SenateActivity
     Cursor serialCursor;
     Spinner spinSearchBy;
     int serialLength = 0;
+    boolean serialListNeeded = true;
     private  ArrayList<InvSerialNumber> suggestions;      
     TableRow rwNuserial;
     boolean nuserialLoadDone = false;
@@ -129,7 +131,7 @@ public class SearchActivity extends SenateActivity
                 InvSerialNumber selected = (InvSerialNumber) arg0.getAdapter().getItem(arg2);
                 barcode.setText(selected.getNusenate());
                 
-                Log.i("NUSERIAL CLICK", "Clicked on Item "+selected.getNuserial());
+                //Log.i("NUSERIAL CLICK", "Clicked on Item "+selected.getNuserial());
             }
         });  
          
@@ -140,12 +142,54 @@ public class SearchActivity extends SenateActivity
 
                 // call your adapter here
                 String st = s.toString();
-                Log.i("SERIALTEXTCHANGE", "!!!!FILTER ON:"+st);
+                //Log.i("SERIALTEXTCHANGE", "!!!!Get Serial List:"+st);
+                int recordCount = 0;
+                boolean serialListfromServer = false;
+                if (serialListNeeded || serialLength>st.length()) {
+                    if (serialLength>st.length()) {
+                        serialListAdapter.setTextColor(false);
+                    }
+                    recordCount = getSerialList(st);
+                    //Log.i("SERIALTEXTCHANGE", "!!!!Serial Server RecordCount:"+recordCount);
+                    serialListfromServer = true;
+                }
+                //Log.i("SERIALTEXTCHANGE", "!!!!FILTER ON:"+st);
                 /*if (acNuserial.getText().toString().length()<serialLength) {
                     serialList = (ArrayList<InvSerialNumber>) serialListOrg.clone();
                     Log.i("TextChanged", "!!!!Restore original list size to "+serialList.size());
                 }*/
                 serialListAdapter.getFilter().filter(st);
+                if (serialListfromServer) {
+                    //System.out.println(st+" FROM SERVER COUNT:"+recordCount);
+                    serialListAdapter.setTextColor(false);
+                    if (recordCount==0) {
+                        acNuserial.setTextColor(getResources().getColor(R.color.redlight));
+                    }
+                    else {
+                        acNuserial.setTextColor(getResources().getColor(R.color.black));
+                    }
+                }
+                else {
+                    serialListAdapter.setTextColor(true);
+                    /*if (serialListAdapter.suggestions==null) {
+                        acNuserial.setTextColor(getResources().getColor(R.color.redlight));
+                        System.out.println(st+" FROM ADAPTER COUNT: NULL(0)");
+                    }
+                    else { if (serialListAdapter.getFilteredCount(st)==0) {            
+                        int cnt = serialListAdapter.getFilteredCount(st);
+                        if (cnt==0) {
+                            System.out.println(st+" FROM ADAPTER FILTER COUNT: "+cnt);
+                            acNuserial.setTextColor(getResources().getColor(R.color.redlight));
+                        }
+                        else {
+                            System.out.println(st+" FROM ADAPTER FILTER COUNT: "+cnt);
+                            acNuserial.setTextColor(getResources().getColor(R.color.black));
+                            }
+                    }
+
+                        
+                    }*/
+                }
 
             }
 
@@ -160,8 +204,8 @@ public class SearchActivity extends SenateActivity
             }
             });
         
-        getSerialList();
-        acNuserial.setThreshold(2);
+        //getSerialList();
+        acNuserial.setThreshold(3);
 /*        acNuserial.setOnItemSelectedListener(
                 new OnItemSelectedListener() {
                     @Override
@@ -202,14 +246,14 @@ public class SearchActivity extends SenateActivity
                     public void onItemSelected(AdapterView<?> arg0, View arg1,
                             int arg2, long arg3) {
                         String selectedValue = (String) spinSearchBy.getItemAtPosition(arg2);
-                        Log.i("Search By Change", "VALUE:"+selectedValue);
+                        //Log.i("Search By Change", "VALUE:"+selectedValue);
                         if (selectedValue.equalsIgnoreCase("By Serial#")) {
-                            Log.i("Search By Change", "Changed to Serial");
+                            //Log.i("Search By Change", "Changed to Serial");
                             barcode.setVisibility(View.GONE);
                             acNuserial.setVisibility(View.VISIBLE);
                         }
                         else {
-                            Log.i("Search By Change", "Changed to Senate Tag#");
+                            //Log.i("Search By Change", "Changed to Senate Tag#");
                             acNuserial.setVisibility(View.GONE);
                             barcode.setVisibility(View.VISIBLE);
                         }
@@ -260,14 +304,18 @@ public class SearchActivity extends SenateActivity
     };
     
     
-    public void getSerialList() {
+    public int getSerialList(String nuserialPartial) {
         status = "yes";
 
         // Get the URL from the properties
         URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
+        //System.out.println(URL + "/SerialList?nuserial="+nuserialPartial+"&maxResults=50");
         AsyncTask<String, String, String> resr1 = new RequestTask()
-                .execute(URL + "/SerialList");
+                .execute(URL + "/SerialList?nuserial="+nuserialPartial+"&maxResults=50");
+        
+        serialList = new ArrayList<InvSerialNumber>();
+        int statusNum  = 0;
+        int recordCount = 0;
 
         try {
 
@@ -277,16 +325,17 @@ public class SearchActivity extends SenateActivity
                 res = resr1.get().trim().toString();
                 if (res == null) {
                     noServerResponse();
-                    return;
+                    return -2;
                 } else if (res.indexOf("Session timed out") > -1) {
                     startTimeout(SERIALLIST_TIMEOUT);
-                    return;
+                    return -1;
                 }
             } catch (NullPointerException e) {
                 noServerResponse();
-                return;
+                return  -2;
             }
             String jsonString = resr1.get().trim().toString();
+            //System.out.println("Serial# jsonString:"+jsonString);
 
             JSONArray jsonArray = new JSONArray(jsonString);
             // this will populate the lists from the JSON array coming from
@@ -295,6 +344,14 @@ public class SearchActivity extends SenateActivity
 
                 JSONObject jo = new JSONObject();
                 jo = jsonArray.getJSONObject(i);
+                statusNum = jo.getInt("statusNum");
+                //System.out.println("statusNum:"+statusNum);
+                if (statusNum!=0) {
+                    //System.out.println("Don't look at the rest");
+                    serialListNeeded = true;
+                    break;
+                }
+                serialListNeeded = false;
                 InvSerialNumber invSerialNumber = new InvSerialNumber();
                 invSerialNumber.setNuxrefsn( jo.getString("nuxrefsn"));
                 invSerialNumber.setNuserial(jo.getString("nuserial"));
@@ -342,8 +399,17 @@ public class SearchActivity extends SenateActivity
             e.printStackTrace();
         }
         status = "yes1";
-        serialListAdapter = new InvSerialAdapter(getApplicationContext(), R.layout.row_serialitem, serialList);
+        serialListAdapter = new InvSerialAdapter(getApplicationContext(), acNuserial, R.layout.row_serialitem, serialList);
                 
+         Toasty toasty = new Toasty(context);
+         
+         if (statusNum>0) {
+             //toasty.showMessage("Too many results ("+statusNum+") found, please keep typing.");
+         }
+         else if (statusNum<0) {
+             toasty.showMessage("Server returned an error number of "+statusNum+" when trying to filter Serial#s. Please contact STSBAC. .");
+         }
+        
                 /*new ArrayAdapter(this,R.layout.row_serialitem, serialList) {
             
             class ViewHolder
@@ -479,6 +545,18 @@ public class SearchActivity extends SenateActivity
           
         };*/
         acNuserial.setAdapter(serialListAdapter);
+        if (statusNum>0) {
+            recordCount = statusNum;
+        }
+        else {
+            if (serialList==null) {
+               recordCount = 0;
+            }
+            else {
+                recordCount = serialList.size();
+            }
+        }
+        return recordCount;
 
     }
     
@@ -574,7 +652,7 @@ public class SearchActivity extends SenateActivity
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    Log.i("Search res ", "res:" + res);
+                    //Log.i("Search res ", "res:" + res);
                     if (res == null) {
                         noServerResponse();
                         return;
@@ -620,14 +698,14 @@ public class SearchActivity extends SenateActivity
                     StringBuilder nusenateMsg = new StringBuilder();
                     nusenateMsg.append(object.getString("nusenate"));
                     String cdstatus = object.getString("cdstatus");
-                    Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
+                    //Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
                     if (cdstatus.equalsIgnoreCase("I")) {
                         nusenateMsg.append(" <font color='RED'>(INACTIVE) ");
                         nusenateMsg.append(object.getString("deadjust"));
-                        Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus + ")");
+                        //Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus + ")");
                     }
 
-                    Log.i("TEST", "Senate Tag#:" + nusenateMsg);
+                    //Log.i("TEST", "Senate Tag#:" + nusenateMsg);
                     tvBarcode.setText(Html.fromHtml(nusenateMsg.toString()));
                     try {
                         tvNuserial.setText(object.getString("nuserial"));
