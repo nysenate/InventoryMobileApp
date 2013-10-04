@@ -154,6 +154,7 @@ public class EditPickup2Activity extends SenateActivity
         }
         btnEditPickupActivity2Cancel.getBackground().setAlpha(255);
         progBarEditPickup2.getBackground().setAlpha(255);
+        progBarEditPickup2.setVisibility(ProgressBar.INVISIBLE);
     }
 
     @Override

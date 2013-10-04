@@ -23,7 +23,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
 public class CancelPickup extends SenateActivity {
+    ///testing git2
 
     private Pickup pickup;
 
@@ -39,6 +41,7 @@ public class CancelPickup extends SenateActivity {
         TextView oldCount = (TextView) findViewById(R.id.pickup_count);
         TextView oldDate = (TextView) findViewById(R.id.pickup_date);
         TextView comments = (TextView) findViewById(R.id.cancel_pickup_comments);
+        TextView commentsTitle = (TextView) findViewById(R.id.cancel_pickup_comments_title);
         ListView items = (ListView) findViewById(R.id.cancel_pickup_listview);
 
         pickup = getIntent().getParcelableExtra("pickup");
@@ -47,12 +50,17 @@ public class CancelPickup extends SenateActivity {
         Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
         items.setAdapter((ListAdapter) pickupListAdapter);
 
-        oldPickupLocation.setText(pickup.getOriginAddressLine1());
-        oldDeliveryLocation.setText(pickup.getDestinationAddressLine1());
+        oldPickupLocation.setText(pickup.getOriginSummaryString());
+        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNaPickupBy());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         oldDate.setText(date);
-        comments.setText(pickup.getComments());
+
+        // Only show comments if there are some.
+        if (pickup.getComments().length() > 0) {
+            commentsTitle.setText("Comments:");
+            comments.setText(pickup.getComments());
+        }
     }
 
     public void continueButton(View view) {

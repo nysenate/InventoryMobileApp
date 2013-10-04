@@ -19,6 +19,7 @@ import org.json.JSONTokener;
 
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Toasty;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChangePickupOrigin extends SenateActivity {
 
@@ -67,8 +69,8 @@ public class ChangePickupOrigin extends SenateActivity {
         pickup = getIntent().getParcelableExtra("pickup");
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginAddressLine1());
-        oldDeliveryLocation.setText(pickup.getDestinationAddressLine1());
+        oldPickupLocation.setText(pickup.getOriginSummaryString());
+        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNaPickupBy());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         oldDate.setText(date);
@@ -230,30 +232,35 @@ public class ChangePickupOrigin extends SenateActivity {
         if (checkServerResponse(true) != OK) {
             return;
         }
-        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog.setCancelable(false);
-        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Pickup Location</font>"));
-        confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the pickup location to " + newLocation.getCdlocat()));
-        confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                return;
-            }
-        });
-        confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        if (locations.indexOf(newPickupLocation.getText().toString()) == -1) {
+            Toasty.displayCenteredMessage(this, "You must select a new Pickup Location.", Toast.LENGTH_SHORT);
+        } else {
+            AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+            confirmDialog.setCancelable(false);
+            confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Pickup Location</font>"));
+            confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the pickup location to " + newLocation.getCdlocat() + "?"));
+            confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new ChangePickupLocation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new ChangePickupLocation().execute();
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    return;
                 }
-            }
-        });
-        confirmDialog.show();
+            });
+            confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        new ChangePickupLocation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        new ChangePickupLocation().execute();
+                    }
+                }
+            });
+            confirmDialog.show();
+        }
     }
 
     private class ChangePickupLocation extends AsyncTask<Void, Void, Integer> {

@@ -32,7 +32,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Original Pickup Information"
-                style="@style/NormalText"   
+                android:textStyle="bold"  
                 android:textColor="@color/bluedark"
                 android:textSize="20sp" />
         </TableRow>
@@ -242,9 +242,9 @@
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
-        android:text="Continue"
+        android:text="Update Location"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textSize="26sp"
         android:onClick="continueButton"
         />
     
