@@ -70,8 +70,8 @@ public class EditPickup2Activity extends SenateActivity
         sb.append("</b>");
 
         searchByType = getIntent().getStringExtra("searchByType");
-        formatSearchByType();
         searchBy = getIntent().getStringExtra("searchBy");
+        formatSearchByType();
         loc_details = (TextView) findViewById(R.id.textView1);
         loc_details.setText(Html.fromHtml(sb.toString()));
         listview = (ListView) findViewById(R.id.listView1);
@@ -362,6 +362,8 @@ public class EditPickup2Activity extends SenateActivity
             searchByType = "NAPICKUPBY";
         } else if (searchByType.equalsIgnoreCase("Date")) {
             searchByType = "DTTXNORIGIN";
+            // Also format serchBy for servlet...
+            searchBy = searchBy.split(" ")[0];
         }
     }
 
