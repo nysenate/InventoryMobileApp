@@ -3,41 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EditPickup1" >
-	<TextView
-    android:id="@+id/tvLblSearchBy"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_marginLeft="145dp"
-    android:layout_below="@+id/textView1"
-    android:layout_marginTop="3dp"
-    android:text="Search By:"
-    android:textSize="25sp"
-    android:textStyle="bold" />
-    
+
+    <TextView
+        android:id="@+id/tvLblSearchBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="145dp"
+        android:layout_marginTop="8dp"
+        android:text="Search By:"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
     <Spinner
-	    android:id="@+id/spinSearchByList"
-	    android:layout_width="190dp"
-	    android:layout_height="wrap_content"
-	    android:layout_toRightOf="@+id/tvLblSearchBy"
-	    android:entries="@array/editpickup_searchby"
-	    android:gravity="center"
-	    style="@style/NormalText"   
-	    android:textStyle="bold" />
+        android:id="@+id/spinSearchByList"
+        style="@style/NormalText"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/tvLblSearchBy"
+        android:entries="@array/editpickup_searchby"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="25sp" />
+
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/acSearchBy"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="22dp"
         android:layout_alignRight="@+id/btnEditPickup1Cont"
         android:layout_below="@+id/tvLblSearchBy"
+        android:layout_marginLeft="22dp"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="@string/delivery1_hint"
         android:singleLine="true"
- 		style="@style/NormalText"   
-        android:textStyle="bold"   >
+        android:textStyle="bold"
+        android:hint="Scan or enter location code." >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
@@ -55,69 +58,51 @@
         <TableRow>
 
             <TextView
-                android:id="@+id/tvHeadDetailsD"
+                android:id="@+id/tvTableTitle"
+                style="@style/NormalText"
                 android:layout_gravity="center"
                 android:layout_span="2"
                 android:gravity="center"
-                android:text="Selected Location Information "
- 				style="@style/NormalText"   
+                android:text="Pickup Location"
                 android:textColor="@color/bluedark" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:id="@+id/tvLabelOfficeD"
+                android:id="@+id/tvLabel1Title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
- 				style="@style/NormalText"   
                 android:text="Resp Center Hd:" />
 
             <TextView
-                android:id="@+id/tvOfficeD"
+                android:id="@+id/tvLabel1Value"
+                style="@style/NormalText"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                style="@style/NormalText"   
-                android:text="N/A" />
+                android:text="" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:id="@+id/tvLabelDescrD"
+                android:id="@+id/tvLabel2Title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                style="@style/NormalText"   
                 android:text="Address:" />
 
             <TextView
-                android:id="@+id/tvDescriptD"
+                android:id="@+id/tvLabel2Value"
+                style="@style/NormalText"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                style="@style/NormalText"   
-                android:text="N/A" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tbLabelCountD"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                style="@style/NormalText"   
-                android:text="Item Count:" />
-
-            <TextView
-                android:id="@+id/tvCountD"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                style="@style/NormalText"   
-                android:text="N/A" />
+                android:text="" />
         </TableRow>
     </TableLayout>
 
@@ -155,16 +140,15 @@
         android:text="Cancel"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
-    
-   <ProgressBar
+
+    <ProgressBar
         android:id="@+id/progBarEditPickup1"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
-
 
 </RelativeLayout>

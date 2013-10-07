@@ -66,10 +66,11 @@ public class EditPickup2Activity extends SenateActivity
 
         StringBuilder sb = new StringBuilder();
         sb.append("Please select pickup for delivery to<br/><b>");
-        sb.append(EditPickup1Activity.acSearchBy.getText().toString());
+        sb.append(EditPickup1Activity.searchText.getText().toString()); // TODO remove, send as intent extra if needed.
         sb.append("</b>");
 
         searchByType = getIntent().getStringExtra("searchByType");
+        formatSearchByType();
         searchBy = getIntent().getStringExtra("searchBy");
         loc_details = (TextView) findViewById(R.id.textView1);
         loc_details.setText(Html.fromHtml(sb.toString()));
@@ -102,8 +103,6 @@ public class EditPickup2Activity extends SenateActivity
             }
 
         });
-        EditPickup1Activity.progBarEditPickup1.setVisibility(View.VISIBLE);
-
     }
 
     public void noServerResponse() {
@@ -196,7 +195,7 @@ public class EditPickup2Activity extends SenateActivity
         String searchBySplit[] = searchBy.split("-");
         searchByCode = searchBySplit[0];
         Log.i("getEditPickupList", "searchBy:"+searchBy+" searchBySplit[0]:"+searchByCode);
-
+        Log.i("getEditPickupList", "searchByTyep: " + searchByType);
         // 2. Display all the in transit moves for the current location
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -351,6 +350,19 @@ public class EditPickup2Activity extends SenateActivity
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
         // TODO Auto-generated method stub
 
+    }
+
+    private void formatSearchByType() {
+        // "CDLOCATFROM", "CDLOCATTO", "NAPICKUPBY", "DTTXNORIGIN"
+        if (searchByType.equalsIgnoreCase("Pickup Location")) {
+            searchByType = "CDLOCATFROM";
+        } else if (searchByType.equalsIgnoreCase("Delivery Location")) {
+            searchByType = "CDLOCATTO";
+        } else if (searchByType.equalsIgnoreCase("Picked Up By")) {
+            searchByType = "NAPICKUPBY";
+        } else if (searchByType.equalsIgnoreCase("Date")) {
+            searchByType = "DTTXNORIGIN";
+        }
     }
 
 }

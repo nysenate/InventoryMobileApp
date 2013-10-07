@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,5 +61,15 @@ public class JSONParser {
         loc.setZip(json.getString("adzipcode"));
 
         return loc;
+    }
+
+    public static List<Pickup> parseMultiplePickups(String json) throws JSONException {
+        List<Pickup> pickups = new ArrayList<Pickup>();
+        JSONTokener token = new JSONTokener(json);
+        JSONArray obj = (JSONArray) token.nextValue();
+        for (int i = 0; i < obj.length(); i++) {
+            pickups.add(parsePickup(obj.getJSONObject(i).toString()));
+        }
+        return pickups;
     }
 }

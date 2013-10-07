@@ -66,8 +66,8 @@
     </string-array>
 
     <string-array name="editpickup_searchby">
-        <item>Origin</item>
-        <item>Destination</item>
+        <item>Pickup Location</item>
+        <item>Delivery Location</item>
         <item>Picked Up By</item>
         <item>Date</item>
    </string-array>
