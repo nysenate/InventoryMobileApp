@@ -63,7 +63,7 @@ public class Delivery2 extends SenateActivity
         // 1. Get the intent from Delivery1 activity and display it
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Please select pickup for delivery to<br/><b>");
+        sb.append("Please select pickup for delivery to<br/>");
         sb.append(Delivery1.autoCompleteTextView1.getText().toString());
         sb.append("</b>");
 

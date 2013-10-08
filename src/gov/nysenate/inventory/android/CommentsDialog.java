@@ -51,7 +51,7 @@ public class CommentsDialog extends DialogFragment
                                 + "</font>"))
                 .setMessage(Html.fromHtml(msg))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("Yes"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -62,7 +62,7 @@ public class CommentsDialog extends DialogFragment
                         dismiss();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("No"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -98,7 +98,7 @@ public class CommentsDialog extends DialogFragment
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(cancelMsg))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("Yes"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -107,7 +107,7 @@ public class CommentsDialog extends DialogFragment
                         dismiss();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("No"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

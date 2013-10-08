@@ -49,7 +49,7 @@ public class MsgAlert
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))
-                .setCancelable(false).setPositiveButton("Ok", onClickListener);
+                .setCancelable(false).setPositiveButton(Html.fromHtml("Ok"), onClickListener);
         // create alert dialog
         dialog = alertDialogBuilder.create();
 
