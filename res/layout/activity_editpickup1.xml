@@ -49,7 +49,6 @@
         android:id="@+id/tableLayout1"
         android:layout_width="500dp"
         android:layout_height="200dp"
-        android:layout_alignLeft="@+id/autoCompletelblTitleMessage"
         android:layout_alignRight="@+id/btnEditPickup1Cont"
         android:layout_below="@+id/acSearchBy"
         android:layout_marginTop="21dp"
