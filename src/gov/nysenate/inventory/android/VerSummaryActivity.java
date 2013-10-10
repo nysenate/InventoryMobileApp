@@ -319,7 +319,7 @@ public class VerSummaryActivity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -407,7 +407,7 @@ public class VerSummaryActivity extends SenateActivity
                                 + loc_code
                                 + "</b>. <br><br>"
                                 + "Continue with Verification Submission (Y/N)?"));
-        dialogBuilder.setPositiveButton("Yes",
+        dialogBuilder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -421,7 +421,7 @@ public class VerSummaryActivity extends SenateActivity
                     }
                 });
 
-        dialogBuilder.setNegativeButton("No",
+        dialogBuilder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -448,7 +448,7 @@ public class VerSummaryActivity extends SenateActivity
                                 + ".</b><br><br>"
                                 + "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>"
                                 + "Continue with Verification Submission (Y/N)?"));
-        dialogBuilder.setPositiveButton("Yes",
+        dialogBuilder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -458,7 +458,7 @@ public class VerSummaryActivity extends SenateActivity
                     }
                 });
 
-        dialogBuilder.setNegativeButton("No",
+        dialogBuilder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -478,7 +478,7 @@ public class VerSummaryActivity extends SenateActivity
                         .fromHtml("<font color='#000055'>Verification Confirmation</font>"));
         confirmDialog
                 .setMessage("Are you sure you want to submit this verification?");
-        confirmDialog.setPositiveButton("Yes",
+        confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -503,7 +503,7 @@ public class VerSummaryActivity extends SenateActivity
                     }
                 });
 
-        confirmDialog.setNegativeButton("No",
+        confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
