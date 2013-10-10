@@ -52,7 +52,6 @@ public class CheckInternet extends BroadcastReceiver
                     && cm.getActiveNetworkInfo().isConnected()) {
                 curConnected = cm.getActiveNetworkInfo().isConnected();
                 if (!prevConnected) {
-                    duration = Toast.LENGTH_LONG;
                     toast = Toast.makeText(context, "Wifi Connection found.",
                             duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
