@@ -387,7 +387,6 @@ public abstract class SenateActivity extends Activity implements
                     && cm.getActiveNetworkInfo().isConnected()) {
                 curConnected = cm.getActiveNetworkInfo().isConnected();
                 if (!prevConnected) {
-                    duration = Toast.LENGTH_LONG;
                     toast = Toast.makeText(context, "Wifi Connection found.",
                             duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -400,7 +399,6 @@ public abstract class SenateActivity extends Activity implements
                 curConnected = false;
                 if (mainWifi.isWifiEnabled()) {
                     if (prevConnected) {
-                        duration = Toast.LENGTH_LONG;
                         toast = Toast.makeText(context,
                                 "Wifi Connection lost.", duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);

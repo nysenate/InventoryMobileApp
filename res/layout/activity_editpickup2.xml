@@ -5,7 +5,7 @@
     tools:context=".Delivery2" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -14,6 +14,7 @@
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:layout_marginTop="19dp"
+        android:layout_marginBottom="30dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/editpickup2_msg"
         style="@style/NormalText"    />
@@ -22,8 +23,8 @@
         android:id="@+id/listView1"
         android:layout_width="wrap_content"
         android:layout_height="600dp"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/tvLbDel2Dttime" >
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/title" >
 
     </ListView>
      
@@ -38,49 +39,45 @@
         android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/tvLbDel2Count"
+        android:id="@+id/column1label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvLbDel2PickupBy"
-        android:layout_alignBottom="@+id/tvLbDel2PickupBy"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/listView1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="70dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/column2label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView1"
+        android:layout_toRightOf="@+id/column1label"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/column3label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView1"
+        android:layout_toLeftOf="@+id/column4label"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/column4label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listView1"
         android:layout_alignParentRight="true"
-        android:text="Count"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvLbDel2Dttime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/listView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="20dp"
-        android:text="Date/Time"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvLbDel2PickupBy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/listView1"
-        android:layout_marginRight="22dp"
-        android:layout_toLeftOf="@+id/progBarEditPickup2"
-        android:text="Pickup By"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvLbDel2Locat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/listView1"
-        android:layout_marginLeft="53dip"
-        android:layout_toRightOf="@+id/tvLbDel2PickupBy"
-        android:text="From Location"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
-
+        
     <Button
         android:id="@+id/btnEditPickup2Cancel"
         android:layout_width="200dp"

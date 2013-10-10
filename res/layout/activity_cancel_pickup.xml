@@ -136,7 +136,7 @@
     <ListView
         android:id="@+id/cancel_pickup_listview"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="310dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/pickup_info"
         android:layout_marginTop="27dp" >
