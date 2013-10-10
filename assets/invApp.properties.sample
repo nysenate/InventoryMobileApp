@@ -1,2 +1,2 @@
-WEBAPP_BASE_URL=http://localhost:8080/InvApp
+WEBAPP_BASE_URL=http://localhost:8080/InventoryWebApp
 DEFRMINT=
