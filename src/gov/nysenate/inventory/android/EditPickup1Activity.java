@@ -7,6 +7,7 @@ import gov.nysenate.inventory.util.JSONParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,7 @@ import android.widget.Toast;
 
 public class EditPickup1Activity extends SenateActivity
 {
-    private enum SearchByParam {PICKUPLOC, DELIVERYLOC, NAPICKUPBY, DATE};
+    public enum SearchByParam {PICKUPLOC, DELIVERYLOC, NAPICKUPBY, DATE};
     private SearchByParam currentSearchParam = SearchByParam.PICKUPLOC;
     private Spinner searchParam;
     public static ClearableAutoCompleteTextView searchText;
@@ -272,11 +273,11 @@ public class EditPickup1Activity extends SenateActivity
         if (checkServerResponse(true) != OK) {
             return;
         }
-        // searchByType = getIntent().getStringExtra("searchByType");
-        // searchBy = getIntent().getStringExtra("searchBy");
+        //TODO: pass search text as an appropriate object instead of text?
         Intent intent = new Intent(this, EditPickup2Activity.class);
-        intent.putExtra("searchByType", searchParam.getSelectedItem().toString());
-        intent.putExtra("searchBy", searchText.getText().toString());
+        intent.putExtra("searchParam", searchParam.getSelectedItem().toString());
+        intent.putExtra("searchText", searchText.getText().toString());
+        intent.putParcelableArrayListExtra("pickups", (ArrayList<Pickup>) validPickups);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
             
@@ -388,7 +389,7 @@ public class EditPickup1Activity extends SenateActivity
     private void setAdapterToDate() {
         Set<String> dates = new HashSet<String>();
         for (Pickup pickup : validPickups) {
-            dates.add(pickup.getDate());
+            dates.add(pickup.getDateWithoutTime());
         }
         updateAdapter(dates);
     }

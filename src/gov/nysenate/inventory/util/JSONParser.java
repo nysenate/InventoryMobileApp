@@ -26,6 +26,7 @@ public class JSONParser {
         pickup.setNuxrRelSign(obj.getString("nuxrrelsign"));
         pickup.setDate(obj.getString("date"));
         pickup.setNuxrpd(Integer.valueOf(obj.getString("nuxrpd")));
+        pickup.setCount(Integer.valueOf(obj.getString("count")));
         pickup.setPickupItems(pickupItems);
         pickup.setOrigin(origin);
         pickup.setDestination(destination);
