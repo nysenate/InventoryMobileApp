@@ -157,7 +157,7 @@ public class LoginActivity extends SenateActivity
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
         password.addTextChangedListener(senateTagPWDWatcher);
-        testSQLlite();
+        //testSQLlite();
         if (timeoutActivity) {
             user_name.setKeyListener(null);
             user_name.setText(nauser);
