@@ -196,10 +196,8 @@ public class EditPickup2Activity extends SenateActivity
 
     private List<Pickup> pickupsOnDate(String date) {
         List<Pickup> pickups = new ArrayList<Pickup>();
-        // date format = mm/dd/yy hh:mm:ssAM/PM Day
-        String day = date.split(" ")[0];
         for(Pickup pickup: avaliablePickups) {
-            if (pickup.getDate().split(" ")[0].equalsIgnoreCase(day)) {
+            if (pickup.getDateWithoutTime().equalsIgnoreCase(date)) {
                 pickups.add(pickup);
             }
         }

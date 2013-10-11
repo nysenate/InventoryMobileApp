@@ -531,10 +531,9 @@ public class EditPickup1Activity extends SenateActivity
     }
 
     private int getCountForDate(String date) {
-        String selectedDate = date.split(" ")[0];
         int count = 0;
         for (Pickup pickup : validPickups) {
-            if (pickup.getDate().split(" ")[0].equals(selectedDate)) {
+            if (pickup.getDateWithoutTime().equals(date)) {
                 count++;
             }
         }

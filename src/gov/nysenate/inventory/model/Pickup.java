@@ -28,7 +28,6 @@ public class Pickup extends Transaction
         pickupItems = new ArrayList<InvItem>();
         origin = new Location();
         destination = new Location();
-        count = 0;
     }
 
     public Pickup(Location origin, Location destination) {
@@ -38,7 +37,6 @@ public class Pickup extends Transaction
         naReleaseBy = "";
         nuxrRelSign = "";
         pickupItems = new ArrayList<InvItem>();
-        count = 0;
     }
 
     public String getDateWithoutTime() {
