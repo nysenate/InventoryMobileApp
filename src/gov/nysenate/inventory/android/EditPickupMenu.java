@@ -38,7 +38,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private List<RowItem> menuRowItems;
     private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
             "Remove Items", "Move Menu" };
-    private static final Integer[] images = { R.drawable.cancelpickup, R.drawable.editlocation, R.drawable.editlocation,
+    private static final Integer[] images = { R.drawable.cancelpickup, R.drawable.editlocdelivery, R.drawable.editlocpickup,
             R.drawable.removeitems, R.drawable.mainmenu };
     private TextView oldPickupLocation;
     private TextView oldDeliveryLocation;
