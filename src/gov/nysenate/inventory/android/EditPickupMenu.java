@@ -93,7 +93,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 startActivity(RemovePickupItems.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[4])) {
-                startActivity(Move.class);
+                startActivity(Move.class, R.anim.in_left);
             }
         }
     }
@@ -105,11 +105,33 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     }
 
     private void startActivity(Class<?> activity) {
+        startActivity(activity, R.anim.in_right);
+    }
+
+    private void startActivity(Class<?> activity, int inTransition) {
+        int outTransition = -1;
+        switch (inTransition) {
+        case R.anim.in_right:
+            outTransition = R.anim.out_left;
+            break;
+        case R.anim.in_left:
+            outTransition = R.anim.out_right;
+            break;
+        case R.anim.in_down:
+            outTransition = R.anim.out_down;
+            break;
+        case R.anim.in_up:
+            outTransition = R.anim.out_up;
+            break;
+        default: 
+            inTransition = R.anim.in_right;
+            outTransition = R.anim.in_left;
+        }
         Intent intent = new Intent(this, activity);
         intent.putExtra("pickup", pickup);
         intent.putExtra("date", oldDate.getText());
         startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        overridePendingTransition(inTransition, outTransition);
     }
 
     private class GetPickup extends AsyncTask<Void, Void, Integer> {
