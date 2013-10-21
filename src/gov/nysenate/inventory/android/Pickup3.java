@@ -531,150 +531,8 @@ public class Pickup3 extends SenateActivity
         @Override
         protected String doInBackground(String... uri) {
             // First Upload the Signature and get the nuxsign from the Server
-            if (pickupRequestTaskType.equalsIgnoreCase("Pickup")) {
 
-                // Scale the Image
-
-                String NUXRRELSIGN = "";
-
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                Bitmap bitmap = sign.getImage();
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
-                        40, true);
-
-                for (int x = 0; x < scaledBitmap.getWidth(); x++) {
-                    for (int y = 0; y < scaledBitmap.getHeight(); y++) {
-                        String strColor = String.format("#%06X",
-                                0xFFFFFF & scaledBitmap.getPixel(x, y));
-                        if (strColor.equals("#000000")
-                                || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
-                            // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
-                            scaledBitmap.setPixel(x, y, Color.WHITE);
-                        }
-                    }
-                }
-                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
-
-                scaledBitmap = setBackgroundColor(scaledBitmap, Color.WHITE);
-                imageInByte = bs.toByteArray();
-                String responseString = "";
-                try {
-                    // Post the Image to the Web Server
-
-                    StringBuilder urls = new StringBuilder();
-                    urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?") > -1) {
-                        if (!uri[0].trim().endsWith("?")) {
-                            urls.append("&");
-                        }
-                    } else {
-                        urls.append("?");
-                    }
-                    urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);
-
-                    URL url = new URL(urls.toString());
-                    HttpClient httpClient = LoginActivity.httpClient;
-
-                    if (httpClient == null) {
-                        Log.i(pickupRequestTask.class.getName(),
-                                "MainActivity.httpClient was null so it is being reset");
-                        LoginActivity.httpClient = new DefaultHttpClient();
-                        httpClient = LoginActivity.httpClient;
-                    }
-
-                    HttpContext localContext = new BasicHttpContext();
-                    MultipartEntity entity = new MultipartEntity(
-                            HttpMultipartMode.BROWSER_COMPATIBLE);
-
-                    HttpPost httpPost = new HttpPost(urls.toString());
-                    entity.addPart("Signature", new ByteArrayBody(imageInByte,
-                            "temp.jpg"));
-                    httpPost.setEntity(entity);
-
-                    /*
-                     * HttpURLConnection conn = (HttpURLConnection) url
-                     * .openConnection(); // Set connection parameters.
-                     * conn.setDoInput(true); conn.setDoOutput(true);
-                     * conn.setUseCaches(false);
-                     * 
-                     * // Set content type to PNG
-                     * conn.setRequestProperty("Content-Type", "image/jpg");
-                     * OutputStream outputStream = conn.getOutputStream();
-                     * OutputStream out = outputStream; // Write out the bytes
-                     * of the content string to the stream.
-                     * out.write(imageInByte); out.flush(); out.close(); // Read
-                     * response from the input stream. BufferedReader in = new
-                     * BufferedReader( new
-                     * InputStreamReader(conn.getInputStream())); String temp;
-                     * while ((temp = in.readLine()) != null) { responseString
-                     * += temp + "\n"; } temp = null; in.close();
-                     */
-
-                    // Get Server Response to the posted Image
-
-                    HttpResponse response = httpClient.execute(httpPost,
-                            localContext);
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(response.getEntity()
-                                    .getContent(), "UTF-8"));
-                    responseString = reader.readLine();
-                    System.out.println("***Image Server response:\n'"
-                            + responseString + "'");
-                    int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
-                    if (nuxrsignLoc > -1) {
-                        NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
-                                .replaceAll("\r", "").replaceAll("\n", "");
-                    } else {
-                        NUXRRELSIGN = responseString.replaceAll("\r", "")
-                                .replaceAll("\n", "");
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                // Then post the rest of the information along with the NUXRSIGN
-
-                HttpClient httpclient = LoginActivity.httpClient;
-                HttpResponse response;
-                responseString = null;
-                try {
-
-                    String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
-                            + "&DECOMMENTS=" + DECOMMENTS + "&userFallback="
-                            + LoginActivity.nauser;
-                    System.out.println("pickupURL:" + pickupURL);
-                    response = httpclient.execute(new HttpGet(pickupURL));
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
-                    // Toast.makeText(getApplicationContext(),
-                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    // Log.e("CONN TIMEOUT", e.toString());
-                } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
-                    // Toast.makeText(getApplicationContext(), "Server timeout",
-                    // Toast.LENGTH_LONG).show();
-                    // Log.e("SOCK TIMEOUT", e.toString());
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                }
-                res = responseString;
-                return responseString;
-            } else if (pickupRequestTaskType.equalsIgnoreCase("EmployeeList")) {
+            if (pickupRequestTaskType.equalsIgnoreCase("EmployeeList")) {
                 HttpClient httpclient = LoginActivity.httpClient;
                 HttpResponse response;
                 String responseString = null;
@@ -828,8 +686,6 @@ public class Pickup3 extends SenateActivity
             // fetch data
             status = "yes";
             pickupRequestTaskType = "Pickup";
-            AsyncTask<String, String, String> resr1;
-            try {
                 // Get the URL from the properties
 
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
@@ -840,7 +696,7 @@ public class Pickup3 extends SenateActivity
                 // pickupRequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem,
                 // URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
 
-                resr1 = new pickupRequestTask().execute(
+                new ProcessPickupTask().execute(
                         URL + "/ImgUpload?nauser=" + LoginActivity.nauser
                                 + "&nuxrefem=" + nuxrefem,
                         URL
@@ -855,99 +711,8 @@ public class Pickup3 extends SenateActivity
                                 + pickup.getDestinationCdLocType()
                                 + "&cdloctypefrm="
                                 + pickup.getOriginCdLocType());
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(POSITIVEDIALOG_TIMEOUT);
-                        return;
-                    } else if (res.startsWith("***WARNING:")
-                            || res.startsWith("!!ERROR:")) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                this);
-
-                        // set title
-                        alertDialogBuilder.setTitle(Html
-                                .fromHtml("<font color='#000055'>" + res.trim()
-                                        + "</font>"));
-
-                        // set dialog message
-                        alertDialogBuilder
-                                .setMessage(
-                                        Html.fromHtml(res.trim()
-                                                + "<br/> Continue (Y/N)?"))
-                                .setCancelable(false)
-                                .setPositiveButton("Yes",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // if this button is clicked,
-                                                // just close
-                                                // the dialog box and do nothing
-                                                returnToMoveMenu();
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                .setPositiveButton("No",
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // if this button is clicked,
-                                                // just close
-                                                // the dialog box and do nothing
-                                                dialog.dismiss();
-                                            }
-                                        });
-
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-
-                        // show it
-                        alertDialog.show();
-                        return;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
         }
-
-        // Display Toster
-        Context context = getApplicationContext();
-        CharSequence text = res;
-        if (res.length() == 0) {
-            noServerResponse();
-            return;
-        }
-
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-
-        // ===================ends
-        // Intent intent = new Intent(this, MenuActivity.class);
-        returnToMoveMenu();
+                   
     }
 
     public void returnToMoveMenu() {
@@ -1079,6 +844,237 @@ public class Pickup3 extends SenateActivity
             status = "no";
         }
         Pickup2Activity.progBarPickup2.setVisibility(View.INVISIBLE);
+    }
+
+    private class ProcessPickupTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... uri) {
+            // Scale the Image
+
+            String NUXRRELSIGN = "";
+
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            Bitmap bitmap = sign.getImage();
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
+                    40, true);
+
+            for (int x = 0; x < scaledBitmap.getWidth(); x++) {
+                for (int y = 0; y < scaledBitmap.getHeight(); y++) {
+                    String strColor = String.format("#%06X",
+                            0xFFFFFF & scaledBitmap.getPixel(x, y));
+                    if (strColor.equals("#000000")
+                            || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
+                        // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
+                        scaledBitmap.setPixel(x, y, Color.WHITE);
+                    }
+                }
+            }
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+
+            scaledBitmap = setBackgroundColor(scaledBitmap, Color.WHITE);
+            imageInByte = bs.toByteArray();
+            String responseString = "";
+            try {
+                // Post the Image to the Web Server
+
+                StringBuilder urls = new StringBuilder();
+                urls.append(uri[0].trim());
+                if (uri[0].indexOf("?") > -1) {
+                    if (!uri[0].trim().endsWith("?")) {
+                        urls.append("&");
+                    }
+                } else {
+                    urls.append("?");
+                }
+                urls.append("userFallback=");
+                urls.append(LoginActivity.nauser);
+
+                URL url = new URL(urls.toString());
+                HttpClient httpClient = LoginActivity.httpClient;
+
+                if (httpClient == null) {
+                    Log.i(pickupRequestTask.class.getName(),
+                            "MainActivity.httpClient was null so it is being reset");
+                    LoginActivity.httpClient = new DefaultHttpClient();
+                    httpClient = LoginActivity.httpClient;
+                }
+
+                HttpContext localContext = new BasicHttpContext();
+                MultipartEntity entity = new MultipartEntity(
+                        HttpMultipartMode.BROWSER_COMPATIBLE);
+
+                HttpPost httpPost = new HttpPost(urls.toString());
+                entity.addPart("Signature", new ByteArrayBody(imageInByte,
+                        "temp.jpg"));
+                httpPost.setEntity(entity);
+
+                /*
+                 * HttpURLConnection conn = (HttpURLConnection) url
+                 * .openConnection(); // Set connection parameters.
+                 * conn.setDoInput(true); conn.setDoOutput(true);
+                 * conn.setUseCaches(false);
+                 * 
+                 * // Set content type to PNG
+                 * conn.setRequestProperty("Content-Type", "image/jpg");
+                 * OutputStream outputStream = conn.getOutputStream();
+                 * OutputStream out = outputStream; // Write out the bytes
+                 * of the content string to the stream.
+                 * out.write(imageInByte); out.flush(); out.close(); // Read
+                 * response from the input stream. BufferedReader in = new
+                 * BufferedReader( new
+                 * InputStreamReader(conn.getInputStream())); String temp;
+                 * while ((temp = in.readLine()) != null) { responseString
+                 * += temp + "\n"; } temp = null; in.close();
+                 */
+
+                // Get Server Response to the posted Image
+
+                HttpResponse response = httpClient.execute(httpPost,
+                        localContext);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(response.getEntity()
+                                .getContent(), "UTF-8"));
+                responseString = reader.readLine();
+                System.out.println("***Image Server response:\n'"
+                        + responseString + "'");
+                int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
+                if (nuxrsignLoc > -1) {
+                    NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
+                            .replaceAll("\r", "").replaceAll("\n", "");
+                } else {
+                    NUXRRELSIGN = responseString.replaceAll("\r", "")
+                            .replaceAll("\n", "");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Then post the rest of the information along with the NUXRSIGN
+
+            HttpClient httpclient = LoginActivity.httpClient;
+            HttpResponse response;
+            responseString = null;
+            try {
+
+                String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
+                        + "&DECOMMENTS=" + DECOMMENTS + "&userFallback="
+                        + LoginActivity.nauser;
+                System.out.println("pickupURL:" + pickupURL);
+                response = httpclient.execute(new HttpGet(pickupURL));
+                StatusLine statusLine = response.getStatusLine();
+                if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    response.getEntity().writeTo(out);
+                    out.close();
+                    responseString = out.toString();
+                } else {
+                    // Closes the connection.
+                    response.getEntity().getContent().close();
+                    throw new IOException(statusLine.getReasonPhrase());
+                }
+            } catch (ClientProtocolException e) {
+                // TODO Handle problems..
+            } catch (ConnectTimeoutException e) {
+                return "***WARNING: Server Connection timeout";
+                // Toast.makeText(getApplicationContext(),
+                // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                // Log.e("CONN TIMEOUT", e.toString());
+            } catch (SocketTimeoutException e) {
+                return "***WARNING: Server Socket timeout";
+                // Toast.makeText(getApplicationContext(), "Server timeout",
+                // Toast.LENGTH_LONG).show();
+                // Log.e("SOCK TIMEOUT", e.toString());
+            } catch (IOException e) {
+                // TODO Handle problems..
+            }
+            res = responseString;
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+
+            if (res == null) {
+                noServerResponse();
+                return;
+            } else if (res.indexOf("Session timed out") > -1) {
+                startTimeout(POSITIVEDIALOG_TIMEOUT);
+                return;
+            } else if (res.startsWith("***WARNING:")
+                    || res.startsWith("!!ERROR:")) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Pickup3.this);
+
+                // set title
+                alertDialogBuilder.setTitle(Html
+                        .fromHtml("<font color='#000055'>" + res.trim()
+                                + "</font>"));
+
+                // set dialog message
+                alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml(res.trim()
+                                + "<br/> Continue (Y/N)?"))
+                                .setCancelable(false)
+                                .setPositiveButton("Yes",
+                                        new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int id) {
+                                        // if this button is clicked,
+                                        // just close
+                                        // the dialog box and do nothing
+                                        returnToMoveMenu();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setPositiveButton("No",
+                                        new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int id) {
+                                        // if this button is clicked,
+                                        // just close
+                                        // the dialog box and do nothing
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+
+            // Display Toster
+            Context context = getApplicationContext();
+            CharSequence text = res;
+            if (res.length() == 0) {
+                noServerResponse();
+                return;
+            }
+
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+
+            // ===================ends
+            // Intent intent = new Intent(this, MenuActivity.class);
+            returnToMoveMenu();
+        }
     }
 
 }
