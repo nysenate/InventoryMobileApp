@@ -532,52 +532,7 @@ public class Pickup3 extends SenateActivity
         protected String doInBackground(String... uri) {
             // First Upload the Signature and get the nuxsign from the Server
 
-            if (pickupRequestTaskType.equalsIgnoreCase("EmployeeList")) {
-                HttpClient httpclient = LoginActivity.httpClient;
-                HttpResponse response;
-                String responseString = null;
-                try {
-                    StringBuilder urls = new StringBuilder();
-                    urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?") > -1) {
-                        if (!uri[0].trim().endsWith("?")) {
-                            urls.append("&");
-                        }
-                    } else {
-                        urls.append("?");
-                    }
-                    urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);
-                    response = httpclient.execute(new HttpGet(urls.toString()));
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
-                    // Toast.makeText(getApplicationContext(),
-                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    // Log.e("CONN TIMEOUT", e.toString());
-                } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
-                    // Toast.makeText(getApplicationContext(), "Server timeout",
-                    // Toast.LENGTH_LONG).show();
-                    // Log.e("SOCK TIMEOUT", e.toString());
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                }
-                res = responseString;
-                return responseString;
-            } else if (pickupRequestTaskType.equalsIgnoreCase("KeepAlive")) {
+            if (pickupRequestTaskType.equalsIgnoreCase("KeepAlive")) {
                 HttpClient httpclient = LoginActivity.httpClient;
                 HttpResponse response;
                 String responseString = null;
@@ -618,6 +573,7 @@ public class Pickup3 extends SenateActivity
                 return "!!ERROR: Invalid requestTypeTask:"
                         + pickupRequestTaskType;
             }
+            
         }
     }
 
@@ -690,6 +646,7 @@ public class Pickup3 extends SenateActivity
 
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+
                 // System.out.println("("+MainActivity.nauser+")");
 
                 // resr1 = new
@@ -712,7 +669,7 @@ public class Pickup3 extends SenateActivity
                                 + "&cdloctypefrm="
                                 + pickup.getOriginCdLocType());
         }
-                   
+
     }
 
     public void returnToMoveMenu() {
@@ -789,61 +746,13 @@ public class Pickup3 extends SenateActivity
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
             pickupRequestTaskType = "EmployeeList";
-            AsyncTask<String, String, String> resr1 = new pickupRequestTask()
-                    .execute(URL + "/EmployeeList");
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(EMPLOYEELIST_TIMEOUT);
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                // code for JSON
+            new GetEmployeeListTask().execute(URL + "/EmployeeList");
 
-                String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-                for (int x = 0; x < jsonArray.length(); x++) {
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(x);
-                    Employee currentEmployee = new Employee();
-                    currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-                            jo.getString("naemployee"));
-                    employeeHiddenList.add(currentEmployee);
-                    employeeNameList.add(jo.getString("naemployee"));
-                }
-
-                Collections.sort(employeeNameList);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        employeeNameList);
-
-                // for origin dest code
-                employeeNamesView.setThreshold(1);
-                employeeNamesView.setAdapter(adapter);
-                // for destination code
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             status = "yes1";
         } else {
             // display error
             status = "no";
         }
-        Pickup2Activity.progBarPickup2.setVisibility(View.INVISIBLE);
     }
 
     private class ProcessPickupTask extends AsyncTask<String, Void, String> {
@@ -1074,6 +983,107 @@ public class Pickup3 extends SenateActivity
             // ===================ends
             // Intent intent = new Intent(this, MenuActivity.class);
             returnToMoveMenu();
+        }
+    }
+
+    private class GetEmployeeListTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... uri) {
+            HttpClient httpclient = LoginActivity.httpClient;
+            HttpResponse response;
+            String responseString = null;
+            try {
+                StringBuilder urls = new StringBuilder();
+                urls.append(uri[0].trim());
+                if (uri[0].indexOf("?") > -1) {
+                    if (!uri[0].trim().endsWith("?")) {
+                        urls.append("&");
+                    }
+                } else {
+                    urls.append("?");
+                }
+                urls.append("userFallback=");
+                urls.append(LoginActivity.nauser);
+                response = httpclient.execute(new HttpGet(urls.toString()));
+                StatusLine statusLine = response.getStatusLine();
+                if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    response.getEntity().writeTo(out);
+                    out.close();
+                    responseString = out.toString();
+                } else {
+                    // Closes the connection.
+                    response.getEntity().getContent().close();
+                    throw new IOException(statusLine.getReasonPhrase());
+                }
+            } catch (ClientProtocolException e) {
+                // TODO Handle problems..
+            } catch (ConnectTimeoutException e) {
+                return "***WARNING: Server Connection timeout";
+                // Toast.makeText(getApplicationContext(),
+                // "Server Connection timeout", Toast.LENGTH_LONG).show();
+                // Log.e("CONN TIMEOUT", e.toString());
+            } catch (SocketTimeoutException e) {
+                return "***WARNING: Server Socket timeout";
+                // Toast.makeText(getApplicationContext(), "Server timeout",
+                // Toast.LENGTH_LONG).show();
+                // Log.e("SOCK TIMEOUT", e.toString());
+            } catch (IOException e) {
+                // TODO Handle problems..
+            }
+            res = responseString;
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+
+            if (res == null) {
+                noServerResponse();
+                return;
+            } else if (res.indexOf("Session timed out") > -1) {
+                startTimeout(EMPLOYEELIST_TIMEOUT);
+                return;
+            }
+
+            // code for JSON
+
+            String jsonString = response;
+            JSONArray jsonArray;
+            try {
+                jsonArray = new JSONArray(jsonString);
+
+                for (int x = 0; x < jsonArray.length(); x++) {
+                    JSONObject jo = new JSONObject();
+                    jo = jsonArray.getJSONObject(x);
+                    Employee currentEmployee = new Employee();
+                    currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
+                            jo.getString("naemployee"));
+                    employeeHiddenList.add(currentEmployee);
+                    employeeNameList.add(jo.getString("naemployee"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Collections.sort(employeeNameList);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Pickup3.this,
+                    android.R.layout.simple_dropdown_item_1line,
+                    employeeNameList);
+
+            // for origin dest code
+            employeeNamesView.setThreshold(1);
+            employeeNamesView.setAdapter(adapter);
+            // for destination code
+
         }
     }
 
