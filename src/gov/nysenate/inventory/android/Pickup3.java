@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Formatter;
 
 import java.io.BufferedReader;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +79,6 @@ public class Pickup3 extends SenateActivity
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
     private ClearableEditText commentsEditText;
     private String DECOMMENTS = null;
-    String status = null;
     private String URL;
     static Button continueBtn;
     static Button cancelBtn;
@@ -424,45 +423,6 @@ public class Pickup3 extends SenateActivity
         }
     }
 
-    public void noServerResponse() {
-        progBarPickup3.setVisibility(View.INVISIBLE);
-        continueBtn.getBackground().setAlpha(255);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        // set title
-        alertDialogBuilder.setTitle(Html
-                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        dialog.dismiss();
-                    }
-                });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-    }
 
     public void backButton(View view) {
         if (checkServerResponse(true) == OK) {
@@ -578,11 +538,9 @@ public class Pickup3 extends SenateActivity
     }
 
     private void positiveDialog() {
-        progBarPickup3.setVisibility(View.VISIBLE);
         continueBtn.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
         // String jsonString = null;
-        String status = null;
         // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
 
         // String barcodeNum = "";
@@ -604,73 +562,34 @@ public class Pickup3 extends SenateActivity
         // call the servlet image upload and return the nuxrsign
 
         String NAPICKUPBY = LoginActivity.nauser;
-        String NUXREFEM = Integer.toString(nuxrefem);
-        String NUXRRELSIGN = "1111";
-        /*
-         * changes VP String
-         * RELEASEBY=this.naemployeeView.getText().toString().replace(",", " ");
-         * 
-         * String NARELEASEBY= URLEncoder.encode(RELEASEBY);
-         */
         String NARELEASEBY = null;
         DECOMMENTS = null;
-        /*
-         * String NADELIVERBY= ""; String NAACCEPTBY = ""; String
-         * NUXRACCPTSIGN="";
-         */
 
         try {
-            NARELEASEBY = URLEncoder.encode(this.employeeNamesView.getText()
-                    .toString(), "UTF-8");
+            NARELEASEBY = URLEncoder.encode(this.employeeNamesView.getText().toString(), "UTF-8");
+            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText().toString(), "UTF-8");
+
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
 
-        try {
-            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
-                    .toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-
-        // Send it to the server
-
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-            pickupRequestTaskType = "Pickup";
-                // Get the URL from the properties
-
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-
-                // System.out.println("("+MainActivity.nauser+")");
-
-                // resr1 = new
-                // pickupRequestTask().execute(URL+"/ImgUpload?nauser="+MainActivity.nauser+"&nuxrefem="+nuxrefem,
-                // URL+"/Pickup?originLocation="+originLocationCode+"&destinationLocation="+destinationLocationCode+"&barcodes="+barcodeNum+"&NAPICKUPBY="+NAPICKUPBY+"&NARELEASEBY="+NARELEASEBY);
-
-                new ProcessPickupTask().execute(
-                        URL + "/ImgUpload?nauser=" + LoginActivity.nauser
-                                + "&nuxrefem=" + nuxrefem,
-                        URL
-                                + "/Pickup?originLocation="
-                                + pickup.getOriginCdLoc()
-                                + "&destinationLocation="
-                                + pickup.getDestinationCdLoc()
-                                + Formatter.generateGetArray("barcode[]",
-                                        scannedBarcodeNumbers) + "&NAPICKUPBY="
-                                + NAPICKUPBY + "&NARELEASEBY=" + NARELEASEBY
-                                + "&cdloctypeto="
-                                + pickup.getDestinationCdLocType()
-                                + "&cdloctypefrm="
-                                + pickup.getOriginCdLocType());
-        }
-
+        new ProcessPickupTask().execute(
+                URL + "/ImgUpload?nauser=" + LoginActivity.nauser
+                + "&nuxrefem=" + nuxrefem,
+                URL
+                + "/Pickup?originLocation="
+                + pickup.getOriginCdLoc()
+                + "&destinationLocation="
+                + pickup.getDestinationCdLoc()
+                + Formatter.generateGetArray("barcode[]", scannedBarcodeNumbers)
+                + "&NAPICKUPBY=" + NAPICKUPBY
+                + "&NARELEASEBY=" + NARELEASEBY
+                + "&cdloctypeto="
+                + pickup.getDestinationCdLocType()
+                + "&cdloctypefrm="
+                + pickup.getOriginCdLocType());
     }
+
 
     public void returnToMoveMenu() {
         // ===================ends
@@ -692,7 +611,6 @@ public class Pickup3 extends SenateActivity
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             // fetch data
-            status = "yes";
 
             AsyncTask<String, String, String> resr1;
             try {
@@ -707,7 +625,7 @@ public class Pickup3 extends SenateActivity
                     res = null;
                     res = resr1.get().trim().toString();
                     if (res == null) {
-                        noServerResponse();
+                        noServerResponseMsg();
                         return false;
                     } else if (res.indexOf("Session timed out") > -1) {
                         startTimeout(this.KEEPALIVE_TIMEOUT);
@@ -715,7 +633,7 @@ public class Pickup3 extends SenateActivity
                     }
 
                 } catch (NullPointerException e) {
-                    noServerResponse();
+                    noServerResponseMsg();
                     return false;
                 }
 
@@ -724,35 +642,15 @@ public class Pickup3 extends SenateActivity
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-            status = "yes1";
         } else {
             // display error
-            status = "no";
         }
         return true;
 
     }
 
     public void getEmployeeList() {
-        // Get the Employee Name List from the Web Service and populate the
-        // Employee Name Autocomplete Field with it
-
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-
-            // Get the URL from the properties
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            pickupRequestTaskType = "EmployeeList";
-            new GetEmployeeListTask().execute(URL + "/EmployeeList");
-
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
+            new GetEmployeeListTask().execute();
     }
 
     private class ProcessPickupTask extends AsyncTask<String, Void, String> {
@@ -804,7 +702,6 @@ public class Pickup3 extends SenateActivity
                 urls.append("userFallback=");
                 urls.append(LoginActivity.nauser);
 
-                URL url = new URL(urls.toString());
                 HttpClient httpClient = LoginActivity.httpClient;
 
                 if (httpClient == null) {
@@ -912,7 +809,7 @@ public class Pickup3 extends SenateActivity
             progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
 
             if (res == null) {
-                noServerResponse();
+                noServerResponseMsg();
                 return;
             } else if (res.indexOf("Session timed out") > -1) {
                 startTimeout(POSITIVEDIALOG_TIMEOUT);
@@ -969,9 +866,9 @@ public class Pickup3 extends SenateActivity
 
             // Display Toster
             Context context = getApplicationContext();
-            CharSequence text = res;
+            CharSequence text = res.trim();
             if (res.length() == 0) {
-                noServerResponse();
+                noServerResponseMsg();
                 return;
             }
 
@@ -986,7 +883,7 @@ public class Pickup3 extends SenateActivity
         }
     }
 
-    private class GetEmployeeListTask extends AsyncTask<String, Void, String> {
+    private class GetEmployeeListTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -994,23 +891,16 @@ public class Pickup3 extends SenateActivity
         }
 
         @Override
-        protected String doInBackground(String... uri) {
+        protected String doInBackground(Void... arg) {
+            String url = AppProperties.getBaseUrl(Pickup3.this);
+            url += "EmployeeList?";
+            url += "&userFallback=" + LoginActivity.nauser;
+
             HttpClient httpclient = LoginActivity.httpClient;
-            HttpResponse response;
+            HttpResponse response = null;
             String responseString = null;
             try {
-                StringBuilder urls = new StringBuilder();
-                urls.append(uri[0].trim());
-                if (uri[0].indexOf("?") > -1) {
-                    if (!uri[0].trim().endsWith("?")) {
-                        urls.append("&");
-                    }
-                } else {
-                    urls.append("?");
-                }
-                urls.append("userFallback=");
-                urls.append(LoginActivity.nauser);
-                response = httpclient.execute(new HttpGet(urls.toString()));
+                response = httpclient.execute(new HttpGet(url));
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -1026,39 +916,19 @@ public class Pickup3 extends SenateActivity
                 // TODO Handle problems..
             } catch (ConnectTimeoutException e) {
                 return "***WARNING: Server Connection timeout";
-                // Toast.makeText(getApplicationContext(),
-                // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                // Log.e("CONN TIMEOUT", e.toString());
             } catch (SocketTimeoutException e) {
                 return "***WARNING: Server Socket timeout";
-                // Toast.makeText(getApplicationContext(), "Server timeout",
-                // Toast.LENGTH_LONG).show();
-                // Log.e("SOCK TIMEOUT", e.toString());
             } catch (IOException e) {
                 // TODO Handle problems..
             }
-            res = responseString;
-            return responseString;
-        }
 
-        @Override
-        protected void onPostExecute(String response) {
-            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
-
-            if (res == null) {
-                noServerResponse();
-                return;
-            } else if (res.indexOf("Session timed out") > -1) {
-                startTimeout(EMPLOYEELIST_TIMEOUT);
-                return;
+            if (responseString == null || responseString.indexOf("Session timed out") != -1) {
+                return responseString;
             }
 
-            // code for JSON
-
-            String jsonString = response;
             JSONArray jsonArray;
             try {
-                jsonArray = new JSONArray(jsonString);
+                jsonArray = new JSONArray(responseString);
 
                 for (int x = 0; x < jsonArray.length(); x++) {
                     JSONObject jo = new JSONObject();
@@ -1072,18 +942,29 @@ public class Pickup3 extends SenateActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             Collections.sort(employeeNameList);
+
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+
+            if (response == null) {
+                noServerResponseMsg();
+                return;
+            } else if (response.indexOf("Session timed out") > -1) {
+                startTimeout(EMPLOYEELIST_TIMEOUT);
+                return;
+            }
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(Pickup3.this,
                     android.R.layout.simple_dropdown_item_1line,
                     employeeNameList);
 
-            // for origin dest code
             employeeNamesView.setThreshold(1);
             employeeNamesView.setAdapter(adapter);
-            // for destination code
-
         }
     }
 
