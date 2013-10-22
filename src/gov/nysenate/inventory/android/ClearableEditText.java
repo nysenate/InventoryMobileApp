@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 
 public class ClearableEditText extends EditText
@@ -119,7 +120,8 @@ public class ClearableEditText extends EditText
                     if (clearField) {
                         et.setText("");
                         ClearableEditText.this.removeClearButton();
-
+                        for (ClearButtonListener clearButtonListener : listeners)
+                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {

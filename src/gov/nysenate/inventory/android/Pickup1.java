@@ -81,6 +81,57 @@ public class Pickup1 extends SenateActivity
         btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
         btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
 
+        autoCompleteTextView1.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                if (autoCompleteTextView1.getText().toString().length()==0) {
+                    tvOffice1.setText("N/A");
+                    tvDescript1.setText("N/A");
+                    tvCount1.setText("N/A");
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                    int arg2, int arg3) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                    int count) {
+                // TODO Auto-generated method stub
+                
+            } }
+        );
+        autoCompleteTextView2.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                if (autoCompleteTextView2.getText().toString().length()==0) {
+                    tvOffice2.setText("N/A");
+                    tvDescript2.setText("N/A");
+                    tvCount2.setText("N/A");
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                    int arg2, int arg3) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                    int count) {
+                // TODO Auto-generated method stub
+                
+            } }
+        );        
+        
         try {
             // TODO: RequestDispatcher.getInstance() as parameter for tests DI.
             getAllLocations();

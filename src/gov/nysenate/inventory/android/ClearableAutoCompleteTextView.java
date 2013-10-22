@@ -1,5 +1,8 @@
 package gov.nysenate.inventory.android;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +12,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 public class ClearableAutoCompleteTextView extends AutoCompleteTextView
@@ -21,7 +25,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
     Context context = null;
     boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
+    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
+    
     public ClearableAutoCompleteTextView(Context context) {
         super(context);
 
@@ -117,6 +123,8 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     if (clearField) {
                         et.setText("");
                         ClearableAutoCompleteTextView.this.removeClearButton();
+                        for (ClearButtonListener clearButtonListener : listeners)
+                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {
@@ -182,4 +190,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                 this.getCompoundDrawables()[3]);
     }
 
+    public void addClearButtonListener(ClearButtonListener listener) {
+        listeners.add(listener);
+    }
+    
+    
 }

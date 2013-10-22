@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 public class ClearableTextView extends TextView
@@ -123,6 +124,8 @@ public class ClearableTextView extends TextView
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
+                        for (ClearButtonListener clearButtonListener : listeners)
+                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {
