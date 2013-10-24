@@ -55,6 +55,7 @@ public class Delivery1 extends SenateActivity
     Activity currentActivity;
     String timeoutFrom = "delivery1";
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
+    private int lastSize = 0;
 
     boolean locationBeingTyped = false;
 
@@ -84,6 +85,7 @@ public class Delivery1 extends SenateActivity
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                             int position, long id) {
+                        getLocationDetails();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
                                 autoCompleteTextView1.getWindowToken(), 0);
@@ -176,22 +178,20 @@ public class Delivery1 extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+             lastSize = autoCompleteTextView1.getText().toString().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             locationBeingTyped = true;
-            int textLength = autoCompleteTextView1.getText().toString()
+            int currentSize = autoCompleteTextView1.getText().toString()
                     .length();
-            if (textLength == 0) {
+            if (currentSize == 0||currentSize<lastSize) {
                 tvOfficeD.setText("N/A");
                 tvDescriptD.setText("N/A");
-            } else if (textLength >= 3) {
+            } /*else if (textLength >= 3) {
                 getLocationDetails();
-                // loc_details.setText(res);
-                // loc_details.append("\n"+loc_code.getText().toString());
-                // autoCompleteTextView1.setText(barcode_num);
-            }
+            }*/
         }
     };
 
