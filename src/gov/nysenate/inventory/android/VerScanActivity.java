@@ -602,7 +602,6 @@ public class VerScanActivity extends SenateActivity implements
     public void nusenateDidNotExist(final String nusenate) {
         // Log.i("TESTING", "****Senate Tag# DidNotExist MESSAGE");
         playSound(R.raw.error);
-        playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title

@@ -60,6 +60,7 @@ public class Verification extends SenateActivity
     Activity currentActivity;
     String timeoutFrom = "verification";
     boolean locationBeingTyped = false;
+    int lastSize = 0;
 
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
@@ -192,20 +193,22 @@ public class Verification extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+            lastSize = autoCompleteTextView1.getText().toString().trim().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             locationBeingTyped = true;
-            Log.i("autocomplete", "autocomplete list count:"
+            int currentSize =  autoCompleteTextView1.getText().toString().trim().length();
+            /* Log.i("autocomplete", "autocomplete list count:"
                     + autoCompleteTextView1.getAdapter().getCount());
-            if (autoCompleteTextView1.getAdapter().getCount() == 1) {
+           if (autoCompleteTextView1.getAdapter().getCount() == 1) {
                 autoCompleteTextView1.setSelection(0);
                 if (autoCompleteTextView1.getText().toString().trim().length() > 0) {
                     getLocationDetails();
                 }
-            }
-            if (autoCompleteTextView1.getText().toString().trim().length() == 0) {
+            }*/
+            if (currentSize == 0 || currentSize < lastSize) {
                 clearLocationDetails();
             }
         }
