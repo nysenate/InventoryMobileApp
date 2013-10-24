@@ -62,6 +62,8 @@ public class Pickup1 extends SenateActivity
     String timeoutFrom = "pickup1";
     public final int LOCCODELIST_TIMEOUT = 101,
             FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
+    
+    private int lastSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,8 @@ public class Pickup1 extends SenateActivity
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                if (autoCompleteTextView1.getText().toString().length()==0) {
+                int currentSize = autoCompleteTextView1.getText().toString().length();
+                if (currentSize==0||currentSize<lastSize) {
                     tvOffice1.setText("N/A");
                     tvDescript1.setText("N/A");
                     tvCount1.setText("N/A");
@@ -95,8 +98,7 @@ public class Pickup1 extends SenateActivity
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1,
                     int arg2, int arg3) {
-                // TODO Auto-generated method stub
-                
+                lastSize = autoCompleteTextView1.getText().toString().length();
             }
 
             @Override
@@ -110,7 +112,9 @@ public class Pickup1 extends SenateActivity
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                if (autoCompleteTextView2.getText().toString().length()==0) {
+                int currentSize = autoCompleteTextView2.getText().toString().length();
+                
+                if (currentSize==0||currentSize<lastSize) {
                     tvOffice2.setText("N/A");
                     tvDescript2.setText("N/A");
                     tvCount2.setText("N/A");
@@ -120,8 +124,7 @@ public class Pickup1 extends SenateActivity
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1,
                     int arg2, int arg3) {
-                // TODO Auto-generated method stub
-                
+                lastSize = autoCompleteTextView2.getText().toString().length();                
             }
 
             @Override
@@ -215,9 +218,9 @@ public class Pickup1 extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             fromLocationBeingTyped = true;
-            if (autoCompleteTextView1.getText().toString().length() >= 3) {
+            /*if (autoCompleteTextView1.getText().toString().length() >= 3) {
                 getOriginLocationDetails();
-            }
+            }*/
         }
     };
 
@@ -236,9 +239,9 @@ public class Pickup1 extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             toLocationBeingTyped = true;
-            if (autoCompleteTextView2.getText().toString().length() >= 3) {
+            /*if (autoCompleteTextView2.getText().toString().length() >= 3) {
                 getDestinationLocationDetails();
-            }
+            }*/
         }
     };
 
@@ -556,6 +559,10 @@ public class Pickup1 extends SenateActivity
                     public void onItemClick(AdapterView<?> parent, View view,
                             int position, long id) {
                         Log.i("ItemClicked", "ITEM CLICKED");
+                        if (autoCompleteTextView1.getText().toString().trim()
+                                .length()>0) {
+                            getOriginLocationDetails();
+                        }
                         if (autoCompleteTextView2.getText().toString().trim()
                                 .length() > 0) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -581,6 +588,11 @@ public class Pickup1 extends SenateActivity
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                             int position, long id) {
+                        if (autoCompleteTextView2.getText().toString().trim()
+                                .length()>0) {
+                            getDestinationLocationDetails();
+                        }
+                        
                         int duration = Toast.LENGTH_SHORT;
                         toLocationBeingTyped = false;
                         if (autoCompleteTextView1.getText().toString().trim()
