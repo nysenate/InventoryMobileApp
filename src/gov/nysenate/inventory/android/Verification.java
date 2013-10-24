@@ -109,16 +109,16 @@ public class Verification extends SenateActivity
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
                                 autoCompleteTextView1.getWindowToken(), 0);
-                        Log.i("autocomplete clicked", "Before selection");
-                        autoCompleteTextView1.setSelection(0);
+                        //Log.i("autocomplete clicked", "Before selection");
+                        //autoCompleteTextView1.setSelection(0);
                         Log.i("autocomplete clicked",
                                 "Before getLocationDetails");
                         if (autoCompleteTextView1.getText().toString().trim()
                                 .length() > 0) {
                             getLocationDetails();
                         }
-                        Log.i("autocomplete clicked",
-                                "After getLocationDetails");
+                        /*Log.i("autocomplete clicked",
+                                "After getLocationDetails");*/
                         locationBeingTyped = false;
                     }
                 });
