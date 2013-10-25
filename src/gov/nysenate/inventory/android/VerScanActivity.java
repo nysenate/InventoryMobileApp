@@ -768,6 +768,12 @@ public class VerScanActivity extends SenateActivity implements
                     vl.CDCATEGORY = jo.getString("CDCATEGORY");
                     vl.DECOMMODITYF = jo.getString("DECOMMODITYF");
                     vl.CDLOCAT = jo.getString("CDLOCATTO");
+                    try {
+                        vl.CDLOCTYPE = jo.getString("CDLOCTYPETO");
+                    }
+                    catch (Exception e) {
+                        vl.CDLOCTYPE = "(N/A)";
+                    }
 
                     list.add(vl);
                     StringBuilder s = new StringBuilder();
@@ -870,11 +876,11 @@ public class VerScanActivity extends SenateActivity implements
                 // display toster
                 Context context = getApplicationContext();
                 StringBuilder sb = new StringBuilder();
-                sb.append("Removed: ");
+                sb.append("REMOVED: ");
                 sb.append(curInvItem.getNusenate());
-                sb.append(" ");
-                sb.append(curInvItem.getType());
-                sb.append(" ");
+                //sb.append(" ");
+                //sb.append(curInvItem.getType());
+                sb.append(": ");
                 sb.append(curInvItem.getDecommodityf());
 
                 CharSequence text = sb.toString();
@@ -1019,6 +1025,12 @@ public class VerScanActivity extends SenateActivity implements
                 vl.CDCATEGORY = jo.getString("cdcategory");
                 vl.CDLOCAT = jo.getString("cdlocatto");
                 vl.CDSTATUS = jo.getString("cdstatus");
+                try {
+                    vl.CDLOCTYPE = jo.getString("cdloctypeto");
+                }
+                catch (Exception e) {
+                    vl.CDLOCTYPE = "(N/A)";
+                }
                 nusenateReturned = jo.getString("nusenate");
 
                 if (nusenateReturned == null) {
@@ -1046,7 +1058,7 @@ public class VerScanActivity extends SenateActivity implements
                     // Log.i("TESTING",
                     // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
                     vl.DECOMMODITYF = jo.getString("decommodityf")
-                            + " \n***Found in: " + vl.CDLOCAT;
+                            + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
                     vl.CONDITION = "DIFFERENT LOCATION";
                     playSound(R.raw.warning);
                 }
@@ -1055,6 +1067,9 @@ public class VerScanActivity extends SenateActivity implements
                 // server already contains barcode number we wont add it
                 // again
                 // s_new.append(" ");
+                s_new.append("ADDED: ");
+                s_new.append(vl.NUSENATE);
+                s_new.append(": ");
                 s_new.append(vl.CDCATEGORY);
                 s_new.append(" ");
                 s_new.append(vl.DECOMMODITYF);
@@ -1556,6 +1571,7 @@ public class VerScanActivity extends SenateActivity implements
         String CDCATEGORY;
         String DECOMMODITYF;
         String CDLOCAT;
+        String CDLOCTYPE;
         String CONDITION;
         String CDSTATUS;
     }

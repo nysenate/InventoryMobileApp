@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -156,7 +157,7 @@ public class LoginActivity extends SenateActivity
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
         password.addTextChangedListener(senateTagPWDWatcher);
-        testSQLlite();
+        //testSQLlite();
         if (timeoutActivity) {
             user_name.setKeyListener(null);
             user_name.setText(nauser);
@@ -1297,4 +1298,10 @@ public class LoginActivity extends SenateActivity
      */
     // our code ends
 
+    public static HttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+        }
+        return httpClient;
+    }
 }

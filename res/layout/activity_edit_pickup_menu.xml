@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/edit_pickup_menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Edit Pickup"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TableLayout
+        android:id="@+id/pickup_info"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_pickup_menu_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/customshape" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_pickup_info_title"
+                android:layout_span="2"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Original Pickup Information"
+                android:textStyle="bold"
+                android:textColor="@color/bluedark"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_pickup_location_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup Location:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/old_pickup_location"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_delivery_location_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Delivery Location:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/old_delivery_location"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_by_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup By:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_by"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_count_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Item Count:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_count"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_date_title"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Date:"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+
+            <TextView
+                android:id="@+id/pickup_date"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp"
+                style="@style/NormalText" />
+        </TableRow>
+    </TableLayout>
+    
+<ListView
+        android:id="@+id/edit_pickup_menu_list"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pickup_info"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/customshape" >
+    </ListView>
+    
+       <ProgressBar
+        android:id="@+id/edit_pickup_menu_progress_bar"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+    
+</RelativeLayout>

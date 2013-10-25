@@ -16,14 +16,18 @@ public class Pickup extends Transaction
     private String naPickupBy;
     private String naReleaseBy;
     private String nuxrRelSign;
+    private String date;
+    private int count;
 
     public Pickup() {
-        super();
+        super(); // needed for parcelable.
         comments = "";
         naPickupBy = "";
         naReleaseBy = "";
         nuxrRelSign = "";
         pickupItems = new ArrayList<InvItem>();
+        origin = new Location();
+        destination = new Location();
     }
 
     public Pickup(Location origin, Location destination) {
@@ -33,6 +37,11 @@ public class Pickup extends Transaction
         naReleaseBy = "";
         nuxrRelSign = "";
         pickupItems = new ArrayList<InvItem>();
+    }
+
+    public String getDateWithoutTime() {
+        String[] splitDate = date.split(" ");
+        return splitDate[2] + " " + splitDate[0];
     }
 
     public ArrayList<InvItem> getPickupItems() {
@@ -79,6 +88,22 @@ public class Pickup extends Transaction
         this.nuxrRelSign = nuxrRelSign;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int cnt) {
+        this.count = cnt;
+    }
+
     // ---------- Code for Parcelable interface ----------
 
     public Pickup(Parcel in) {
@@ -99,6 +124,8 @@ public class Pickup extends Transaction
         dest.writeString(naPickupBy);
         dest.writeString(naReleaseBy);
         dest.writeString(nuxrRelSign);
+        dest.writeString(date);
+        dest.writeInt(count);
     }
 
     @Override
@@ -109,6 +136,8 @@ public class Pickup extends Transaction
         naPickupBy = in.readString();
         naReleaseBy = in.readString();
         nuxrRelSign = in.readString();
+        date = in.readString();
+        count = in.readInt();
     }
 
     public static final Parcelable.Creator<Pickup> CREATOR = new Parcelable.Creator<Pickup>()

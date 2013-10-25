@@ -618,10 +618,10 @@ public class Pickup2Activity extends SenateActivity
                         return SENTAG_IN_TRANSIT;
                     }
 
-                    if (origin.getCdLoc().equalsIgnoreCase(vl.CDLOCAT)) {
+                    if (origin.getCdlocat().equalsIgnoreCase(vl.CDLOCAT)) {
                         vl.CONDITION = "EXISTING";
                         playSound(R.raw.ok);
-                    } else if (destination.getCdLoc().equalsIgnoreCase(
+                    } else if (destination.getCdlocat().equalsIgnoreCase(
                             vl.CDLOCAT)) {
                         playSound(R.raw.honk);
                         vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: "
@@ -656,9 +656,9 @@ public class Pickup2Activity extends SenateActivity
             invStatus = "NOT IN SFMS";
         }
         // This is what should be expected. Trying to move the
-        else if (vl.CDLOCATTO.equalsIgnoreCase(origin.getCdLoc())) {
+        else if (vl.CDLOCATTO.equalsIgnoreCase(origin.getCdlocat())) {
             invStatus = vl.CONDITION;
-        } else if (vl.CDLOCATTO.equalsIgnoreCase(destination.getCdLoc())) { //
+        } else if (vl.CDLOCATTO.equalsIgnoreCase(destination.getCdlocat())) { //
             invStatus = "AT DESTINATION";
         } else {
             invStatus = "Found in: " + vl.CDLOCATTO;

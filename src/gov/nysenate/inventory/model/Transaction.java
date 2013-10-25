@@ -21,11 +21,11 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getOriginCdLoc() {
-        return origin.getCdLoc();
+        return origin.getCdlocat();
     }
 
     public String getOriginCdLocType() {
-        return origin.getCdLocType();
+        return origin.getCdloctype();
     }
 
     public String getOriginAddressLine1() {
@@ -33,11 +33,11 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getDestinationCdLoc() {
-        return destination.getCdLoc();
+        return destination.getCdlocat();
     }
 
     public String getDestinationCdLocType() {
-        return destination.getCdLocType();
+        return destination.getCdloctype();
     }
 
     public String getDestinationAddressLine1() {
@@ -56,8 +56,24 @@ public abstract class Transaction implements Parcelable
         this.origin = origin;
     }
 
+    public Location getOrigin() {
+        return origin;
+    }
+
     public void setDestination(Location destination) {
         this.destination = destination;
+    }
+
+    public Location getDestination() {
+        return destination;
+    }
+
+    public String getOriginSummaryString() {
+        return origin.getLocationSummaryString();
+    }
+
+    public String getDestinationSummaryString() {
+        return destination.getLocationSummaryString();
     }
 
     // ---------- Code for Parcelable interface ----------
