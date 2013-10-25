@@ -62,6 +62,7 @@ public class EditPickup1Activity extends SenateActivity
     private TextView label2Value;
     private static ProgressBar progressBar;
     private ArrayAdapter<String> adapter;
+    private int textLengthBeforeChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,13 +183,19 @@ public class EditPickup1Activity extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+        	textLengthBeforeChange = searchText.getText().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             // locationBeingTyped = true;
             int textLength = searchText.getText().length();
-            if (textLength >= 3) {
+            if (textLength == 0 || textLength < textLengthBeforeChange) {
+            	label1Value.setText("N/A");
+            	if (!currentSearchParam.toString().equals("DATE"))
+            		label2Value.setText("N/A");
+            }
+            if (textLength >= 3 && textLength > textLengthBeforeChange) {
                 String loccode;
                 String text = searchText.getText().toString();
 
