@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
     
-     <gov.nysenate.inventory.android.ClearableEditText
+     <gov.nysenate.inventory.util.ClearableEditText
           android:id="@+id/etComments"
           android:layout_width="530sp"
           android:layout_height="wrap_content"

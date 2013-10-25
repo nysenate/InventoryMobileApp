@@ -63,7 +63,7 @@
         android:layout_marginTop="29dp" >
     </ListView>
 
-    <gov.nysenate.inventory.android.ClearableEditText
+    <gov.nysenate.inventory.util.ClearableEditText
         android:id="@+id/deliveryCommentsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
-    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+    <gov.nysenate.inventory.util.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
         >
 
         <requestFocus />
-    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+    </gov.nysenate.inventory.util.ClearableAutoCompleteTextView>
 
     <Button
         android:id="@+id/btnDelivery3Cont"

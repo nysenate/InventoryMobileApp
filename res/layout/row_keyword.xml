@@ -5,7 +5,7 @@
     android:id="@+id/rlkeywordlistrow"
     android:orientation="horizontal" >
 
-    <gov.nysenate.inventory.android.ClearableEditText
+    <gov.nysenate.inventory.util.ClearableEditText
         android:id="@+id/etKeyword"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
 		android:focusableInTouchMode="true"        
         android:ems="10" >
         <requestFocus />
-    </gov.nysenate.inventory.android.ClearableEditText>
+    </gov.nysenate.inventory.util.ClearableEditText>
     <TextView
  	    android:id="@+id/tvKeywordCnt"
         android:layout_width="50dp"

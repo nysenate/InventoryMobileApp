@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,6 +97,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
             progBarMenu.setVisibility(View.VISIBLE);
             this.addItem(view);
         } else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
+            //Log.i("MENU LOGOUT", "Calling logout");
             this.logout(view);
         }
 
@@ -129,7 +131,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                     .fromHtml("<font color='#000055'>Log Out</font>"));
             builder.setMessage("Do you really want to log out?");
             // Add the buttons
-            builder.setPositiveButton("Yes",
+            builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -137,7 +139,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                             backToParent();
                         }
                     });
-            builder.setNegativeButton("No",
+            builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -245,7 +247,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -263,8 +265,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                                     duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                        }
-                        ;
+                        };
                         dialog.dismiss();
                     }
                 });
@@ -297,7 +298,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setMessage("Do you really want to log out?");
 
         // Add the buttons
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -311,7 +312,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 toast.show();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -321,6 +322,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
+        
         dialog.show();
     }
 
@@ -335,14 +337,14 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setTitle(Html.fromHtml("<font color='#000055'>Log Out</font>"));
         builder.setMessage("Do you really want to log out?");
         // Add the buttons
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 backToParent();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {

@@ -3,6 +3,7 @@ package gov.nysenate.inventory.android;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.model.Toasty;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.util.JSONParser;
 
 import java.io.ByteArrayOutputStream;
@@ -250,7 +251,7 @@ public class EditPickup1Activity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

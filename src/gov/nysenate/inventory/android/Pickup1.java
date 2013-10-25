@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,7 +171,7 @@ public class Pickup1 extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

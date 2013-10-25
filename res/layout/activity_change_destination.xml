@@ -152,7 +152,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+            <gov.nysenate.inventory.util.ClearableAutoCompleteTextView
                 android:id="@+id/autoCompleteTextView1"
                 style="@style/NormalText"
                 android:gravity="left"
@@ -162,7 +162,7 @@
                 android:textStyle="bold" >
 
                 <requestFocus />
-            </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+            </gov.nysenate.inventory.util.ClearableAutoCompleteTextView>
         </TableRow>
         
         <TableRow>

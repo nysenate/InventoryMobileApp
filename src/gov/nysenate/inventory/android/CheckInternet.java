@@ -1,4 +1,3 @@
-//Code needs to be merged with Vikram's Code  (3/7/13)
 package gov.nysenate.inventory.android;
 
 import java.util.List;
@@ -120,7 +119,7 @@ public class CheckInternet extends BroadcastReceiver
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg)).setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -133,7 +132,7 @@ public class CheckInternet extends BroadcastReceiver
                     }
 
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

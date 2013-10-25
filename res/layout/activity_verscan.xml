@@ -55,7 +55,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         style="@style/NormalText"    />
 
-    <gov.nysenate.inventory.android.ClearableEditText
+    <gov.nysenate.inventory.util.ClearableEditText
         android:id="@+id/preferencePWD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
         android:singleLine="true"    >
 
         <requestFocus />
-    </gov.nysenate.inventory.android.ClearableEditText>
+    </gov.nysenate.inventory.util.ClearableEditText>
 
 	<Spinner
 	    android:id="@+id/spinSortList"

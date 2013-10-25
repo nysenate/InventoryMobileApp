@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.ClearableEditText;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -202,7 +203,7 @@ public class Pickup2Activity extends SenateActivity
                                 + "If you physically MOVE the item please report the original location, intended new "
                                 + "location and a detailed description of the item to Inventory Control Mgnt."))
                 .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -260,7 +261,7 @@ public class Pickup2Activity extends SenateActivity
                     }
                 })
         /*
-         * .setNegativeButton("No", new DialogInterface.OnClickListener() {
+         * .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
          * 
          * @Override public void onClick(DialogInterface dialog, int id) { // if
          * this button is clicked, just close // the dialog box and do nothing
@@ -312,7 +313,7 @@ public class Pickup2Activity extends SenateActivity
                                 + barcode_num
                                 + "</b> will be <b>IGNORED</b>.<br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -354,7 +355,7 @@ public class Pickup2Activity extends SenateActivity
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(message))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

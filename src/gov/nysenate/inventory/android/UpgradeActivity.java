@@ -208,7 +208,7 @@ public class UpgradeActivity extends SenateActivity
                                         + latestVersionName
                                         + "."
                                         + latestVersion + "] </font>"))
-                        .setPositiveButton("OK",
+                        .setPositiveButton(Html.fromHtml("<b>OK</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     // if the user agrees to upgrade
@@ -244,7 +244,7 @@ public class UpgradeActivity extends SenateActivity
 
                                     }
                                 })
-                        .setNegativeButton("Close App",
+                        .setNegativeButton(Html.fromHtml("<b>Close App</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -280,14 +280,14 @@ public class UpgradeActivity extends SenateActivity
                 .setTitle(
                         Html.fromHtml("<font color='#000055'>CLOSE APP</font>"));
         // Add the buttons
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 closeAllActivities();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int id) {

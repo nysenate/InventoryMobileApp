@@ -3,6 +3,8 @@ package gov.nysenate.inventory.android;
 import gov.nysenate.inventory.model.InvSerialAdapter;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.model.Toasty;
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.util.ClearableEditText;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -598,7 +600,7 @@ public class SearchActivity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

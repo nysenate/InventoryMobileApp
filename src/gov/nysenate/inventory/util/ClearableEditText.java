@@ -1,4 +1,8 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.util;
+
+import gov.nysenate.inventory.android.ClearButtonListener;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -23,7 +28,7 @@ public class ClearableEditText extends EditText
             android.R.drawable.ic_delete); // X image
     private boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    public boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
@@ -87,7 +92,7 @@ public class ClearableEditText extends EditText
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -101,7 +106,7 @@ public class ClearableEditText extends EditText
                                                         .removeClearButton();
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -177,13 +182,13 @@ public class ClearableEditText extends EditText
         return this.clearMsg;
     }
 
-    void addClearButton() {
+    public void addClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], imgX,
                 this.getCompoundDrawables()[3]);
     }
 
-    void removeClearButton() {
+    public void removeClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], null,
                 this.getCompoundDrawables()[3]);

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.util.ClearableEditText;
 import gov.nysenate.inventory.util.Formatter;
 
 import java.io.BufferedReader;
@@ -243,7 +245,7 @@ public class Delivery3 extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -344,7 +346,7 @@ public class Delivery3 extends SenateActivity
                         .fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
         confirmDialog.setMessage("Are you sure you want to deliver these "
                 + numItemsDelivered + " items?");
-        confirmDialog.setPositiveButton("Yes",
+        confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -375,7 +377,7 @@ public class Delivery3 extends SenateActivity
                     }
                 });
 
-        confirmDialog.setNegativeButton("No",
+        confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
                 new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -467,7 +469,7 @@ public class Delivery3 extends SenateActivity
                                         Html.fromHtml(res.trim()
                                                 + "<br/> Continue (Y/N)?"))
                                 .setCancelable(false)
-                                .setPositiveButton("Yes",
+                                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -481,7 +483,7 @@ public class Delivery3 extends SenateActivity
                                                 dialog.dismiss();
                                             }
                                         })
-                                .setPositiveButton("No",
+                                .setPositiveButton(Html.fromHtml("<b>No</b>"),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override

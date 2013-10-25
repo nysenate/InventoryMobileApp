@@ -1,9 +1,10 @@
 package gov.nysenate.inventory.model;
 
-import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.OnItemDoubleTapListener;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.util.ClearableEditText;
+
 import java.util.ArrayList;
 import java.util.List;
 
