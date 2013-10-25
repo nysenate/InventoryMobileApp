@@ -378,7 +378,7 @@ public class Pickup3 extends SenateActivity
                             .fromHtml("<font color='#000055'>Pickup Confirmation</font>"));
             confirmDialog.setMessage("Are you sure you want to pickup these "
                     + scannedBarcodeNumbers.size() + " items?");
-            confirmDialog.setPositiveButton("Yes",
+            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -408,7 +408,7 @@ public class Pickup3 extends SenateActivity
                         }
                     });
 
-            confirmDialog.setNegativeButton("No",
+            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
                     new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -831,7 +831,7 @@ public class Pickup3 extends SenateActivity
                         Html.fromHtml(res.trim()
                                 + "<br/> Continue (Y/N)?"))
                                 .setCancelable(false)
-                                .setPositiveButton("Yes",
+                                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                         new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -845,7 +845,7 @@ public class Pickup3 extends SenateActivity
                                         dialog.dismiss();
                                     }
                                 })
-                                .setPositiveButton("No",
+                                .setPositiveButton(Html.fromHtml("<b>No</b>"),
                                         new DialogInterface.OnClickListener()
                                 {
                                     @Override
