@@ -124,11 +124,11 @@ public class LoginActivity extends SenateActivity
         registerBaseActivityReceiver();
         // See if there is a Parent Activity, if there was one, then it must
         // have timed out.
-        Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
+        //Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
         try {
             Intent fromIntent = getIntent();
             timeoutFrom = fromIntent.getStringExtra("TIMEOUTFROM");
-            Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
+            //Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
         } catch (Exception e) {
             timeoutFrom = null;
         }
@@ -137,7 +137,7 @@ public class LoginActivity extends SenateActivity
             Intent fromIntent = getIntent();
             updateChecked = Boolean.valueOf(fromIntent
                     .getStringExtra("UPDATECHECKED"));
-            Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
+            //Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
         } catch (Exception e2) {
             updateChecked = false;
             Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
@@ -147,12 +147,12 @@ public class LoginActivity extends SenateActivity
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
 
         if (timeoutFrom != null) {
-            Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
+            //Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
         }
 
         currentActivity = this;
-        Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
+        //Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
@@ -620,7 +620,7 @@ public class LoginActivity extends SenateActivity
         // get the app version Code for checking
         this.versionCode = pInfo.versionCode;
         this.versionName = pInfo.versionName;
-        Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
+        //Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
         // display the current version in a TextView
 
         // Broadcast receiver for our Web Request
@@ -659,9 +659,7 @@ public class LoginActivity extends SenateActivity
                         try {
                             responseObj = new JSONObject(res);
                             boolean success = responseObj.getBoolean("success");
-                            Log.i("LoginActivity",
-                                    "CheckAppVersion returned success:"
-                                            + success);
+                            //Log.i("LoginActivity", "CheckAppVersion returned success:"+ success);
                             // if the reponse was successful check further
                             if (success) {
                                 // get the latest version from the JSON string
@@ -675,11 +673,10 @@ public class LoginActivity extends SenateActivity
                                         .getString("latestVersionName");
                                 appURI = responseObj.getString("appURI");
                                 // check if we need to upgrade?
-                                Log.i("LoginActivity",
-                                        "CheckAppVersion: Is latestVersion:"
+/*                                Log.i("LoginActivity","CheckAppVersion: Is latestVersion:"
                                                 + latestVersion
                                                 + " > versionCode:"
-                                                + versionCode);
+                                                + versionCode);*/
 
                                 if (latestVersion > versionCode) {
                                     updateApp = true;

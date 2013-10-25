@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,6 +97,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
             progBarMenu.setVisibility(View.VISIBLE);
             this.addItem(view);
         } else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
+            //Log.i("MENU LOGOUT", "Calling logout");
             this.logout(view);
         }
 
@@ -263,8 +265,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                                     duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                        }
-                        ;
+                        };
                         dialog.dismiss();
                     }
                 });
@@ -321,6 +322,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
+        
         dialog.show();
     }
 
