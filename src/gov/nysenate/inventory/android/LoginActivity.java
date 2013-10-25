@@ -808,7 +808,7 @@ public class LoginActivity extends SenateActivity
                                         dialog.dismiss();
                                     }
                                 })
-                        .setNegativeButton(Html.fromHtml("No"),
+                        .setNegativeButton(Html.fromHtml("<b>No</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -920,7 +920,7 @@ public class LoginActivity extends SenateActivity
                             Html.fromHtml(res.trim()))
                             .setTitle(
                                     Html.fromHtml("<b><font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font></b>"))
-                            .setPositiveButton("Close App",
+                            .setPositiveButton(Html.fromHtml("<b>Close App</b>"),
                                     new DialogInterface.OnClickListener()
                                     {
                                         @Override
@@ -977,7 +977,7 @@ public class LoginActivity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton( Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -1233,7 +1233,7 @@ public class LoginActivity extends SenateActivity
      * LoginActivity.this); builder.setMessage( "There is newer version (" +
      * latestVersionName + ":" + latestVersion +
      * ") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?"
-     * ) .setPositiveButton("OK", new DialogInterface.OnClickListener() { // if
+     * ) .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener() { // if
      * the user agrees to upgrade
      * 
      * @Override public void onClick( DialogInterface dialog, int id) { // start
@@ -1247,7 +1247,7 @@ public class LoginActivity extends SenateActivity
      * request.setDestinationInExternalFilesDir( LoginActivity.this,
      * Environment.DIRECTORY_DOWNLOADS, "InventoryMobileApp.apk");
      * downloadReference = downloadManager .enqueue(request); } })
-     * .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
+     * .setNegativeButton(Html.fromHtml("<b>Close App</b>"), new DialogInterface.OnClickListener() {
      * 
      * @Override public void onClick( DialogInterface dialog, int id) { // User
      * cancelled the dialog // finish(); closeAllActivities(); } }); // show the

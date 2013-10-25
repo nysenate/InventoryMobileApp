@@ -25,8 +25,8 @@
     <string name="SearchActivity_MSG">Scan/enter a Senate Tag# or Serial#</string>
     <string name="barcode_number">Senate Tag#</string>
     <string name="scan_button">Scan </string>
-    <string name="ok_button">OK </string>
-    <string name="cancel_button">Cancel </string>
+    <string name="ok_button"><b>OK</b></string>
+    <string name="cancel_button"><b>Cancel</b></string>
     <string name="details">Details </string>
     <string name="title_activity_close">CloseActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>

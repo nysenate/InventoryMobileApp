@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -83,7 +84,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -98,7 +99,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
