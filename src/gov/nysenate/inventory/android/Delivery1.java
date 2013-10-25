@@ -205,9 +205,9 @@ public class Delivery1 extends SenateActivity
         // set dialog message
         alertDialogBuilder
                 .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                        Html.fromHtml("!!ERROR: There was <font color='RED'>NO SERVER RESPONSE</font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

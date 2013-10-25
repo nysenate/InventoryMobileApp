@@ -124,11 +124,11 @@ public class LoginActivity extends SenateActivity
         registerBaseActivityReceiver();
         // See if there is a Parent Activity, if there was one, then it must
         // have timed out.
-        Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
+        //Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
         try {
             Intent fromIntent = getIntent();
             timeoutFrom = fromIntent.getStringExtra("TIMEOUTFROM");
-            Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
+            //Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
         } catch (Exception e) {
             timeoutFrom = null;
         }
@@ -137,7 +137,7 @@ public class LoginActivity extends SenateActivity
             Intent fromIntent = getIntent();
             updateChecked = Boolean.valueOf(fromIntent
                     .getStringExtra("UPDATECHECKED"));
-            Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
+            //Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
         } catch (Exception e2) {
             updateChecked = false;
             Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
@@ -147,12 +147,12 @@ public class LoginActivity extends SenateActivity
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
 
         if (timeoutFrom != null) {
-            Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
+            //Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
         }
 
         currentActivity = this;
-        Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
+        //Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
@@ -427,10 +427,10 @@ public class LoginActivity extends SenateActivity
                     builder.setMessage(
                             "Would you like to connect NY Senate Network instead? (You are connected to NY Senate Visitor Network)")
                             .setTitle(
-                                    Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
+                                    Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"))
 
                     // Add the buttons
-                    builder.setPositiveButton("Yes",
+                    .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                             new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -467,7 +467,7 @@ public class LoginActivity extends SenateActivity
 
                                 }
                             });
-                    builder.setNegativeButton("No",
+                    builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                             new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -521,7 +521,7 @@ public class LoginActivity extends SenateActivity
                                 .setTitle(
                                         Html.fromHtml("<font color='#000055'>Connect to NY Senate Network</font>"));
                         // Add the buttons
-                        builder.setPositiveButton("Yes",
+                        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -560,7 +560,7 @@ public class LoginActivity extends SenateActivity
 
                                     }
                                 });
-                        builder.setNegativeButton("No",
+                        builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -620,7 +620,7 @@ public class LoginActivity extends SenateActivity
         // get the app version Code for checking
         this.versionCode = pInfo.versionCode;
         this.versionName = pInfo.versionName;
-        Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
+        //Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
         // display the current version in a TextView
 
         // Broadcast receiver for our Web Request
@@ -659,9 +659,7 @@ public class LoginActivity extends SenateActivity
                         try {
                             responseObj = new JSONObject(res);
                             boolean success = responseObj.getBoolean("success");
-                            Log.i("LoginActivity",
-                                    "CheckAppVersion returned success:"
-                                            + success);
+                            //Log.i("LoginActivity", "CheckAppVersion returned success:"+ success);
                             // if the reponse was successful check further
                             if (success) {
                                 // get the latest version from the JSON string
@@ -675,11 +673,10 @@ public class LoginActivity extends SenateActivity
                                         .getString("latestVersionName");
                                 appURI = responseObj.getString("appURI");
                                 // check if we need to upgrade?
-                                Log.i("LoginActivity",
-                                        "CheckAppVersion: Is latestVersion:"
+/*                                Log.i("LoginActivity","CheckAppVersion: Is latestVersion:"
                                                 + latestVersion
                                                 + " > versionCode:"
-                                                + versionCode);
+                                                + versionCode);*/
 
                                 if (latestVersion > versionCode) {
                                     updateApp = true;
@@ -777,18 +774,18 @@ public class LoginActivity extends SenateActivity
                 if (currentVolume == 0) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<font color='#000055'>***WARNING: NO SOUND</font>"));
+                                    .fromHtml("<b><font color='#000055'>***WARNING: NO SOUND</font></b>"));
                 } else if (currentVolume < .4 * maxVolume) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<font color='#000055'>***WARNING: LOW SOUND</font>"));
+                                    .fromHtml("<b><font color='#000055'>***WARNING: LOW SOUND</font></b>"));
                 }
 
                 // set dialog message
                 alertDialogBuilder
                         .setMessage(Html.fromHtml(msg))
                         .setCancelable(false)
-                        .setPositiveButton("Yes",
+                        .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -808,7 +805,7 @@ public class LoginActivity extends SenateActivity
                                         dialog.dismiss();
                                     }
                                 })
-                        .setNegativeButton("No",
+                        .setNegativeButton(Html.fromHtml("<b>No</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -919,8 +916,8 @@ public class LoginActivity extends SenateActivity
                     builder.setMessage(
                             Html.fromHtml(res.trim()))
                             .setTitle(
-                                    Html.fromHtml("<font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font>"))
-                            .setPositiveButton("Close App",
+                                    Html.fromHtml("<b><font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font></b>"))
+                            .setPositiveButton(Html.fromHtml("<b>Close App</b>"),
                                     new DialogInterface.OnClickListener()
                                     {
                                         @Override
@@ -970,14 +967,14 @@ public class LoginActivity extends SenateActivity
 
         // set title
         alertDialogBuilder.setTitle(Html
-                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
+                .fromHtml("<b><font color='#000055'>NO SERVER RESPONSE</font></b>"));
 
         // set dialog message
         alertDialogBuilder
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton( Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -1233,7 +1230,7 @@ public class LoginActivity extends SenateActivity
      * LoginActivity.this); builder.setMessage( "There is newer version (" +
      * latestVersionName + ":" + latestVersion +
      * ") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?"
-     * ) .setPositiveButton("OK", new DialogInterface.OnClickListener() { // if
+     * ) .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener() { // if
      * the user agrees to upgrade
      * 
      * @Override public void onClick( DialogInterface dialog, int id) { // start
@@ -1247,7 +1244,7 @@ public class LoginActivity extends SenateActivity
      * request.setDestinationInExternalFilesDir( LoginActivity.this,
      * Environment.DIRECTORY_DOWNLOADS, "InventoryMobileApp.apk");
      * downloadReference = downloadManager .enqueue(request); } })
-     * .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
+     * .setNegativeButton(Html.fromHtml("<b>Close App</b>"), new DialogInterface.OnClickListener() {
      * 
      * @Override public void onClick( DialogInterface dialog, int id) { // User
      * cancelled the dialog // finish(); closeAllActivities(); } }); // show the

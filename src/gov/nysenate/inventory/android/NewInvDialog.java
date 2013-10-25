@@ -259,7 +259,7 @@ public class NewInvDialog extends DialogFragment implements
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(cancelMsg))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -268,7 +268,7 @@ public class NewInvDialog extends DialogFragment implements
                         dismiss();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

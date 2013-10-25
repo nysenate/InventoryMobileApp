@@ -222,7 +222,7 @@ public abstract class SenateActivity extends Activity implements
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -461,7 +461,7 @@ public abstract class SenateActivity extends Activity implements
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg)).setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -474,7 +474,7 @@ public abstract class SenateActivity extends Activity implements
                     }
 
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

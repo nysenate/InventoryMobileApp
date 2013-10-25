@@ -70,14 +70,14 @@ public class CancelPickup extends SenateActivity {
             confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Cancel Pickup</font>"));
             confirmDialog.setMessage(Html.fromHtml("You are about to <b>cancel</b> this pickup.<br><br>"
                     + "Are you sure you want to continue?"));
-            confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
                 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;
                 }
             });
-            confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
                 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

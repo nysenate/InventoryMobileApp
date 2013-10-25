@@ -75,7 +75,7 @@ public class RemovePickupItems extends SenateActivity {
             confirmDialog.setCancelable(false);
             confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Remove Delivery Items</font>"));
             confirmDialog.setMessage(Html.fromHtml("You have not selected any items to be removed"));
-            confirmDialog.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
+            confirmDialog.setNeutralButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -91,14 +91,14 @@ public class RemovePickupItems extends SenateActivity {
             confirmDialog.setMessage(Html.fromHtml("You have selected <b>All</b> items from this delivery."
                     + " <b>Continuing will cancel the entire delivery.</b><br><br>"
                     + "Are you sure you want to continue?"));
-            confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;
                 }
             });
-            confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -115,14 +115,14 @@ public class RemovePickupItems extends SenateActivity {
             confirmDialog.setMessage(Html.fromHtml("You are about to remove <b>" + adapter.getSelectedItems(true).size()
                     + "</b> items from this delivery.<br><br>"
                     + "Are you sure you want to continue?"));
-            confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;
                 }
             });
-            confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
