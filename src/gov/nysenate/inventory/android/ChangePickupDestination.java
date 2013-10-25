@@ -32,6 +32,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -85,7 +86,17 @@ public class ChangePickupDestination extends SenateActivity {
         newDeliveryLocation.setThreshold(1);
         newDeliveryLocation.setAdapter(adapter);
         newDeliveryLocation.addTextChangedListener(destinationTextWatcher);
+        newDeliveryLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
+                    new LocationDetails().execute();
+                }
+            }
+        });
     }
 
     private class GetLocations extends AsyncTask<Void, Void, String> {
@@ -203,26 +214,26 @@ public class ChangePickupDestination extends SenateActivity {
 
     private TextWatcher destinationTextWatcher = new TextWatcher()
     {
+        private int textLength;
+
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
                 int count) {
-            if (newDeliveryLocation.getText().toString().length() >= 3) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new LocationDetails().execute();
-                }
-            }
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+            textLength = newDeliveryLocation.getText().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            // Backspace pressed
+            if (textLength > newDeliveryLocation.getText().length()) {
+                newLocRespCenterHd.setText("N/A");
+                newLocAddress.setText("N/A");
+            }
         }
     };
 
@@ -238,7 +249,11 @@ public class ChangePickupDestination extends SenateActivity {
         }
 
         if (locations.indexOf(newDeliveryLocation.getText().toString()) == -1) {
-            Toasty.displayCenteredMessage(this, "You must enter a new Delivery Location.", Toast.LENGTH_SHORT);
+            if (newDeliveryLocation.getText().length() > 0) {
+                Toasty.displayCenteredMessage(this, "You must enter a valid Delivery Location.", Toast.LENGTH_SHORT);
+            } else {
+                Toasty.displayCenteredMessage(this, "You must enter a new Delivery Location.", Toast.LENGTH_SHORT);
+            }
             return;
         }
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);

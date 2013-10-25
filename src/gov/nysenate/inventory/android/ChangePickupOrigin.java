@@ -32,6 +32,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -85,7 +86,17 @@ public class ChangePickupOrigin extends SenateActivity {
         newPickupLocation.setThreshold(1);
         newPickupLocation.setAdapter(adapter);
         newPickupLocation.addTextChangedListener(originTextWatcher);
+        newPickupLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
+                    new LocationDetails().execute();
+                }
+            }
+        });
     }
 
     private class GetLocations extends AsyncTask<Void, Void, String> {
@@ -201,24 +212,24 @@ public class ChangePickupOrigin extends SenateActivity {
 
     private TextWatcher originTextWatcher = new TextWatcher()
     {
+        private int textLength;
+
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
                 int count) {
-            if (newPickupLocation.getText().toString().length() >= 3) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new LocationDetails().execute();
-                }
-            }
         }
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+            textLength = newPickupLocation.getText().length();
         }
         @Override
         public void afterTextChanged(Editable s) {
-
+            // Backspace pressed
+            if (textLength > newPickupLocation.getText().length()) {
+                newLocRespCenterHd.setText("N/A");
+                newLocAddress.setText("N/A");
+            }
         }
     };
 
@@ -234,7 +245,12 @@ public class ChangePickupOrigin extends SenateActivity {
         }
 
         if (locations.indexOf(newPickupLocation.getText().toString()) == -1) {
-            Toasty.displayCenteredMessage(this, "You must select a new Pickup Location.", Toast.LENGTH_SHORT);
+            if (newPickupLocation.getText().length() > 0) {
+                Toasty.displayCenteredMessage(this, "You must select a valid Pickup Location.", Toast.LENGTH_SHORT);
+            } else {
+                Toasty.displayCenteredMessage(this, "You must select a new Pickup Location.", Toast.LENGTH_SHORT);
+            }
+            return;
         } else {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
             confirmDialog.setCancelable(false);
