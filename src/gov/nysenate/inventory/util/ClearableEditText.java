@@ -1,4 +1,8 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.util;
+
+import gov.nysenate.inventory.android.ClearButtonListener;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +15,12 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
+import android.widget.EditText;
 
-public class ClearableTextView extends TextView
+public class ClearableEditText extends EditText
 {
 
     public String defaultValue = "";
@@ -25,11 +28,11 @@ public class ClearableTextView extends TextView
             android.R.drawable.ic_delete); // X image
     private boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    public boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
-    public ClearableTextView(Context context) {
+    public ClearableEditText(Context context) {
         super(context);
 
         this.context = context;
@@ -37,7 +40,7 @@ public class ClearableTextView extends TextView
         init();
     }
 
-    public ClearableTextView(Context context, AttributeSet attrs, int defStyle) {
+    public ClearableEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         this.context = context;
@@ -45,7 +48,7 @@ public class ClearableTextView extends TextView
         init();
     }
 
-    public ClearableTextView(Context context, AttributeSet attrs) {
+    public ClearableEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         this.context = context;
@@ -68,10 +71,10 @@ public class ClearableTextView extends TextView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                final ClearableTextView tv = ClearableTextView.this;
+                final ClearableEditText et = ClearableEditText.this;
 
                 // Is there an X showing?
-                if (tv.getCompoundDrawables()[2] == null) {
+                if (et.getCompoundDrawables()[2] == null) {
                     clearField = false;
                     return false;
                 }
@@ -79,9 +82,8 @@ public class ClearableTextView extends TextView
                 if (event.getAction() != MotionEvent.ACTION_UP)
                     return false;
                 // Is touch on our clear button?
-                if (event.getX() > tv.getWidth() - tv.getPaddingRight()
+                if (event.getX() > et.getWidth() - et.getPaddingRight()
                         - imgX.getIntrinsicWidth()) {
-
                     clearField = true;
                     if (showClearMsg) {
                         clearField = false;
@@ -99,8 +101,8 @@ public class ClearableTextView extends TextView
                                                     int id) {
                                                 // User clicked OK button
                                                 clearField = true;
-                                                tv.setText("");
-                                                ClearableTextView.this
+                                                et.setText("");
+                                                ClearableEditText.this
                                                         .removeClearButton();
                                             }
                                         })
@@ -120,20 +122,18 @@ public class ClearableTextView extends TextView
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                    Log.i("ClearableTextView", "In X spot: ClearField:"
-                            + clearField);
                     if (clearField) {
-                        tv.setText("");
-                        ClearableTextView.this.removeClearButton();
+                        et.setText("");
+                        ClearableEditText.this.removeClearButton();
                         for (ClearButtonListener clearButtonListener : listeners)
                             clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {
+
                     clearField = false;
-                    Log.i("ClearableTextView", "NOT In X spot: ClearField:"
-                            + clearField);
                 }
+
                 return false;
             }
         });
@@ -144,7 +144,7 @@ public class ClearableTextView extends TextView
             public void onTextChanged(CharSequence s, int start, int before,
                     int count) {
 
-                ClearableTextView.this.manageClearButton();
+                ClearableEditText.this.manageClearButton();
             }
 
             @Override
@@ -182,13 +182,13 @@ public class ClearableTextView extends TextView
         return this.clearMsg;
     }
 
-    void addClearButton() {
+    public void addClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], imgX,
                 this.getCompoundDrawables()[3]);
     }
 
-    void removeClearButton() {
+    public void removeClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], null,
                 this.getCompoundDrawables()[3]);

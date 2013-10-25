@@ -1,5 +1,8 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.util.ClearableEditText;
+import gov.nysenate.inventory.util.ClearableTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 

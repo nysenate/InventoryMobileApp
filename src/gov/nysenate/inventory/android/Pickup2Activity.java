@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.util.ClearableEditText;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

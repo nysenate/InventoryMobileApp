@@ -3,6 +3,7 @@ package gov.nysenate.inventory.android;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.model.Toasty;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.util.JSONParser;
 
 import java.io.ByteArrayOutputStream;

@@ -21,6 +21,7 @@ import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.model.Toasty;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.util.HttpUtils;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

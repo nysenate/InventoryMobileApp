@@ -2,6 +2,7 @@ package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.model.Toasty;
+import gov.nysenate.inventory.util.ClearableEditText;
 
 import java.io.IOException;
 import java.io.InputStream;

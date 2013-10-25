@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.util.ClearableAutoCompleteTextView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.util.ClearableEditText;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;

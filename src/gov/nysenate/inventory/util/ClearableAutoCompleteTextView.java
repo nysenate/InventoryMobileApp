@@ -1,4 +1,8 @@
-package gov.nysenate.inventory.android;
+package gov.nysenate.inventory.util;
+
+import gov.nysenate.inventory.android.ClearButtonListener;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +28,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
             android.R.drawable.ic_delete); // X image
     boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    public boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
