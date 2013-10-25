@@ -572,6 +572,8 @@ public class Pickup3 extends SenateActivity
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
+        String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                .toString();
 
         new ProcessPickupTask().execute(
                 URL + "/ImgUpload?nauser=" + LoginActivity.nauser
