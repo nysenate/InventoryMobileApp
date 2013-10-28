@@ -97,15 +97,6 @@ public class Pickup1 extends SenateActivity
 
         setupautoCompleteTextView1(adapter);
         setupautoCompleteTextView2(adapter);
-
-        try {
-            // TODO: ???
-            Move.progBarMove.setVisibility(View.INVISIBLE);
-            MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void noServerResponse() {
@@ -270,8 +261,7 @@ public class Pickup1 extends SenateActivity
 
     public void cancelButton(View view) {
         btnPickup1Cancel.getBackground().setAlpha(70);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 

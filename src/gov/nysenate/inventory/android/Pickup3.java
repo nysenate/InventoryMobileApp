@@ -951,9 +951,8 @@ public class Pickup3 extends SenateActivity
     }
 
     public void returnToMoveMenu() {
-        // ===================ends
-        // Intent intent = new Intent(this, MenuActivity.class);
         Intent intent = new Intent(this, Move.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

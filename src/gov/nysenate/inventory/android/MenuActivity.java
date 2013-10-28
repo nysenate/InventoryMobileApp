@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.model.DBAdapter;
+import gov.nysenate.inventory.model.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     private ListView mList;
 
-    public static ProgressBar progBarMenu;
-
     public String res = null;
 
     String URL = ""; // this will be initialized once in onCreate() and used for
@@ -58,9 +57,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         registerBaseActivityReceiver();
-        // define progressBar
-
-        progBarMenu = (ProgressBar) findViewById(R.id.progBarMenu);
 
         rowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {
@@ -84,16 +80,13 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         RowItem curRow = rowItems.get(position);
         if (curRow.getTitle().equalsIgnoreCase("Search")) {
             if (checkServerResponse(true) == OK) {
-                progBarMenu.setVisibility(View.VISIBLE);
                 this.search(view);
             }
         } else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
             if (checkServerResponse(true) == OK) {
-                progBarMenu.setVisibility(View.VISIBLE);
                 this.verify(view);
             }
         } else if (curRow.getTitle().equalsIgnoreCase("Move Items")) {
-            progBarMenu.setVisibility(View.VISIBLE);
             this.addItem(view);
         } else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
             this.logout(view);
@@ -157,20 +150,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     }
 
     public void backToParent() {
-        Toast toast = Toast.makeText(getApplicationContext(), "Logging Out",
-                Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
+        Toasty.displayCenteredMessage(this, "Logging Out", Toast.LENGTH_SHORT);
         NavUtils.navigateUpFromSameTask(this);
         finish();
-
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-    }
-
-    public void backButtonPressed() {
-        super.onBackPressed();
-        finish();
-        // overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 
     public void search(View view) {

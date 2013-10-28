@@ -123,9 +123,6 @@ public class Verification extends SenateActivity
                 });
 
         loc_details = (TextView) findViewById(R.id.textView2);
-
-        // Suppress the Menu ProgressBar
-        MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -523,12 +520,9 @@ public class Verification extends SenateActivity
     }
 
     public void cancelButton(View view) {
-
         btnVerify1Cancel.getBackground().setAlpha(45);
-        Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-
     }
 
     /*

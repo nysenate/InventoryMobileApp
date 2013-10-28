@@ -285,10 +285,8 @@ public class EditPickup1Activity extends SenateActivity
 
     public void cancelButton(View view) {
         btnEditPickup1Cancel.getBackground().setAlpha(45);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
-
     }
 
     @Override

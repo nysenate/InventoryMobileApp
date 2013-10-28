@@ -296,15 +296,9 @@ public class VerSummaryActivity extends SenateActivity
 
     public void backButton(View view) {
         if (checkServerResponse(true) == OK) {
+            btnVerSumBack.getBackground().setAlpha(45);
             this.onBackPressed();
         }
-        /*
-         * VerSummaryActivity.btnVerSumBack.getBackground().setAlpha(45); Intent
-         * intent = new Intent(this, ListtestActivity.class);
-         * startActivity(intent); overridePendingTransition(R.anim.in_left,
-         * R.anim.out_right);
-         */
-
     }
 
     public void noServerResponse() {
@@ -658,6 +652,7 @@ public class VerSummaryActivity extends SenateActivity
         // ===================ends
         Log.i("submitVerification", "go to menu");
         Intent intent = new Intent(this, MenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }

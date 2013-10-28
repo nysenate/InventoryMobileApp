@@ -472,15 +472,10 @@ public class Pickup2Activity extends SenateActivity
     }
 
     public void cancelButton(View view) {
-        // send back to the Move Menu
         Log.i("cancelButton", "BEFORE checkServerResponse(true)");
-
-        // Log.i("cancelButton",
-        // "checkServerResponse(true):"+checkServerResponse(true) );
         if (checkServerResponse(true) == OK) {
             cancelBtn.getBackground().setAlpha(70);
-            Intent intent = new Intent(this, Move.class);
-            startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
         }
     }

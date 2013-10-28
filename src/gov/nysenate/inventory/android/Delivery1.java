@@ -100,7 +100,6 @@ public class Delivery1 extends SenateActivity
         // autoCompleteTextView2.addTextChangedListener(filterTextWatcher2);
         loc_details = (TextView) findViewById(R.id.textView2);
         // loc_details.findFocus(); we can use this to find focus
-        Move.progBarMove.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -274,8 +273,7 @@ public class Delivery1 extends SenateActivity
 
     public void cancelButton(View view) {
         Delivery1.btnDelivery1Cancel.getBackground().setAlpha(45);
-        Intent intent = new Intent(this, Move.class);
-        startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
 
     }

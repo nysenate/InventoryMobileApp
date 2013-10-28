@@ -537,9 +537,8 @@ public class Delivery3 extends SenateActivity
     }
 
     public void returnToMoveMenu() {
-        // 3. send the intent to the Move Menu Activity
-        // Intent intent = new Intent(this, MenuActivity.class);
         Intent intent = new Intent(this, Move.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }

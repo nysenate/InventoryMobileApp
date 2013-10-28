@@ -86,6 +86,7 @@ public class SearchActivity extends SenateActivity
     };     
     
     AsyncTask<String, String, String> nuserialResponse = new RequestTask(){
+        @Override
         public void onPreExecute() {
             
         }
@@ -279,9 +280,6 @@ public class SearchActivity extends SenateActivity
                         
                     }
                 });
-
-        // Suppress the Menu ProgressBar
-        MenuActivity.progBarMenu.setVisibility(View.INVISIBLE);
     }
     
     
@@ -801,14 +799,9 @@ public class SearchActivity extends SenateActivity
      */
 
     public void okButton(View view) {
-        if (view.getId() == R.id.btnSrchBck) {
-            btnSrchBck.getBackground().setAlpha(45);
-            // this.finish();// close the current activity
-            Intent intent = new Intent(this, MenuActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        }
-
+        btnSrchBck.getBackground().setAlpha(45);
+        finish();
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 
     public void cancelButton(View view) {
