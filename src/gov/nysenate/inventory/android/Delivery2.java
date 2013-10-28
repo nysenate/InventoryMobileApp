@@ -164,8 +164,7 @@ public class Delivery2 extends SenateActivity
     public void cancelButton(View view) {
         if (checkServerResponse(true) == OK) {
             Delivery2.btnDelivery2Cancel.getBackground().setAlpha(45);
-            Intent intent = new Intent(this, Move.class);
-            startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
         }
     }

@@ -128,6 +128,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
             outTransition = R.anim.in_left;
         }
         Intent intent = new Intent(this, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("pickup", pickup);
         intent.putExtra("date", oldDate.getText());
         startActivity(intent);

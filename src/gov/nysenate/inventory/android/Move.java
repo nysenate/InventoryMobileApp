@@ -40,15 +40,12 @@ public class Move extends SenateActivity implements OnItemClickListener
     ListView listView;
     List<RowItem> rowItems;
 
-    public static ProgressBar progBarMove;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_move);
         registerBaseActivityReceiver();
 
-        progBarMove = (ProgressBar) this.findViewById(R.id.progBarMove);
         rowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {
             RowItem item = new RowItem(images[i], titles[i]);
@@ -75,21 +72,17 @@ public class Move extends SenateActivity implements OnItemClickListener
         RowItem curRow = rowItems.get(position);
         if (curRow.getTitle().equalsIgnoreCase("New Pickup")) {
             if (checkServerResponse(true) == OK) {
-                progBarMove.setVisibility(View.VISIBLE);
                 this.pickup(view);
             }
         } else if (curRow.getTitle().equalsIgnoreCase("Delivery")) {
             if (checkServerResponse(true) == OK) {
-                progBarMove.setVisibility(View.VISIBLE);
                 this.delivery(view);
             }
         } else if (curRow.getTitle().equalsIgnoreCase("Pickup/Deliver Log")) {
             // TODO
         } else if (curRow.getTitle().equalsIgnoreCase("Main Menu")) {
             this.onBackPressed();
-            progBarMove.setVisibility(View.INVISIBLE);
         } else if (curRow.getTitle().equalsIgnoreCase("Edit Existing Pickup")) {
-            progBarMove.setVisibility(View.INVISIBLE);
             this.editPickup(view);
         }
 
@@ -147,8 +140,7 @@ public class Move extends SenateActivity implements OnItemClickListener
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
 
     }

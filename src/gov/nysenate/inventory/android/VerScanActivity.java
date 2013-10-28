@@ -1500,8 +1500,7 @@ public class VerScanActivity extends SenateActivity implements
     public void cancelButton(View view) {
         if (checkServerResponse(true) == OK) {
             btnVerListCancel.getBackground().setAlpha(45);
-            Intent intent = new Intent(this, Verification.class);
-            startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
         }
     }
