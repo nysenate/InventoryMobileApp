@@ -1,7 +1,11 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.util.ClearableEditText;
-import gov.nysenate.inventory.util.ClearableTextView;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+import gov.nysenate.inventory.listener.CommodityDialogListener;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
+import gov.nysenate.inventory.model.Commodity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -283,7 +287,7 @@ public class NewInvDialog extends DialogFragment implements
                         if (adapter == null) {
                             senateActivity.dialogSelectedRow = -1;
                         } else {
-                            senateActivity.dialogSelectedRow = adapter.rowSelected;
+                            senateActivity.dialogSelectedRow = adapter.getRowSelected();
                         }
                         senateActivity.dialogComments = etNewItemComments
                                 .getText().toString();

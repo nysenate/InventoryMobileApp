@@ -195,7 +195,7 @@
     </TableLayout>
     </LinearLayout>
 
-    <gov.nysenate.inventory.util.ClearableAutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -209,7 +209,7 @@
         android:nextFocusDown="@+id/autoCompleteTextView1"
         android:singleLine="true"
         android:textStyle="bold" >
-    </gov.nysenate.inventory.util.ClearableAutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
     <Button
         android:id="@+id/btnPickup1Cancel"
@@ -256,7 +256,7 @@
         android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
 
-    <gov.nysenate.inventory.util.ClearableAutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
         style="@style/NormalText"
         android:layout_width="200dp"
@@ -272,6 +272,6 @@
 
         <requestFocus />
 
-    </gov.nysenate.inventory.util.ClearableAutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
 </RelativeLayout>

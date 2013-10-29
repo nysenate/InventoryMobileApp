@@ -1,6 +1,5 @@
 package gov.nysenate.inventory.util;
 
-import gov.nysenate.inventory.model.Toasty;
 
 import org.apache.http.HttpStatus;
 

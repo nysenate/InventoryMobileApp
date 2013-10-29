@@ -1,6 +1,5 @@
 package gov.nysenate.inventory.model;
 
-import gov.nysenate.inventory.android.InvItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;

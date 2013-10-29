@@ -22,7 +22,7 @@
         android:layout_marginTop="103dp"
         android:src="@drawable/nysenatelogo" />
 
-    <gov.nysenate.inventory.util.ClearableEditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/password"
         android:layout_width="249dp"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:textSize="25sp"
         android:textStyle="bold"         />
 
-    <gov.nysenate.inventory.util.ClearableEditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/user_name"
         android:layout_width="248dp"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
          >
 
         <requestFocus />
-    </gov.nysenate.inventory.util.ClearableEditText>
+    </gov.nysenate.inventory.android.ClearableEditText>
    
     <ProgressBar
         android:id="@+id/progressBarLogin"

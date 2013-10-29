@@ -8,13 +8,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import gov.nysenate.inventory.android.InvItem;
+import android.util.Log;
+
+import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Pickup;
 
 public class JSONParser {
 
     public static Pickup parsePickup(String json) throws JSONException {
+        Log.i("JSONParser single: ", json);
         Pickup pickup = new Pickup();
         JSONObject obj = (JSONObject) new JSONTokener(json).nextValue();
         ArrayList<InvItem> pickupItems = parsePickupItems(obj.getJSONArray("pickupItems"));
@@ -65,6 +68,7 @@ public class JSONParser {
     }
 
     public static List<Pickup> parseMultiplePickups(String json) throws JSONException {
+        Log.i("JSONParser multi: ", json);
         List<Pickup> pickups = new ArrayList<Pickup>();
         JSONTokener token = new JSONTokener(json);
         JSONArray obj = (JSONArray) token.nextValue();

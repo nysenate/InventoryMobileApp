@@ -104,7 +104,7 @@
 
     </ListView>
 
-    <gov.nysenate.inventory.util.ClearableAutoCompleteTextView
+    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
@@ -116,9 +116,9 @@
         android:singleLine="true"   >
 
         <requestFocus />
-    </gov.nysenate.inventory.util.ClearableAutoCompleteTextView>
+    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
-    <gov.nysenate.inventory.util.ClearableEditText
+    <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/pickupCommentsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
