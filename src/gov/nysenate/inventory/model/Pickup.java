@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.model;
 
 
+import gov.nysenate.inventory.model.InvItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,18 +14,18 @@ public class Pickup extends Transaction
 
     private ArrayList<InvItem> pickupItems;
     private String comments;
-    private String naPickupBy;
-    private String naReleaseBy;
-    private String nuxrRelSign;
+    private String napickupby;
+    private String nareleaseby;
+    private String nuxrrelsign;
     private String date;
     private int count;
 
     public Pickup() {
         super(); // needed for parcelable.
         comments = "";
-        naPickupBy = "";
-        naReleaseBy = "";
-        nuxrRelSign = "";
+        napickupby = "";
+        nareleaseby = "";
+        nuxrrelsign = "";
         pickupItems = new ArrayList<InvItem>();
         origin = new Location();
         destination = new Location();
@@ -32,9 +34,9 @@ public class Pickup extends Transaction
     public Pickup(Location origin, Location destination) {
         super(origin, destination);
         comments = "";
-        naPickupBy = "";
-        naReleaseBy = "";
-        nuxrRelSign = "";
+        napickupby = "";
+        nareleaseby = "";
+        nuxrrelsign = "";
         pickupItems = new ArrayList<InvItem>();
     }
 
@@ -51,6 +53,34 @@ public class Pickup extends Transaction
         this.pickupItems = new ArrayList<InvItem>(Arrays.asList(pickupItems));
     }
 
+    public void setPickupItems(String[] items) {
+        ArrayList<InvItem> pickupItems = new ArrayList<InvItem>();
+        for (String item : items) {
+            InvItem invItem = new InvItem();
+            invItem.setNusenate(item);
+            pickupItems.add(invItem);
+        }
+        this.pickupItems = pickupItems;
+    }
+
+    public void setPickupItemsList(ArrayList<String> items) {
+        ArrayList<InvItem> pickupItems = new ArrayList<InvItem>();
+        for (String item : items) {
+            InvItem invItem = new InvItem();
+            invItem.setNusenate(item);
+            pickupItems.add(invItem);
+        }
+        this.pickupItems = pickupItems;
+    }
+
+    public String[] getPickupItemsNusenate() {
+        String[] nusenates = new String[pickupItems.size()];
+        for (int i = 0; i < pickupItems.size(); i++) {
+            nusenates[i] = pickupItems.get(i).getNusenate();
+        }
+        return nusenates;
+    }
+
     public void setPickupItems(ArrayList<InvItem> pickupItems) {
         this.pickupItems = pickupItems;
     }
@@ -63,28 +93,28 @@ public class Pickup extends Transaction
         this.comments = comments;
     }
 
-    public String getNaPickupBy() {
-        return naPickupBy;
+    public String getNapickupby() {
+        return napickupby;
     }
 
-    public void setNaPickupBy(String naPickupBy) {
-        this.naPickupBy = naPickupBy.toUpperCase();
+    public void setNapickupby(String naPickupBy) {
+        this.napickupby = naPickupBy.toUpperCase();
     }
 
-    public String getNaReleaseBy() {
-        return naReleaseBy;
+    public String getNareleaseby() {
+        return nareleaseby;
     }
 
-    public void setNaReleaseBy(String naReleaseBy) {
-        this.naReleaseBy = naReleaseBy.toUpperCase();
+    public void setNareleaseby(String naReleaseBy) {
+        this.nareleaseby = naReleaseBy.toUpperCase();
     }
 
-    public String getNuxrRelSign() {
-        return nuxrRelSign;
+    public String getNuxrrelsign() {
+        return nuxrrelsign;
     }
 
-    public void setNuxrRelSign(String nuxrRelSign) {
-        this.nuxrRelSign = nuxrRelSign;
+    public void setNuxrrelsign(String nuxrRelSign) {
+        this.nuxrrelsign = nuxrRelSign;
     }
 
     public String getDate() {
@@ -120,9 +150,9 @@ public class Pickup extends Transaction
         super.writeToParcel(dest, flags);
         dest.writeParcelableArray(pickupItems.toArray(new InvItem[pickupItems.size()]), flags);
         dest.writeString(comments);
-        dest.writeString(naPickupBy);
-        dest.writeString(naReleaseBy);
-        dest.writeString(nuxrRelSign);
+        dest.writeString(napickupby);
+        dest.writeString(nareleaseby);
+        dest.writeString(nuxrrelsign);
         dest.writeString(date);
         dest.writeInt(count);
     }
@@ -132,9 +162,9 @@ public class Pickup extends Transaction
         super.readFromParcel(in);
         pickupItems = new ArrayList(Arrays.asList(in.readParcelableArray(InvItem.class.getClassLoader())));
         comments = in.readString();
-        naPickupBy = in.readString();
-        naReleaseBy = in.readString();
-        nuxrRelSign = in.readString();
+        napickupby = in.readString();
+        nareleaseby = in.readString();
+        nuxrrelsign = in.readString();
         date = in.readString();
         count = in.readInt();
     }

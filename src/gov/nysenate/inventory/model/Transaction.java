@@ -29,7 +29,7 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getOriginAddressLine1() {
-        return origin.getAddressLine1();
+        return origin.getAdstreet1();
     }
 
     public String getDestinationCdLoc() {
@@ -41,7 +41,7 @@ public abstract class Transaction implements Parcelable
     }
 
     public String getDestinationAddressLine1() {
-        return destination.getAddressLine1();
+        return destination.getAdstreet1();
     }
 
     public int getNuxrpd() {

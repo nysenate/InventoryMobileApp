@@ -12,15 +12,15 @@ public class Delivery extends Transaction implements Serializable
     private ArrayList<String> checkedItems; // TODO: this is duplication
     private ArrayList<String> notCheckedItems; // TODO: this is duplication
     private String comments;
-    private String naDeliverBy;
-    private String naAcceptBy;
-    private String nuxrAccptSign;
+    private String nadeliverby;
+    private String naacceptby;
+    private String nuxraccptsign;
 
     public Delivery() {
         comments = "";
-        naDeliverBy = "";
-        naAcceptBy = "";
-        nuxrAccptSign = "";
+        nadeliverby = "";
+        naacceptby = "";
+        nuxraccptsign = "";
         origin = new Location();
         destination = new Location();
         allItems = new ArrayList<String>();
@@ -76,27 +76,27 @@ public class Delivery extends Transaction implements Serializable
         this.comments = comments;
     }
 
-    public String getNaDeliverBy() {
-        return naDeliverBy;
+    public String getNadeliverby() {
+        return nadeliverby;
     }
 
-    public void setNaDeliverBy(String naDeliverBy) {
-        this.naDeliverBy = naDeliverBy.toUpperCase();
+    public void setNadeliverby(String naDeliverBy) {
+        this.nadeliverby = naDeliverBy.toUpperCase();
     }
 
-    public String getNaAcceptBy() {
-        return naAcceptBy;
+    public String getNaacceptby() {
+        return naacceptby;
     }
 
-    public void setNaAcceptBy(String naAcceptBy) {
-        this.naAcceptBy = naAcceptBy.toUpperCase();
+    public void setNaacceptby(String naAcceptBy) {
+        this.naacceptby = naAcceptBy.toUpperCase();
     }
 
-    public String getNuxrAccptSign() {
-        return nuxrAccptSign;
+    public String getNuxraccptsign() {
+        return nuxraccptsign;
     }
 
-    public void setNuxrAccptSign(String nuxrAccptSign) {
-        this.nuxrAccptSign = nuxrAccptSign;
+    public void setNuxraccptsign(String nuxrAccptSign) {
+        this.nuxraccptsign = nuxrAccptSign;
     }
 }

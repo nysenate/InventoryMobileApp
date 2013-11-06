@@ -86,9 +86,9 @@ public class Pickup2Activity extends SenateActivity
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup2);
         pickupCountTV.setText(Integer.toString(pickupCount));
         originSummary = (TextView) findViewById(R.id.tv_origin_pickup2);
-        originSummary.setText(origin.getAddressLine1());
+        originSummary.setText(origin.getAdstreet1());
         destinationSummary = (TextView) findViewById(R.id.tv_destination_pickup2);
-        destinationSummary.setText(destination.getAddressLine1());
+        destinationSummary.setText(destination.getAdstreet1());
         continueBtn = (Button) findViewById(R.id.btnPickup2Cont);
         continueBtn.getBackground().setAlpha(255);
         cancelBtn = (Button) findViewById(R.id.btnPickup2Cancel);
@@ -436,9 +436,9 @@ public class Pickup2Activity extends SenateActivity
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
         savedInstanceState
-                .putString("savedOriginLoc", origin.getAddressLine1());
+                .putString("savedOriginLoc", origin.getAdstreet1());
         savedInstanceState.putString("savedDestLoc",
-                destination.getAddressLine1());
+                destination.getAdstreet1());
         savedInstanceState.putStringArrayList("savedScannedItems",
                 getJSONArrayList(scannedItems));
     }
@@ -449,12 +449,12 @@ public class Pickup2Activity extends SenateActivity
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
-        origin.setAddressLine1(savedInstanceState.getString("savedOriginLoc"));
+        origin.setAdstreet1(savedInstanceState.getString("savedOriginLoc"));
         scannedItems = getInvItemArrayList(savedInstanceState
                 .getStringArrayList("savedScannedItems"));
         TextView TextView2 = (TextView) findViewById(R.id.textView2);
-        TextView2.setText("Origin : " + origin.getAddressLine1() + "\n"
-                + "Destination : " + destination.getAddressLine1());
+        TextView2.setText("Origin : " + origin.getAdstreet1() + "\n"
+                + "Destination : " + destination.getAdstreet1());
 
     }
 

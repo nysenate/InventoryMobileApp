@@ -185,7 +185,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
             if (response == HttpStatus.SC_OK) {
                 oldPickupLocation.setText(pickup.getOriginSummaryString());
                 oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
-                oldPickupBy.setText(pickup.getNaPickupBy());
+                oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
                 oldDate.setText(getIntent().getStringExtra("date"));
             } else if (response == HttpStatus.SC_BAD_REQUEST) {

@@ -77,7 +77,7 @@ public class ChangePickupOrigin extends SenateActivity {
 
         oldPickupLocation.setText(pickup.getOriginSummaryString());
         oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
-        oldPickupBy.setText(pickup.getNaPickupBy());
+        oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         oldDate.setText(date);
 

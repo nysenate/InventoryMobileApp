@@ -191,7 +191,7 @@ public class EditPickup2Activity extends SenateActivity
     private List<Pickup> pickupsWithNaPickupBy(String name) {
         List<Pickup> pickups = new ArrayList<Pickup>();
         for(Pickup pickup: avaliablePickups) {
-            if (pickup.getNaPickupBy().equalsIgnoreCase(name)) {
+            if (pickup.getNapickupby().equalsIgnoreCase(name)) {
                 pickups.add(pickup);
             }
         }

@@ -24,9 +24,9 @@ public class JSONParser {
         Location origin = parseLocation(obj.getJSONObject("origin"));
         Location destination = parseLocation(obj.getJSONObject("destination"));
 
-        pickup.setNaPickupBy(obj.getString("napickupby"));
-        pickup.setNaReleaseBy(obj.getString("nareleaseby"));
-        pickup.setNuxrRelSign(obj.getString("nuxrrelsign"));
+        pickup.setNapickupby(obj.getString("napickupby"));
+        pickup.setNareleaseby(obj.getString("nareleaseby"));
+        pickup.setNuxrrelsign(obj.getString("nuxrrelsign"));
         pickup.setDate(obj.getString("date"));
         pickup.setNuxrpd(Integer.valueOf(obj.getString("nuxrpd")));
         pickup.setCount(Integer.valueOf(obj.getString("count")));
@@ -60,9 +60,9 @@ public class JSONParser {
         Location loc = new Location();
         loc.setCdlocat(json.getString("cdlocat"));
         loc.setCdloctype(json.getString("cdloctype"));
-        loc.setAddressLine1(json.getString("adstreet1"));
-        loc.setCity(json.getString("adcity"));
-        loc.setZip(json.getString("adzipcode"));
+        loc.setAdstreet1(json.getString("adstreet1"));
+        loc.setAdcity(json.getString("adcity"));
+        loc.setAdzipcode(json.getString("adzipcode"));
 
         return loc;
     }

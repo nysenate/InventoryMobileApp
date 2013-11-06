@@ -54,13 +54,13 @@ public class PickupSearchList extends ArrayAdapter<Pickup> {
             
             case PICKUPLOC:
                 column1.setText(pickup.getDate().split("-")[0]);
-                column2.setText(pickup.getNaPickupBy());
+                column2.setText(pickup.getNapickupby());
                 column3.setText(pickup.getDestinationSummaryString());
                 column4.setText(Integer.toString(pickup.getCount()));
                 break;
             case DELIVERYLOC:
                 column1.setText(pickup.getDate().split("-")[0]);
-                column2.setText(pickup.getNaPickupBy());
+                column2.setText(pickup.getNapickupby());
                 column3.setText(pickup.getOriginSummaryString());
                 column4.setText(Integer.toString(pickup.getCount()));
                 break;
@@ -71,7 +71,7 @@ public class PickupSearchList extends ArrayAdapter<Pickup> {
                 column4.setText(Integer.toString(pickup.getCount()));
                 break;
             case DATE:
-                column1.setText(pickup.getNaPickupBy());
+                column1.setText(pickup.getNapickupby());
                 column2.setText(pickup.getOriginSummaryString());
                 column3.setText(pickup.getDestinationSummaryString());
                 column4.setText(Integer.toString(pickup.getCount()));

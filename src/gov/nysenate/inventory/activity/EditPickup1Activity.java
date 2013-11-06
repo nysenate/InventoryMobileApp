@@ -392,7 +392,7 @@ public class EditPickup1Activity extends SenateActivity
     private void setAdapterToPickupBy() {
         Set<String> users = new HashSet<String>();
         for (Pickup pickup : validPickups) {
-            users.add(pickup.getNaPickupBy());
+            users.add(pickup.getNapickupby());
         }
         updateAdapter(users);
     }
