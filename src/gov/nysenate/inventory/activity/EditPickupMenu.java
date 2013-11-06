@@ -10,7 +10,7 @@ import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.model.RowItem;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.JSONParser;
+import gov.nysenate.inventory.util.PickupParser;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
@@ -167,7 +167,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
                 Log.i("EditPickupMenu", "Server Pickup Response:"+out.toString());
-                pickup = JSONParser.parsePickup(out.toString());
+                pickup = PickupParser.parsePickup(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {

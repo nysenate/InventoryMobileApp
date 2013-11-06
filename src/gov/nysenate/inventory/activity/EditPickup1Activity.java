@@ -8,7 +8,7 @@ import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.JSONParser;
+import gov.nysenate.inventory.util.PickupParser;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
@@ -331,7 +331,7 @@ public class EditPickup1Activity extends SenateActivity
             try {
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
-                validPickups = JSONParser.parseMultiplePickups(out.toString());
+                validPickups = PickupParser.parseMultiplePickups(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
