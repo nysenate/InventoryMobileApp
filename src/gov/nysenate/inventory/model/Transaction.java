@@ -16,7 +16,7 @@ public abstract class Transaction implements Parcelable
     private String verificationMethod;
     private String verificationComments;
     private int employeeId;
-    private int helpReferenceNum;
+    private String helpReferenceNum;
 
     // shipType must exists for all remote transactions.
     public boolean isRemote() {
@@ -148,11 +148,11 @@ public abstract class Transaction implements Parcelable
         this.employeeId = employeeId;
     }
 
-    public int getHelpReferenceNum() {
+    public String getHelpReferenceNum() {
         return helpReferenceNum;
     }
 
-    public void setHelpReferenceNum(int helpReferenceNum) {
+    public void setHelpReferenceNum(String helpReferenceNum) {
         this.helpReferenceNum = helpReferenceNum;
     }
 
@@ -172,11 +172,27 @@ public abstract class Transaction implements Parcelable
         dest.writeInt(nuxrpd);
         dest.writeParcelable(origin, flags);
         dest.writeParcelable(destination, flags);
+        dest.writeInt(shipId);
+        dest.writeString(shipType);
+        dest.writeString(shipComments);
+        dest.writeInt(verificationId);
+        dest.writeString(verificationMethod);
+        dest.writeString(verificationComments);
+        dest.writeInt(employeeId);
+        dest.writeString(helpReferenceNum);
     }
 
     public void readFromParcel(Parcel in) {
         nuxrpd = in.readInt();
         origin = in.readParcelable(Location.class.getClassLoader());
         destination = in.readParcelable(Location.class.getClassLoader());
+        shipId = in.readInt();
+        shipType = in.readString();
+        shipComments = in.readString();
+        verificationId = in.readInt();
+        verificationMethod = in.readString();
+        verificationComments = in.readString();
+        employeeId = in.readInt();
+        helpReferenceNum = in.readString();
     }
 }
