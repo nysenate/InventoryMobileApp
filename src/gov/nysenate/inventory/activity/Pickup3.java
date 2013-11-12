@@ -70,9 +70,11 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +108,9 @@ public class Pickup3 extends SenateActivity
             EMPLOYEELIST_TIMEOUT = 104;
     public String timeoutFrom = "pickup3";
     private Pickup pickup;
+    private CheckBox remoteBox;
+    private CheckBox paperworkBox;
+    private Spinner remoteShipType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +134,11 @@ public class Pickup3 extends SenateActivity
         tvDestinationPickup3.setText(pickup.getDestinationAddressLine1());
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
         pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
+        remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
+        paperworkBox = (CheckBox) findViewById(R.id.paperwork_checkbox);
+        remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
+
+        remoteShipType.setVisibility(Spinner.INVISIBLE);
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, scannedBarcodeNumbers);
@@ -980,4 +990,16 @@ public class Pickup3 extends SenateActivity
         }
     }
 
+    public void remoteBoxClicked(View view) {
+        // If checked
+        if (((CheckBox) view).isChecked()) {
+            remoteShipType.setVisibility(Spinner.VISIBLE);
+        } else {
+            remoteShipType.setVisibility(Spinner.INVISIBLE);
+        }
+    }
+
+    public void paperworkRequestedClick(View view) {
+
+    }
 }

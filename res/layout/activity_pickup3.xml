@@ -25,6 +25,7 @@
        android:layout_height="wrap_content"
        android:layout_below="@+id/textView1"
        android:layout_marginTop="18dp"
+       android:layout_marginBottom="10dp"
        android:layout_centerHorizontal="true"
        android:background="@drawable/customshape" >
 
@@ -88,9 +89,35 @@
         		android:textStyle="bold"  />
         		
    		</TableRow>    
-
+   </TableLayout>
+   
+   <CheckBox android:id="@+id/remote_checkbox"
+       android:layout_below="@+id/tablelayout_header1_pickup3"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="25dp"
+       android:text="Remote"
+       android:onClick="remoteBoxClicked"/>
        
-   </TableLayout>    
+   <Spinner
+        android:id="@+id/remote_ship_type"
+        android:layout_below="@+id/tablelayout_header1_pickup3"
+        android:layout_toRightOf="@+id/remote_checkbox"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:entries="@array/remote_ship_types"
+        android:gravity="center" />
+       
+    <CheckBox android:id="@+id/paperwork_checkbox"
+        android:layout_below="@+id/tablelayout_header1_pickup3"
+        android:layout_toRightOf="@+id/remote_ship_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="Request Delivery Paperwork"
+        android:onClick="paperworkRequestedClick"/>
     
 
     <ListView
@@ -98,8 +125,9 @@
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tablelayout_header1_pickup3"
-        android:layout_marginTop="27dp"
+        android:layout_below="@+id/remote_checkbox"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
          >
 
     </ListView>
