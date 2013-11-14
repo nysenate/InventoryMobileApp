@@ -11,9 +11,10 @@ import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Formatter;
+import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -107,7 +108,7 @@ public class Pickup3 extends SenateActivity
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
     public String timeoutFrom = "pickup3";
-    private Pickup pickup;
+    private Transaction transaction;
     private CheckBox remoteBox;
     private CheckBox paperworkBox;
     private Spinner remoteShipType;
@@ -126,14 +127,20 @@ public class Pickup3 extends SenateActivity
         commentsEditText.showClearMsg(true);
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
-        pickup = getIntent().getParcelableExtra("pickup");
-        scannedBarcodeNumbers = pickup.getPickupItems();
+
+        try {
+            transaction = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        scannedBarcodeNumbers = transaction.getPickupItems();
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
-        tvOriginPickup3.setText(pickup.getOriginAddressLine1());
-        tvDestinationPickup3.setText(pickup.getDestinationAddressLine1());
+        tvOriginPickup3.setText(transaction.getOriginAddressLine1());
+        tvDestinationPickup3.setText(transaction.getDestinationAddressLine1());
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
-        pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
+        pickupCountTV.setText(Integer.toString(transaction.getPickupItems().size()));
         remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
         paperworkBox = (CheckBox) findViewById(R.id.paperwork_checkbox);
         remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
@@ -601,16 +608,16 @@ public class Pickup3 extends SenateActivity
                 + "&nuxrefem=" + nuxrefem,
                 URL
                 + "/Pickup?originLocation="
-                + pickup.getOriginCdLoc()
+                + transaction.getOriginCdLoc()
                 + "&destinationLocation="
-                + pickup.getDestinationCdLoc()
+                + transaction.getDestinationCdLoc()
                 + Formatter.generateGetArray("barcode[]", scannedBarcodeNumbers)
                 + "&NAPICKUPBY=" + NAPICKUPBY
                 + "&NARELEASEBY=" + NARELEASEBY
                 + "&cdloctypeto="
-                + pickup.getDestinationCdLocType()
+                + transaction.getDestinationCdLocType()
                 + "&cdloctypefrm="
-                + pickup.getOriginCdLocType());
+                + transaction.getOriginCdLocType());
     }
 
 

@@ -1,22 +1,69 @@
 package gov.nysenate.inventory.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public abstract class Transaction implements Parcelable
-{
+import com.google.gson.Gson;
 
-    protected int nuxrpd;
-    protected Location origin;
-    protected Location destination;
+/**
+ * Maps to the Database table FM12INVINTRANS.
+ * <p>
+ * Adds Domain Logic methods.
+ */
+public class Transaction {
+
+    private int nuxrpd;
+    private Location origin;
+    private Location destination;
+
+    // Pickup Info
+    private ArrayList<InvItem> pickupItems;
+    private String pickupComments;
+    private String napickupby;
+    private String nareleaseby;
+    private String nuxrrelsign;
+    private String pickupDate;
+    private int count;
+
+    // Delivery Info
+    private ArrayList<String> checkedItems;
+    private String deliveryComments;
+    private String nadeliverby;
+    private String naacceptby;
+    private String nuxraccptsign;
+    private String deliveryDate;
+
+    // Remote Info
     private int shipId;
     private String shipType;
     private String shipComments;
     private int verificationId;
     private String verificationMethod;
     private String verificationComments;
-    private int employeeId;
+    private int employeeId; // <-- TODO: employee name may be better.
     private String helpReferenceNum;
+
+    public Transaction() {
+        origin = new Location();
+        destination = new Location();
+        pickupItems = new ArrayList<InvItem>();
+        checkedItems = new ArrayList<String>();
+        pickupComments = "";
+        napickupby = "";
+        nareleaseby = "";
+        nuxrrelsign = "";
+        pickupDate = "";
+        deliveryComments = "";
+        nadeliverby = "";
+        naacceptby = "";
+        nuxraccptsign = "";
+        deliveryDate = "";
+        shipType = "";
+        shipComments = "";
+        verificationMethod = "";
+        verificationComments = "";
+        helpReferenceNum = "";
+    }
 
     // shipType must exists for all remote transactions.
     public boolean isRemote() {
@@ -26,14 +73,22 @@ public abstract class Transaction implements Parcelable
         return false;
     }
 
-    protected Transaction() {
-        origin = new Location();
-        destination = new Location();
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
-    protected Transaction(Location origin, Location destination) {
-        this.origin = origin;
-        this.destination = destination;
+    public String getPickupDateWithoutTime() {
+        String[] splitDate = pickupDate.split(" ");
+        return splitDate[2] + " " + splitDate[0];
+    }
+
+    public ArrayList<String> getNotCheckedItems() {
+        ArrayList<String> notCheckedItems = (ArrayList<String>) pickupItems.clone();
+        for (String item : checkedItems) {
+            notCheckedItems.remove(item);
+        }
+        return notCheckedItems;
     }
 
     public String getOriginCdLoc() {
@@ -156,43 +211,140 @@ public abstract class Transaction implements Parcelable
         this.helpReferenceNum = helpReferenceNum;
     }
 
-    // ---------- Code for Parcelable interface ----------
-
-    protected Transaction(Parcel in) {
-        readFromParcel(in);
+    public ArrayList<InvItem> getPickupItems() {
+        return pickupItems;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setPickupItems(InvItem[] pickupItems) {
+        this.pickupItems = new ArrayList<InvItem>(Arrays.asList(pickupItems));
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(nuxrpd);
-        dest.writeParcelable(origin, flags);
-        dest.writeParcelable(destination, flags);
-        dest.writeInt(shipId);
-        dest.writeString(shipType);
-        dest.writeString(shipComments);
-        dest.writeInt(verificationId);
-        dest.writeString(verificationMethod);
-        dest.writeString(verificationComments);
-        dest.writeInt(employeeId);
-        dest.writeString(helpReferenceNum);
+    public void setPickupItems(String[] items) {
+        ArrayList<InvItem> pickupItems = new ArrayList<InvItem>();
+        for (String item : items) {
+            InvItem invItem = new InvItem();
+            invItem.setNusenate(item);
+            pickupItems.add(invItem);
+        }
+        this.pickupItems = pickupItems;
     }
 
-    public void readFromParcel(Parcel in) {
-        nuxrpd = in.readInt();
-        origin = in.readParcelable(Location.class.getClassLoader());
-        destination = in.readParcelable(Location.class.getClassLoader());
-        shipId = in.readInt();
-        shipType = in.readString();
-        shipComments = in.readString();
-        verificationId = in.readInt();
-        verificationMethod = in.readString();
-        verificationComments = in.readString();
-        employeeId = in.readInt();
-        helpReferenceNum = in.readString();
+    public void setPickupItemsList(ArrayList<String> items) {
+        ArrayList<InvItem> pickupItems = new ArrayList<InvItem>();
+        for (String item : items) {
+            InvItem invItem = new InvItem();
+            invItem.setNusenate(item);
+            pickupItems.add(invItem);
+        }
+        this.pickupItems = pickupItems;
     }
+
+    public String[] getPickupItemsNusenate() {
+        String[] nusenates = new String[pickupItems.size()];
+        for (int i = 0; i < pickupItems.size(); i++) {
+            nusenates[i] = pickupItems.get(i).getNusenate();
+        }
+        return nusenates;
+    }
+
+    public void setPickupItems(ArrayList<InvItem> pickupItems) {
+        this.pickupItems = pickupItems;
+    }
+
+    public String getPickupComments() {
+        return pickupComments;
+    }
+
+    public void setPickupComments(String comments) {
+        this.pickupComments = comments;
+    }
+
+    public String getNapickupby() {
+        return napickupby;
+    }
+
+    public void setNapickupby(String napickupby) {
+        this.napickupby = napickupby.toUpperCase();
+    }
+
+    public String getNareleaseby() {
+        return nareleaseby;
+    }
+
+    public void setNareleaseby(String nareleaseby) {
+        this.nareleaseby = nareleaseby.toUpperCase();
+    }
+
+    public String getNuxrrelsign() {
+        return nuxrrelsign;
+    }
+
+    public void setNuxrrelsign(String nuxrrelsign) {
+        this.nuxrrelsign = nuxrrelsign;
+    }
+    
+    public String getPickupDate() {
+        return pickupDate;
+    }
+
+    public void setPickupDate(String date) {
+        this.pickupDate = date;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String date) {
+        this.deliveryDate = date;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public ArrayList<String> getCheckedItems() {
+        return checkedItems;
+    }
+
+    public void setCheckedItems(String[] checkedItems) {
+        this.checkedItems = new ArrayList<String>(Arrays.asList(checkedItems));
+    }
+
+    public String getDeliveryComments() {
+        return deliveryComments;
+    }
+
+    public void setDeliveryComments(String comments) {
+        this.deliveryComments = comments;
+    }
+
+    public String getNadeliverby() {
+        return nadeliverby;
+    }
+
+    public void setNadeliverby(String nadeliverby) {
+        this.nadeliverby = nadeliverby.toUpperCase();
+    }
+
+    public String getNaacceptby() {
+        return naacceptby;
+    }
+
+    public void setNaacceptby(String naacceptby) {
+        this.naacceptby = naacceptby.toUpperCase();
+    }
+
+    public String getNuxraccptsign() {
+        return nuxraccptsign;
+    }
+
+    public void setNuxrsccptsign(String nuxraccptsign) {
+        this.nuxraccptsign = nuxraccptsign;
+    }
+
 }

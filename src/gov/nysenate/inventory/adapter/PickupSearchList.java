@@ -4,7 +4,7 @@ import java.util.List;
 
 import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,31 +13,31 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PickupSearchList extends ArrayAdapter<Pickup> {
+public class PickupSearchList extends ArrayAdapter<Transaction> {
 
-    List<Pickup> pickups;
+    List<Transaction> transactions;
     SearchByParam searchParam;
 
-    public PickupSearchList(Context context, int resource, List<Pickup> pickups, SearchByParam param) {
-        super(context, resource, pickups);
-        this.pickups = pickups;
+    public PickupSearchList(Context context, int resource, List<Transaction> trans, SearchByParam param) {
+        super(context, resource, trans);
+        this.transactions = trans;
         this.searchParam = param;
     }
-    
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        
+
         if (view == null) {
             LayoutInflater inflator;
             inflator = LayoutInflater.from(getContext());
             view = inflator.inflate(R.layout.pickup_search_list , null);
         }
-        
-        Pickup pickup = pickups.get(position);
-        
-        if (pickup != null) {
-            
+
+        Transaction tran = transactions.get(position);
+
+        if (tran != null) {
+
             RelativeLayout rlPickupGrpRow = (RelativeLayout) view.findViewById(R.id.relative_layout);
             TextView column1 = (TextView) view.findViewById(R.id.pickup_search_colum1);
             TextView column2 = (TextView) view.findViewById(R.id.pickup_search_colum2);
@@ -53,28 +53,28 @@ public class PickupSearchList extends ArrayAdapter<Pickup> {
             switch(searchParam) {
             
             case PICKUPLOC:
-                column1.setText(pickup.getDate().split("-")[0]);
-                column2.setText(pickup.getNapickupby());
-                column3.setText(pickup.getDestinationSummaryString());
-                column4.setText(Integer.toString(pickup.getCount()));
+                column1.setText(tran.getPickupDate().split("-")[0]);
+                column2.setText(tran.getNapickupby());
+                column3.setText(tran.getDestinationSummaryString());
+                column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DELIVERYLOC:
-                column1.setText(pickup.getDate().split("-")[0]);
-                column2.setText(pickup.getNapickupby());
-                column3.setText(pickup.getOriginSummaryString());
-                column4.setText(Integer.toString(pickup.getCount()));
+                column1.setText(tran.getPickupDate().split("-")[0]);
+                column2.setText(tran.getNapickupby());
+                column3.setText(tran.getOriginSummaryString());
+                column4.setText(Integer.toString(tran.getCount()));
                 break;
             case NAPICKUPBY:
-                column1.setText(pickup.getDate().split("-")[0]);
-                column2.setText(pickup.getOriginSummaryString());
-                column3.setText(pickup.getDestinationSummaryString());
-                column4.setText(Integer.toString(pickup.getCount()));
+                column1.setText(tran.getPickupDate().split("-")[0]);
+                column2.setText(tran.getOriginSummaryString());
+                column3.setText(tran.getDestinationSummaryString());
+                column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DATE:
-                column1.setText(pickup.getNapickupby());
-                column2.setText(pickup.getOriginSummaryString());
-                column3.setText(pickup.getDestinationSummaryString());
-                column4.setText(Integer.toString(pickup.getCount()));
+                column1.setText(tran.getNapickupby());
+                column2.setText(tran.getOriginSummaryString());
+                column3.setText(tran.getDestinationSummaryString());
+                column4.setText(Integer.toString(tran.getCount()));
                 break;
             }
         }

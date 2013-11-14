@@ -3,14 +3,13 @@ package gov.nysenate.inventory.activity;
 import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
 import gov.nysenate.inventory.adapter.PickupSearchList;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.TransactionParser;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 
 public class EditPickup2Activity extends SenateActivity
 {
-    private List<Pickup> avaliablePickups;
+    private List<Transaction> avaliablePickups;
     private ListView pickupSearchResults;
     private ProgressBar progBarEditPickup2;
     private Button btnEditPickupActivity2Cancel;
@@ -47,11 +46,15 @@ public class EditPickup2Activity extends SenateActivity
         btnEditPickupActivity2Cancel = (Button) findViewById(R.id.btnEditPickup2Cancel);
 
         String searchText;
-        final List<Pickup> filteredPickups = new ArrayList<Pickup>();
+        final List<Transaction> filteredPickups = new ArrayList<Transaction>();
 
         SearchByParam searchParameter = setSearchParam(getIntent().getStringExtra("searchParam"));
         searchText = getIntent().getStringExtra("searchText");
-        avaliablePickups = getIntent().getParcelableArrayListExtra("pickups");
+        try {
+            avaliablePickups = TransactionParser.parseMultiplePickups(getIntent().getStringArrayListExtra("pickups"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         setStaticText(searchParameter, searchText, pageTitle, column1label, column2label, column3label, column4label, filteredPickups);
 
@@ -65,12 +68,12 @@ public class EditPickup2Activity extends SenateActivity
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 if (checkServerResponse(true) == OK) {
-                    Pickup selectedPickup = filteredPickups.get(position);
+                    Transaction selectedPickup = filteredPickups.get(position);
                     String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
 
                     Intent intent = new Intent(EditPickup2Activity.this, EditPickupMenu.class);
                     intent.putExtra("nuxrpd", nuxrpd);
-                    intent.putExtra("date", selectedPickup.getDate());
+                    intent.putExtra("date", selectedPickup.getPickupDate());
                     startActivity(intent);
                     overridePendingTransition(R.anim.in_right, R.anim.out_left);
                 }
@@ -123,7 +126,7 @@ public class EditPickup2Activity extends SenateActivity
     }
 
     private void setStaticText(SearchByParam searchParam, String searchText, TextView title,
-            TextView row1label, TextView row2label, TextView row3label, TextView row4label, List<Pickup> filteredPickups) {
+            TextView row1label, TextView row2label, TextView row3label, TextView row4label, List<Transaction> filteredPickups) {
         
         String titleBuffer = "Please select a pickup to edit.";
 
@@ -166,10 +169,10 @@ public class EditPickup2Activity extends SenateActivity
         row4label.setText("Count");
     }
     
-    private List<Pickup> pickupsWithPickupLoc(String loc) {
-        List<Pickup> pickups = new ArrayList<Pickup>();
+    private List<Transaction> pickupsWithPickupLoc(String loc) {
+        List<Transaction> pickups = new ArrayList<Transaction>();
         String locCode = loc.split("-")[0];
-        for(Pickup pickup: avaliablePickups) {
+        for(Transaction pickup: avaliablePickups) {
             if (pickup.getOriginCdLoc().equalsIgnoreCase(locCode)) {
                 pickups.add(pickup);
             }
@@ -177,10 +180,10 @@ public class EditPickup2Activity extends SenateActivity
         return pickups;
     }
     
-    private List<Pickup> pickupsWithDestLoc(String loc) {
-        List<Pickup> pickups = new ArrayList<Pickup>();
+    private List<Transaction> pickupsWithDestLoc(String loc) {
+        List<Transaction> pickups = new ArrayList<Transaction>();
         String locCode = loc.split("-")[0];
-        for(Pickup pickup: avaliablePickups) {
+        for(Transaction pickup: avaliablePickups) {
             if (pickup.getDestinationCdLoc().equalsIgnoreCase(locCode)) {
                 pickups.add(pickup);
             }
@@ -188,9 +191,9 @@ public class EditPickup2Activity extends SenateActivity
         return pickups;
     }
     
-    private List<Pickup> pickupsWithNaPickupBy(String name) {
-        List<Pickup> pickups = new ArrayList<Pickup>();
-        for(Pickup pickup: avaliablePickups) {
+    private List<Transaction> pickupsWithNaPickupBy(String name) {
+        List<Transaction> pickups = new ArrayList<Transaction>();
+        for(Transaction pickup: avaliablePickups) {
             if (pickup.getNapickupby().equalsIgnoreCase(name)) {
                 pickups.add(pickup);
             }
@@ -198,10 +201,10 @@ public class EditPickup2Activity extends SenateActivity
         return pickups;
     }
 
-    private List<Pickup> pickupsOnDate(String date) {
-        List<Pickup> pickups = new ArrayList<Pickup>();
-        for(Pickup pickup: avaliablePickups) {
-            if (pickup.getDateWithoutTime().equalsIgnoreCase(date)) {
+    private List<Transaction> pickupsOnDate(String date) {
+        List<Transaction> pickups = new ArrayList<Transaction>();
+        for(Transaction pickup: avaliablePickups) {
+            if (pickup.getPickupDateWithoutTime().equalsIgnoreCase(date)) {
                 pickups.add(pickup);
             }
         }

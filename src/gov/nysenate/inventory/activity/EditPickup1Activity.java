@@ -6,9 +6,9 @@ import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.PickupParser;
+import gov.nysenate.inventory.util.TransactionParser;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
@@ -58,7 +58,7 @@ public class EditPickup1Activity extends SenateActivity
     private SearchByParam currentSearchParam = SearchByParam.PICKUPLOC;
     private Spinner searchParam;
     public static ClearableAutoCompleteTextView searchText;
-    private List<Pickup> validPickups;
+    private List<Transaction> validPickups;
     private static Button btnEditPickup1Cont;
     private static Button btnEditPickup1Cancel;
     private TextView tableTitle;
@@ -288,11 +288,15 @@ public class EditPickup1Activity extends SenateActivity
         if (checkServerResponse(true) != OK) {
             return;
         }
-        //TODO: pass search text as an appropriate object instead of text?
+
         Intent intent = new Intent(this, EditPickup2Activity.class);
         intent.putExtra("searchParam", searchParam.getSelectedItem().toString());
         intent.putExtra("searchText", searchText.getText().toString());
-        intent.putParcelableArrayListExtra("pickups", (ArrayList<Pickup>) validPickups);
+        ArrayList<String> json = new ArrayList<String>();
+        for (Transaction tran: validPickups) {
+            json.add(tran.toJson());
+        }
+        intent.putStringArrayListExtra("pickups", json);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
             
@@ -331,7 +335,7 @@ public class EditPickup1Activity extends SenateActivity
             try {
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
-                validPickups = PickupParser.parseMultiplePickups(out.toString());
+                validPickups = TransactionParser.parseMultiplePickups(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -375,7 +379,7 @@ public class EditPickup1Activity extends SenateActivity
 
     private void setAdapterToPickupLocs() {
         Set<String> locSummarys = new HashSet<String>();
-        for (Pickup pickup : validPickups) {
+        for (Transaction pickup : validPickups) {
             locSummarys.add(pickup.getOriginSummaryString());
         }
         updateAdapter(locSummarys);
@@ -383,7 +387,7 @@ public class EditPickup1Activity extends SenateActivity
 
     private void setAdapterToDeliveryLocs() {
         Set<String> locSummarys = new HashSet<String>();
-        for (Pickup pickup : validPickups) {
+        for (Transaction pickup : validPickups) {
             locSummarys.add(pickup.getDestinationSummaryString());
         }
         updateAdapter(locSummarys);
@@ -391,7 +395,7 @@ public class EditPickup1Activity extends SenateActivity
 
     private void setAdapterToPickupBy() {
         Set<String> users = new HashSet<String>();
-        for (Pickup pickup : validPickups) {
+        for (Transaction pickup : validPickups) {
             users.add(pickup.getNapickupby());
         }
         updateAdapter(users);
@@ -399,8 +403,8 @@ public class EditPickup1Activity extends SenateActivity
 
     private void setAdapterToDate() {
         Set<String> dates = new HashSet<String>();
-        for (Pickup pickup : validPickups) {
-            dates.add(pickup.getDateWithoutTime());
+        for (Transaction pickup : validPickups) {
+            dates.add(pickup.getPickupDateWithoutTime());
         }
         updateAdapter(dates);
     }
@@ -543,8 +547,8 @@ public class EditPickup1Activity extends SenateActivity
 
     private int getCountForDate(String date) {
         int count = 0;
-        for (Pickup pickup : validPickups) {
-            if (pickup.getDateWithoutTime().equals(date)) {
+        for (Transaction pickup : validPickups) {
+            if (pickup.getPickupDateWithoutTime().equals(date)) {
                 count++;
             }
         }

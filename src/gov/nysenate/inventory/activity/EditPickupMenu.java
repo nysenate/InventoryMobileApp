@@ -7,10 +7,10 @@ import gov.nysenate.inventory.android.R.drawable;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
-import gov.nysenate.inventory.model.Pickup;
 import gov.nysenate.inventory.model.RowItem;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.PickupParser;
+import gov.nysenate.inventory.util.TransactionParser;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
@@ -42,7 +42,7 @@ import android.widget.Toast;
 
 public class EditPickupMenu extends SenateActivity implements OnItemClickListener
 {
-    private Pickup pickup;
+    private Transaction pickup;
     private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
     private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
@@ -68,7 +68,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         oldCount = (TextView) findViewById(R.id.pickup_count);
         oldDate = (TextView) findViewById(R.id.pickup_date);
 
-        pickup = new Pickup();
+        pickup = new Transaction();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             new GetPickup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
@@ -138,7 +138,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         }
         Intent intent = new Intent(this, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("pickup", pickup);
+        intent.putExtra("pickup", pickup.toJson());
         intent.putExtra("date", oldDate.getText());
         startActivity(intent);
         overridePendingTransition(inTransition, outTransition);
@@ -167,7 +167,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
                 Log.i("EditPickupMenu", "Server Pickup Response:"+out.toString());
-                pickup = PickupParser.parsePickup(out.toString());
+                pickup = TransactionParser.parseTransaction(out.toString());
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {

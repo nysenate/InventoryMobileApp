@@ -6,15 +6,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.json.JSONException;
 
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.TransactionParser;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,9 +32,8 @@ import android.widget.TextView;
 
 
 public class CancelPickup extends SenateActivity {
-    ///testing git2
 
-    private Pickup pickup;
+    private Transaction pickup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,12 @@ public class CancelPickup extends SenateActivity {
         TextView commentsTitle = (TextView) findViewById(R.id.cancel_pickup_comments_title);
         ListView items = (ListView) findViewById(R.id.cancel_pickup_listview);
 
-        pickup = getIntent().getParcelableExtra("pickup");
+        try {
+            pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         String date = getIntent().getStringExtra("date");
 
         Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
@@ -62,9 +68,9 @@ public class CancelPickup extends SenateActivity {
         oldDate.setText(date);
 
         // Only show comments if there are some.
-        if (pickup.getComments().length() > 0) {
+        if (pickup.getPickupComments().length() > 0) {
             commentsTitle.setText("Comments:");
-            comments.setText(pickup.getComments());
+            comments.setText(pickup.getPickupComments());
         }
     }
 

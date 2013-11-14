@@ -12,7 +12,7 @@ import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.android.R.raw;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -474,9 +474,11 @@ public class Pickup2Activity extends SenateActivity
             progBarPickup2.setVisibility(View.VISIBLE);
             continueBtn.getBackground().setAlpha(70);
             Intent intent = new Intent(this, Pickup3.class);
-            Pickup pickup = new Pickup(origin, destination);
-            pickup.setPickupItems(scannedItems);
-            intent.putExtra("pickup", pickup);
+            Transaction trans = new Transaction();
+            trans.setOrigin(origin);
+            trans.setDestination(destination);
+            trans.setPickupItems(scannedItems);
+            intent.putExtra("pickup", trans.toJson());
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }

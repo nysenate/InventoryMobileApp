@@ -6,16 +6,18 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.json.JSONException;
 
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Formatter;
 import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.TransactionParser;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +31,7 @@ import android.widget.TextView;
 
 public class RemovePickupItems extends SenateActivity {
 
-    Pickup pickup;
+    Transaction pickup;
     ListView itemList;
     InvSelListViewAdapter adapter;
     ProgressBar progressBar;
@@ -48,7 +50,12 @@ public class RemovePickupItems extends SenateActivity {
         itemList = (ListView) findViewById(R.id.remove_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        pickup = getIntent().getParcelableExtra("pickup");
+        try {
+            pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         String date = getIntent().getStringExtra("date");
 
         oldPickupLocation.setText(pickup.getOriginSummaryString());
@@ -214,7 +221,7 @@ public class RemovePickupItems extends SenateActivity {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(RemovePickupItems.this, EditPickupMenu.class);
             intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
-            intent.putExtra("date", pickup.getDate());
+            intent.putExtra("date", pickup.getPickupDate());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

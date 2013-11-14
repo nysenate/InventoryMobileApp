@@ -23,10 +23,11 @@ import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.model.Pickup;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Toasty;
+import gov.nysenate.inventory.util.TransactionParser;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,7 +46,7 @@ import android.widget.Toast;
 
 public class ChangePickupDestination extends SenateActivity {
 
-    Pickup pickup;
+    Transaction pickup;
     ProgressBar progressBar;
     List<String> locations;
     ClearableAutoCompleteTextView newDeliveryLocation;
@@ -72,7 +73,12 @@ public class ChangePickupDestination extends SenateActivity {
         newLocRespCenterHd = (TextView) findViewById(R.id.tvOfficeD);
         newLocAddress = (TextView) findViewById(R.id.tvDescriptD);
 
-        pickup = getIntent().getParcelableExtra("pickup");
+        try {
+            pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         String date = getIntent().getStringExtra("date");
 
         oldPickupLocation.setText(pickup.getOriginSummaryString());
@@ -321,7 +327,7 @@ public class ChangePickupDestination extends SenateActivity {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(ChangePickupDestination.this, EditPickupMenu.class);
             intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
-            intent.putExtra("date", pickup.getDate());
+            intent.putExtra("date", pickup.getPickupDate());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
