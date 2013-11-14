@@ -5,15 +5,10 @@ import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.SignatureView;
-import gov.nysenate.inventory.android.R.drawable;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.Formatter;
 import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
@@ -108,7 +103,7 @@ public class Pickup3 extends SenateActivity
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
     public String timeoutFrom = "pickup3";
-    private Transaction transaction;
+    private Transaction pickup;
     private CheckBox remoteBox;
     private CheckBox paperworkBox;
     private Spinner remoteShipType;
@@ -128,17 +123,16 @@ public class Pickup3 extends SenateActivity
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
-
         pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-
+        pickup.setNapickupby(LoginActivity.nauser);
 
         scannedBarcodeNumbers = pickup.getPickupItems();
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
-        tvOriginPickup3.setText(transaction.getOriginAddressLine1());
-        tvDestinationPickup3.setText(transaction.getDestinationAddressLine1());
+        tvOriginPickup3.setText(pickup.getOriginAddressLine1());
+        tvDestinationPickup3.setText(pickup.getDestinationAddressLine1());
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
-        pickupCountTV.setText(Integer.toString(transaction.getPickupItems().size()));
+        pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
         remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
         paperworkBox = (CheckBox) findViewById(R.id.paperwork_checkbox);
         remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
@@ -345,6 +339,7 @@ public class Pickup3 extends SenateActivity
 
             String employeePicked = employeeNamesView.getEditableText()
                     .toString();
+            pickup.setNareleaseby(employeePicked);
             if (employeePicked.trim().length() > 0) {
                 int foundEmployee = this.findEmployee(employeePicked);
 
@@ -587,35 +582,13 @@ public class Pickup3 extends SenateActivity
 
         // call the servlet image upload and return the nuxrsign
 
-        String NAPICKUPBY = LoginActivity.nauser;
-        String NARELEASEBY = null;
-        DECOMMENTS = null;
-
-        try {
-            NARELEASEBY = URLEncoder.encode(this.employeeNamesView.getText().toString(), "UTF-8");
-            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText().toString(), "UTF-8");
-
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
         String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                 .toString();
 
         new ProcessPickupTask().execute(
                 URL + "/ImgUpload?nauser=" + LoginActivity.nauser
-                + "&nuxrefem=" + nuxrefem,
-                URL
-                + "/Pickup?originLocation="
-                + transaction.getOriginCdLoc()
-                + "&destinationLocation="
-                + transaction.getDestinationCdLoc()
-                + Formatter.generateGetArray("barcode[]", scannedBarcodeNumbers)
-                + "&NAPICKUPBY=" + NAPICKUPBY
-                + "&NARELEASEBY=" + NARELEASEBY
-                + "&cdloctypeto="
-                + transaction.getDestinationCdLocType()
-                + "&cdloctypefrm="
-                + transaction.getOriginCdLocType());
+                + "&nuxrefem=" + nuxrefem
+                , URL + "/Pickup?");
     }
 
 
@@ -790,15 +763,22 @@ public class Pickup3 extends SenateActivity
             }
 
             // Then post the rest of the information along with the NUXRSIGN
+            pickup.setNuxrrelsign(NUXRRELSIGN);
+            pickup.setPickupDateToNow();
+            String pickupJson = null;
+            try {
+                pickupJson = URLEncoder.encode(pickup.toJson(), "UTF-8");
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
 
             HttpClient httpclient = LoginActivity.httpClient;
             HttpResponse response;
             responseString = null;
             try {
 
-                String pickupURL = uri[1] + "&NUXRRELSIGN=" + NUXRRELSIGN
-                        + "&DECOMMENTS=" + DECOMMENTS + "&userFallback="
-                        + LoginActivity.nauser;
+                String pickupURL = uri[1] + "pickup=" + pickupJson
+                        + "&userFallback=" + LoginActivity.nauser;
                 System.out.println("pickupURL:" + pickupURL);
                 response = httpclient.execute(new HttpGet(pickupURL));
                 StatusLine statusLine = response.getStatusLine();
