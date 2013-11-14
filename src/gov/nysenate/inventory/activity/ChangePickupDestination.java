@@ -73,11 +73,8 @@ public class ChangePickupDestination extends SenateActivity {
         newLocRespCenterHd = (TextView) findViewById(R.id.tvOfficeD);
         newLocAddress = (TextView) findViewById(R.id.tvDescriptD);
 
-        try {
-            pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+
 
         String date = getIntent().getStringExtra("date");
 

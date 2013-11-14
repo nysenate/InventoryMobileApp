@@ -50,11 +50,9 @@ public class EditPickup2Activity extends SenateActivity
 
         SearchByParam searchParameter = setSearchParam(getIntent().getStringExtra("searchParam"));
         searchText = getIntent().getStringExtra("searchText");
-        try {
-            avaliablePickups = TransactionParser.parseMultiplePickups(getIntent().getStringArrayListExtra("pickups"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        avaliablePickups = TransactionParser.parseMultiplePickups(getIntent().getStringArrayListExtra("pickups"));
+
 
         setStaticText(searchParameter, searchText, pageTitle, column1label, column2label, column3label, column4label, filteredPickups);
 

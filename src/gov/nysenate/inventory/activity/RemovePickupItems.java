@@ -50,11 +50,7 @@ public class RemovePickupItems extends SenateActivity {
         itemList = (ListView) findViewById(R.id.remove_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        try {
-            pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
 
         String date = getIntent().getStringExtra("date");
 

@@ -340,8 +340,6 @@ public class EditPickup1Activity extends SenateActivity
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
             return response.getStatusLine().getStatusCode();

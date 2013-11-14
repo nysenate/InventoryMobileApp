@@ -172,8 +172,6 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
             return response.getStatusLine().getStatusCode();

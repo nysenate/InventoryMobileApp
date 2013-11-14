@@ -15,7 +15,7 @@ public class TransactionParser {
 
     private static final Gson gson = new Gson();
 
-    public static Transaction parseTransaction(String json) throws JSONException {
+    public static Transaction parseTransaction(String json) {
         Transaction pickup = new Transaction();
         JsonParser parser = new JsonParser();
         JsonObject obj = parser.parse(json).getAsJsonObject();
@@ -24,7 +24,7 @@ public class TransactionParser {
     }
 
     // TODO: for when we call Gson.toJson(Collection<Transaction>) in server -> returns it all in one string... SHould use below!!!!!
-    public static List<Transaction> parseMultiplePickups(String json) throws JSONException {
+    public static List<Transaction> parseMultiplePickups(String json) {
         List<Transaction> pickups = new ArrayList<Transaction>();
         JsonParser parser = new JsonParser();
         JsonArray obj = parser.parse(json).getAsJsonArray();
@@ -34,7 +34,7 @@ public class TransactionParser {
         return pickups;
     }
 
-    public static List<Transaction> parseMultiplePickups(ArrayList<String> json) throws JSONException {
+    public static List<Transaction> parseMultiplePickups(ArrayList<String> json) {
         List<Transaction> pickups = new ArrayList<Transaction>();
         for (int i = 0; i < json.size(); i++) {
             pickups.add(parseTransaction(json.get(i)));

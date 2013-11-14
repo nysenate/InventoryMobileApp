@@ -128,13 +128,11 @@ public class Pickup3 extends SenateActivity
 
         ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
-        try {
-            transaction = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        scannedBarcodeNumbers = transaction.getPickupItems();
+        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+
+
+        scannedBarcodeNumbers = pickup.getPickupItems();
         tvOriginPickup3 = (TextView) findViewById(R.id.tv_origin_pickup3);
         tvDestinationPickup3 = (TextView) findViewById(R.id.tv_destination_pickup3);
         tvOriginPickup3.setText(transaction.getOriginAddressLine1());
