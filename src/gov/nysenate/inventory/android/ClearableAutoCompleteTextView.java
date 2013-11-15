@@ -44,7 +44,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
                 return false;
             } 
-            return true;
+            return false;
         }
     };
     
