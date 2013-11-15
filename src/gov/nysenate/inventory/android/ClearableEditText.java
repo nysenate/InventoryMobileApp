@@ -10,8 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.AdapterView;
 import android.widget.EditText;
 
 public class ClearableEditText extends EditText
@@ -22,9 +26,29 @@ public class ClearableEditText extends EditText
             android.R.drawable.ic_delete); // X image
     private boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    public boolean clearField = true;
+    private boolean suppressEnter = false;    
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    OnKeyListener suppressEnterTab = new OnKeyListener() {
+
+        @Override
+        public boolean onKey (View v, int keyCode, KeyEvent event) {
+            // TODO Auto-generated method stub
+            if (event.getAction() == KeyEvent.ACTION_DOWN
+                    && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB) ) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        Log.i("event", "ENTER captured");
+                }
+                if (event.getKeyCode() == KeyEvent.KEYCODE_TAB) {
+                    Log.i("event", "TAB captured");
+            }
+
+                return false;
+            } 
+            return true;
+        }
+    };    
 
     public ClearableEditText(Context context) {
         super(context);
@@ -51,7 +75,8 @@ public class ClearableEditText extends EditText
     }
 
     void init() {
-
+        this.setOnKeyListener(suppressEnterTab);
+        suppressEnter = true;
         // Set bounds of our X button
         imgX.setBounds(0, 0, imgX.getIntrinsicWidth(),
                 imgX.getIntrinsicHeight());
@@ -130,6 +155,8 @@ public class ClearableEditText extends EditText
                 return false;
             }
         });
+        
+      
 
         this.addTextChangedListener(new TextWatcher()
         {
@@ -191,4 +218,19 @@ public class ClearableEditText extends EditText
         listeners.add(listener);
     }
 
+    public boolean isEnterTabSuppressed() {
+        return suppressEnter;
+        
+    }
+    
+    public void suppressEnterTabKey() {
+        this.setOnKeyListener(suppressEnterTab);
+        suppressEnter = true;
+    }
+    
+    public void allowEnterTabKey() {
+        this.setOnKeyListener(null);
+        suppressEnter = false;
+    }      
+    
 }
