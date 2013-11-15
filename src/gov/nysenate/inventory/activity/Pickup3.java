@@ -20,6 +20,7 @@ import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -764,7 +765,7 @@ public class Pickup3 extends SenateActivity
 
             // Then post the rest of the information along with the NUXRSIGN
             pickup.setNuxrrelsign(NUXRRELSIGN);
-            pickup.setPickupDateToNow();
+            pickup.setPickupDate(new Date());
             String pickupJson = null;
             try {
                 pickupJson = URLEncoder.encode(pickup.toJson(), "UTF-8");

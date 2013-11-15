@@ -2,10 +2,6 @@ package gov.nysenate.inventory.activity;
 
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.TransactionParser;
@@ -13,10 +9,12 @@ import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -400,9 +398,10 @@ public class EditPickup1Activity extends SenateActivity
     }
 
     private void setAdapterToDate() {
-        Set<String> dates = new HashSet<String>();
+        SimpleDateFormat sdf = getSimpleDateFormat();
+        Set<String> dates = new HashSet<String>(); // TODO: hashset<Date> ?
         for (Transaction pickup : validPickups) {
-            dates.add(pickup.getPickupDateWithoutTime());
+            dates.add(sdf.format(pickup.getPickupDate()));
         }
         updateAdapter(dates);
     }
@@ -544,12 +543,18 @@ public class EditPickup1Activity extends SenateActivity
     }
 
     private int getCountForDate(String date) {
+        SimpleDateFormat sdf = getSimpleDateFormat();
         int count = 0;
         for (Transaction pickup : validPickups) {
-            if (pickup.getPickupDateWithoutTime().equals(date)) {
+            if (sdf.format(pickup.getPickupDate()).equals(date)) {
                 count++;
             }
         }
         return count;
+    }
+
+    private SimpleDateFormat getSimpleDateFormat() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy EEEE", Locale.US);
+        return sdf;
     }
 }

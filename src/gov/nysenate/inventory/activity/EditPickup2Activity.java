@@ -6,10 +6,10 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.TransactionParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONException;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -200,9 +200,10 @@ public class EditPickup2Activity extends SenateActivity
     }
 
     private List<Transaction> pickupsOnDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
         List<Transaction> pickups = new ArrayList<Transaction>();
         for(Transaction pickup: avaliablePickups) {
-            if (pickup.getPickupDateWithoutTime().equalsIgnoreCase(date)) {
+            if (sdf.format(pickup.getPickupDate()).equalsIgnoreCase(date)) {
                 pickups.add(pickup);
             }
         }

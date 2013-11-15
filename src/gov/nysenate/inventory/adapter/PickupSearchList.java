@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.adapter;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
 import gov.nysenate.inventory.android.R;
@@ -26,6 +28,7 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa", Locale.US);
         View view = convertView;
 
         if (view == null) {
@@ -51,21 +54,21 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
             }
 
             switch(searchParam) {
-            
+
             case PICKUPLOC:
-                column1.setText(tran.getPickupDate().split("-")[0]);
+                column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
                 column3.setText(tran.getDestinationSummaryString());
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DELIVERYLOC:
-                column1.setText(tran.getPickupDate().split("-")[0]);
+                column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
                 column3.setText(tran.getOriginSummaryString());
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case NAPICKUPBY:
-                column1.setText(tran.getPickupDate().split("-")[0]);
+                column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getOriginSummaryString());
                 column3.setText(tran.getDestinationSummaryString());
                 column4.setText(Integer.toString(tran.getCount()));
@@ -78,7 +81,7 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
                 break;
             }
         }
-        
+
         return view;
     }
 
