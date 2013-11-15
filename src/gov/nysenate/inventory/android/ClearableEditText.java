@@ -51,7 +51,7 @@ public class ClearableEditText extends EditText
 
                 return false;
             } 
-            return true;
+            return false;
         }
     };    
 
