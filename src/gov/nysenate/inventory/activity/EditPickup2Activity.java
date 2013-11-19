@@ -71,7 +71,6 @@ public class EditPickup2Activity extends SenateActivity
 
                     Intent intent = new Intent(EditPickup2Activity.this, EditPickupMenu.class);
                     intent.putExtra("nuxrpd", nuxrpd);
-                    intent.putExtra("date", selectedPickup.getPickupDate());
                     startActivity(intent);
                     overridePendingTransition(R.anim.in_right, R.anim.out_left);
                 }

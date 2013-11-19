@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.activity;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -58,7 +60,8 @@ public class RemovePickupItems extends SenateActivity {
         oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        oldDate.setText(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+        oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         adapter = new InvSelListViewAdapter(this, R.layout.invlist_sel_item, pickup.getPickupItems());
         adapter.setAllSelected(false);
@@ -217,7 +220,6 @@ public class RemovePickupItems extends SenateActivity {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(RemovePickupItems.this, EditPickupMenu.class);
             intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
-            intent.putExtra("date", pickup.getPickupDate());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

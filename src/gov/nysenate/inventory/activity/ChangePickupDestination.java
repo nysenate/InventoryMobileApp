@@ -2,10 +2,12 @@ package gov.nysenate.inventory.activity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -82,7 +84,8 @@ public class ChangePickupDestination extends SenateActivity {
         oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        oldDate.setText(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+        oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             new GetLocations().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -324,7 +327,6 @@ public class ChangePickupDestination extends SenateActivity {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(ChangePickupDestination.this, EditPickupMenu.class);
             intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
-            intent.putExtra("date", pickup.getPickupDate());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

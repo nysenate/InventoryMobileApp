@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.activity;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -61,7 +63,8 @@ public class CancelPickup extends SenateActivity {
         oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        oldDate.setText(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+        oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         // Only show comments if there are some.
         if (pickup.getPickupComments().length() > 0) {

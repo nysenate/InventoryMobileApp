@@ -15,8 +15,10 @@ import gov.nysenate.inventory.util.Toasty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -139,7 +141,6 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         Intent intent = new Intent(this, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("pickup", pickup.toJson());
-        intent.putExtra("date", oldDate.getText());
         startActivity(intent);
         overridePendingTransition(inTransition, outTransition);
     }
@@ -185,7 +186,8 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
                 oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-                oldDate.setText(getIntent().getStringExtra("date"));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+                oldDate.setText(sdf.format(pickup.getPickupDate()));
             } else if (response == HttpStatus.SC_BAD_REQUEST) {
                 Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unable to get pickup info, invalid nuxrpd.", Toast.LENGTH_SHORT);
             } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
