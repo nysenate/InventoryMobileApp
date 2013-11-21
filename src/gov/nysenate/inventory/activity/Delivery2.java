@@ -248,6 +248,7 @@ public class Delivery2 extends SenateActivity
                     String pickupAdstate = "N/A";
                     String pickupAdzipcode = "N/A";
                     int pickupItemCount = -1;
+                    int shipId = 0;
 
                     for (int x = 0; x < jsonArray.length(); x++) {
                         nuxrpd = -1;
@@ -310,17 +311,23 @@ public class Delivery2 extends SenateActivity
                         try {
                             pickupAdzipcode = object
                                     .getString("pickupAdzipcode");
+                            shipId = object.getInt("shipId");
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }
+
+                        if (shipId > 0) {
+                            pickupAdzipcode += " [" + "<font color='#ff0000'>R</font>" + "]";
                         }
 
                         // Log.i("JSON VALUES "+x, object.toString());
                         currentPickupGroup = new PickupGroup(nuxrpd,
                                 pickupDateTime, pickupFrom, pickupRelBy,
                                 pickupLocat, pickupAdstreet1, pickupAdcity,
-                                pickupAdstate, pickupAdzipcode, pickupItemCount);
+                                pickupAdstate, pickupAdzipcode, pickupItemCount, shipId);
                         // System.out.println(nuxrpd+" ,  "+pickupDateTime+" ,"+
                         // pickupFrom+", "+pickupRelBy+" , "+pickupLocat+" , "+pickupItemCount);
+
                         pickupGroups.add(currentPickupGroup);
                     }
 

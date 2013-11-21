@@ -565,7 +565,9 @@ public class Pickup3 extends SenateActivity
     }
 
     private void positiveDialog() {
-        pickup.setShipType(remoteShipType.getSelectedItem().toString());
+        if (remoteShipType.getSelectedItem() != null) {
+            pickup.setShipType(remoteShipType.getSelectedItem().toString());
+        }
 
         continueBtn.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);

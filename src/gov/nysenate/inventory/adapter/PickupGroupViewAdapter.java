@@ -9,6 +9,7 @@ import gov.nysenate.inventory.model.PickupGroup;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
         RelativeLayout rlPickupGrpRow;
         TextView pickupDateTime;
         TextView pickupLocat;
-        TextView pickupFrom;
+        TextView pickupBy;
         TextView pickupRelBy;
         TextView pickupCount;
     }
@@ -57,7 +58,7 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
                     .findViewById(R.id.pickupDateTime);
             holder.pickupLocat = (TextView) convertView
                     .findViewById(R.id.pickupLocat);
-            holder.pickupFrom = (TextView) convertView
+            holder.pickupBy = (TextView) convertView
                     .findViewById(R.id.pickupFrom);
             // holder.pickupRelBy = (TextView)
             // convertView.findViewById(R.id.pickupRelBy);
@@ -84,11 +85,12 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
         }
 
         try {
-            holder.pickupLocat.setText(currentPickupGroup.getPickupLocat()
+            String address = currentPickupGroup.getPickupLocat()
                     + " - " + currentPickupGroup.getPickupAdstreet1() + ", "
                     + currentPickupGroup.getPickupAdcity() + ", "
                     + currentPickupGroup.getPickupAdstate() + " "
-                    + currentPickupGroup.getPickupAdzipcode());
+                    + currentPickupGroup.getPickupAdzipcode();
+            holder.pickupLocat.setText(Html.fromHtml(address));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -99,7 +101,7 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
          * catch (Exception e) { e.printStackTrace(); }
          */
         try {
-            holder.pickupFrom.setText(currentPickupGroup.getPickupFrom());
+            holder.pickupBy.setText(currentPickupGroup.getPickupFrom());
         } catch (Exception e) {
             e.printStackTrace();
         }
