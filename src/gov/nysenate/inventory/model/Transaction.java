@@ -12,7 +12,6 @@ import com.google.gson.Gson;
  * Adds Domain Logic methods.
  */
 public class Transaction {
-
     private int nuxrpd;
     private Location origin;
     private Location destination;
@@ -68,7 +67,7 @@ public class Transaction {
 
     // shipType must exists for all remote transactions.
     public boolean isRemote() {
-        if (shipType != null) {
+        if (shipType != "") {
             return true;
         }
         return false;
@@ -311,6 +310,13 @@ public class Transaction {
 
     public void setCheckedItems(String[] checkedItems) {
         this.checkedItems = new ArrayList<String>(Arrays.asList(checkedItems));
+    }
+
+    public void setCheckedItems(ArrayList<InvItem> checkedItems) {
+        this.checkedItems.clear();
+        for (InvItem item: checkedItems) {
+            this.checkedItems.add(item.getNusenate());
+        }
     }
 
     public String getDeliveryComments() {

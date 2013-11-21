@@ -4,6 +4,7 @@ import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RemoteConfirmationDialog;
 import gov.nysenate.inventory.android.SignatureView;
 import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.drawable;
@@ -13,7 +14,9 @@ import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Formatter;
+import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -49,6 +52,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,6 +67,7 @@ import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +77,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,7 +91,7 @@ public class Delivery3 extends SenateActivity
     String res = "";
     ListView listview;
     String NUXRACCPTSIGN = "";
-    String NADELIVERBY = "";
+    String NADELIVERBY = ""; // TODO: not used
     String NAACCEPTBY = "";
     private SignatureView sign;
     private byte[] imageInByte = {};
@@ -112,6 +118,7 @@ public class Delivery3 extends SenateActivity
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103;
 
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
+    private Transaction delivery;
 
     // ArrayList<DeliveryItem> deliveryList = new ArrayList<DeliveryItem>();
     // DeliveryItemViewAdapter adapter2;
@@ -130,7 +137,6 @@ public class Delivery3 extends SenateActivity
 
         // Set the location in textview
         loc_details = (TextView) findViewById(R.id.textView2);
-        loc_details.setText(location);
         tvItemCount = (TextView) findViewById(R.id.tvItemCount);
         // Get the barcode numbers from the server and set it to the listview
 
@@ -166,8 +172,14 @@ public class Delivery3 extends SenateActivity
                                 naemployeeView.getWindowToken(), 0);
                     }
                 });
-
+        delivery = new Transaction();
         getDeliveryDetails();
+
+        // Append [R] to location if remote.
+        if (delivery.isRemote()) {
+            location += " [" + "<font color='#ff0000'>R</font>" + "]";
+        }
+        loc_details.setText(Html.fromHtml(location));
 
         // list of name of the employee for autocomplete (get from server and
         // populate the autocomplete textview)
@@ -292,6 +304,15 @@ public class Delivery3 extends SenateActivity
         return -1;
     }
 
+    public int getEmployeeId(String name) {
+        for (Employee emp: employeeHiddenList) {
+            if (emp.getEmployeeName().equalsIgnoreCase(name)) {
+                return emp.getEmployeeXref();
+            }
+        }
+        return 0;
+    }
+
     public void continueButton(View view) {
         String employeePicked = naemployeeView.getEditableText().toString();
         NAACCEPTBY = "";
@@ -368,23 +389,17 @@ public class Delivery3 extends SenateActivity
                          * for the same pickup.
                          */
 
-                        if (positiveButtonPressed) {
-                            /*
-                             * Context context = getApplicationContext(); int
-                             * duration = Toast.LENGTH_SHORT;
-                             * 
-                             * Toast toast = Toast.makeText(context,
-                             * "Button was already been pressed.",
-                             * Toast.LENGTH_SHORT);
-                             * toast.setGravity(Gravity.CENTER, 0, 0);
-                             * toast.show();
-                             */
-
-                        } else {
-                            positiveButtonPressed = true;
-                            positiveDialog();
+                        if (!positiveButtonPressed) {
+                            // TODO: will have to get a properly/completely queried delivery for this to work.
+                            if (delivery.isRemote()) {
+                                // Show fragment to get Remote info, calls positiveDialog() on completion.
+                                DialogFragment newFragment = RemoteConfirmationDialog.newInstance(employeeNameList, delivery);
+                                newFragment.setCancelable(false);
+                                newFragment.show(getFragmentManager(), "dialog");
+                            } else {
+                                positiveDialog();
+                            }
                         }
-
                     }
                 });
 
@@ -401,7 +416,7 @@ public class Delivery3 extends SenateActivity
         dialog.show();
     }
 
-    private void positiveDialog() {
+    public void positiveDialog() {
         progBarDelivery3.setVisibility(View.VISIBLE);
         this.btnDelivery3Cont.getBackground().setAlpha(45);
 
@@ -432,6 +447,14 @@ public class Delivery3 extends SenateActivity
             // fetch data
             status = "yes";
 
+            delivery.setNuxrpd(Integer.valueOf(nuxrpd));
+            delivery.setNadeliverby(LoginActivity.nauser);
+            delivery.setNaacceptby(NAACCEPTBY);
+            delivery.setDeliveryComments(DECOMMENTS);
+            delivery.setPickupItems(invList);
+            delivery.setCheckedItems(this.invAdapter.getSelectedItems(true));
+
+
             AsyncTask<String, String, String> resr1;
             try {
                 // Get the URL from the properties
@@ -439,16 +462,7 @@ public class Delivery3 extends SenateActivity
                         .toString();
                 this.deliveryRequestTaskType = "Delivery";
                 String deliveryURL = URL
-                        + "/DeliveryConfirmation?NUXRPD="
-                        + nuxrpd
-                        + "&NADELIVERBY="
-                        + LoginActivity.nauser
-                        + "&NAACCEPTBY="
-                        + NAACCEPTBY
-                        + Formatter.generateGetArray("deliveryItemsStr[]",
-                                this.invAdapter.getAllItems())
-                        + Formatter.generateGetArray("checkedStr[]",
-                                this.invAdapter.getSelectedItems(true));
+                        + "/DeliveryConfirmation?";
 
                 resr1 = new DeliveryRequestTask().execute(URL
                         + "/ImgUpload?nauser=" + LoginActivity.nauser
@@ -704,13 +718,13 @@ public class Delivery3 extends SenateActivity
 
                     URL url = new URL(urls.toString());
 
-                    HttpClient httpClient = LoginActivity.httpClient;
+                    HttpClient httpClient = LoginActivity.httpClient; // TODO: httpclient(at start of method) and httpClient...
 
                     if (httpClient == null) {
                         Log.i(DeliveryRequestTask.class.getName(),
                                 "MainActivity.httpClient was null so it is being reset");
                         LoginActivity.httpClient = new DefaultHttpClient();
-                        httpclient = LoginActivity.httpClient;
+                        httpclient = LoginActivity.httpClient; // TODO: ^^^^^
                     }
 
                     HttpContext localContext = new BasicHttpContext();
@@ -764,6 +778,14 @@ public class Delivery3 extends SenateActivity
                     e.printStackTrace();
                 }
 
+                delivery.setNuxrsccptsign(NUXRACCPTSIGN);
+                String deliveryjson = null;
+                try {
+                    deliveryjson = URLEncoder.encode(delivery.toJson(), "UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
+
                 try {
                     StringBuilder urls = new StringBuilder();
                     urls.append(uri[1].trim());
@@ -776,9 +798,8 @@ public class Delivery3 extends SenateActivity
                     }
                     urls.append("userFallback=");
                     urls.append(LoginActivity.nauser);
-                    response = httpclient.execute(new HttpGet(urls.toString()
-                            + "&NUXRACCPTSIGN=" + NUXRACCPTSIGN
-                            + "&DECOMMENTS=" + DECOMMENTS));
+                    urls.append("&Delivery=" + deliveryjson);
+                    response = httpclient.execute(new HttpGet(urls.toString()));
 
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -936,7 +957,7 @@ public class Delivery3 extends SenateActivity
             this.deliveryRequestTaskType = "EmployeeDeliveryList";
             AsyncTask<String, String, String> resr1 = new DeliveryRequestTask()
                     .execute(URL + "/EmployeeList", URL
-                            + "/DeliveryDetails?NUXRPD=" + nuxrpd);
+                            + "/GetPickup?nuxrpd=" + nuxrpd);
 
             try {
                 try {
@@ -954,27 +975,10 @@ public class Delivery3 extends SenateActivity
                     noServerResponse();
                     return;
                 }
-                // code for JSON
 
                 String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(i);
-                    System.out.println(i + ":" + jo.toString());
-                    String nusenate = jo.getString("nusenate");
-                    String cdcategory = jo.getString("cdcategory");
-                    String decommodityf = jo.getString("decommodityf");
-                    String cdlocat = jo.getString("cdlocat");
-
-                    // 3/15/13 BH Coded below to use InvItem Objects to display
-                    // the list.
-                    InvItem invItem = new InvItem(nusenate, cdcategory,
-                            "EXISTING", decommodityf, cdlocat);
-                    invList.add(invItem);
-                }
+                delivery = TransactionParser.parseTransaction(jsonString);
+                invList = delivery.getPickupItems();
 
                 // Display the pickup data
                 listview = (ListView) findViewById(R.id.listView1);
@@ -1005,10 +1009,6 @@ public class Delivery3 extends SenateActivity
             } catch (ExecutionException e) {
                 // TODO Auto-generated catch block
                 Log.i("ExecutionException", e.getMessage());
-                e.printStackTrace();
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                Log.i("JSONException", e.getMessage());
                 e.printStackTrace();
             }
             status = "yes1";

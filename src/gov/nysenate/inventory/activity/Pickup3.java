@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.activity;
 
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
+import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
@@ -137,8 +138,12 @@ public class Pickup3 extends SenateActivity
         remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
         paperworkBox = (CheckBox) findViewById(R.id.paperwork_checkbox);
         remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
-
         remoteShipType.setVisibility(Spinner.INVISIBLE);
+
+        // Display a "hint" in the spinner.
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.remote_ship_types, android.R.layout.simple_spinner_item);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        remoteShipType.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, scannedBarcodeNumbers);
@@ -560,6 +565,8 @@ public class Pickup3 extends SenateActivity
     }
 
     private void positiveDialog() {
+        pickup.setShipType(remoteShipType.getSelectedItem().toString());
+
         continueBtn.getBackground().setAlpha(45);
         // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
         // String jsonString = null;
@@ -982,10 +989,11 @@ public class Pickup3 extends SenateActivity
             remoteShipType.setVisibility(Spinner.VISIBLE);
         } else {
             remoteShipType.setVisibility(Spinner.INVISIBLE);
+            pickup.setShipType("");
         }
     }
 
     public void paperworkRequestedClick(View view) {
-
+        // TODO: implement
     }
 }
