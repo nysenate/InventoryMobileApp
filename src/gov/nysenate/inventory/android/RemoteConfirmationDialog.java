@@ -165,6 +165,7 @@ public class RemoteConfirmationDialog extends DialogFragment {
                 }
             }
         }
+        Toasty.displayCenteredMessage(getActivity(), "Please select a verification method.", Toast.LENGTH_SHORT);
         return false;
     }
 }

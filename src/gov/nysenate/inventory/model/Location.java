@@ -27,6 +27,11 @@ public class Location implements Parcelable
         adstreet1 = tmp[1].trim();
     }
 
+    // Location is remote if it is outside of albany.
+    public boolean isRemote() {
+        return adcity.equalsIgnoreCase("Albany") ? false : true;
+    }
+
     public String getAdstreet1() {
         return adstreet1;
     }

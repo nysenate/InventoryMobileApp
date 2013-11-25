@@ -10,6 +10,7 @@ import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.Toasty;
 import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
@@ -343,6 +344,12 @@ public class Pickup3 extends SenateActivity
     public void continueButton(View view) {
         if (checkServerResponse(true) == OK) {
 
+            if (isRemoteOptionVisible()) {
+                if (remoteShipType.getSelectedItem() == null) {
+                    Toasty.displayCenteredMessage(this, "You must pick a remote shipping option.", Toast.LENGTH_SHORT);
+                    return;
+                }
+            }
             String employeePicked = employeeNamesView.getEditableText()
                     .toString();
             pickup.setNareleaseby(employeePicked);
@@ -997,5 +1004,9 @@ public class Pickup3 extends SenateActivity
 
     public void paperworkRequestedClick(View view) {
         // TODO: implement
+    }
+
+    private boolean isRemoteOptionVisible() {
+        return (remoteShipType.getVisibility() == Spinner.VISIBLE) ? true : false;
     }
 }
