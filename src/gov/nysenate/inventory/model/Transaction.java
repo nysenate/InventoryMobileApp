@@ -67,10 +67,7 @@ public class Transaction {
 
     // shipType must exists for all remote transactions.
     public boolean isRemote() {
-        if (shipType != "") {
-            return true;
-        }
-        return false;
+        return !shipType.equals("");
     }
 
     public String toJson() {
