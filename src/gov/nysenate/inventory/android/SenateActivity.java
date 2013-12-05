@@ -1,10 +1,13 @@
 package gov.nysenate.inventory.android;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,18 +19,33 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.sax.StartElementListener;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.MotionEventCompat;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.KeyEvent.DispatcherState;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewDebug.FlagToString;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 public abstract class SenateActivity extends Activity implements
         CommodityDialogListener, OnKeywordChangeListener
 {
+	
     public String timeoutFrom = "N/A";
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
     public final int OK = 100, SERVER_SESSION_TIMED_OUT = 1000,
@@ -50,6 +68,7 @@ public abstract class SenateActivity extends Activity implements
 
     public NewInvDialog newInvDialog = null;
     public CommentsDialog commentsDialog = null;
+    
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -259,12 +278,17 @@ public abstract class SenateActivity extends Activity implements
         super.onResume();
         InvApplication.activityResumed();
         checkInternetConnection();
+        timer.cancel();
+        if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+        timer.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         InvApplication.activityPaused();
+        
+        timer.cancel();
     }
 
     public int checkServerResponse() {
@@ -339,6 +363,7 @@ public abstract class SenateActivity extends Activity implements
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
+    static Context stContext;
 
     /*
      * The app needs an internet connection, so check it on Activity Startup
@@ -561,5 +586,64 @@ public abstract class SenateActivity extends Activity implements
         getDialogDataFromServer();
 
     }
-
+    
+    
+    
+  
+public static CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			System.out.println(millisUntilFinished/1000);
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			inactivityTimeout();
+		}
+		
+	};
+	
+	public static void inactivityTimeout()
+	{
+		Intent myIntent = new Intent(stContext, LoginActivity.class); 
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		stContext.startActivity(myIntent);
+	}
+   
+   @Override
+    public void onUserInteraction(){
+	   		  timer.cancel();
+	   		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+    		  timer.start();
+    		  super.onUserInteraction();
+    		  System.out.println("name:: "+SenateActivity.this.getClass().getSimpleName());
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+    	// TODO Auto-generated method stub
+    	super.onCreate(savedInstanceState);
+    	if(stContext == null)
+    		stContext = getApplicationContext();
+    	if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+    	timer.start();
+    	setCurrentActivity(this.getClass().getSimpleName());
+    }
+    
+       
+    private static String activity; 
+    
+    public void setCurrentActivity(String activity)
+    {
+    	SenateActivity.activity = activity;
+    }
+    public static String getCurrentActivity()
+    {
+    	return activity;
+    }
+    
 }
+

@@ -3,10 +3,13 @@ package gov.nysenate.inventory.android;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -26,6 +29,30 @@ public class ClearableEditText extends EditText
     boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    
+    CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			System.out.println(this.getClass().getSimpleName());
+			System.out.println(millisUntilFinished/1000);
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+			{
+				Intent intentTimeout = new Intent(context, LoginActivity.class);
+				intentTimeout.addFlags(200);
+				context.startActivity(intentTimeout);
+			}
+	        
+			
+		}
+		
+	};
 
     public ClearableEditText(Context context) {
         super(context);
@@ -132,6 +159,8 @@ public class ClearableEditText extends EditText
                 return false;
             }
         });
+        
+        
 
         this.addTextChangedListener(new TextWatcher()
         {
@@ -140,6 +169,9 @@ public class ClearableEditText extends EditText
                     int count) {
 
                 ClearableEditText.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override
