@@ -142,6 +142,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     int count) {
 
                 ClearableAutoCompleteTextView.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override

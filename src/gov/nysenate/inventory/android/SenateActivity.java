@@ -610,6 +610,7 @@ public static CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
 	{
 		Intent myIntent = new Intent(stContext, LoginActivity.class); 
         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.putExtra("TIMEOUTFROM", "softkey");
 		stContext.startActivity(myIntent);
 	}
    

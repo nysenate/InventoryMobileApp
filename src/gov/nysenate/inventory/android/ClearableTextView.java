@@ -144,6 +144,9 @@ public class ClearableTextView extends TextView
                     int count) {
 
                 ClearableTextView.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override
