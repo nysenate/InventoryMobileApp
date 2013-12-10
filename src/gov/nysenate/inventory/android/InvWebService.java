@@ -1,6 +1,6 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.android.UpgradeActivity.MyWebReceiver;
+import gov.nysenate.inventory.activity.UpgradeActivity.MyWebReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.model.KeywordListViewAdapter;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.KeywordListViewAdapter;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ public class KeywordDialog extends DialogFragment
     public String keywordList = null;
     public String keywordListOrig = null;
     public String[] originalKeywordList = null;
-    KeywordListViewAdapter adapter = null;
+    private KeywordListViewAdapter adapter = null;
     NewInvDialog newInvDialog = null;
     List<OnKeywordChangeListener> listeners = new ArrayList<OnKeywordChangeListener>();
     int position = -1;
@@ -180,6 +182,10 @@ public class KeywordDialog extends DialogFragment
             }
         }
         return items;
+    }
+
+    public KeywordListViewAdapter getAdapter() {
+        return adapter;
     }
 
 }

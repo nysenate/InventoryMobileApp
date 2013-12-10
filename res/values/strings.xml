@@ -25,8 +25,8 @@
     <string name="SearchActivity_MSG">Scan/enter a Senate Tag# or Serial#</string>
     <string name="barcode_number">Senate Tag#</string>
     <string name="scan_button">Scan </string>
-    <string name="ok_button">OK </string>
-    <string name="cancel_button">Cancel </string>
+    <string name="ok_button"><![CDATA[<b>OK</b>]]></string>
+    <string name="cancel_button"><![CDATA[<b>Cancel</b>]]></string>
     <string name="details">Details </string>
     <string name="title_activity_close">CloseActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>
@@ -75,6 +75,20 @@
         <item>By Senate Tag#</item>
         <item>By Serial#</item>
    </string-array>
+   
+   <string-array name="remote_ship_types">
+        <item>UPS</item>
+        <item>FedEx</item>
+        <item>Maintenance</item>
+        <item>Other</item>
+   </string-array>
+
+   <string-array name="remote_ver_method">
+        <item>Paperwork</item>
+        <item>OSR Verified</item>
+        <item>Phone Verified</item>
+        <item>Other</item>
+   </string-array>
     
     <string name="pickup2Msg">Scan items for moving</string>
     <string name="pickup2Msg2">Origin and Destination</string>
@@ -95,4 +109,9 @@
     <string name="title_activity_upgrade">Inventory App Update</string>
     <string name="title_activity_main">MainActivity</string>
 	<string name="pickup3_title">Pickup Summary Confirmation/Release</string>
+	<string name="enter_comments_box">Enter Comments</string>
+	<string name="enter_osr_ref_num">OSR Reference #</string>
+	<string name="enter_remote_employee">Enter Remote Employee Signer</string>
+	<string name="status">Status:</string>
+	<string name="remote_prompt_title">Enter Remote Verification Information</string>
 </resources>

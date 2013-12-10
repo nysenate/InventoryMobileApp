@@ -8,14 +8,15 @@ public class Location implements Parcelable
 
     private String cdloctype;
     private String cdlocat;
-    private String addressLine1;
-    private String city;
+    private String adstreet1;
+    private String adcity;
     private String adzipcode;
+    private String adstate;
 
     public Location() {
         cdloctype = "";
         cdlocat = "";
-        addressLine1 = "";
+        adstreet1 = "";
     }
 
     public Location(String summary) {
@@ -23,11 +24,16 @@ public class Location implements Parcelable
         cdlocat = tmp[0];
         tmp = tmp[1].split(":");
         cdloctype = tmp[0];
-        addressLine1 = tmp[1].trim();
+        adstreet1 = tmp[1].trim();
     }
 
-    public String getLocSummary() {
-        return cdlocat + "-" + cdloctype + ": " + addressLine1;
+    // Location is remote if it is outside of albany.
+    public boolean isRemote() {
+        return adcity.equalsIgnoreCase("Albany") ? false : true;
+    }
+
+    public String getAdstreet1() {
+        return adstreet1;
     }
 
     public String getCdloctype() {
@@ -46,32 +52,36 @@ public class Location implements Parcelable
         this.cdlocat = cdlocat;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public void setAdstreet1(String addressLine1) {
+        this.adstreet1 = addressLine1;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
+    public String getAdcity() {
+        return adcity;
     }
 
-    public String getCity() {
-        return city;
+    public void setAdcity(String city) {
+        this.adcity = city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZip() {
+    public String getAdzipcode() {
         return adzipcode;
     }
 
-    public void setZip(String adzipcode) {
+    public void setAdzipcode(String adzipcode) {
         this.adzipcode = adzipcode;
     }
 
+    public String getAdstate() {
+        return adstate;
+    }
+
+    public void setAdstate(String adstate) {
+        this.adstate = adstate;
+    }
+
     public String getLocationSummaryString() {
-        return getCdlocat() + "-" + getCdloctype()+ ": " + getAddressLine1();
+        return getCdlocat() + "-" + getCdloctype()+ ": " + getAdstreet1();
     }
 
 
@@ -90,8 +100,8 @@ public class Location implements Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(cdlocat);
         dest.writeString(cdloctype);
-        dest.writeString(addressLine1);
-        dest.writeString(city);
+        dest.writeString(adstreet1);
+        dest.writeString(adcity);
         dest.writeString(adzipcode);
     }
 
@@ -99,8 +109,8 @@ public class Location implements Parcelable
         // Read Parcel in same order we wrote it.
         cdlocat = in.readString();
         cdloctype = in.readString();
-        addressLine1 = in.readString();
-        city = in.readString();
+        adstreet1 = in.readString();
+        adcity = in.readString();
         adzipcode = in.readString();
     }
 

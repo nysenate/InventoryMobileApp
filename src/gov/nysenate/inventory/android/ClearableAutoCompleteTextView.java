@@ -1,5 +1,10 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.string;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +13,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,10 +31,29 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
             android.R.drawable.ic_delete); // X image
     boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    private boolean suppressEnter = false;
+    public boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    OnKeyListener suppressEnterTab = new OnKeyListener() {
 
+        @Override
+        public boolean onKey (View v, int keyCode, KeyEvent event) {
+            // TODO Auto-generated method stub
+            if (event.getAction() == KeyEvent.ACTION_DOWN
+                    && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB) ) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        Log.i("event", "ENTER captured");
+                }
+                if (event.getKeyCode() == KeyEvent.KEYCODE_TAB) {
+                    Log.i("event", "TAB captured");
+            }
+
+                return false;
+            } 
+            return false;
+        }
+    };
     
     public ClearableAutoCompleteTextView(Context context) {
         super(context);
@@ -55,6 +82,8 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
     void init() {
 
+        this.setOnKeyListener(suppressEnterTab);
+        suppressEnter = true;
         // Set bounds of our X button
         imgX.setBounds(0, 0, imgX.getIntrinsicWidth(),
                 imgX.getIntrinsicHeight());
@@ -89,7 +118,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -104,7 +133,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -172,6 +201,21 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
     public String getClearMsg() {
         return this.clearMsg;
+    }
+    
+    public boolean isEnterTabSuppressed() {
+        return suppressEnter;
+        
+    }
+    
+    public void suppressEnterTabKey() {
+        this.setOnKeyListener(suppressEnterTab);
+        suppressEnter = true;
+    }
+    
+    public void allowEnterTabKey() {
+        this.setOnKeyListener(null);
+        suppressEnter = false;
     }
 
     void manageClearButton() {

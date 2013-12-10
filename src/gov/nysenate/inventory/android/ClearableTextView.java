@@ -1,5 +1,10 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.R.string;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,7 +30,7 @@ public class ClearableTextView extends TextView
             android.R.drawable.ic_delete); // X image
     private boolean showClearMsg = false;
     Context context = null;
-    boolean clearField = true;
+    public boolean clearField = true;
     private String clearMsg = "Do you want to clear this field?";
     List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
 
@@ -89,7 +95,7 @@ public class ClearableTextView extends TextView
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -103,7 +109,7 @@ public class ClearableTextView extends TextView
                                                         .removeClearButton();
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -119,8 +125,6 @@ public class ClearableTextView extends TextView
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                    Log.i("ClearableTextView", "In X spot: ClearField:"
-                            + clearField);
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
@@ -130,8 +134,6 @@ public class ClearableTextView extends TextView
 
                 } else {
                     clearField = false;
-                    Log.i("ClearableTextView", "NOT In X spot: ClearField:"
-                            + clearField);
                 }
                 return false;
             }
