@@ -240,14 +240,14 @@ public class ChangePickupOrigin extends SenateActivity {
             confirmDialog.setCancelable(false);
             confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Change Pickup Location</font>"));
             confirmDialog.setMessage(Html.fromHtml("Are you sure you want to change the pickup location to " + newLocation.getCdlocat() + "?"));
-            confirmDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;
                 }
             });
-            confirmDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

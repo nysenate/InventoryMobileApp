@@ -590,7 +590,7 @@ public abstract class SenateActivity extends Activity implements
     
     
   
-public static CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
+public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
 		
 		@Override
 		public void onTick(long millisUntilFinished) {
