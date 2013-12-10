@@ -271,5 +271,4 @@ public class ClearableEditText extends EditText
         this.setOnKeyListener(null);
         suppressEnter = false;
     }      
-    
 }
