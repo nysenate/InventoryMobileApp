@@ -23,15 +23,10 @@ public class CheckInternet extends BroadcastReceiver
     ScanResult currentWifiResult;
     boolean enablingWifi = false;
     boolean prevConnected = false;
-    static boolean curConnected = false;
+    boolean curConnected = false;
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
-    
-    public CheckInternet()
-    {
-    	
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

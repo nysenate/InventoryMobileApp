@@ -30,6 +30,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
@@ -65,6 +66,8 @@ public abstract class SenateActivity extends Activity implements
 
     public NewInvDialog newInvDialog = null;
     public CommentsDialog commentsDialog = null;
+    static Context stContext;
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -149,7 +152,7 @@ public abstract class SenateActivity extends Activity implements
             }
         }
     }
-
+    
     protected void closeAllActivities() {
         sendBroadcast(new Intent(FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION));
         InvApplication.activityDestroyed();
@@ -274,13 +277,19 @@ public abstract class SenateActivity extends Activity implements
         super.onResume();
         InvApplication.activityResumed();
         checkInternetConnection();
+        timer.cancel();
+        if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+        timer.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         InvApplication.activityPaused();
+        
+        timer.cancel();
     }
+
 
     public int checkServerResponse() {
         return checkServerResponse(true);
@@ -576,6 +585,61 @@ public abstract class SenateActivity extends Activity implements
         NewInvDialog.tvKeywordsToBlock.setText(keywords);
         getDialogDataFromServer();
 
+    }
+public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			System.out.println(millisUntilFinished/1000);
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			inactivityTimeout();
+		}
+		
+	};
+	
+	public static void inactivityTimeout()
+	{
+		Intent myIntent = new Intent(stContext, LoginActivity.class); 
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        myIntent.putExtra("TIMEOUTFROM", "softkey");
+		stContext.startActivity(myIntent);
+	}
+   
+   @Override
+    public void onUserInteraction(){
+	   		  timer.cancel();
+	   		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+    		  timer.start();
+    		  super.onUserInteraction();
+    		  System.out.println("name:: "+SenateActivity.this.getClass().getSimpleName());
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+    	// TODO Auto-generated method stub
+    	super.onCreate(savedInstanceState);
+    	if(stContext == null)
+    		stContext = getApplicationContext();
+    	if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+    	timer.start();
+    	setCurrentActivity(this.getClass().getSimpleName());
+    }
+    
+       
+    private static String activity; 
+    
+    public void setCurrentActivity(String activity)
+    {
+    	SenateActivity.activity = activity;
+    }
+    public static String getCurrentActivity()
+    {
+    	return activity;
     }
 
 }

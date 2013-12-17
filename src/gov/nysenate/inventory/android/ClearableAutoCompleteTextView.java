@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.string;
 import gov.nysenate.inventory.listener.ClearButtonListener;
@@ -170,6 +171,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     int count) {
 
                 ClearableAutoCompleteTextView.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override

@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.string;
 import gov.nysenate.inventory.listener.ClearButtonListener;
@@ -7,10 +9,13 @@ import gov.nysenate.inventory.listener.ClearButtonListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -23,6 +28,8 @@ import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
+
+
 public class ClearableEditText extends EditText
 {
 
@@ -34,7 +41,31 @@ public class ClearableEditText extends EditText
     public boolean clearField = true;
     private boolean suppressEnter = false;    
     private String clearMsg = "Do you want to clear this field?";
-    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();    
+    CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			System.out.println(this.getClass().getSimpleName());
+			System.out.println(millisUntilFinished/1000);
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+			{
+				Intent intentTimeout = new Intent(context, LoginActivity.class);
+				intentTimeout.addFlags(200);
+				context.startActivity(intentTimeout);
+			}
+	        
+			
+		}
+		
+	};
+	
     OnKeyListener suppressEnterTab = new OnKeyListener() {
 
         @Override
@@ -162,7 +193,6 @@ public class ClearableEditText extends EditText
             }
         });
         
-      
 
         this.addTextChangedListener(new TextWatcher()
         {
@@ -171,6 +201,9 @@ public class ClearableEditText extends EditText
                     int count) {
 
                 ClearableEditText.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override
@@ -238,5 +271,4 @@ public class ClearableEditText extends EditText
         this.setOnKeyListener(null);
         suppressEnter = false;
     }      
-    
 }
