@@ -43,6 +43,12 @@ public class Transaction {
     private int employeeId;
     private String helpReferenceNum;
 
+    // Additional data
+    private Employee pickupByEmployee;
+    private Employee releaseByEmployee;
+    private Employee acceptByEmployee;
+    private Employee deliverByEmployee;
+
     public Transaction() {
         origin = new Location();
         destination = new Location();
@@ -63,6 +69,10 @@ public class Transaction {
         verificationMethod = "";
         verificationComments = "";
         helpReferenceNum = "";
+        pickupByEmployee = new Employee();
+        releaseByEmployee = new Employee();
+        acceptByEmployee = new Employee();
+        deliverByEmployee = new Employee();
     }
 
     // shipType must exists for all remote transactions.
@@ -347,5 +357,43 @@ public class Transaction {
     public void setNuxrsccptsign(String nuxraccptsign) {
         this.nuxraccptsign = nuxraccptsign;
     }
+    public String getOriginFullAddress() {
+        return origin.getFullAddress();
+    }
 
+    public String getDestinationFullAddress() {
+        return destination.getFullAddress();
+    }
+
+    public Employee getPickupByEmployee() {
+        return pickupByEmployee;
+    }
+
+    public Employee getReleaseByEmployee() {
+        return releaseByEmployee;
+    }
+
+    public Employee getAcceptByEmployee() {
+        return acceptByEmployee;
+    }
+
+    public Employee getDeliverByEmployee() {
+        return deliverByEmployee;
+    }
+
+    public void setPickupByEmployee(Employee pickupByEmployee) {
+        this.pickupByEmployee = pickupByEmployee;
+    }
+
+    public void setReleaseByEmployee(Employee releaseByEmployee) {
+        this.releaseByEmployee = releaseByEmployee;
+    }
+
+    public void setAcceptByEmployee(Employee acceptByEmployee) {
+        this.acceptByEmployee = acceptByEmployee;
+    }
+
+    public void setDeliverByEmployee(Employee deliverByEmployee) {
+        this.deliverByEmployee = deliverByEmployee;
+    }
 }
