@@ -5,6 +5,16 @@ import android.app.Application;
 public class InvApplication extends Application
 {
 
+    private int cdseclevel = 0;
+
+    public void setCdseclevel(int level) {
+        cdseclevel = level;
+    }
+
+    public int getCdseclevel() {
+        return cdseclevel;
+    }
+
     public static boolean isActivityVisible() {
         return activityVisible;
     }

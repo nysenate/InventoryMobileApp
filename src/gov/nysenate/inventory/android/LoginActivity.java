@@ -875,11 +875,6 @@ public class LoginActivity extends SenateActivity
 
                 }
                 status = "yes1";
-                if (user_name == null || user_name.trim().length() == 0) { // TESTING
-                                                                           // PURPOSE
-                                                                           // ONLY!!!
-                    user_name = "height";
-                }
                 LoginActivity.nauser = user_name;
             } else {
                 // display error
@@ -895,12 +890,16 @@ public class LoginActivity extends SenateActivity
             textView.setTextSize(40);
 
             // calling the menu activity after validation
-            if (res.equals("VALID")) {
+            if (res.startsWith("VALID")) {
                 // If LoginActivity was called because the App Timed Out..,
                 // Go back to the activity of the timeout.
                 // If it is not an Application Timed Out, go to the App main
                 // menu
                 //
+
+                String level = res.split(" ")[1];
+                InvApplication app = ((InvApplication)getApplicationContext());
+                app.setCdseclevel(Integer.valueOf(level));
 
                 if (timeoutActivity) {
                     Intent i = getIntent();
@@ -1124,6 +1123,7 @@ public class LoginActivity extends SenateActivity
                 
                 
                this.login(u_name, pwd);
+               progressBarLogin.setVisibility(View.INVISIBLE);
                 /*
                  * Intent intent = new Intent(this,
                  * DisplayMessageActivity.class); // Intent intent = new

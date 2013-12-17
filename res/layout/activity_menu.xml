@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="400dp"
-        android:layout_height="340dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/pickupCommentsSpeechButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="84dp"

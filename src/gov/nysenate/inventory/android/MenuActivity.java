@@ -36,16 +36,14 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     String URL = ""; // this will be initialized once in onCreate() and used for
     // all server calls.
 
-    public static final String[] titles = new String[] { "Search",
-            "Verification", "Move Items", "Logout" };
+    public static String[] titles;
 
-    public static final String[] descriptions = new String[] {
+    public static String[] descriptions = new String[] {
             "Scan an item and show information",
             "Perform Inventory Verification for a Senate Location",
             "Move Items from one location to another", "Logout of this UserID" };
 
-    public static final Integer[] images = { R.drawable.ssearch,
-            R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
+    public static Integer[] images;
 
     static DBAdapter db;
 
@@ -57,6 +55,17 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         registerBaseActivityReceiver();
+
+        // Does user have access to Verification
+        InvApplication app = ((InvApplication)getApplicationContext());
+        int cdseclevel = app.getCdseclevel();
+        if (cdseclevel == 1) {
+            titles = new String[]{ "Search", "Verification", "Move Items", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
+        } else {
+            titles = new String[]{ "Search", "Move Items", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.slogout };
+        }
 
         rowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {
