@@ -80,8 +80,8 @@ public class ChangePickupDestination extends SenateActivity {
 
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginSummaryString());
-        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+        oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+        oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);

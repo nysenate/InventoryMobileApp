@@ -84,6 +84,11 @@ public class Location implements Parcelable
         return getCdlocat() + "-" + getCdloctype()+ ": " + getAdstreet1();
     }
 
+    public String getLocationSummaryStringRemoteAppended() {
+        String remoteTag = " [" + "<font color='#ff0000'>R</font>" + "]";
+        return this.isRemote() ? getLocationSummaryString() + remoteTag : getLocationSummaryString();
+    }
+
     public String getFullAddress() {
         return this.getAdstreet1() + " " + this.getAdcity() + ", " + this.getAdstate() + " " + this.getAdzipcode();
     }

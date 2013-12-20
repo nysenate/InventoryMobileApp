@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -182,8 +183,8 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             if (response == HttpStatus.SC_OK) {
-                oldPickupLocation.setText(pickup.getOriginSummaryString());
-                oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+                oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+                oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
                 oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);

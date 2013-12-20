@@ -59,8 +59,8 @@ public class CancelPickup extends SenateActivity {
         Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
         items.setAdapter((ListAdapter) pickupListAdapter);
 
-        oldPickupLocation.setText(pickup.getOriginSummaryString());
-        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+        oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+        oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
