@@ -2,9 +2,9 @@ package gov.nysenate.inventory.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import android.content.Context;
@@ -29,7 +29,7 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa", Locale.US);
+        SimpleDateFormat sdf = ((InvApplication)getContext().getApplicationContext()).getSdf();
         View view = convertView;
 
         if (view == null) {
