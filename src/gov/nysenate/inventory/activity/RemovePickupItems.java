@@ -2,7 +2,6 @@ package gov.nysenate.inventory.activity;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -11,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
@@ -56,11 +56,11 @@ public class RemovePickupItems extends SenateActivity {
 
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginSummaryString());
-        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+        oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+        oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         adapter = new InvSelListViewAdapter(this, R.layout.invlist_sel_item, pickup.getPickupItems());

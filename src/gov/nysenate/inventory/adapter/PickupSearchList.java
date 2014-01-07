@@ -2,12 +2,13 @@ package gov.nysenate.inventory.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa", Locale.US);
+        SimpleDateFormat sdf = ((InvApplication)getContext().getApplicationContext()).getSdf();
         View view = convertView;
 
         if (view == null) {
@@ -58,25 +59,25 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
             case PICKUPLOC:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
-                column3.setText(tran.getDestinationSummaryString());
+                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DELIVERYLOC:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
-                column3.setText(tran.getOriginSummaryString());
+                column3.setText(Html.fromHtml(tran.getOrigin().getLocationSummaryStringRemoteAppended()));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case NAPICKUPBY:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getOriginSummaryString());
-                column3.setText(tran.getDestinationSummaryString());
+                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DATE:
                 column1.setText(tran.getNapickupby());
                 column2.setText(tran.getOriginSummaryString());
-                column3.setText(tran.getDestinationSummaryString());
+                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             }

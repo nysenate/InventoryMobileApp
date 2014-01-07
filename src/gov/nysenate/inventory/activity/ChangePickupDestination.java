@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -20,6 +19,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
@@ -80,11 +80,11 @@ public class ChangePickupDestination extends SenateActivity {
 
         String date = getIntent().getStringExtra("date");
 
-        oldPickupLocation.setText(pickup.getOriginSummaryString());
-        oldDeliveryLocation.setText(pickup.getDestinationSummaryString());
+        oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+        oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy hh:mm:ssa EEEE", Locale.US);
+        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
