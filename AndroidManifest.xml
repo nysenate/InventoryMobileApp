@@ -248,6 +248,13 @@
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
+            android:name="gov.nysenate.inventory.activity.EditRemoteStatus"
+            android:label="@string/title_edit_pickup"
+            android:parentActivityName="gov.nysenate.inventory.activity.Move"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
             android:name="gov.nysenate.inventory.activity.Delivery1"
             android:label="@string/title_activity_delivery1"
             android:parentActivityName="gov.nysenate.inventory.activity.MenuActivity"
