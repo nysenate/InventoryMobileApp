@@ -187,8 +187,13 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             if (response == HttpStatus.SC_OK) {
-                oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
-                oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+                if (pickup.isRemote()) {
+                    oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+                    oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+                } else {
+                    oldPickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
+                    oldDeliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
+                }
                 oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
                 SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();

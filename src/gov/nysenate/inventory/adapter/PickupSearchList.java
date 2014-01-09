@@ -54,30 +54,39 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
                 rlPickupGrpRow.setBackgroundResource(R.drawable.selector_2);
             }
 
+            String destination;
+            String origin;
+            if (tran.isRemote()) {
+                origin = tran.getOrigin().getLocationSummaryStringRemoteAppended();
+                destination = tran.getDestination().getLocationSummaryStringRemoteAppended();
+            } else {
+                origin = tran.getOrigin().getLocationSummaryString();
+                destination = tran.getDestination().getLocationSummaryString();
+            }
             switch(searchParam) {
 
             case PICKUPLOC:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
-                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
+                column3.setText(Html.fromHtml(destination));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DELIVERYLOC:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getNapickupby());
-                column3.setText(Html.fromHtml(tran.getOrigin().getLocationSummaryStringRemoteAppended()));
+                column3.setText(Html.fromHtml(origin));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case NAPICKUPBY:
                 column1.setText(sdf.format(tran.getPickupDate()));
                 column2.setText(tran.getOriginSummaryString());
-                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
+                column3.setText(Html.fromHtml(destination));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             case DATE:
                 column1.setText(tran.getNapickupby());
                 column2.setText(tran.getOriginSummaryString());
-                column3.setText(Html.fromHtml(tran.getDestination().getLocationSummaryStringRemoteAppended()));
+                column3.setText(Html.fromHtml(destination));
                 column4.setText(Integer.toString(tran.getCount()));
                 break;
             }
