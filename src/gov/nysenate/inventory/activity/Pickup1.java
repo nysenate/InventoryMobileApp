@@ -9,9 +9,11 @@ import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.util.TransactionParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -72,6 +74,7 @@ public class Pickup1 extends SenateActivity
             FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
     
     private int lastSize = 0;
+    private List<Location> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,8 +314,8 @@ public class Pickup1 extends SenateActivity
             } else {
                 btnPickup1Cont.getBackground().setAlpha(70);
                 Intent intent = new Intent(this, Pickup2Activity.class);
-                origin = new Location(originSummary);
-                destination = new Location(destinationSummary);
+                origin = locations.get(allLocations.indexOf(currentFromLocation));
+                destination = locations.get(allLocations.indexOf(currentToLocation));
                 intent.putExtra("origin", origin);
                 intent.putExtra("destination", destination);
                 startActivity(intent);
@@ -419,15 +422,10 @@ public class Pickup1 extends SenateActivity
                 startTimeout(LOCCODELIST_TIMEOUT);
             }
 
-            JSONArray jsonArray = new JSONArray(res); // TODO: ?? catch
-                                                      // exception/handle the
-                                                      // case where res is
-                                                      // invalid JSON ??
-            for (int i = 0; i < jsonArray.length(); i++) {
-                allLocations.add(jsonArray.getString(i));
+            locations = TransactionParser.parseMultipleLocations(res);
+            for (Location loc: locations) {
+                allLocations.add(loc.getLocationSummaryString());
             }
-
-            Collections.sort(allLocations);
         }
         return allLocations;
     }

@@ -993,6 +993,18 @@ public class Pickup3 extends SenateActivity
     }
 
     public void remoteBoxClicked(View view) {
+        if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
+            AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
+            .setTitle("Error setting as Remote.")
+            .setMessage("Albany to Albany transactions should not be processed as remote.")
+            .setCancelable(false)
+            .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
+
+            errorMsg.show();
+            remoteBox.setChecked(false);
+            return;
+        }
+
         // If checked
         if (((CheckBox) view).isChecked()) {
             remoteShipType.setVisibility(Spinner.VISIBLE);
