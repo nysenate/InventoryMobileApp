@@ -119,10 +119,10 @@ public class Pickup2Activity extends SenateActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.menu_test_null:
+       /* case R.id.menu_test_null:
             item.setChecked(!item.isChecked());
             testResNull = item.isChecked();
-            return true;
+            return true;*/
         default:
             return super.onOptionsItemSelected(item);
         }

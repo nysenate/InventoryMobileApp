@@ -1273,9 +1273,9 @@ public class LoginActivity extends SenateActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.menu_sqllite:
+        /*case R.id.menu_sqllite:
             testSQLlite();
-            return true;
+            return true;*/
         default:
             return super.onOptionsItemSelected(item);
         }
