@@ -49,9 +49,9 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
     private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
     private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
-            "Remove Items", "Move Menu" };
+            "Remove Items", "Change Remote Info", "Move Menu" };
     private static final Integer[] images = { R.drawable.cancelpickup, R.drawable.editlocdelivery, R.drawable.editlocpickup,
-            R.drawable.removeitems, R.drawable.mainmenu };
+            R.drawable.removeitems, R.drawable.edit_remote, R.drawable.mainmenu };
     private TextView oldPickupLocation;
     private TextView oldDeliveryLocation;
     private TextView oldPickupBy;
@@ -105,6 +105,10 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 startActivity(RemovePickupItems.class);
 
             } else if (selected.getTitle().equalsIgnoreCase(titles[4])) {
+                startActivity(EditRemoteStatus.class);
+            }
+
+            else if (selected.getTitle().equalsIgnoreCase(titles[5])) {
                 startActivity(Move.class, R.anim.in_left);
             }
         }
@@ -183,8 +187,13 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             if (response == HttpStatus.SC_OK) {
-                oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
-                oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+                if (pickup.isRemote()) {
+                    oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+                    oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+                } else {
+                    oldPickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
+                    oldDeliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
+                }
                 oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
                 SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();

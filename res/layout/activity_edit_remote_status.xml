@@ -1,0 +1,237 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/edit_remote_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Edit Remote Status"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TableLayout
+        android:id="@+id/edit_remote_info"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_remote_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/customshape" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_pickup_info_title"
+                android:layout_span="2"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Original Pickup Information"
+                android:textColor="@color/bluedark"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_pickup_location_title"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup Location:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/old_pickup_location"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/old_delivery_location_title"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Delivery Location:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/old_delivery_location"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_by_title"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup By:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/pickup_by"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_count_title"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Item Count:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/pickup_count"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/pickup_date_title"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Date:"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/pickup_date"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18sp" />
+        </TableRow>
+    </TableLayout>
+
+    <CheckBox
+        android:id="@+id/remote_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_remote_info"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:onClick="remoteBoxClicked"
+        android:text="Remote"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/remote_ship_method_title"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remote_checkbox"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="25dp"
+        android:text="Ship Method:"
+        android:textSize="24sp" />
+
+    <Spinner
+        android:id="@+id/remote_ship_method"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remote_checkbox"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="18dp"
+        android:layout_toRightOf="@+id/remote_ship_method_title"
+        android:entries="@array/remote_ship_types"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/remote_comments_title"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remote_ship_method_title"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="25dp"
+        android:text="Comments:"
+        android:textSize="24sp" />
+
+    <gov.nysenate.inventory.android.ClearableEditText
+        android:id="@+id/remote_comments"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/remote_ship_method_title"
+        android:layout_toRightOf="@+id/remote_comments_title"
+        android:inputType="textNoSuggestions"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="19dp"
+        android:ems="10"
+        android:hint="Enter Comments Here" 
+        android:singleLine="true" />
+        
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="backButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Update Status"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+     <ProgressBar
+        android:id="@+id/edit_remote_progress_bar"
+        style="?android:attr/progressBarStyleLarge"        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shaperoundblue"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+     
+</RelativeLayout>
