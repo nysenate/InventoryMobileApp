@@ -90,9 +90,9 @@ public class Delivery3 extends SenateActivity
     String URL = "";
     String res = "";
     ListView listview;
-    String NUXRACCPTSIGN = "";
-    String NADELIVERBY = ""; // TODO: not used
-    String NAACCEPTBY = "";
+    String nuxrAcceptSign = "";
+    String naDeliverby = "";
+    String naAcceptby = "";
     private SignatureView sign;
     private byte[] imageInByte = {};
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -104,14 +104,13 @@ public class Delivery3 extends SenateActivity
     ClearableAutoCompleteTextView naemployeeView;
     String deliveryRequestTaskType = "";
     String employeeList = "";
-    private String DECOMMENTS = null;
+    private String deliveryComments = null;
     Button btnDeliv3ClrSig;
     Button btnDelivery3Back;
     Button btnDelivery3Cont;
     InvItem invItem;
     InvSelListViewAdapter invAdapter;
     public static ProgressBar progBarDelivery3;
-    boolean positiveButtonPressed = false;
     Activity currentActivity;
     String timeoutFrom = "delivery1";
     public final int DELIVERYDETAILS_TIMEOUT = 101,
@@ -133,7 +132,7 @@ public class Delivery3 extends SenateActivity
         // Get the data from previous activity
         Intent intent = getIntent();
         location = intent.getStringExtra("location");
-        nuxrpd = intent.getStringExtra("nuxrpd").trim();
+        nuxrpd = intent.getStringExtra("nuxrpd");
 
         // Set the location in textview
         loc_details = (TextView) findViewById(R.id.textView2);
@@ -181,45 +180,14 @@ public class Delivery3 extends SenateActivity
         }
         loc_details.setText(Html.fromHtml(location));
 
-        // list of name of the employee for autocomplete (get from server and
-        // populate the autocomplete textview)
-
-        // Signature from 'Accepted By'
-
-        // Save the signature on server (Received By), comments, Name
-        // currently hardcoding
-        // Brian : Please assign values to following variables after saving the
-        // signature and name
-        /*
-         * NUXRACCPTSIGN = "1111"; NADELIVERBY = "BH";
-         * 
-         * NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query
-         * is // formated that way)
-         * 
-         * // Get the results for the Employee List and now do the actual
-         * setting // of the Signing Employee // Dropdown. Log.i("Delivery3",
-         * "EMPLOYEE LIST 2"); employeeHiddenList = new ArrayList<Employee>();
-         * employeeNameList = new ArrayList<String>();
-         * 
-         * try { JSONArray jsonArray = new JSONArray(employeeList); for (int x =
-         * 0; x < jsonArray.length(); x++) { JSONObject jo = new JSONObject();
-         * jo = jsonArray.getJSONObject(x); Employee currentEmployee = new
-         * Employee(); currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-         * jo.getString("naemployee")); employeeHiddenList.add(currentEmployee);
-         * employeeNameList.add(jo.getString("naemployee")); } } catch
-         * (JSONException e) { // TODO Auto-generated catch block
-         * e.printStackTrace(); }
-         * 
-         * Collections.sort(employeeNameList);
-         * 
-         * ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-         * android.R.layout.simple_dropdown_item_1line, employeeNameList);
-         * 
-         * // for origin dest code naemployeeView.setAdapter(adapter);
-         */
         naemployeeView.setThreshold(1);
         Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
+        if (delivery.isRemoteDelivery()) {
+            naemployeeView.setVisibility(TextView.INVISIBLE);
+            sign.setVisibility(SignatureView.INVISIBLE);
+            btnDeliv3ClrSig.setVisibility(Button.INVISIBLE);
+        }
     }
 
     @Override
@@ -252,8 +220,6 @@ public class Delivery3 extends SenateActivity
         this.btnDelivery3Back.getBackground().setAlpha(255);
         this.btnDelivery3Cont.getBackground().setAlpha(255);
         Delivery3.progBarDelivery3.setVisibility(View.INVISIBLE);
-
-        positiveButtonPressed = false;
     }
 
     public void noServerResponse() {
@@ -294,16 +260,6 @@ public class Delivery3 extends SenateActivity
         alertDialog.show();
     }
 
-    public int findEmployee(String employeeName) {
-        for (int x = 0; x < employeeHiddenList.size(); x++) {
-            if (employeeName
-                    .equals(employeeHiddenList.get(x).getEmployeeName())) {
-                return x;
-            }
-        }
-        return -1;
-    }
-
     public int getEmployeeId(String name) {
         for (Employee emp: employeeHiddenList) {
             if (emp.getEmployeeName().equalsIgnoreCase(name)) {
@@ -314,83 +270,50 @@ public class Delivery3 extends SenateActivity
     }
 
     public void continueButton(View view) {
-        String employeePicked = naemployeeView.getEditableText().toString();
-        NAACCEPTBY = "";
-        if (employeePicked.trim().length() > 0) {
-            int foundEmployee = this.findEmployee(employeePicked);
+        if (checkServerResponse(true) != OK) {
+            return;
+        }
 
-            if (foundEmployee < 0) {
-                nuxrefem = -1;
-            } else {
-                nuxrefem = this.employeeHiddenList.get(foundEmployee)
-                        .getEmployeeXref();
+        if (invAdapter.getSelectedItems(true).size() < 1) {
+            displayNoItemsSelectedMessage();
+            return;
+        }
+
+        String emp = "";
+        if (!delivery.isRemoteDelivery()) {
+            emp = naemployeeView.getEditableText().toString().trim();
+            if (!selectedEmployeeValid(emp, employeeHiddenList)) {
+                displayInvalidEmployeeMessage(naemployeeView.getEditableText().toString().trim());
+                return;
             }
-        } else {
-            nuxrefem = -1;
-        }
 
-        if (nuxrefem < 0) {
-            Context context = getApplicationContext();
-            int duration = Toast.LENGTH_SHORT;
-            if (naemployeeView.getEditableText().toString().trim().length() > 0) {
-                Toast toast = Toast.makeText(context,
-                        "!!ERROR: No xref# found for employee", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            } else {
-                Toast toast = Toast
-                        .makeText(
-                                context,
-                                "!!ERROR: You must first pick an employee name for the signature.",
-                                3000);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getEmployeeXref();
+
+            if (!sign.isSigned()) {
+                displayNoSignatureMessage();
+                return;
             }
-            return;
         }
 
-        if (!sign.isSigned()) {
-            Context context = getApplicationContext();
-            Toast toast = Toast.makeText(context,
-                    "!!ERROR: Employee must also sign within the Red box.",
-                    3000);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return;
-        }
-        if (!keepAlive()) {
-            return;
-        }
+        displayDeliveryConfirmationDialog();
+    }
 
-        int numItemsDelivered = invAdapter.getSelectedItems(true).size();
-        if (numItemsDelivered < 1) {
-            CharSequence text = "!!ERROR: You must select an item to deliver.";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(this, text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return;
-        }
-
+    private void displayDeliveryConfirmationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-        confirmDialog
-                .setTitle(Html
-                        .fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
+        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Delivery Confirmation</font>"));
         confirmDialog.setMessage("Are you sure you want to deliver these "
-                + numItemsDelivered + " items?");
+                + invAdapter.getSelectedItems(true).size() + " items?");
+        confirmDialog.setCancelable(false);
         confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                 new DialogInterface.OnClickListener()
                 {
+                    boolean positiveButtonPressed = false;
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*
-                         * Prevent Multiple clicks on button, which will cause
-                         * issues witn the database inserting multiple nuxrpds
-                         * for the same pickup.
-                         */
-
                         if (!positiveButtonPressed) {
-                            // TODO: will have to get a properly/completely queried delivery for this to work.
+                            positiveButtonPressed = true;
+
                             if (delivery.isRemote()) {
                                 // Show fragment to get Remote info, calls positiveDialog() on completion.
                                 DialogFragment newFragment = RemoteConfirmationDialog.newInstance(employeeNameList, delivery);
@@ -403,17 +326,18 @@ public class Delivery3 extends SenateActivity
                     }
                 });
 
-        confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Continue in same activity.
-                    }
-                });
+        confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), null);
 
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
+    }
+
+    private void displayNoItemsSelectedMessage() {
+        CharSequence text = "!!ERROR: You must select an item to deliver.";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
     public void positiveDialog() {
@@ -421,10 +345,9 @@ public class Delivery3 extends SenateActivity
         this.btnDelivery3Cont.getBackground().setAlpha(45);
 
         try {
-            NAACCEPTBY = URLEncoder.encode(this.naemployeeView.getText()
+            naAcceptby = URLEncoder.encode(this.naemployeeView.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -432,9 +355,9 @@ public class Delivery3 extends SenateActivity
             this.invAdapter = (InvSelListViewAdapter) this.listview
                     .getAdapter();
         }
-        DECOMMENTS = null;
+        deliveryComments = null;
         try {
-            DECOMMENTS = URLEncoder.encode(this.commentsEditText.getText()
+            deliveryComments = URLEncoder.encode(this.commentsEditText.getText()
                     .toString(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
@@ -447,13 +370,14 @@ public class Delivery3 extends SenateActivity
             // fetch data
             status = "yes";
 
+            if (!delivery.isRemote()) { // When remote, names are set in RemoteConfirmationDialog.
+                delivery.setNadeliverby(LoginActivity.nauser);
+                delivery.setNaacceptby(naAcceptby);
+            }
             delivery.setNuxrpd(Integer.valueOf(nuxrpd));
-            delivery.setNadeliverby(LoginActivity.nauser);
-            delivery.setNaacceptby(NAACCEPTBY);
-            delivery.setDeliveryComments(DECOMMENTS);
+            delivery.setDeliveryComments(deliveryComments);
             delivery.setPickupItems(invList);
             delivery.setCheckedItems(this.invAdapter.getSelectedItems(true));
-
 
             AsyncTask<String, String, String> resr1;
             try {
@@ -678,107 +602,109 @@ public class Delivery3 extends SenateActivity
             Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
                     + deliveryRequestTaskType);
             if (deliveryRequestTaskType.equalsIgnoreCase("Delivery")) {
-                try {
-                    // Scale the Image
 
-                    String NUXRRELSIGN = "";
+                if (!delivery.isRemoteDelivery()) {
+                    try {
+                        String NUXRRELSIGN = "";
 
-                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                    Bitmap bitmap = sign.getImage();
-                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
-                            200, 40, true);
-                    // System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
-                    for (int x = 0; x < scaledBitmap.getWidth(); x++) {
-                        for (int y = 0; y < scaledBitmap.getHeight(); y++) {
-                            String strColor = String.format("#%06X",
-                                    0xFFFFFF & scaledBitmap.getPixel(x, y));
-                            if (strColor.equals("#000000")
-                                    || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
-                                // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
-                                scaledBitmap.setPixel(x, y, Color.WHITE);
+                        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                        Bitmap bitmap = sign.getImage();
+                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
+                                200, 40, true);
+                        // System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
+                        for (int x = 0; x < scaledBitmap.getWidth(); x++) {
+                            for (int y = 0; y < scaledBitmap.getHeight(); y++) {
+                                String strColor = String.format("#%06X",
+                                        0xFFFFFF & scaledBitmap.getPixel(x, y));
+                                if (strColor.equals("#000000")
+                                        || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
+                                    // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
+                                    scaledBitmap.setPixel(x, y, Color.WHITE);
+                                }
                             }
                         }
-                    }
-                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
-                    imageInByte = bs.toByteArray();
+                        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+                        imageInByte = bs.toByteArray();
 
-                    // Post the Image to the Web Server
+                        // Post the Image to the Web Server
 
-                    StringBuilder urls = new StringBuilder();
-                    urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?") > -1) {
-                        if (!uri[0].trim().endsWith("?")) {
-                            urls.append("&");
+                        StringBuilder urls = new StringBuilder();
+                        urls.append(uri[0].trim());
+                        if (uri[0].indexOf("?") > -1) {
+                            if (!uri[0].trim().endsWith("?")) {
+                                urls.append("&");
+                            }
+                        } else {
+                            urls.append("?");
                         }
-                    } else {
-                        urls.append("?");
+                        urls.append("userFallback=");
+                        urls.append(LoginActivity.nauser);
+
+                        URL url = new URL(urls.toString());
+
+                        HttpClient httpClient = LoginActivity.httpClient; // TODO: httpclient(at start of method) and httpClient...
+
+                        if (httpClient == null) {
+                            Log.i(DeliveryRequestTask.class.getName(),
+                                    "MainActivity.httpClient was null so it is being reset");
+                            LoginActivity.httpClient = new DefaultHttpClient();
+                            httpclient = LoginActivity.httpClient; // TODO: ^^^^^
+                        }
+
+                        HttpContext localContext = new BasicHttpContext();
+                        MultipartEntity entity = new MultipartEntity(
+                                HttpMultipartMode.BROWSER_COMPATIBLE);
+
+                        HttpPost httpPost = new HttpPost(urls.toString());
+                        entity.addPart("Signature", new ByteArrayBody(imageInByte,
+                                "temp.jpg"));
+                        httpPost.setEntity(entity);
+
+                        /*
+                         * HttpURLConnection conn = (HttpURLConnection) url
+                         * .openConnection(); // Set connection parameters.
+                         * conn.setDoInput(true); conn.setDoOutput(true);
+                         * conn.setUseCaches(false);
+                         * 
+                         * // Set content type to PNG
+                         * conn.setRequestProperty("Content-Type", "image/jpg");
+                         * OutputStream outputStream = conn.getOutputStream();
+                         * OutputStream out = outputStream; // Write out the bytes
+                         * of the content string to the stream.
+                         * out.write(imageInByte); out.flush(); out.close(); // Read
+                         * response from the input stream. BufferedReader in = new
+                         * BufferedReader( new
+                         * InputStreamReader(conn.getInputStream())); String temp;
+                         * while ((temp = in.readLine()) != null) { responseString
+                         * += temp + "\n"; } temp = null; in.close();
+                         */
+                        // System.out.println("Server response:\n'" + responseString
+                        // + "'");
+
+                        // Get Server Response to the posted Image
+
+                        response = httpClient.execute(httpPost, localContext);
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(response.getEntity()
+                                        .getContent(), "UTF-8"));
+                        responseString = reader.readLine();
+                        int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
+                        if (nuxrsignLoc > -1) {
+                            nuxrAcceptSign = responseString
+                                    .substring(nuxrsignLoc + 9)
+                                    .replaceAll("\r", "").replaceAll("\n", "");
+                        } else {
+                            nuxrAcceptSign = responseString.replaceAll("\r", "")
+                                    .replaceAll("\n", "");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);
 
-                    URL url = new URL(urls.toString());
-
-                    HttpClient httpClient = LoginActivity.httpClient; // TODO: httpclient(at start of method) and httpClient...
-
-                    if (httpClient == null) {
-                        Log.i(DeliveryRequestTask.class.getName(),
-                                "MainActivity.httpClient was null so it is being reset");
-                        LoginActivity.httpClient = new DefaultHttpClient();
-                        httpclient = LoginActivity.httpClient; // TODO: ^^^^^
-                    }
-
-                    HttpContext localContext = new BasicHttpContext();
-                    MultipartEntity entity = new MultipartEntity(
-                            HttpMultipartMode.BROWSER_COMPATIBLE);
-
-                    HttpPost httpPost = new HttpPost(urls.toString());
-                    entity.addPart("Signature", new ByteArrayBody(imageInByte,
-                            "temp.jpg"));
-                    httpPost.setEntity(entity);
-
-                    /*
-                     * HttpURLConnection conn = (HttpURLConnection) url
-                     * .openConnection(); // Set connection parameters.
-                     * conn.setDoInput(true); conn.setDoOutput(true);
-                     * conn.setUseCaches(false);
-                     * 
-                     * // Set content type to PNG
-                     * conn.setRequestProperty("Content-Type", "image/jpg");
-                     * OutputStream outputStream = conn.getOutputStream();
-                     * OutputStream out = outputStream; // Write out the bytes
-                     * of the content string to the stream.
-                     * out.write(imageInByte); out.flush(); out.close(); // Read
-                     * response from the input stream. BufferedReader in = new
-                     * BufferedReader( new
-                     * InputStreamReader(conn.getInputStream())); String temp;
-                     * while ((temp = in.readLine()) != null) { responseString
-                     * += temp + "\n"; } temp = null; in.close();
-                     */
-                    // System.out.println("Server response:\n'" + responseString
-                    // + "'");
-
-                    // Get Server Response to the posted Image
-
-                    response = httpClient.execute(httpPost, localContext);
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(response.getEntity()
-                                    .getContent(), "UTF-8"));
-                    responseString = reader.readLine();
-                    int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
-                    if (nuxrsignLoc > -1) {
-                        NUXRACCPTSIGN = responseString
-                                .substring(nuxrsignLoc + 9)
-                                .replaceAll("\r", "").replaceAll("\n", "");
-                    } else {
-                        NUXRACCPTSIGN = responseString.replaceAll("\r", "")
-                                .replaceAll("\n", "");
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    delivery.setNuxrsccptsign(nuxrAcceptSign);
                 }
 
-                delivery.setNuxrsccptsign(NUXRACCPTSIGN);
                 String deliveryjson = null;
                 try {
                     deliveryjson = URLEncoder.encode(delivery.toJson(), "UTF-8");
@@ -973,6 +899,7 @@ public class Delivery3 extends SenateActivity
 
                 } catch (NullPointerException e) {
                     noServerResponse();
+                    e.printStackTrace();
                     return;
                 }
 
@@ -1022,10 +949,10 @@ public class Delivery3 extends SenateActivity
         // currently hardcoding
         // Brian : Please assign values to following variables after saving the
         // signature and name
-        NUXRACCPTSIGN = "1111";
-        NADELIVERBY = "BH";
+        nuxrAcceptSign = "1111";
+        naDeliverby = "BH";
 
-        NAACCEPTBY = "Abc,xyz";// note : we need to have comma in name (query is
+        naAcceptby = "Abc,xyz";// note : we need to have comma in name (query is
                                // formated that way)
 
         // Get the results for the Employee List and now do the actual setting
@@ -1061,58 +988,13 @@ public class Delivery3 extends SenateActivity
 
     }
 
-    public boolean keepAlive() {
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
-
-            AsyncTask<String, String, String> resr1;
-            try {
-                // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                this.deliveryRequestTaskType = "KeepAlive";
-                resr1 = new DeliveryRequestTask().execute(URL
-                        + "/KeepSessionAlive");
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return false;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.KEEPALIVE_TIMEOUT);
-                        return false;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return false;
-                }
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
-        return true;
-
-    }
-
     @Override
     public void commoditySelected(int rowSelected, Commodity commoditySelected) {
         // TODO Auto-generated method stub
 
+    }
+
+    public Transaction getDelivery() {
+        return delivery;
     }
 }

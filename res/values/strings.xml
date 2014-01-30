@@ -87,7 +87,6 @@
         <item>Paperwork</item>
         <item>OSR Verified</item>
         <item>Phone Verified</item>
-        <item>Other</item>
    </string-array>
     
     <string name="pickup2Msg">Scan items for moving</string>

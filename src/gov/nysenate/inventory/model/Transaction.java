@@ -80,6 +80,24 @@ public class Transaction {
         return !shipType.equals("");
     }
 
+    public boolean isRemoteDelivery() {
+        if (this.isRemote()) {
+            return origin.getAdcity().equalsIgnoreCase("Albany");
+        }
+        return false;
+    }
+
+    public String getRemoteType() {
+        if (this.isRemote()) {
+            if (origin.getAdcity().equalsIgnoreCase("Albany"))
+                return "D";
+
+            return "P";
+        }
+        return "";
+    }
+
+
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
