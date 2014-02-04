@@ -35,7 +35,7 @@
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="500dp"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_alignRight="@+id/btnDelivery1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
