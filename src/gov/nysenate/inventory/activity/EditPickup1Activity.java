@@ -66,7 +66,6 @@ public class EditPickup1Activity extends SenateActivity
     private TextView label2Value;
     private static ProgressBar progressBar;
     private ArrayAdapter<String> adapter;
-    private int textLengthBeforeChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +128,7 @@ public class EditPickup1Activity extends SenateActivity
     }
 
     private void updateGUI(String searchParam) {
-        label1Value.setText("");
-        label2Value.setText("");
+        setLabelsToNA();
         if (searchParam.equals("Pickup Location")) {
             currentSearchParam = SearchByParam.PICKUPLOC;
             setupCdLocatFrom();
@@ -148,6 +146,11 @@ public class EditPickup1Activity extends SenateActivity
             setDtTxOrigin();
             setAdapterToDate();
         }
+    }
+
+    private void setLabelsToNA() {
+        label1Value.setText("N/A");
+        label2Value.setText("N/A");
     }
 
     private void setupCdLocatFrom() {
@@ -189,22 +192,13 @@ public class EditPickup1Activity extends SenateActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
-        	textLengthBeforeChange = searchText.getText().length();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            // locationBeingTyped = true;
-            int textLength = searchText.getText().length();
-            if (textLength == 0 || textLength < textLengthBeforeChange) {
-            	label1Value.setText("N/A");
-            	if (!currentSearchParam.toString().equals("DATE"))
-            		label2Value.setText("N/A");
-            }
-            if (textLength >= 3 && textLength > textLengthBeforeChange) {
-                String loccode;
-                String text = searchText.getText().toString();
-
+            String loccode;
+            String text = searchText.getText().toString();
+            if (searchTextIsValidValue()) {
                 switch (currentSearchParam) {
 
                 case PICKUPLOC:
@@ -240,9 +234,21 @@ public class EditPickup1Activity extends SenateActivity
                     label1Value.setText(Integer.toString(count));
                     break;
                 }
+            } else {
+                setLabelsToNA();
             }
         }
     };
+
+    private boolean searchTextIsValidValue() {
+        String selection = searchText.getText().toString();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (selection.equals(adapter.getItem(i).toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
