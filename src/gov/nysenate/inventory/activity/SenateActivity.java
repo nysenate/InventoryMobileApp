@@ -15,7 +15,10 @@ import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
@@ -25,6 +28,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -40,6 +47,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public abstract class SenateActivity extends Activity implements
@@ -83,6 +91,8 @@ public abstract class SenateActivity extends Activity implements
 
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
             return true;
+        case R.id.aboutApp:
+            showAboutDialog();
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -173,6 +183,115 @@ public abstract class SenateActivity extends Activity implements
 
     public void getDialogDataFromServer() {
 
+    }
+    
+    public void showAboutDialog() {
+        final Activity currentActivity = this;
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        // get the app version Name for display
+        String version = pInfo.versionName;
+        // get the app version Code for checking
+        int versionCode = pInfo.versionCode;
+        Resources resources;
+        resources = this.getResources();
+        AssetManager assetManager = resources.getAssets();
+        String URL  = "<N/A>";
+        String server = "<N/A>";
+        String port = "<N/A>";
+        boolean httpServer = false;
+        
+        try {
+            InputStream inputStream = assetManager.open("invApp.properties");
+            Properties properties = new Properties();
+            properties.load(inputStream); // we load the properties here and we
+                                          // use same object elsewhere in
+                                          // project
+            URL = properties.get("WEBAPP_BASE_URL").toString().trim();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (URL==null||URL.length()==0) {
+            
+        }
+        else {
+            if (URL.toUpperCase().startsWith("HTTP://")) {
+                int period = URL.indexOf(".");
+                int colon = URL.indexOf(":");
+                if (period>-1) {
+                    server = URL.substring(0, period);
+                }
+                if (colon>-1) {
+                    port = URL.substring(colon+1);
+                }            
+                else {
+                    port = "<N/A>";
+                }
+                port = port.replaceAll("\\D+", "");
+                server = server.replaceAll("(?i)HTTP://", "");
+                httpServer = true;
+            }
+            else if (URL.toUpperCase().startsWith("HTTPS://")) {
+                int period = URL.indexOf(".");
+                int colon = URL.indexOf(":");
+                if (period>-1) {
+                    server = URL.substring(0, period);
+                }
+                if (colon>-1) {
+                    port = URL.substring(colon+1);
+                }
+                else {
+                    port = "<N/A>";
+                }
+               port = port.replaceAll("\\D+", "");
+               server = server.replaceAll("(?i)HTTPS://", "");
+               httpServer = true;
+            }
+            else {
+                server = URL;
+                httpServer = false;
+            }
+        }
+        
+        String message;
+        
+        if (httpServer) {
+            message = "<b>Version:</b> " + version + " ("
+                    + versionCode + ") <br/><br/><b>Server:</b> " + server +" <br/><br/><b>Port:</b> "+port+"<br/>";
+        }
+        else {
+            message = "<b>Version:</b> " + version + " ("
+                    + versionCode + ") <br/><br/><b>Server:</b> " + URL +"<br/>";
+        }
+        
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog
+        // characteristics
+        builder.setTitle(Html
+                .fromHtml("<font color='#000055'>About Inventory Mobile App</font>"));
+        builder.setMessage(Html.fromHtml(message));
+        // Add the buttons
+        builder.setPositiveButton(Html.fromHtml("<b>OK</b>"),
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+        messageText.setGravity(Gravity.CENTER);        
+         
     }
 
     public void reOpenNewInvDialog() {

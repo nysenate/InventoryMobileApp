@@ -114,7 +114,7 @@ public class Move extends SenateActivity implements OnItemClickListener
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        case R.id.menu_move_useraction:
+        /*case R.id.menu_move_useraction:
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Show User Log", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
@@ -125,7 +125,7 @@ public class Move extends SenateActivity implements OnItemClickListener
             // NavUtils.navigateUpFromSameTask(this);
 
             // overridePendingTransition(R.anim.in_left, R.anim.out_right);
-            return true;
+            return true;*/
         default:
             return super.onOptionsItemSelected(item);
         }
