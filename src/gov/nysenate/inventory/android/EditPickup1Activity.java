@@ -190,18 +190,9 @@ public class EditPickup1Activity extends SenateActivity
 
         @Override
         public void afterTextChanged(Editable s) {
-<<<<<<< HEAD:src/gov/nysenate/inventory/android/EditPickup1Activity.java
-            // locationBeingTyped = true;
-            int textLength = searchText.getText().length();
-            if (textLength >= 3) {
-                String loccode;
-                String text = searchText.getText().toString();
-
-=======
             String loccode;
             String text = searchText.getText().toString();
             if (searchTextIsValidValue()) {
->>>>>>> c22afcf... Fix edit pickup typing crash.:src/gov/nysenate/inventory/activity/EditPickup1Activity.java
                 switch (currentSearchParam) {
 
                 case PICKUPLOC:
