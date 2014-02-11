@@ -381,14 +381,10 @@ public class Pickup1 extends SenateActivity
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "/LocationDetails?barcode_num=" + locCode);
-            System.out.println(URL + "/LocationDetails?barcode_num=" + locCode);
             try {
                 try {
                     res = null;
                     res = resr1.get().trim().toString();
-                    
-                    System.out.println(URL + "/LocationDetails?barcode_num=" + locCode+" :"+res);
-                    
                     if (res == null) {
                         noServerResponse();
                         return;
