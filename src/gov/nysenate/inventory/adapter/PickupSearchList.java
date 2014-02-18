@@ -3,7 +3,7 @@ package gov.nysenate.inventory.adapter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import gov.nysenate.inventory.activity.EditPickup1Activity.SearchByParam;
+import gov.nysenate.inventory.activity.SelectDelivery1.SearchByParam;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
@@ -29,7 +29,7 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SimpleDateFormat sdf = ((InvApplication)getContext().getApplicationContext()).getSdf();
+        SimpleDateFormat sdf = ((InvApplication)getContext().getApplicationContext()).getDateTimeFormat();
         View view = convertView;
 
         if (view == null) {

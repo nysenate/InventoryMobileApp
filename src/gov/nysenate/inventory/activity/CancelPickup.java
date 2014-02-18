@@ -7,14 +7,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.json.JSONException;
 
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
@@ -68,7 +64,7 @@ public class CancelPickup extends SenateActivity {
         }
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
+        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         // Only show comments if there are some.

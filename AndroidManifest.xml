@@ -303,6 +303,9 @@
             android:name="gov.nysenate.inventory.android.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity android:name="gov.nysenate.inventory.activity.EnterRemote1"/>
+        <activity android:name="gov.nysenate.inventory.activity.EnterRemote2"/>
+        <activity android:name="gov.nysenate.inventory.activity.SelectDelivery2"/>
     </application>
 
 </manifest>

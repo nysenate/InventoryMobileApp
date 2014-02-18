@@ -131,7 +131,7 @@ public class Delivery3 extends SenateActivity
 
         // Get the data from previous activity
         Intent intent = getIntent();
-        location = intent.getStringExtra("location");
+//        location = intent.getStringExtra("location"); // TODO: location is not sent over!
         nuxrpd = intent.getStringExtra("nuxrpd");
 
         // Set the location in textview
@@ -174,6 +174,7 @@ public class Delivery3 extends SenateActivity
         delivery = new Transaction();
         getDeliveryDetails();
 
+        location = delivery.getDestinationSummaryString();
         // Append [R] to location if remote.
         if (delivery.isRemote()) {
             location += " [" + "<font color='#ff0000'>R</font>" + "]";
@@ -181,7 +182,6 @@ public class Delivery3 extends SenateActivity
         loc_details.setText(Html.fromHtml(location));
 
         naemployeeView.setThreshold(1);
-        Delivery2.progBarDelivery2.setVisibility(View.INVISIBLE);
 
         if (delivery.isRemoteDelivery()) {
             naemployeeView.setVisibility(TextView.INVISIBLE);

@@ -96,8 +96,6 @@
     <string name="delivery1_msg">Select Pickup for Delivery To:</string>
     <string name="delivery1_hint">Scan or enter Location Code</string>
     <string name="title_activity_delivery2">Delivery</string>
-    <string name="delivery2_msg">Please select pickup for Delivery To:</string>
-    <string name="editpickup2_msg">Please select pickup to edit:</string>
     <string name="title_activity_delivery3">Delivery</string>
     <string name="delivery3_msg">Delivery Confirmation</string>
     <string name="pickup_emp_list_hint">Name of Employee Releasing Inventory</string>
