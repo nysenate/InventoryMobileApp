@@ -7,9 +7,12 @@ import gov.nysenate.inventory.android.R.anim;
 import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
+import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.util.TransactionParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -69,6 +72,7 @@ public class Verification extends SenateActivity
     String timeoutFrom = "verification";
     boolean locationBeingTyped = false;
     int lastSize = 0;
+    private List<Location> locations;
 
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
@@ -458,10 +462,17 @@ public class Verification extends SenateActivity
                 String jsonString = resr1.get().trim().toString();
                 JSONArray jsonArray = new JSONArray(jsonString);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    locCodeList.add(jsonArray.getString(i).toString());
-                }
-                Collections.sort(locCodeList);
+                locations = TransactionParser.parseMultipleLocations(res);
+                for (Location loc: locations) {
+                              locCodeList.add(loc.getLocationSummaryString());
+                     }
+                               
+                /*                JSONArray jsonArray = new JSONArray(jsonString);
+                 
+                                 for (int i = 0; i < jsonArray.length(); i++) {
+                                     locCodeList.add(jsonArray.getString(i).toString());
+                -                }
+                +                }*/                Collections.sort(locCodeList);
                 // System.out.println("**********LOCATION CODES COUNT:"
                 // + locCodeList.size());
                 //
