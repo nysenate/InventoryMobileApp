@@ -73,7 +73,7 @@ public class EditRemoteStatus extends SenateActivity {
         }
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
+        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         if (pickup.isRemote()) {

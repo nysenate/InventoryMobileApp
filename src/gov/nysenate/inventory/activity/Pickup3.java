@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -53,8 +52,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -67,6 +64,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -101,7 +99,6 @@ public class Pickup3 extends SenateActivity
     private TextView tvDestinationPickup3;
 
     public static ProgressBar progBarPickup3;
-    private boolean positiveButtonPressed = false;
     public final int CONTINUEBUTTON_TIMEOUT = 101,
             POSITIVEDIALOG_TIMEOUT = 102, KEEPALIVE_TIMEOUT = 103,
             EMPLOYEELIST_TIMEOUT = 104;
@@ -145,6 +142,19 @@ public class Pickup3 extends SenateActivity
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.remote_ship_types, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         remoteShipType.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
+        remoteShipType.setOnItemSelectedListener(new OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (remoteShipType.getSelectedItem() != null) {
+                    pickup.setShipType(remoteShipType.getSelectedItem().toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Adapter listAdapter1 = new InvListViewAdapter(this,
                 R.layout.invlist_item, scannedBarcodeNumbers);
@@ -226,7 +236,6 @@ public class Pickup3 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
-        positiveButtonPressed = false;
         continueBtn = (Button) findViewById(R.id.btnPickup3Cont);
         continueBtn.getBackground().setAlpha(255);
         cancelBtn = (Button) findViewById(R.id.btnPickup3Back);
@@ -238,16 +247,6 @@ public class Pickup3 extends SenateActivity
                     .findViewById(R.id.progBarPickup3);
         }
         progBarPickup3.getBackground().setAlpha(255);
-    }
-
-    public int findEmployee(String employeeName) {
-        for (int x = 0; x < employeeHiddenList.size(); x++) {
-            if (employeeName
-                    .equals(employeeHiddenList.get(x).getEmployeeName())) {
-                return x;
-            }
-        }
-        return -1;
     }
 
     @Override
@@ -342,121 +341,65 @@ public class Pickup3 extends SenateActivity
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) == OK) {
+        if (checkServerResponse(true) != OK) {
+            return;
+        }
 
-            if (isRemoteOptionVisible()) {
-                if (remoteShipType.getSelectedItem() == null) {
-                    Toasty.displayCenteredMessage(this, "You must pick a remote shipping option.", Toast.LENGTH_SHORT);
-                    return;
-                }
-            }
-            String employeePicked = employeeNamesView.getEditableText()
-                    .toString();
-            pickup.setNareleaseby(employeePicked);
-            if (employeePicked.trim().length() > 0) {
-                int foundEmployee = this.findEmployee(employeePicked);
-
-                if (foundEmployee < 0) {
-                    nuxrefem = -1;
-                } else {
-                    nuxrefem = this.employeeHiddenList.get(foundEmployee)
-                            .getEmployeeXref();
-                }
-            } else {
-                nuxrefem = -1;
-            }
-
-            if (nuxrefem < 0) {
-                Context context = getApplicationContext();
-                int duration = Toast.LENGTH_SHORT;
-                if (employeeNamesView.getEditableText().toString().trim()
-                        .length() > 0) {
-                    Toast toast = Toast.makeText(context,
-                            "!!ERROR: No xref# found for employee", duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                } else {
-                    Toast toast = Toast
-                            .makeText(
-                                    context,
-                                    "!!ERROR: You must first pick an employee name for the signature.",
-                                    3000);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                }
-
+        if (isRemoteOptionVisible()) {
+            if (remoteShipType.getSelectedItem() == null) {
+                Toasty.displayCenteredMessage(this, "You must pick a remote shipping option.", Toast.LENGTH_SHORT);
                 return;
-
             }
+        }
+
+        String emp = "";
+        if (pickup.isRemoteDelivery()) {
+            emp = employeeNamesView.getEditableText().toString();
+            if (!selectedEmployeeValid(emp, employeeHiddenList)) {
+                displayInvalidEmployeeMessage(employeeNamesView.getEditableText().toString().trim());
+                return;
+            }
+            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getEmployeeXref();
 
             if (!sign.isSigned()) {
-                Context context = getApplicationContext();
-                Toast toast = Toast.makeText(context,
-                        "!!ERROR: Employee must also sign within the Red box.",
-                        3000);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                displayNoSignatureMessage();
                 return;
             }
-
-            Log.i("continueButton",
-                    "Check for Session by using KeepSessionAlive");
-
-            if (!keepAlive()) {
-                return;
-            }
-
-            AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-            confirmDialog
-                    .setTitle(Html
-                            .fromHtml("<font color='#000055'>Pickup Confirmation</font>"));
-            confirmDialog.setMessage("Are you sure you want to pickup these "
-                    + scannedBarcodeNumbers.size() + " items?");
-            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            /*
-                             * Prevent Multiple clicks on button, which will
-                             * cause issues witn the database inserting multiple
-                             * nuxrpds for the same pickup.
-                             */
-
-                            if (positiveButtonPressed) {
-                                /*
-                                 * Context context = getApplicationContext();
-                                 * int duration = Toast.LENGTH_SHORT;
-                                 * 
-                                 * Toast toast = Toast.makeText(context,
-                                 * "Button was already been pressed.",
-                                 * Toast.LENGTH_SHORT);
-                                 * toast.setGravity(Gravity.CENTER, 0, 0);
-                                 * toast.show();
-                                 */
-
-                            } else {
-                                positiveButtonPressed = true;
-                                positiveDialog();
-                            }
-                        }
-                    });
-
-            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue in same activity.
-                        }
-                    });
-
-            AlertDialog dialog = confirmDialog.create();
-            dialog.show();
-
         }
+
+        pickup.setNareleaseby(emp);
+        displayPickupConfirmationDialog();
     }
 
+//    private boolean isRemotePickup() { // TODO: dfs
+//        if (isRemoteOptionVisible()) {
+//            if (!pickup.isRemoteDelivery())
+//                return true;
+//        }
+//        return false;
+//    }
+
+    private void displayPickupConfirmationDialog() {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this)
+        .setTitle(Html.fromHtml("<font color='#000055'>Pickup Confirmation</font>"))
+        .setMessage("Are you sure you want to pickup these " + scannedBarcodeNumbers.size() + " items?")
+        .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
+        {
+            private boolean positiveButtonPressed = false;
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (!positiveButtonPressed) {
+                    positiveButtonPressed = true;
+                    positiveDialog();
+                }
+            }
+        })
+        .setNegativeButton(Html.fromHtml("<b>No</b>"), null);
+
+        AlertDialog dialog = confirmDialog.create();
+        dialog.show();
+    }
 
     public void backButton(View view) {
         if (checkServerResponse(true) == OK) {
@@ -572,40 +515,11 @@ public class Pickup3 extends SenateActivity
     }
 
     private void positiveDialog() {
-        if (remoteShipType.getSelectedItem() != null) {
-            pickup.setShipType(remoteShipType.getSelectedItem().toString());
-        }
-
         continueBtn.getBackground().setAlpha(45);
-        // new VersummaryActivity().sendJsonString(scannedBarcodeNumbers);
-        // String jsonString = null;
-        // JSONArray jsArray = new JSONArray(scannedBarcodeNumbers);
+        String URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
-        // String barcodeNum = "";
-
-        // for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-        // barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
-        // }
-
-        // Create a JSON string from the arraylist
-        /*
-         * WORK ON IT LATER (SENDING THE STRING AS JSON) JSONObject jo=new
-         * JSONObject();// =jsArray.toJSONObject("number"); try {
-         * 
-         * //jo.putOpt("barcodes",scannedBarcodeNumbers.toString());
-         * jsonString=jsArray.toString(); } catch (Exception e) { // TODO
-         * Auto-generated catch block e.printStackTrace(); }
-         */
-
-        // call the servlet image upload and return the nuxrsign
-
-        String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                .toString();
-
-        new ProcessPickupTask().execute(
-                URL + "/ImgUpload?nauser=" + LoginActivity.nauser
-                + "&nuxrefem=" + nuxrefem
-                , URL + "/Pickup?");
+        new ProcessPickupTask().execute( URL + "/ImgUpload?nauser=" + LoginActivity.nauser
+                    + "&nuxrefem=" + nuxrefem, URL + "/Pickup?");
     }
 
 
@@ -622,50 +536,6 @@ public class Pickup3 extends SenateActivity
         startActivityForResult(intentTimeout, timeoutType);
     }
 
-    public boolean keepAlive() {
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-
-            AsyncTask<String, String, String> resr1;
-            try {
-                // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                this.pickupRequestTaskType = "KeepAlive";
-                resr1 = new pickupRequestTask().execute(URL
-                        + "/KeepSessionAlive");
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponseMsg();
-                        return false;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.KEEPALIVE_TIMEOUT);
-                        return false;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponseMsg();
-                    return false;
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        } else {
-            // display error
-        }
-        return true;
-
-    }
-
     public void getEmployeeList() {
             new GetEmployeeListTask().execute();
     }
@@ -679,108 +549,108 @@ public class Pickup3 extends SenateActivity
 
         @Override
         protected String doInBackground(String... uri) {
-            // Scale the Image
-
             String NUXRRELSIGN = "";
-
-            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            Bitmap bitmap = sign.getImage();
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
-                    40, true);
-
-            for (int x = 0; x < scaledBitmap.getWidth(); x++) {
-                for (int y = 0; y < scaledBitmap.getHeight(); y++) {
-                    String strColor = String.format("#%06X",
-                            0xFFFFFF & scaledBitmap.getPixel(x, y));
-                    if (strColor.equals("#000000")
-                            || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
-                        // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
-                        scaledBitmap.setPixel(x, y, Color.WHITE);
-                    }
-                }
-            }
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
-
-            scaledBitmap = setBackgroundColor(scaledBitmap, Color.WHITE);
-            imageInByte = bs.toByteArray();
             String responseString = "";
-            try {
-                // Post the Image to the Web Server
 
-                StringBuilder urls = new StringBuilder();
-                urls.append(uri[0].trim());
-                if (uri[0].indexOf("?") > -1) {
-                    if (!uri[0].trim().endsWith("?")) {
-                        urls.append("&");
+            if (pickup.isRemoteDelivery()) {
+                System.out.println("ACCESSING IMAGE UPLOAD CODE!!!!");
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                Bitmap bitmap = sign.getImage();
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
+                        40, true);
+
+                for (int x = 0; x < scaledBitmap.getWidth(); x++) {
+                    for (int y = 0; y < scaledBitmap.getHeight(); y++) {
+                        String strColor = String.format("#%06X",
+                                0xFFFFFF & scaledBitmap.getPixel(x, y));
+                        if (strColor.equals("#000000")
+                                || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
+                            // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
+                            scaledBitmap.setPixel(x, y, Color.WHITE);
+                        }
                     }
-                } else {
-                    urls.append("?");
                 }
-                urls.append("userFallback=");
-                urls.append(LoginActivity.nauser);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
 
-                HttpClient httpClient = LoginActivity.httpClient;
+                scaledBitmap = setBackgroundColor(scaledBitmap, Color.WHITE);
+                imageInByte = bs.toByteArray();
+                try {
+                    // Post the Image to the Web Server
 
-                if (httpClient == null) {
-                    Log.i(pickupRequestTask.class.getName(),
-                            "MainActivity.httpClient was null so it is being reset");
-                    LoginActivity.httpClient = new DefaultHttpClient();
-                    httpClient = LoginActivity.httpClient;
+                    StringBuilder urls = new StringBuilder();
+                    urls.append(uri[0].trim());
+                    if (uri[0].indexOf("?") > -1) {
+                        if (!uri[0].trim().endsWith("?")) {
+                            urls.append("&");
+                        }
+                    } else {
+                        urls.append("?");
+                    }
+                    urls.append("userFallback=");
+                    urls.append(LoginActivity.nauser);
+
+                    HttpClient httpClient = LoginActivity.httpClient;
+
+                    if (httpClient == null) {
+                        Log.i(pickupRequestTask.class.getName(),
+                                "MainActivity.httpClient was null so it is being reset");
+                        LoginActivity.httpClient = new DefaultHttpClient();
+                        httpClient = LoginActivity.httpClient;
+                    }
+
+                    HttpContext localContext = new BasicHttpContext();
+                    MultipartEntity entity = new MultipartEntity(
+                            HttpMultipartMode.BROWSER_COMPATIBLE);
+
+                    HttpPost httpPost = new HttpPost(urls.toString());
+                    entity.addPart("Signature", new ByteArrayBody(imageInByte,
+                            "temp.jpg"));
+                    httpPost.setEntity(entity);
+
+                    /*
+                     * HttpURLConnection conn = (HttpURLConnection) url
+                     * .openConnection(); // Set connection parameters.
+                     * conn.setDoInput(true); conn.setDoOutput(true);
+                     * conn.setUseCaches(false);
+                     * 
+                     * // Set content type to PNG
+                     * conn.setRequestProperty("Content-Type", "image/jpg");
+                     * OutputStream outputStream = conn.getOutputStream();
+                     * OutputStream out = outputStream; // Write out the bytes
+                     * of the content string to the stream.
+                     * out.write(imageInByte); out.flush(); out.close(); // Read
+                     * response from the input stream. BufferedReader in = new
+                     * BufferedReader( new
+                     * InputStreamReader(conn.getInputStream())); String temp;
+                     * while ((temp = in.readLine()) != null) { responseString
+                     * += temp + "\n"; } temp = null; in.close();
+                     */
+
+                    // Get Server Response to the posted Image
+
+                    HttpResponse response = httpClient.execute(httpPost,
+                            localContext);
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(response.getEntity()
+                                    .getContent(), "UTF-8"));
+                    responseString = reader.readLine();
+                    System.out.println("***Image Server response:\n'"
+                            + responseString + "'");
+                    int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
+                    if (nuxrsignLoc > -1) {
+                        NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
+                                .replaceAll("\r", "").replaceAll("\n", "");
+                    } else {
+                        NUXRRELSIGN = responseString.replaceAll("\r", "")
+                                .replaceAll("\n", "");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                HttpContext localContext = new BasicHttpContext();
-                MultipartEntity entity = new MultipartEntity(
-                        HttpMultipartMode.BROWSER_COMPATIBLE);
-
-                HttpPost httpPost = new HttpPost(urls.toString());
-                entity.addPart("Signature", new ByteArrayBody(imageInByte,
-                        "temp.jpg"));
-                httpPost.setEntity(entity);
-
-                /*
-                 * HttpURLConnection conn = (HttpURLConnection) url
-                 * .openConnection(); // Set connection parameters.
-                 * conn.setDoInput(true); conn.setDoOutput(true);
-                 * conn.setUseCaches(false);
-                 * 
-                 * // Set content type to PNG
-                 * conn.setRequestProperty("Content-Type", "image/jpg");
-                 * OutputStream outputStream = conn.getOutputStream();
-                 * OutputStream out = outputStream; // Write out the bytes
-                 * of the content string to the stream.
-                 * out.write(imageInByte); out.flush(); out.close(); // Read
-                 * response from the input stream. BufferedReader in = new
-                 * BufferedReader( new
-                 * InputStreamReader(conn.getInputStream())); String temp;
-                 * while ((temp = in.readLine()) != null) { responseString
-                 * += temp + "\n"; } temp = null; in.close();
-                 */
-
-                // Get Server Response to the posted Image
-
-                HttpResponse response = httpClient.execute(httpPost,
-                        localContext);
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(response.getEntity()
-                                .getContent(), "UTF-8"));
-                responseString = reader.readLine();
-                System.out.println("***Image Server response:\n'"
-                        + responseString + "'");
-                int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
-                if (nuxrsignLoc > -1) {
-                    NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
-                            .replaceAll("\r", "").replaceAll("\n", "");
-                } else {
-                    NUXRRELSIGN = responseString.replaceAll("\r", "")
-                            .replaceAll("\n", "");
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                pickup.setNuxrrelsign(NUXRRELSIGN);
             }
 
-            // Then post the rest of the information along with the NUXRSIGN
-            pickup.setNuxrrelsign(NUXRRELSIGN);
             pickup.setPickupDate(new Date());
             String pickupJson = null;
             try {
@@ -1004,16 +874,33 @@ public class Pickup3 extends SenateActivity
             remoteBox.setChecked(false);
             return;
         }
-
-        // If checked
         if (((CheckBox) view).isChecked()) {
             remoteShipType.setVisibility(Spinner.VISIBLE);
+            if (isOriginLocationRemote()) {
+                hideNaReleaseByInfo();
+            }
         } else {
             remoteShipType.setVisibility(Spinner.INVISIBLE);
             pickup.setShipType("");
+            showNaReleaseByInfo();
         }
     }
 
+    private boolean isOriginLocationRemote() {
+        return !pickup.getOrigin().getAdcity().equalsIgnoreCase("Albany");
+    }
+
+    private void hideNaReleaseByInfo() {
+        btnPickup3ClrSig.setVisibility(Button.INVISIBLE);
+        sign.setVisibility(SignatureView.INVISIBLE);
+        employeeNamesView.setVisibility(TextView.INVISIBLE);
+    }
+
+    private void showNaReleaseByInfo() {
+        btnPickup3ClrSig.setVisibility(Button.VISIBLE);
+        sign.setVisibility(SignatureView.VISIBLE);
+        employeeNamesView.setVisibility(TextView.VISIBLE);
+    }
     public void paperworkRequestedClick(View view) {
         // TODO: implement
     }

@@ -9,7 +9,8 @@ public class InvApplication extends Application
 {
 
     private int cdseclevel = 0;
-    private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ssa", Locale.US);
+    private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM/dd/yy hh:mm:ssa", Locale.US);
+    private SimpleDateFormat longDayFormat = new SimpleDateFormat("MM/dd/yy EEEE", Locale.US);
 
     public void setCdseclevel(int level) {
         cdseclevel = level;
@@ -44,7 +45,11 @@ public class InvApplication extends Application
     private static boolean activityVisible;
     private static boolean activityDestroyed = false;
 
-    public SimpleDateFormat getSdf() {
-        return sdf;
+    public SimpleDateFormat getDateTimeFormat() {
+        return dateTimeFormat;
+    }
+
+    public SimpleDateFormat getLongDayFormat() {
+        return longDayFormat;
     }
 }

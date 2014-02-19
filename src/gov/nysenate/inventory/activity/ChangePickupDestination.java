@@ -21,9 +21,6 @@ import org.json.JSONTokener;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
@@ -89,7 +86,7 @@ public class ChangePickupDestination extends SenateActivity {
         }
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
+        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

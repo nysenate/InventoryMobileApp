@@ -3,11 +3,6 @@ package gov.nysenate.inventory.activity;
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.drawable;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.RowItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
@@ -25,7 +20,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.json.JSONException;
 
 
 import android.content.Intent;
@@ -196,7 +190,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 }
                 oldPickupBy.setText(pickup.getNapickupby());
                 oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-                SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getSdf();
+                SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
                 oldDate.setText(sdf.format(pickup.getPickupDate()));
             } else if (response == HttpStatus.SC_BAD_REQUEST) {
                 Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unable to get pickup info, invalid nuxrpd.", Toast.LENGTH_SHORT);

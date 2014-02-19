@@ -13,6 +13,7 @@ import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
+import gov.nysenate.inventory.model.Employee;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,7 +97,7 @@ public abstract class SenateActivity extends Activity implements
             return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -710,7 +711,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
 		@Override
 		public void onTick(long millisUntilFinished) {
 			// TODO Auto-generated method stub
-			System.out.println(millisUntilFinished/1000);
+			//System.out.println(millisUntilFinished/1000);
 		}
 		
 		@Override
@@ -761,4 +762,48 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
     	return activity;
     }
 
+    public int findEmployee(String employeeName, List<Employee> empList) {
+        for (int x = 0; x < empList.size(); x++) {
+            if (employeeName.equals(empList.get(x).getEmployeeName())) {
+                return x;
+            }
+        }
+        return -1;
+    }
+
+    protected boolean selectedEmployeeValid(String name, List<Employee> empList) {
+        int index = -1;
+        if (name.length() > 0) {
+            index = findEmployee(name, empList);
+        }
+        return index > -1 ? true : false;
+    }
+
+    protected void displayInvalidEmployeeMessage(String name) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        if (name.length() > 0) {
+            Toast toast = Toast.makeText(context,
+                    "!!ERROR: No xref# found for employee", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else {
+            Toast toast = Toast
+                    .makeText(
+                            context,
+                            "!!ERROR: You must first pick an employee name for the signature.",
+                            3000);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+    }
+
+    protected void displayNoSignatureMessage() {
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(context,
+                "!!ERROR: Employee must also sign within the Red box.",
+                3000);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
 }

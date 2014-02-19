@@ -3,6 +3,8 @@ package gov.nysenate.inventory.android;
 import java.util.ArrayList;
 
 import gov.nysenate.inventory.activity.Delivery3;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Toasty;
@@ -14,6 +16,7 @@ import android.content.DialogInterface;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -52,23 +55,7 @@ public class RemoteConfirmationDialog extends DialogFragment {
         remoteComment = (ClearableEditText) promptView.findViewById(R.id.remote_comments);
         remoteHelpReferenceNum = (ClearableEditText) promptView.findViewById(R.id.remote_helprefnum);
         remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-
-        // Display a text box for OSR reference number only if they selected OSR as the verification method.
-        verMethod.setOnItemSelectedListener(new OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (verMethod.getSelectedItem() != null) {
-                    if (verMethod.getSelectedItem().toString().equalsIgnoreCase("OSR Verified")) {
-                        remoteHelpReferenceNum.setVisibility(ClearableEditText.VISIBLE);
-                    } else {
-                        remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-                    }
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
+        verMethod.setOnItemSelectedListener(onlyDisplayOSRTextBoxWhenSelected);
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.remote_ver_method, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -90,8 +77,8 @@ public class RemoteConfirmationDialog extends DialogFragment {
         });
 
         alertDialogBuilder.setTitle("Remote Information");
-        alertDialogBuilder.setPositiveButton("OK", null);
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton(Html.fromHtml("<b>OK</b>"), null);
+        alertDialogBuilder.setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog,int id) {
                 dialog.cancel();
@@ -118,9 +105,10 @@ public class RemoteConfirmationDialog extends DialogFragment {
                             int nuxrefem = ((Delivery3) getActivity()).getEmployeeId(remoteSigner.getText().toString());
                             delivery.setEmployeeId(nuxrefem);
                             delivery.setHelpReferenceNum(remoteHelpReferenceNum.getText().toString());
+                            setRemoteUserToAppropriateTransactionUser(((Delivery3)getActivity()).getDelivery(), remoteSigner.getText().toString());
                             ((Delivery3) getActivity()).positiveDialog();
                             alertDialog.dismiss();
-                        } 
+                        }
                     }
                 });
             }
@@ -131,8 +119,8 @@ public class RemoteConfirmationDialog extends DialogFragment {
     private boolean completelyFilledOut() {
         if (verMethod.getSelectedItem() != null) {
             String methodSelected = verMethod.getSelectedItem().toString();
-            boolean isEmployeeEntered = !remoteSigner.getText().toString().isEmpty();
-            boolean isCommentEntered = !remoteComment.getText().toString().isEmpty();
+            boolean isEmployeeEntered = ((SenateActivity)getActivity())
+                    .findEmployee(remoteSigner.getText().toString(), ((Delivery3)getActivity()).employeeHiddenList) > -1;
             boolean isOsrNumEntered = !remoteHelpReferenceNum.getText().toString().isEmpty();
 
             if (methodSelected.equals("Paperwork")) {
@@ -150,15 +138,12 @@ public class RemoteConfirmationDialog extends DialogFragment {
                     return true;
                 }
             } else if (methodSelected.equals("OSR Verified")) {
+                if (!isEmployeeEntered) {
+                    Toasty.displayCenteredMessage(getActivity(), "Please enter an employee name", Toast.LENGTH_SHORT);
+                    return false;
+                }
                 if (!isOsrNumEntered) {
                     Toasty.displayCenteredMessage(getActivity(), "Please enter an OSR Reference Number", Toast.LENGTH_SHORT);
-                    return false;
-                } else {
-                    return true;
-                }
-            } else if (methodSelected.equals("Other")) {
-                if (!isCommentEntered) {
-                    Toasty.displayCenteredMessage(getActivity(), "Please enter comments explaining how this was verified.", Toast.LENGTH_SHORT);
                     return false;
                 } else {
                     return true;
@@ -168,4 +153,32 @@ public class RemoteConfirmationDialog extends DialogFragment {
         Toasty.displayCenteredMessage(getActivity(), "Please select a verification method.", Toast.LENGTH_SHORT);
         return false;
     }
+
+    private void setRemoteUserToAppropriateTransactionUser(Transaction trans, String remoteUser) {
+        if (trans.isRemoteDelivery()) {
+            trans.setNadeliverby(LoginActivity.nauser);
+            trans.setNaacceptby(remoteUser);
+        } else {
+            trans.setNareleaseby(remoteUser);
+            trans.setNadeliverby(remoteUser);
+            trans.setNaacceptby(LoginActivity.nauser);
+        }
+    }
+
+    private OnItemSelectedListener onlyDisplayOSRTextBoxWhenSelected = new OnItemSelectedListener(){
+        @Override
+        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+            if (verMethod.getSelectedItem() != null) {
+                if (verMethod.getSelectedItem().toString().equalsIgnoreCase("OSR Verified")) {
+                    remoteHelpReferenceNum.setVisibility(ClearableEditText.VISIBLE);
+                } else {
+                    remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
+                }
+            }
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+    };
+
 }
