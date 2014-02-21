@@ -370,10 +370,11 @@ public class Delivery3 extends SenateActivity
             // fetch data
             status = "yes";
 
-            if (!delivery.isRemote()) { // When remote, names are set in RemoteConfirmationDialog.
-                delivery.setNadeliverby(LoginActivity.nauser);
+            if (!delivery.isRemoteDelivery()) {
+                // When remote delivery, name set in RemoteConfirmationDialog.
                 delivery.setNaacceptby(naAcceptby);
             }
+            delivery.setNadeliverby(LoginActivity.nauser);
             delivery.setNuxrpd(Integer.valueOf(nuxrpd));
             delivery.setDeliveryComments(deliveryComments);
             delivery.setPickupItems(invList);

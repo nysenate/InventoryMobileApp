@@ -13,9 +13,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,43 +45,14 @@ public class RemoteConfirmationDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptView = li.inflate(R.layout.prompt_dialog_remote, null);
+        initializeUi(promptView);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setView(promptView);
-
-        verMethod = (Spinner) promptView.findViewById(R.id.remote_method);
-        remoteSigner = (ClearableAutoCompleteTextView) promptView.findViewById(R.id.remote_employee_signer);
-        remoteComment = (ClearableEditText) promptView.findViewById(R.id.remote_comments);
-        remoteHelpReferenceNum = (ClearableEditText) promptView.findViewById(R.id.remote_helprefnum);
-        remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-        verMethod.setOnItemSelectedListener(onlyDisplayOSRTextBoxWhenSelected);
-
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.remote_ver_method, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        verMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, getActivity()));
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, employeeNameList);
-
-        remoteSigner.setAdapter(adapter);
-        remoteSigner.setThreshold(1);
-        remoteSigner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(
-                        remoteSigner.getWindowToken(), 0);
-            }
-        });
-
         alertDialogBuilder.setTitle("Remote Information");
-        alertDialogBuilder.setPositiveButton(Html.fromHtml("<b>OK</b>"), null);
-        alertDialogBuilder.setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog,int id) {
-                dialog.cancel();
-            }
-        });
+        setPositiveButton(alertDialogBuilder);
+        setNeutralButton(alertDialogBuilder);
+        setNegativeButton(alertDialogBuilder);
 
         final AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -100,20 +69,67 @@ public class RemoteConfirmationDialog extends DialogFragment {
                     @Override
                     public void onClick(View view) {
                         if (completelyFilledOut()) {
-                            delivery.setVerificationMethod(verMethod.getSelectedItem().toString().split(" ")[0]);
-                            delivery.setVerificationComments(remoteComment.getText().toString());
-                            int nuxrefem = ((Delivery3) getActivity()).getEmployeeId(remoteSigner.getText().toString());
-                            delivery.setEmployeeId(nuxrefem);
-                            delivery.setHelpReferenceNum(remoteHelpReferenceNum.getText().toString());
-                            setRemoteUserToAppropriateTransactionUser(((Delivery3)getActivity()).getDelivery(), remoteSigner.getText().toString());
-                            ((Delivery3) getActivity()).positiveDialog();
                             alertDialog.dismiss();
+                            updateDeliveryInfo();
+                            updateDeliveryUsers(delivery, remoteSigner.getText().toString());
+                            returnToDelivery3();
                         }
                     }
                 });
             }
         });
         return alertDialog;
+    }
+
+    private void initializeUi(View view) {
+        verMethod = (Spinner) view.findViewById(R.id.remote_method);
+        remoteSigner = (ClearableAutoCompleteTextView) view.findViewById(R.id.remote_employee_signer);
+        remoteComment = (ClearableEditText) view.findViewById(R.id.remote_comments);
+        remoteHelpReferenceNum = (ClearableEditText) view.findViewById(R.id.remote_helprefnum);
+        remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
+        verMethod.setOnItemSelectedListener(onlyDisplayOSRTextBoxWhenSelected);
+
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.remote_ver_method, android.R.layout.simple_spinner_item);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        verMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, getActivity()));
+
+        ArrayAdapter<String> empAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, employeeNameList);
+        remoteSigner.setAdapter(empAdapter);
+        remoteSigner.setThreshold(1);
+        remoteSigner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(
+                        remoteSigner.getWindowToken(), 0);
+            }
+        });
+    }
+
+    private void setPositiveButton(AlertDialog.Builder alertDialogBuilder) {
+        alertDialogBuilder.setPositiveButton(Html.fromHtml("<b>OK</b>"), null);
+    }
+
+    private void setNeutralButton(AlertDialog.Builder alertDialogBuilder) {
+        alertDialogBuilder.setNeutralButton(Html.fromHtml("<b>Later</b>"), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                updateDeliveryUsers(delivery, "");
+                ((Delivery3) getActivity()).positiveDialog();
+            }
+        });
+    }
+
+    private void setNegativeButton(AlertDialog.Builder alertDialogBuilder) {
+        alertDialogBuilder.setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
     }
 
     private boolean completelyFilledOut() {
@@ -154,14 +170,23 @@ public class RemoteConfirmationDialog extends DialogFragment {
         return false;
     }
 
-    private void setRemoteUserToAppropriateTransactionUser(Transaction trans, String remoteUser) {
+    private void updateDeliveryInfo() {
+        delivery.setVerificationMethod(verMethod.getSelectedItem().toString().split(" ")[0]);
+        delivery.setVerificationComments(remoteComment.getText().toString());
+        int nuxrefem = ((Delivery3) getActivity()).getEmployeeId(remoteSigner.getText().toString());
+        delivery.setEmployeeId(nuxrefem);
+        delivery.setHelpReferenceNum(remoteHelpReferenceNum.getText().toString());
+    }
+
+    private void returnToDelivery3() {
+        ((Delivery3) getActivity()).positiveDialog();
+    }
+
+    private void updateDeliveryUsers(Transaction trans, String remoteUser) {
         if (trans.isRemoteDelivery()) {
-            trans.setNadeliverby(LoginActivity.nauser);
             trans.setNaacceptby(remoteUser);
         } else {
             trans.setNareleaseby(remoteUser);
-            trans.setNadeliverby(remoteUser);
-            trans.setNaacceptby(LoginActivity.nauser);
         }
     }
 

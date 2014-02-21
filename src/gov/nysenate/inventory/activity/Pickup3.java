@@ -88,7 +88,6 @@ public class Pickup3 extends SenateActivity
     private String pickupRequestTaskType = "";
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
     private ClearableEditText commentsEditText;
-    private String DECOMMENTS = null;
     private String URL;
     static Button continueBtn;
     static Button cancelBtn;
@@ -185,52 +184,9 @@ public class Pickup3 extends SenateActivity
                     }
                 });
 
-        // Setup ProgressBar
         progBarPickup3 = (ProgressBar) findViewById(R.id.progBarPickup3);
 
-        // TODO: Is this what takes so long in loading Pickup3?
         getEmployeeList();
-
-        // code for textwatcher
-        // for origin location code
-        // loc_code = (EditText) findViewById(R.id.editText1);
-        // loc_code.addTextChangedListener(filterTextWatcher);
-
-        // Commented out by Brian Heitner, found by Kevin Caseiras
-        // I believe this code is left over code that doesn't ever fire..
-        // Leaving commented code in just in case I am wrong.
-        // /
-
-        /*
-         * naemployeeView.setOnItemSelectedListener(new OnItemSelectedListener()
-         * {
-         * 
-         * @Override public void onItemSelected(AdapterView<?> arg0, View arg1,
-         * int arg2, long arg3) { String employeeSelected =
-         * naemployeeView.getText().toString(); int employeeFoundAt =
-         * findEmployee(employeeSelected);
-         * System.out.println("EMPLOYEE SELECTED:" + employeeSelected +
-         * " FOUND AT:" + employeeFoundAt); if (employeeSelected == null ||
-         * employeeSelected.length() == 0) { nuxrefem = -1; Context context =
-         * getApplicationContext(); int duration = Toast.LENGTH_SHORT;
-         * 
-         * Toast toast = Toast.makeText(context, "No Employee entered.", 3000);
-         * toast.setGravity(Gravity.CENTER, 0, 0); toast.show(); } else if
-         * (employeeFoundAt == -1) { nuxrefem = -1; Context context =
-         * getApplicationContext(); int duration = Toast.LENGTH_SHORT;
-         * 
-         * Toast toast = Toast.makeText(context, "Employee not found.", 3000);
-         * toast.setGravity(Gravity.CENTER, 0, 0); toast.show(); } else {
-         * nuxrefem = employeeHiddenList.get(employeeFoundAt)
-         * .getEmployeeXref(); Context context = getApplicationContext(); int
-         * duration = Toast.LENGTH_SHORT; Toast toast = Toast.makeText(context,
-         * "Employee xref#:" + nuxrefem + " Name:" +
-         * employeeHiddenList.get(employeeFoundAt) .getEmployeeName(), 3000);
-         * toast.setGravity(Gravity.CENTER, 0, 0); toast.show(); } }
-         * 
-         * @Override public void onNothingSelected(AdapterView<?> arg0) {
-         * nuxrefem = -1; } });
-         */
     }
 
     @Override
@@ -353,7 +309,7 @@ public class Pickup3 extends SenateActivity
         }
 
         String emp = "";
-        if (pickup.isRemoteDelivery()) {
+        if (!pickup.isRemote() || pickup.isRemoteDelivery()) {
             emp = employeeNamesView.getEditableText().toString();
             if (!selectedEmployeeValid(emp, employeeHiddenList)) {
                 displayInvalidEmployeeMessage(employeeNamesView.getEditableText().toString().trim());
@@ -367,17 +323,10 @@ public class Pickup3 extends SenateActivity
             }
         }
 
+        pickup.setPickupComments(commentsEditText.getText().toString());
         pickup.setNareleaseby(emp);
         displayPickupConfirmationDialog();
     }
-
-//    private boolean isRemotePickup() { // TODO: dfs
-//        if (isRemoteOptionVisible()) {
-//            if (!pickup.isRemoteDelivery())
-//                return true;
-//        }
-//        return false;
-//    }
 
     private void displayPickupConfirmationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this)
@@ -522,7 +471,6 @@ public class Pickup3 extends SenateActivity
                     + "&nuxrefem=" + nuxrefem, URL + "/Pickup?");
     }
 
-
     public void returnToMoveMenu() {
         Intent intent = new Intent(this, Move.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -552,8 +500,7 @@ public class Pickup3 extends SenateActivity
             String NUXRRELSIGN = "";
             String responseString = "";
 
-            if (pickup.isRemoteDelivery()) {
-                System.out.println("ACCESSING IMAGE UPLOAD CODE!!!!");
+            if (!pickup.isRemotePickup()) {
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
                 Bitmap bitmap = sign.getImage();
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
@@ -606,28 +553,6 @@ public class Pickup3 extends SenateActivity
                     entity.addPart("Signature", new ByteArrayBody(imageInByte,
                             "temp.jpg"));
                     httpPost.setEntity(entity);
-
-                    /*
-                     * HttpURLConnection conn = (HttpURLConnection) url
-                     * .openConnection(); // Set connection parameters.
-                     * conn.setDoInput(true); conn.setDoOutput(true);
-                     * conn.setUseCaches(false);
-                     * 
-                     * // Set content type to PNG
-                     * conn.setRequestProperty("Content-Type", "image/jpg");
-                     * OutputStream outputStream = conn.getOutputStream();
-                     * OutputStream out = outputStream; // Write out the bytes
-                     * of the content string to the stream.
-                     * out.write(imageInByte); out.flush(); out.close(); // Read
-                     * response from the input stream. BufferedReader in = new
-                     * BufferedReader( new
-                     * InputStreamReader(conn.getInputStream())); String temp;
-                     * while ((temp = in.readLine()) != null) { responseString
-                     * += temp + "\n"; } temp = null; in.close();
-                     */
-
-                    // Get Server Response to the posted Image
-
                     HttpResponse response = httpClient.execute(httpPost,
                             localContext);
                     BufferedReader reader = new BufferedReader(
