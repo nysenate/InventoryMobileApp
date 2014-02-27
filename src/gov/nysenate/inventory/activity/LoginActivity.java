@@ -1307,7 +1307,7 @@ public class LoginActivity extends SenateActivity
      */
     // our code ends
 
-    public static HttpClient getHttpClient() {
+    public static DefaultHttpClient getHttpClient() {
         if (httpClient == null) {
             httpClient = new DefaultHttpClient();
         }

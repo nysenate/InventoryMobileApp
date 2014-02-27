@@ -303,9 +303,21 @@
             android:name="gov.nysenate.inventory.android.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
-        <activity android:name="gov.nysenate.inventory.activity.EnterRemote1"/>
-        <activity android:name="gov.nysenate.inventory.activity.EnterRemote2"/>
-        <activity android:name="gov.nysenate.inventory.activity.SelectDelivery2"/>
+        <activity
+                android:name="gov.nysenate.inventory.activity.EnterRemote1"
+                android:label="@string/enter_remote_title"
+                android:parentActivityName="gov.nysenate.inventory.activity.Move"
+                />
+        <activity
+                android:name="gov.nysenate.inventory.activity.EnterRemote2"
+                android:label="@string/enter_remote_title"
+                android:parentActivityName="gov.nysenate.inventory.activity.Move"
+                />
+        <activity
+                android:name="gov.nysenate.inventory.activity.EnterRemote3"
+                android:label="@string/enter_remote_title"
+                android:parentActivityName="gov.nysenate.inventory.activity.Move"
+                />
     </application>
 
 </manifest>

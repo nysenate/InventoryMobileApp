@@ -112,4 +112,5 @@
 	<string name="status">Status:</string>
 	<string name="remote_prompt_title">Enter Remote Verification Information</string>
 	<string name="menu_about_title">About...</string>
+    <string name="enter_remote_title">Enter Remote</string>
 </resources>
