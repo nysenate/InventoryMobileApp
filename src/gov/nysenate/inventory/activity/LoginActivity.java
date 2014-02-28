@@ -1,6 +1,8 @@
 package gov.nysenate.inventory.activity;
 
+import gov.nysenate.inventory.android.ChangePasswordDialog;
 import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.CommentsDialog;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.InvWebService;
 import gov.nysenate.inventory.android.MsgAlert;
@@ -12,15 +14,20 @@ import gov.nysenate.inventory.android.R.id;
 import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.android.R.raw;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
+import gov.nysenate.inventory.listener.CommentsDialogListener;
+import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -68,7 +75,8 @@ import android.widget.Toast;
 
 //   WIFI Code Added Below
 
-public class LoginActivity extends SenateActivity
+public class LoginActivity extends SenateActivity implements
+ChangePasswordDialogListener
 {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -127,6 +135,9 @@ public class LoginActivity extends SenateActivity
 
     public static DefaultHttpClient httpClient;
     AlertDialog alertDialog = null;
+    ChangePasswordDialog changePasswordDialog = null;
+    android.app.FragmentManager fragmentManager = this.getFragmentManager();    
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -847,6 +858,27 @@ public class LoginActivity extends SenateActivity
             e.printStackTrace();
         }
     }
+    
+    private void changePassword(String newPassword) {
+        ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
+        String userName = this.user_name.getText().toString();
+        postParams.add( new BasicNameValuePair("user", userName));
+        postParams.add( new BasicNameValuePair("newPassword", newPassword));
+        AsyncTask<String, String, String> resr1;
+        resr1 = new RequestTask(postParams).execute("/ChangePassword");
+        String res = null;
+        try {
+            res = resr1.get().trim().toString();
+            login(userName, newPassword);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
 
     private void login(String user_name, String password) {
         try {
@@ -920,7 +952,36 @@ public class LoginActivity extends SenateActivity
                     overridePendingTransition(R.anim.slide_in_left,
                             R.anim.slide_out_left);
                 }
-            } else if (res.trim().startsWith("!!ERROR: ")) {
+            }
+            else if (res.contains("the password has expired")) {
+                allowUserToChangePassword(res.trim());
+            }
+            else if (res.trim().startsWith("***WARNING: Your password will expire within ")) {
+                final String response = res.trim();
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        LoginActivity.this);
+                builder.setMessage(
+                        Html.fromHtml(res.trim()))
+                        .setTitle(
+                                Html.fromHtml("<b><font color='#000055'>Your Password will Expire Soon</font></b>"))
+                        .setPositiveButton(Html.fromHtml("<b>Close App</b>"),
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        allowUserToChangePassword(response);
+                                        // User cancelled the dialog
+                                        // finish();
+                                        
+                                    }
+                                });
+                // show the alert message
+                Dialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();                    
+            }
+            else if (res.trim().startsWith("!!ERROR: ")) {
                 if (res.trim().startsWith("!!ERROR: No security clearance has been given")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             LoginActivity.this);
@@ -971,6 +1032,19 @@ public class LoginActivity extends SenateActivity
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
+    }
+    
+    public void allowUserToChangePassword(String res) {
+        
+            playSound(R.raw.warning);
+            String title = "Enter New Password";
+            String message = "Please enter a new password.";
+            
+            changePasswordDialog = new ChangePasswordDialog(this, title, message);
+            changePasswordDialog.addListener(this);
+            changePasswordDialog.setRetainInstance(true);
+            changePasswordDialog.show(fragmentManager, "change_password_dialog");
+        
     }
 
     public void noServerResponse() {
@@ -1312,5 +1386,28 @@ public class LoginActivity extends SenateActivity
             httpClient = new DefaultHttpClient();
         }
         return httpClient;
+    }
+
+    @Override
+    public void onContinueButtonClicked(String oldPassword, String newPassword,
+            String confirmPassord) {       
+        if (newPassword.isEmpty()) {
+            
+        }
+        else if (confirmPassord.isEmpty()) {
+            
+        }
+        else if (confirmPassord.equals(newPassword)) {
+            changePassword(newPassword);
+        }
+        else {
+            
+        }
+    }
+
+    @Override
+    public void onCancelButtonClicked() {
+        // TODO Auto-generated method stub
+        
     }
 }

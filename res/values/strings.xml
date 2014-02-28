@@ -112,4 +112,7 @@
 	<string name="status">Status:</string>
 	<string name="remote_prompt_title">Enter Remote Verification Information</string>
 	<string name="menu_about_title">About...</string>
+	<string name="old_password_str">Old Password</string>	
+	<string name="new_password_str">New Password</string>	
+	<string name="confirm_password_str">Confirm Password</string>	
 </resources>
