@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.activity;
 
+import gov.nysenate.inventory.android.ChangePasswordDialog;
 import gov.nysenate.inventory.android.CommentsDialog;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.KeywordDialog;
@@ -8,18 +9,23 @@ import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.android.SoundAlert;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.id;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
+import gov.nysenate.inventory.model.LoginStatus;
+import gov.nysenate.inventory.util.Toasty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,7 +57,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public abstract class SenateActivity extends Activity implements
-        CommodityDialogListener, OnKeywordChangeListener
+        CommodityDialogListener, OnKeywordChangeListener, ChangePasswordDialogListener
 {
     public String timeoutFrom = "N/A";
     public static final String FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION = "gov.nysenate.inventory.android.FINISH_ALL_ACTIVITIES_ACTIVITY_ACTION";
@@ -76,7 +82,8 @@ public abstract class SenateActivity extends Activity implements
     public NewInvDialog newInvDialog = null;
     public CommentsDialog commentsDialog = null;
     static Context stContext;
-
+    public  ChangePasswordDialog changePasswordDialog = null;
+    android.app.FragmentManager fragmentManager = this.getFragmentManager();    
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -93,6 +100,8 @@ public abstract class SenateActivity extends Activity implements
             return true;
         case R.id.aboutApp:
             showAboutDialog();
+        case R.id.changePasswordMenu:
+            showChangePasswordDialog();
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -293,6 +302,34 @@ public abstract class SenateActivity extends Activity implements
         messageText.setGravity(Gravity.CENTER);        
          
     }
+    
+    public ChangePasswordDialog showChangePasswordDialog() {
+        return showChangePasswordDialog(null, null, null, null);
+   }
+
+   public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus) {
+       return showChangePasswordDialog(loginStatus, null, null, null);
+   }
+   
+   public ChangePasswordDialog showChangePasswordDialog(String oldPassword, String newPassword, String confirmPassword) {
+       return showChangePasswordDialog(null, oldPassword, newPassword, confirmPassword);
+   }
+   
+   public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword) {
+       
+           playSound(R.raw.warning);
+           String title = "Enter New Password";
+           String message = "";
+           
+           changePasswordDialog = new ChangePasswordDialog(this, title, message, true, oldPassword, newPassword, confirmPassword);
+           changePasswordDialog.addListener(this);
+           changePasswordDialog.setRetainInstance(true);
+           changePasswordDialog.show(fragmentManager, "change_password_dialog");
+           
+           return changePasswordDialog;
+           
+    }
+    
 
     public void reOpenNewInvDialog() {
         if (newInvDialog != null) {
@@ -706,6 +743,7 @@ public abstract class SenateActivity extends Activity implements
         getDialogDataFromServer();
 
     }
+    
 public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
 		
 		@Override
@@ -805,5 +843,172 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                 3000);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+    @Override
+    public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
+            String confirmPassword) {
+        String username = LoginActivity.user_name.getText().toString();
+        if (username==null||username.trim().length()==0) {
+            new Toasty(this, "!!ERROR: Username must first be entered.", Toast.LENGTH_SHORT).showMessage(); 
+            return;
+        }
+        else if (oldPasswordRequired && (oldPassword==null||oldPassword.trim().length()==0) ) {
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage();
+            return;
+        }
+        
+        if (oldPasswordRequired) {
+            
+        }
+        
+        if (newPassword.isEmpty()) {
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+        }
+        else if (confirmPassword.isEmpty()) {
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+        }
+        else if (confirmPassword.equals(newPassword)) {
+            changePassword(LoginActivity.user_name.getText().toString(), newPassword);
+        }
+        else {
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
+        }
+    }
+
+    @Override
+    public void onChangePasswordCancelButtonClicked() {
+    }    
+    
+    private void changePassword(String userName, String newPassword) {
+        ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
+        postParams.add( new BasicNameValuePair("user", userName));
+        postParams.add( new BasicNameValuePair("newPassword", newPassword));
+        AsyncTask<String, String, String> resr1;
+        resr1 = new RequestTask(postParams).execute("/ChangePassword");
+        String res = null;
+        try {
+            res = resr1.get().trim().toString();
+            if (res.trim().equalsIgnoreCase("OK")) {
+                new Toasty(this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
+            }
+            else {
+                new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_SHORT).showMessage(); 
+            }
+        } catch (InterruptedException e) {
+            new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_SHORT).showMessage(); 
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_SHORT).showMessage(); 
+            e.printStackTrace();
+        }
+    }    
+    public void noServerResponse() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle(Html
+                .fromHtml("<b><font color='#000055'>NO SERVER RESPONSE</font></b>"));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(
+                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
+                .setCancelable(false)
+                .setPositiveButton( Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }    
+    
+    private void login(String user_name, String password, LoginStatus loginStatusParam) {
+        LoginStatus loginStatus = new LoginStatus();
+        try {
+            // check network connection
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            String res = null;
+
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // fetch data
+                String status = "yes";
+                if (loginStatusParam ==null) {
+                try {
+                    // Get the URL from the properties
+                    //if (loginStatusParam==null) 
+                    String URL = LoginActivity.properties
+                            .get("WEBAPP_BASE_URL").toString();
+                    AsyncTask<String, String, String> resr1 = new RequestTask()
+                            .execute(URL + "/Login?user=" + user_name + "&pwd="
+                                    + password+"&defrmint="+LoginActivity.defrmint);
+                    try {
+                        /*System.out.println("login url:"+ "/Login?user=" + user_name + "&pwd="
+                                + password+"&defrmint="+defrmint);*/
+                        res = resr1.get().trim().toString();
+                        //System.out.println("login Result:"+res);
+                        loginStatus.parseJSON(res);
+                        if (res == null) {
+                            noServerResponse();
+                        }
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        // TODO Auto-generated catch block
+                        noServerResponse();
+                    }
+                } catch (Exception e) {
+
+                }
+                status = "yes1";
+                LoginActivity.nauser = user_name;
+            } else {
+                // display error
+                status = "no";
+                LoginActivity.nauser = null;
+                System.out.println("NAUSER NULL!!");
+            }
+
+            // Create the text view
+            TextView textView = new TextView(this);
+            textView.setTextSize(40);            
+            
+            // calling the menu activity after validation
+            if (loginStatus.isUsernamePasswordValid() ) {
+                
+            }
+          }
+        } catch (Exception e) {
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(this,
+                    "Problem connecting to Mobile App Server. Please contact STSBAC.("
+                            + e.getMessage() + ")", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 }

@@ -2,7 +2,7 @@ package gov.nysenate.inventory.listener;
 
 public interface ChangePasswordDialogListener
 {
-    public void onContinueButtonClicked(String oldPassword, String newPassword, String confirmPassord);
+    public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword, String confirmPassword);
     
-    public void onCancelButtonClicked();
+    public void onChangePasswordCancelButtonClicked();
 }

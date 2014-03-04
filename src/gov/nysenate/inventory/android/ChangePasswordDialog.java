@@ -32,6 +32,10 @@ public class ChangePasswordDialog extends DialogFragment
     public static ListView commodityList = null;
     public String title = null;
     public String msg = null;
+    private String oldPasswordSet = null;
+    private String newPasswordSet = null;
+    private String confirmPasswordSet = null;    
+    private boolean oldPasswordRequired = true;
     List<ChangePasswordDialogListener> listeners = new ArrayList<ChangePasswordDialogListener>();
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
@@ -39,8 +43,45 @@ public class ChangePasswordDialog extends DialogFragment
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
+        this.oldPasswordRequired = true;
+        this.oldPasswordSet = null;
+        this.newPasswordSet = null;
+        this.confirmPasswordSet = null;   
+    }
+    
+    public ChangePasswordDialog(SenateActivity senateActivity, String title,
+            String msg, String oldPasswordSet, String newPasswordSet, String confirmPasswordSet) {
+        this.senateActivity = senateActivity;
+        this.title = title;
+        this.msg = msg;
+        this.oldPasswordRequired = true;
+        this.oldPasswordSet = oldPasswordSet;
+        this.newPasswordSet = newPasswordSet;
+        this.confirmPasswordSet = confirmPasswordSet;    
+    }
+    
+    public ChangePasswordDialog(SenateActivity senateActivity, String title,
+            String msg, boolean oldPasswordRequired) {
+        this.senateActivity = senateActivity;
+        this.title = title;
+        this.msg = msg;
+        this.oldPasswordRequired = oldPasswordRequired;
+        this.oldPasswordSet = null;
+        this.newPasswordSet = null;
+        this.confirmPasswordSet = null;    
     }
 
+    public ChangePasswordDialog(SenateActivity senateActivity, String title,
+            String msg, boolean oldPasswordRequired, String oldPasswordSet, String newPasswordSet, String confirmPasswordSet) {
+        this.senateActivity = senateActivity;
+        this.title = title;
+        this.msg = msg;
+        this.oldPasswordRequired = oldPasswordRequired;
+        this.oldPasswordSet = oldPasswordSet;
+        this.newPasswordSet = newPasswordSet;
+        this.confirmPasswordSet = confirmPasswordSet;    
+    }
+    
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -48,10 +89,29 @@ public class ChangePasswordDialog extends DialogFragment
         View dialogView = inflater.inflate(R.layout.dialog_change_passord, null);
         /*oldPassword = (ClearableEditText) dialogView
                 .findViewById(R.id.oldPassword);*/
+        oldPassword = (ClearableEditText) dialogView
+                .findViewById(R.id.oldPassword);
         newPassword = (ClearableEditText) dialogView
                 .findViewById(R.id.newPassword);
         confirmPassword = (ClearableEditText) dialogView
                 .findViewById(R.id.confirmPassword);
+        
+        if (this.oldPasswordSet != null) {
+            oldPassword.setText(this.oldPasswordSet);
+        }
+        
+        if (this.newPasswordSet != null) {
+            newPassword.setText(this.newPasswordSet);
+        }
+        
+        if (this.confirmPasswordSet != null) {
+            confirmPassword.setText(this.confirmPasswordSet);
+        }
+        
+        if (!this.oldPasswordRequired) {
+            oldPassword.setVisibility(View.GONE);
+        }
+        
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(dialogView)
@@ -66,7 +126,7 @@ public class ChangePasswordDialog extends DialogFragment
                     public void onClick(DialogInterface dialog, int id) {
                         for (ChangePasswordDialogListener ChangePasswordDialogListener : listeners)
                             ChangePasswordDialogListener
-                                    .onContinueButtonClicked(oldPassword
+                                    .onChangePasswordOKButtonClicked(oldPasswordRequired, oldPassword
                                             .getText().toString(), newPassword
                                             .getText().toString(), confirmPassword
                                             .getText().toString());
@@ -78,6 +138,9 @@ public class ChangePasswordDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // cancelMsg();
+                        for (ChangePasswordDialogListener ChangePasswordDialogListener : listeners)
+                            ChangePasswordDialogListener
+                                    .onChangePasswordCancelButtonClicked();
                         dismiss();
                     }
                 });

@@ -115,4 +115,6 @@
 	<string name="old_password_str">Old Password</string>	
 	<string name="new_password_str">New Password</string>	
 	<string name="confirm_password_str">Confirm Password</string>	
+    <string name="enter_remote_title">Enter Remote</string>
+    <string name="menu_change_password_title">Change Password</string>
 </resources>

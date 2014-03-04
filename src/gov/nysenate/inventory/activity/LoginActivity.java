@@ -2,22 +2,14 @@ package gov.nysenate.inventory.activity;
 
 import gov.nysenate.inventory.android.ChangePasswordDialog;
 import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.CommentsDialog;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.InvWebService;
 import gov.nysenate.inventory.android.MsgAlert;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.drawable;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
-import gov.nysenate.inventory.android.R.raw;
 import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
-import gov.nysenate.inventory.listener.CommentsDialogListener;
-import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.DBAdapter;
+import gov.nysenate.inventory.model.LoginStatus;
 import gov.nysenate.inventory.util.Toasty;
 
 import java.io.IOException;
@@ -28,7 +20,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -50,14 +41,12 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -135,8 +124,6 @@ ChangePasswordDialogListener
 
     public static DefaultHttpClient httpClient;
     AlertDialog alertDialog = null;
-    ChangePasswordDialog changePasswordDialog = null;
-    android.app.FragmentManager fragmentManager = this.getFragmentManager();    
     
 
     @Override
@@ -279,7 +266,7 @@ ChangePasswordDialogListener
                 lastTimeCheck = System.currentTimeMillis();
                 lastLengthCheck = s.toString().length();
             }
-
+            
         }
     };
 
@@ -867,8 +854,10 @@ ChangePasswordDialogListener
         AsyncTask<String, String, String> resr1;
         resr1 = new RequestTask(postParams).execute("/ChangePassword");
         String res = null;
+        buttonLogin.getBackground().setAlpha(255);
         try {
             res = resr1.get().trim().toString();
+            //System.out.println("Password Change Result:"+res);
             login(userName, newPassword);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
@@ -877,10 +866,26 @@ ChangePasswordDialogListener
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
     }
 
+    private void login() {
+        String user_name = LoginActivity.this.user_name.getText().toString();
+        String password = LoginActivity.this.password.getText().toString();
+        login(user_name, password, null);
+    }
+    
+    private void login(LoginStatus loginStatusParam) {
+        String user_name = LoginActivity.this.user_name.getText().toString();
+        String password = LoginActivity.this.password.getText().toString();
+        login(user_name, password, loginStatusParam);
+    }
+    
     private void login(String user_name, String password) {
+        login(user_name, password, null);
+    }
+
+    private void login(String user_name, String password, LoginStatus loginStatusParam) {
+        LoginStatus loginStatus = new LoginStatus();
         try {
             // check network connection
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -890,15 +895,21 @@ ChangePasswordDialogListener
             if (networkInfo != null && networkInfo.isConnected()) {
                 // fetch data
                 status = "yes";
+                if (loginStatusParam ==null) {
                 try {
                     // Get the URL from the properties
+                    //if (loginStatusParam==null) 
                     String URL = LoginActivity.properties
                             .get("WEBAPP_BASE_URL").toString();
                     AsyncTask<String, String, String> resr1 = new RequestTask()
                             .execute(URL + "/Login?user=" + user_name + "&pwd="
                                     + password+"&defrmint="+defrmint);
                     try {
+                        /*System.out.println("login url:"+ "/Login?user=" + user_name + "&pwd="
+                                + password+"&defrmint="+defrmint);*/
                         res = resr1.get().trim().toString();
+                        //System.out.println("login Result:"+res);
+                        loginStatus.parseJSON(res);
                         if (res == null) {
                             noServerResponse();
                         }
@@ -928,58 +939,61 @@ ChangePasswordDialogListener
 
             // Create the text view
             TextView textView = new TextView(this);
-            textView.setTextSize(40);
-
+            textView.setTextSize(40);            
+            
             // calling the menu activity after validation
-            if (res.startsWith("VALID")) {
+            if (loginStatus.getNustatus() == loginStatus.VALID ) {
                 // If LoginActivity was called because the App Timed Out..,
                 // Go back to the activity of the timeout.
                 // If it is not an Application Timed Out, go to the App main
                 // menu
                 //
-
-                String level = res.split(" ")[1];
-                InvApplication app = ((InvApplication)getApplicationContext());
-                app.setCdseclevel(Integer.valueOf(level));
-
-                if (timeoutActivity) {
-                    Intent i = getIntent();
-                    setResult(RESULT_OK, i);
-                    finish();
-                } else {
-                    Intent intent2 = new Intent(this, MenuActivity.class);
-                    startActivity(intent2);
-                    overridePendingTransition(R.anim.slide_in_left,
-                            R.anim.slide_out_left);
-                }
+                proceedPastLoginScreen(loginStatus);
             }
-            else if (res.contains("the password has expired")) {
-                allowUserToChangePassword(res.trim());
+            else if (loginStatus.getNustatus() == loginStatus.PASSWORD_EXPIRED) {
+                allowUserToChangePassword(loginStatus);
             }
-            else if (res.trim().startsWith("***WARNING: Your password will expire within ")) {
-                final String response = res.trim();
+            else if (loginStatus.getNustatus() == loginStatus.PASSWORD_EXPIRES_SOON) {
+                final LoginStatus loginStatusFinal = loginStatus;
                 AlertDialog.Builder builder = new AlertDialog.Builder(
                         LoginActivity.this);
                 builder.setMessage(
-                        Html.fromHtml(res.trim()))
+                        Html.fromHtml(loginStatusFinal.getDestatus()))
                         .setTitle(
                                 Html.fromHtml("<b><font color='#000055'>Your Password will Expire Soon</font></b>"))
-                        .setPositiveButton(Html.fromHtml("<b>Close App</b>"),
+                        .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
                                 new DialogInterface.OnClickListener()
                                 {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                             int id) {
-                                        allowUserToChangePassword(response);
+                                        allowUserToChangePassword(loginStatusFinal);
+                                        buttonLogin.getBackground().setAlpha(255);
+                                        // User cancelled the dialog
+                                        // finish();
+                                        
+                                    }
+                                })
+                        .setNegativeButton(Html.fromHtml("<b>No</b>"),
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int id) {
+                                        buttonLogin.getBackground().setAlpha(255);
+                                        proceedPastLoginScreen(loginStatusFinal);
+                                        
+                                        dialog.dismiss();
                                         // User cancelled the dialog
                                         // finish();
                                         
                                     }
                                 });
+                
                 // show the alert message
                 Dialog dialog = builder.create();
                 dialog.setCanceledOnTouchOutside(false);
-                dialog.show();                    
+                dialog.show();      
             }
             else if (res.trim().startsWith("!!ERROR: ")) {
                 if (res.trim().startsWith("!!ERROR: No security clearance has been given")) {
@@ -1024,6 +1038,7 @@ ChangePasswordDialogListener
                 progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.password.setText("");
             }
+          }
         } catch (Exception e) {
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(this,
@@ -1034,18 +1049,49 @@ ChangePasswordDialogListener
         }
     }
     
-    public void allowUserToChangePassword(String res) {
+    private void proceedPastLoginScreen(LoginStatus loginStatus) {
+        String level = loginStatus.getCdseclevel();
+        InvApplication app = ((InvApplication)getApplicationContext());
+        app.setCdseclevel(Integer.valueOf(level));
+
+        if (timeoutActivity) {
+            Intent i = getIntent();
+            setResult(RESULT_OK, i);
+            finish();
+        } else {
+            Intent intent2 = new Intent(this, MenuActivity.class);
+            startActivity(intent2);
+            overridePendingTransition(R.anim.slide_in_left,
+                    R.anim.slide_out_left);
+        }
+    }
+
+    public ChangePasswordDialog allowUserToChangePassword() {
+         return allowUserToChangePassword(null, null, null, null);
+    }
+
+    public ChangePasswordDialog allowUserToChangePassword(LoginStatus loginStatus) {
+        return allowUserToChangePassword(loginStatus, null, null, null);
+    }
+    
+    public ChangePasswordDialog allowUserToChangePassword(String oldPassword, String newPassword, String confirmPassword) {
+        return allowUserToChangePassword(null, oldPassword, newPassword, confirmPassword);
+    }
+    
+    public ChangePasswordDialog allowUserToChangePassword(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword) {
         
             playSound(R.raw.warning);
             String title = "Enter New Password";
-            String message = "Please enter a new password.";
+            String message = "";
             
-            changePasswordDialog = new ChangePasswordDialog(this, title, message);
+            changePasswordDialog = new ChangePasswordDialog(this, title, message, false, oldPassword, newPassword, confirmPassword);
             changePasswordDialog.addListener(this);
             changePasswordDialog.setRetainInstance(true);
             changePasswordDialog.show(fragmentManager, "change_password_dialog");
-        
-    }
+            
+            return changePasswordDialog;
+            
+     }
 
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -1381,33 +1427,40 @@ ChangePasswordDialogListener
      */
     // our code ends
 
-    public static HttpClient getHttpClient() {
+    public static DefaultHttpClient getHttpClient() {
         if (httpClient == null) {
             httpClient = new DefaultHttpClient();
         }
         return httpClient;
     }
 
-    @Override
-    public void onContinueButtonClicked(String oldPassword, String newPassword,
-            String confirmPassord) {       
-        if (newPassword.isEmpty()) {
-            
+/*    @Override
+    public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
+            String confirmPassword) {
+        if (oldPasswordRequired && (oldPassword==null||oldPassword.trim().length()==0) ) {
+            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
         }
-        else if (confirmPassord.isEmpty()) {
-            
+        else if (newPassword.isEmpty()) {
+            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
         }
-        else if (confirmPassord.equals(newPassword)) {
+        else if (confirmPassword.isEmpty()) {
+            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+        }
+        else if (confirmPassword.equals(newPassword)) {
             changePassword(newPassword);
         }
         else {
-            
+            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
+            new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
         }
-    }
+    }*/
 
     @Override
-    public void onCancelButtonClicked() {
-        // TODO Auto-generated method stub
-        
+    public void onChangePasswordCancelButtonClicked() {
+        this.password.setText("");
+        this.password.requestFocus();
     }
 }
