@@ -2,6 +2,8 @@ package gov.nysenate.inventory.android;
 
 import java.util.ArrayList;
 
+import android.os.AsyncTask;
+import android.os.Build;
 import gov.nysenate.inventory.activity.Delivery3;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.activity.SenateActivity;
@@ -105,6 +107,17 @@ public class RemoteConfirmationDialog extends DialogFragment {
                         remoteSigner.getWindowToken(), 0);
             }
         });
+
+        checkForPreviousEntry();
+    }
+
+    private void checkForPreviousEntry() {
+        OrigRemoteTask task = new OrigRemoteTask(getActivity(), delivery, verMethod, remoteSigner, remoteComment, remoteHelpReferenceNum);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            task.execute();
+        }
     }
 
     private void setPositiveButton(AlertDialog.Builder alertDialogBuilder) {
