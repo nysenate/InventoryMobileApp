@@ -124,12 +124,14 @@ ChangePasswordDialogListener
 
     public static DefaultHttpClient httpClient;
     AlertDialog alertDialog = null;
+    LoginStatus loginStatus = new LoginStatus();
     
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        super.currentLoginActivity = this;
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
         // See if there is a Parent Activity, if there was one, then it must
@@ -868,24 +870,24 @@ ChangePasswordDialogListener
         }
     }
 
-    private void login() {
+    public void login() {
         String user_name = LoginActivity.this.user_name.getText().toString();
         String password = LoginActivity.this.password.getText().toString();
         login(user_name, password, null);
     }
     
-    private void login(LoginStatus loginStatusParam) {
+    public void login(LoginStatus loginStatusParam) {
         String user_name = LoginActivity.this.user_name.getText().toString();
         String password = LoginActivity.this.password.getText().toString();
         login(user_name, password, loginStatusParam);
     }
     
-    private void login(String user_name, String password) {
+    public void login(String user_name, String password) {
         login(user_name, password, null);
     }
 
-    private void login(String user_name, String password, LoginStatus loginStatusParam) {
-        LoginStatus loginStatus = new LoginStatus();
+    public void login(String user_name, String password, LoginStatus loginStatusParam) {
+        loginStatus = new LoginStatus();
         try {
             // check network connection
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1083,6 +1085,7 @@ ChangePasswordDialogListener
             playSound(R.raw.warning);
             String title = "Enter New Password";
             String message = "";
+            changePasswordOnLogin = true;
             
             changePasswordDialog = new ChangePasswordDialog(this, title, message, false, oldPassword, newPassword, confirmPassword);
             changePasswordDialog.addListener(this);
@@ -1462,5 +1465,14 @@ ChangePasswordDialogListener
     public void onChangePasswordCancelButtonClicked() {
         this.password.setText("");
         this.password.requestFocus();
-    }
+        
+        if (changePasswordOnLogin && loginStatus!=null) {
+            int nustatus = loginStatus.getNustatus();
+            if (nustatus == loginStatus.PASSWORD_EXPIRED || nustatus == loginStatus.PASSWORD_EXPIRES_SOON) {
+                this.proceedPastLoginScreen(loginStatus);
+            }
+        }
+        
+        ///#7547
+            }
 }
