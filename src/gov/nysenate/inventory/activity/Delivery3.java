@@ -119,9 +119,6 @@ public class Delivery3 extends SenateActivity
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
     private Transaction delivery;
 
-    // ArrayList<DeliveryItem> deliveryList = new ArrayList<DeliveryItem>();
-    // DeliveryItemViewAdapter adapter2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +128,6 @@ public class Delivery3 extends SenateActivity
 
         // Get the data from previous activity
         Intent intent = getIntent();
-//        location = intent.getStringExtra("location"); // TODO: location is not sent over!
         nuxrpd = intent.getStringExtra("nuxrpd");
 
         // Set the location in textview
