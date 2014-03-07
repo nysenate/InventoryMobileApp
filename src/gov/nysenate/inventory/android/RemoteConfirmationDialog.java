@@ -1,13 +1,13 @@
 package gov.nysenate.inventory.android;
 
-import java.util.ArrayList;
-
 import gov.nysenate.inventory.activity.Delivery3;
-import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Toasty;
+
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;

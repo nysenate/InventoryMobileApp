@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
 
 public class EnterRemote2 extends SelectDelivery2 {
 

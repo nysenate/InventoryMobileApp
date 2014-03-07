@@ -1,9 +1,6 @@
 package gov.nysenate.inventory.adapter;
 
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.drawable;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.PickupGroup;
 
 import java.util.List;

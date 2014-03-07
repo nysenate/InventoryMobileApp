@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.os.AsyncTask;
-import android.os.Build;
 import gov.nysenate.inventory.util.AppProperties;
 
 public class EditPickup1Activity extends SelectDelivery1 {

@@ -1,13 +1,14 @@
 package gov.nysenate.inventory.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import gov.nysenate.inventory.model.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class EmployeeParser {
     private static final Gson gson = new Gson();

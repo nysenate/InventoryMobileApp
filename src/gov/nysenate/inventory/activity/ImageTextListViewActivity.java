@@ -2,9 +2,6 @@ package gov.nysenate.inventory.activity;
 
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.drawable;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.RowItem;
 
 import java.util.ArrayList;

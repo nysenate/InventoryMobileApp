@@ -84,6 +84,7 @@ public abstract class SenateActivity extends Activity implements
     static Context stContext;
     public  ChangePasswordDialog changePasswordDialog = null;
     android.app.FragmentManager fragmentManager = this.getFragmentManager();    
+    String defrmint = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -101,7 +102,12 @@ public abstract class SenateActivity extends Activity implements
         case R.id.aboutApp:
             showAboutDialog();
         case R.id.changePasswordMenu:
-            showChangePasswordDialog();
+            if (LoginActivity.user_name.getText().toString().trim().length()==0) {
+                new Toasty(this, "!!ERROR: Username must first be entered when changing password.", Toast.LENGTH_SHORT).showMessage();
+            }
+            else {
+                showChangePasswordDialog();
+            }
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -221,6 +227,7 @@ public abstract class SenateActivity extends Activity implements
                                           // use same object elsewhere in
                                           // project
             URL = properties.get("WEBAPP_BASE_URL").toString().trim();
+            this.defrmint = properties.get("DEFRMINT").toString();            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -303,25 +310,41 @@ public abstract class SenateActivity extends Activity implements
          
     }
     
-    public ChangePasswordDialog showChangePasswordDialog() {
+   public ChangePasswordDialog showChangePasswordDialog() {
         return showChangePasswordDialog(null, null, null, null);
    }
-
+   
+   public ChangePasswordDialog showChangePasswordDialog(boolean oldPasswordRequired) {
+       return showChangePasswordDialog(null, null, null, null, oldPasswordRequired);
+  }
+   
    public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus) {
        return showChangePasswordDialog(loginStatus, null, null, null);
    }
+
+   public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, boolean oldPasswordRequired) {
+       return showChangePasswordDialog(loginStatus, null, null, null, oldPasswordRequired);
+   }  
    
    public ChangePasswordDialog showChangePasswordDialog(String oldPassword, String newPassword, String confirmPassword) {
        return showChangePasswordDialog(null, oldPassword, newPassword, confirmPassword);
    }
    
+   public ChangePasswordDialog showChangePasswordDialog(String oldPassword, String newPassword, String confirmPassword, boolean oldPasswordRequired) {
+       return showChangePasswordDialog(null, oldPassword, newPassword, confirmPassword, oldPasswordRequired);
+   }
+
    public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword) {
+       return showChangePasswordDialog(loginStatus, oldPassword, newPassword, confirmPassword, true);
+   }
+   
+   public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword, boolean oldPasswordRequired) {
        
            playSound(R.raw.warning);
            String title = "Enter New Password";
            String message = "";
            
-           changePasswordDialog = new ChangePasswordDialog(this, title, message, true, oldPassword, newPassword, confirmPassword);
+           changePasswordDialog = new ChangePasswordDialog(this, title, message, oldPasswordRequired, oldPassword, newPassword, confirmPassword);
            changePasswordDialog.addListener(this);
            changePasswordDialog.setRetainInstance(true);
            changePasswordDialog.show(fragmentManager, "change_password_dialog");
@@ -788,7 +811,63 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
     	setCurrentActivity(this.getClass().getSimpleName());
     }
     
-       
+    public LoginStatus verifyLogin(String user_name, String password) {
+        LoginStatus loginStatus = new LoginStatus();
+        try {
+            // check network connection
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            String res = null;
+
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // fetch data
+                try {
+                    // Get the URL from the properties
+                    // if (loginStatusParam==null)
+                    String URL = LoginActivity.properties
+                            .get("WEBAPP_BASE_URL").toString();
+                    System.out.println ("/Login?user=" + user_name + "&pwd="+ password + "&defrmint=" + defrmint);
+                    AsyncTask<String, String, String> resr1 = new RequestTask()
+                            .execute(URL + "/Login?user=" + user_name + "&pwd="
+                                    + password + "&defrmint=" + defrmint);
+                    try {
+                        /*
+                         * System.out.println("login url:"+ "/Login?user=" +
+                         * user_name + "&pwd=" +
+                         * password+"&defrmint="+defrmint);
+                         */
+                        res = resr1.get().trim().toString();
+                        // System.out.println("login Result:"+res);
+                        loginStatus.parseJSON(res);
+                        if (res == null) {
+                            noServerResponse();
+                        }
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        // TODO Auto-generated catch block
+                        noServerResponse();
+                    }
+                } catch (Exception e) {
+
+                }
+                LoginActivity.nauser = user_name;
+            }
+        } catch (Exception e) {
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(this,
+                    "Problem connecting to Mobile App Server. Please contact STSBAC.("
+                            + e.getMessage() + ")", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+        return loginStatus;
+    }
+      
     private static String activity; 
     
     public void setCurrentActivity(String activity)
@@ -848,33 +927,51 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
     public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
             String confirmPassword) {
         String username = LoginActivity.user_name.getText().toString();
+        System.out.println("onChangePasswordOKButtonClicked: oldPasswordRequired:"+oldPasswordRequired);
         if (username==null||username.trim().length()==0) {
             new Toasty(this, "!!ERROR: Username must first be entered.", Toast.LENGTH_SHORT).showMessage(); 
             return;
         }
         else if (oldPasswordRequired && (oldPassword==null||oldPassword.trim().length()==0) ) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
             new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage();
             return;
         }
         
         if (oldPasswordRequired) {
-            
+            LoginStatus loginStatus = new LoginStatus();
+            loginStatus = verifyLogin(username, oldPassword);
+            //System.out.println("loginStatus:"+loginStatus.getNustatus());
+            if (!loginStatus.isUsernamePasswordValid()) {
+                if (loginStatus.getNustatus()==loginStatus.INVALID_USERNAME_OR_PASSWORD) {
+                    this.showChangePasswordDialog("", newPassword, confirmPassword, oldPasswordRequired);
+                    new Toasty(this, "!!ERROR: Invalid old password.", Toast.LENGTH_SHORT).showMessage();
+                }
+                else {
+                    new Toasty(this, loginStatus.getDestatus(), Toast.LENGTH_SHORT).showMessage();
+                }
+                return;
+            }
         }
         
         if (newPassword.isEmpty()) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
             new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
         }
+        else if ((oldPasswordRequired && (newPassword.equalsIgnoreCase(oldPassword)) )||
+                (!oldPasswordRequired && (newPassword.trim().equalsIgnoreCase(LoginActivity.password.getText().toString().trim())) )) {
+            this.showChangePasswordDialog(oldPassword, null, null, oldPasswordRequired);
+            new Toasty(this, "!!ERROR: New password cannot be the same as the old password.", Toast.LENGTH_SHORT).showMessage(); 
+        }
         else if (confirmPassword.isEmpty()) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
             new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
         }
         else if (confirmPassword.equals(newPassword)) {
             changePassword(LoginActivity.user_name.getText().toString(), newPassword);
         }
         else {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword);
+            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
             new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
         }
     }
@@ -942,73 +1039,4 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         alertDialog.show();
     }    
     
-    private void login(String user_name, String password, LoginStatus loginStatusParam) {
-        LoginStatus loginStatus = new LoginStatus();
-        try {
-            // check network connection
-            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            String res = null;
-
-            if (networkInfo != null && networkInfo.isConnected()) {
-                // fetch data
-                String status = "yes";
-                if (loginStatusParam ==null) {
-                try {
-                    // Get the URL from the properties
-                    //if (loginStatusParam==null) 
-                    String URL = LoginActivity.properties
-                            .get("WEBAPP_BASE_URL").toString();
-                    AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/Login?user=" + user_name + "&pwd="
-                                    + password+"&defrmint="+LoginActivity.defrmint);
-                    try {
-                        /*System.out.println("login url:"+ "/Login?user=" + user_name + "&pwd="
-                                + password+"&defrmint="+defrmint);*/
-                        res = resr1.get().trim().toString();
-                        //System.out.println("login Result:"+res);
-                        loginStatus.parseJSON(res);
-                        if (res == null) {
-                            noServerResponse();
-                        }
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (NullPointerException e) {
-                        // TODO Auto-generated catch block
-                        noServerResponse();
-                    }
-                } catch (Exception e) {
-
-                }
-                status = "yes1";
-                LoginActivity.nauser = user_name;
-            } else {
-                // display error
-                status = "no";
-                LoginActivity.nauser = null;
-                System.out.println("NAUSER NULL!!");
-            }
-
-            // Create the text view
-            TextView textView = new TextView(this);
-            textView.setTextSize(40);            
-            
-            // calling the menu activity after validation
-            if (loginStatus.isUsernamePasswordValid() ) {
-                
-            }
-          }
-        } catch (Exception e) {
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(this,
-                    "Problem connecting to Mobile App Server. Please contact STSBAC.("
-                            + e.getMessage() + ")", duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        }
-    }
 }

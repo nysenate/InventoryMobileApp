@@ -1,8 +1,6 @@
 package gov.nysenate.inventory.adapter;
 
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
 import gov.nysenate.inventory.model.DeliveryItem;
 
 import java.util.List;

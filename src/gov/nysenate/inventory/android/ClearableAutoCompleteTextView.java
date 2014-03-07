@@ -1,8 +1,6 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.string;
 import gov.nysenate.inventory.listener.ClearButtonListener;
 
 import java.util.ArrayList;

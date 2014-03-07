@@ -5,12 +5,6 @@ import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.array;
-import gov.nysenate.inventory.android.R.color;
-import gov.nysenate.inventory.android.R.id;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.util.Toasty;
 

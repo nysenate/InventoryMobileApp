@@ -1,8 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.os.Build;
-
-import android.os.AsyncTask;
 import gov.nysenate.inventory.util.AppProperties;
 
 public class Delivery1 extends SelectDelivery1 {

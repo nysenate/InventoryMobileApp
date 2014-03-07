@@ -1,9 +1,6 @@
 package gov.nysenate.inventory.activity;
 
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.anim;
-import gov.nysenate.inventory.android.R.layout;
-import gov.nysenate.inventory.android.R.menu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

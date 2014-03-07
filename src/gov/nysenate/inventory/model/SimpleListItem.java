@@ -1,6 +1,5 @@
 package gov.nysenate.inventory.model;
 
-
 public class SimpleListItem
 {
   String natype = "";

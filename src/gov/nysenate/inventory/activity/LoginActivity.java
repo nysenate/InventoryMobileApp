@@ -895,7 +895,7 @@ ChangePasswordDialogListener
             if (networkInfo != null && networkInfo.isConnected()) {
                 // fetch data
                 status = "yes";
-                if (loginStatusParam ==null) {
+                if (loginStatusParam == null) {
                 try {
                     // Get the URL from the properties
                     //if (loginStatusParam==null) 

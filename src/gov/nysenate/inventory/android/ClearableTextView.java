@@ -1,8 +1,6 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.R.string;
 import gov.nysenate.inventory.listener.ClearButtonListener;
 
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
