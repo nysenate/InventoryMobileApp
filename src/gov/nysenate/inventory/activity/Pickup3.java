@@ -790,8 +790,8 @@ public class Pickup3 extends SenateActivity
     public void remoteBoxClicked(View view) {
         if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
             AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
-            .setTitle("Error setting as Remote.")
-            .setMessage("Albany to Albany transactions should not be processed as remote.")
+            .setTitle("INVALID REMOTE PICKUP")
+            .setMessage("!!ERROR: Albany to Albany PICKUPs cannot be processed as Remote.")
             .setCancelable(false)
             .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
 

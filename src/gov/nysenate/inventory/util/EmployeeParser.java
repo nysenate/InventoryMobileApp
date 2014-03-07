@@ -32,18 +32,5 @@ public class EmployeeParser {
 
         return employees;
     }
-
-
-    //        JSONArray jsonArray = new JSONArray(employeeList);
-//        Log.i("Delivery3", "EMPLOYEE LIST 1");
-//        for (int x = 0; x < jsonArray.length(); x++) {
-//            JSONObject jo = new JSONObject();
-//            jo = jsonArray.getJSONObject(x);
-//            Employee currentEmployee = new Employee();
-//            currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-//                    jo.getString("naemployee"));
-//            employeeHiddenList.add(currentEmployee);
-//            employeeNameList.add(jo.getString("naemployee"));
-//        }
 }
 

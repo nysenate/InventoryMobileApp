@@ -10,7 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Edit Remote Status"
+        android:text="@string/edit_remote_title"
         android:textSize="24sp"
         android:textStyle="bold" />
 

@@ -3,6 +3,7 @@ package gov.nysenate.inventory.activity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.OrigRemoteTask;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.Transaction;
@@ -142,9 +143,17 @@ public class EnterRemote3 extends SenateActivity {
                 }
                 pickupBy.setText(pickup.getNapickupby());
                 itemCount.setText(Integer.toString(pickup.getPickupItems().size()));
-            } else {
-                HttpUtils.displayResponseResults(EnterRemote3.this, response);
+                checkForPreviousEntry();
             }
+        }
+    }
+
+    private void checkForPreviousEntry() {
+        OrigRemoteTask task = new OrigRemoteTask(this, pickup, verMethod, remoteSigner, remoteComment, remoteHelpReferenceNum);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            task.execute();
         }
     }
 

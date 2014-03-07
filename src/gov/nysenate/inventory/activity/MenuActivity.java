@@ -197,18 +197,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     }
 
-    public void location(View view) {
-        Intent intent = new Intent(this, LocationActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
-
-        // overridePendingTransition(R.anim.slide_in_left,
-        // R.anim.slide_out_left);
-        // we are passing the intent to the activity again ,
-        // see instead if we can restart the activity to
-        // avoid the data being passed to the login activity
-    }
-
     public void noServerResponse() {
         noServerResponse(null);
     }
