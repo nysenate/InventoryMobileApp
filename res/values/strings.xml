@@ -110,4 +110,5 @@
 	<string name="remote_prompt_title">Enter Remote Verification Information</string>
 	<string name="menu_about_title">About...</string>
     <string name="enter_remote_title">Enter Remote</string>
+    <string name="edit_remote_title">Add/Change Remote Info</string>
 </resources>
