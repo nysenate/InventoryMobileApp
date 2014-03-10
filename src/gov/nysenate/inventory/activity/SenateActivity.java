@@ -103,6 +103,7 @@ public abstract class SenateActivity extends Activity implements
             return true;
         case R.id.aboutApp:
             showAboutDialog();
+            return true;
         case R.id.changePasswordMenu:
             if (LoginActivity.user_name.getText().toString().trim().length()==0) {
                 new Toasty(this, "!!ERROR: Username must first be entered when changing password.", Toast.LENGTH_SHORT).showMessage();
@@ -111,6 +112,7 @@ public abstract class SenateActivity extends Activity implements
                 changePasswordOnLogin = false;                
                 showChangePasswordDialog();
             }
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
