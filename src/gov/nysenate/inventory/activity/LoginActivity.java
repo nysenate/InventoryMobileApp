@@ -1465,14 +1465,12 @@ ChangePasswordDialogListener
     public void onChangePasswordCancelButtonClicked() {
         this.password.setText("");
         this.password.requestFocus();
-        
         if (changePasswordOnLogin && loginStatus!=null) {
             int nustatus = loginStatus.getNustatus();
-            if (nustatus == loginStatus.PASSWORD_EXPIRED || nustatus == loginStatus.PASSWORD_EXPIRES_SOON) {
+            if (nustatus == loginStatus.PASSWORD_EXPIRES_SOON) {
                 this.proceedPastLoginScreen(loginStatus);
             }
         }
         
-        ///#7547
-            }
+        }
 }
