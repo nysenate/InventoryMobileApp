@@ -124,7 +124,7 @@ ChangePasswordDialogListener
 
     public static DefaultHttpClient httpClient;
     AlertDialog alertDialog = null;
-    LoginStatus loginStatus = new LoginStatus();
+    public static LoginStatus loginStatus = new LoginStatus();
     
 
     @Override
@@ -1083,10 +1083,10 @@ ChangePasswordDialogListener
     public ChangePasswordDialog allowUserToChangePassword(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword) {
         
             playSound(R.raw.warning);
-            String title = "Enter New Password";
+            String title = "**WARNING: Your password has expired. Please enter a New Password";
             String message = "";
             changePasswordOnLogin = true;
-            
+                        
             changePasswordDialog = new ChangePasswordDialog(this, title, message, false, oldPassword, newPassword, confirmPassword);
             changePasswordDialog.addListener(this);
             changePasswordDialog.setRetainInstance(true);
@@ -1469,6 +1469,10 @@ ChangePasswordDialogListener
             int nustatus = loginStatus.getNustatus();
             if (nustatus == loginStatus.PASSWORD_EXPIRES_SOON) {
                 this.proceedPastLoginScreen(loginStatus);
+            }
+            else {
+                this.buttonLogin.getBackground().setAlpha(255);
+
             }
         }
         

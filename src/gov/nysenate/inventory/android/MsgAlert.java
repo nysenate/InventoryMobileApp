@@ -56,5 +56,9 @@ public class MsgAlert
         // show it
         dialog.show();
     }
+    
+    public AlertDialog getDialog() {
+        return dialog;
+    }
 
 }

@@ -29,6 +29,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -324,12 +325,10 @@ public abstract class SenateActivity extends Activity implements
   }   
    
    public ChangePasswordDialog showChangePasswordDialog(boolean oldPasswordRequired, int initialFocus) {
-       System.out.println ("1 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
        return showChangePasswordDialog(null, null, null, null, oldPasswordRequired, initialFocus);
    }
    
    public ChangePasswordDialog showChangePasswordDialog(boolean oldPasswordRequired) {
-       System.out.println ("2 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
        return showChangePasswordDialog(null, null, null, null, oldPasswordRequired);
    }
  
@@ -342,12 +341,10 @@ public abstract class SenateActivity extends Activity implements
    }
 
    public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, boolean oldPasswordRequired, int initialFocus) {
-       System.out.println ("3 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
        return showChangePasswordDialog(loginStatus, null, null, null, oldPasswordRequired, initialFocus);
    }  
 
    public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, boolean oldPasswordRequired) {
-       System.out.println ("4 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
        return showChangePasswordDialog(loginStatus, null, null, null, oldPasswordRequired, ChangePasswordDialog.DEFAULTFOCUS);
    }  
 
@@ -364,8 +361,6 @@ public abstract class SenateActivity extends Activity implements
    }
 
    public ChangePasswordDialog showChangePasswordDialog(String oldPassword, String newPassword, String confirmPassword, boolean oldPasswordRequired) {
-       System.out.println ("5 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
- 
        return showChangePasswordDialog(null, oldPassword, newPassword, confirmPassword, oldPasswordRequired, ChangePasswordDialog.DEFAULTFOCUS);
    }
    
@@ -378,8 +373,6 @@ public abstract class SenateActivity extends Activity implements
    }
       
    public ChangePasswordDialog showChangePasswordDialog(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword, boolean oldPasswordRequired) {
-       System.out.println ("6 showChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
-      
        return showChangePasswordDialog(loginStatus, oldPassword, newPassword, confirmPassword, oldPasswordRequired, ChangePasswordDialog.DEFAULTFOCUS);
    }
    
@@ -390,8 +383,8 @@ public abstract class SenateActivity extends Activity implements
            String message = "";
             
            if (changePasswordOnLogin) {
-               title = "Enter New Password";
-           }
+                title = "**WARNING: Your password has expired. Please enter a New Password";
+           }  
            
            changePasswordDialog = new ChangePasswordDialog(this, title, message, oldPasswordRequired, oldPassword, newPassword, confirmPassword, initialFocus);
            changePasswordDialog.addListener(this);
@@ -976,14 +969,32 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
     public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
             String confirmPassword) {
         String username = LoginActivity.user_name.getText().toString();
-        System.out.println("onChangePasswordOKButtonClicked: oldPasswordRequired:"+oldPasswordRequired);
+        final String oldPasswordF = oldPassword;
+        final String newPasswordF = newPassword;
+        final String confirmPasswordF = confirmPassword;
+        final boolean oldPasswordRequiredF = oldPasswordRequired;
+        DialogInterface.OnClickListener onClickListener = new  DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                  if (which == dialog.BUTTON_POSITIVE) {
+                      showChangePasswordDialog(oldPasswordF, newPasswordF, confirmPasswordF, oldPasswordRequiredF);
+                  }
+                
+            }
+            
+        };
+
+        
         if (username==null||username.trim().length()==0) {
             new Toasty(this, "!!ERROR: Username must first be entered.", Toast.LENGTH_SHORT).showMessage(); 
             return;
         }
         else if (oldPasswordRequired && (oldPassword==null||oldPassword.trim().length()==0) ) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
-            new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage();
+            new MsgAlert(this).showMessage("!!ERROR: Old Password must be entered", "Old Password must be entered.", onClickListener);                        
+            //this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);           
+            //new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage();
+            
             return;
         }
         
@@ -993,36 +1004,92 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
             //System.out.println("loginStatus:"+loginStatus.getNustatus());
             if (!loginStatus.isUsernamePasswordValid()) {
                 if (loginStatus.getNustatus()==loginStatus.INVALID_USERNAME_OR_PASSWORD) {
-                    this.showChangePasswordDialog("", newPassword, confirmPassword, oldPasswordRequired);
-                    new Toasty(this, "!!ERROR: Invalid old password.", Toast.LENGTH_SHORT).showMessage();
+                    //this.showChangePasswordDialog("", newPassword, confirmPassword, oldPasswordRequired);
+                    //new Toasty(this, "!!ERROR: Invalid Old Password.", Toast.LENGTH_SHORT).showMessage();
+                    onClickListener = new  DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                              if (which == dialog.BUTTON_POSITIVE) {
+                                  showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
+                              }
+                            
+                        }
+                        
+                    };                    
+                    new MsgAlert(this).showMessage("!!ERROR: Invalid Old Password",  "Invalid Old Password.", onClickListener);                        
                 }
                 else {
-                    new Toasty(this, loginStatus.getDestatus(), Toast.LENGTH_SHORT).showMessage();
+                    new MsgAlert(this).showMessage("!!ERROR: "+loginStatus.getDestatus(),loginStatus.getDestatus(),  onClickListener);                        
+                    //new Toasty(this, loginStatus.getDestatus(), Toast.LENGTH_SHORT).showMessage();
                 }
                 return;
             }
         }
         
         if (newPassword.isEmpty()) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
-            new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+            
+            new MsgAlert(this).showMessage("!!ERROR: New Password must be entered", "New Password must be entered.", onClickListener);            
+            //this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
+            //new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
         }
+        else if (newPassword.length()<8) {
+            //this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
+            //new Toasty(this, "!!ERROR: New password must be at least 8 characters in length.", Toast.LENGTH_SHORT).showMessage();
+            onClickListener = new  DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                      if (which == DialogInterface.BUTTON_POSITIVE) {
+                          showChangePasswordDialog(oldPasswordF, newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                      }
+                    
+                }
+            };            
+            new MsgAlert(this).showMessage("!!ERROR: New Password too short", "New password must be at least 8 characters in length.", onClickListener);            
+        }        
         else if ((oldPasswordRequired && (newPassword.equalsIgnoreCase(oldPassword)) )||
                 (!oldPasswordRequired && (newPassword.trim().equalsIgnoreCase(LoginActivity.password.getText().toString().trim())) )) {
-            this.showChangePasswordDialog(oldPassword, null, null, oldPasswordRequired, ChangePasswordDialog.NEWPASSWORDFOCUS);
-            new Toasty(this, "!!ERROR: New password cannot be the same as the old password.", Toast.LENGTH_SHORT).showMessage(); 
+            //this.showChangePasswordDialog(oldPassword, null, null, oldPasswordRequired, ChangePasswordDialog.NEWPASSWORDFOCUS);
+            onClickListener = new  DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                      if (which == DialogInterface.BUTTON_POSITIVE) {
+                          showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                      }
+                }
+                
+            };            
+            new MsgAlert(this).showMessage("!!ERROR: Password cannot be reused", "New Password cannot be the same as the Old Password.", onClickListener);            
+            
+            //new Toasty(this, "!!ERROR: New password cannot be the same as the old password.", Toast.LENGTH_SHORT).showMessage(); 
         }
         else if (confirmPassword.isEmpty()) {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
-            new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+            //this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired);
+            //new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
+            new MsgAlert(this).showMessage("!!ERROR: Confirm Password must be entered", "Confirm Password must be entered.", onClickListener);            
         }
         else if (confirmPassword.equals(newPassword)) {
             changePassword(LoginActivity.user_name.getText().toString(), newPassword, oldPasswordRequired, oldPassword);
         }
+
         else {
-            this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired, ChangePasswordDialog.CONFIRMPASSWORDFOCUS);
-            new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
-        }
+            //this.showChangePasswordDialog(oldPassword, newPassword, confirmPassword, oldPasswordRequired, ChangePasswordDialog.CONFIRMPASSWORDFOCUS);
+            //new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
+            onClickListener = new  DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                      if (which == DialogInterface.BUTTON_POSITIVE) {
+                          showChangePasswordDialog(oldPasswordF, newPasswordF, confirmPasswordF, oldPasswordRequiredF,  ChangePasswordDialog.CONFIRMPASSWORDFOCUS);
+                      }
+                    
+                }
+                
+            };            
+            new MsgAlert(this).showMessage("!!ERROR: Passwords do not match", "New Password and Confirm Password do not match.", onClickListener);            
+       }
     }
 
     @Override
@@ -1042,18 +1109,56 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         String res = null;
         try {
             res = resr1.get().trim().toString();
+//            final String userNameF = userName;         // Commented out since it is not needed (for now)
+            final String oldPasswordF = oldPassword;
+//            final String newPasswordF = newPassword;   // Commented out since it is not needed (for now)
+            final boolean oldPasswordRequiredF = oldPasswordRequired;
+            MsgAlert msgAlert = new MsgAlert(this);
+            
             if (res.trim().equalsIgnoreCase("OK")) {
                 new Toasty(this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
                 if (changePasswordOnLogin && currentLoginActivity!=null) {
                     currentLoginActivity.login(userName, newPassword);
                 }
             }
-            else if (res.contains("ORA-20002")||res.contains("ORA-00988")||res.contains("ORA-28003")) {
-                this.showChangePasswordDialog(oldPassword, null, null, oldPasswordRequired, ChangePasswordDialog.NEWPASSWORDFOCUS);
-                new Toasty(this, "!!ERROR: New Password fails password policy. Please enter a different password.", Toast.LENGTH_LONG).showMessage(); 
+            else if (res.contains("ORA-20003")||res.contains("ORA-20002")||res.contains("ORA-00988")||res.contains("ORA-28003")) {
+                
+                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener () {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == Dialog.BUTTON_POSITIVE) {
+                            showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                        }
+                    }
+                };  
+                
+                msgAlert.showMessage("!!ERROR: SFMS Password Policy Issue", res.trim(), onClickListener);
+                //this.showChangePasswordDialog(oldPassword, null, null, oldPasswordRequired, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                //new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_LONG).showMessage();
             }
             else {
-                new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_LONG).showMessage(); 
+                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener () {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == Dialog.BUTTON_POSITIVE) {
+                            showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                        }
+                    }
+                };  
+                
+                if (res.contains("ORA-28007")) {
+                    msgAlert.showMessage("!!ERROR: Password cannot be reused", res.trim(), onClickListener);
+                }
+                else if (res.contains("ORA-28002")) {
+                    msgAlert.showMessage("!!ERROR: Your password will expire soon", res.trim(), onClickListener);
+                }
+                else {
+                    msgAlert.showMessage("!!ERROR: Change Password", res.trim(), onClickListener);
+                }
+                
+                //new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_LONG).showMessage(); 
             }
         } catch (InterruptedException e) {
             new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage(); 

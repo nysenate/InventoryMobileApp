@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 //...G
 @SuppressLint("ValidFragment")
@@ -51,7 +52,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.oldPasswordSet = null;
         this.newPasswordSet = null;
         this.confirmPasswordSet = null;
-        System.out.println("8 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
@@ -60,7 +60,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.title = title;
         this.msg = msg;
         this.oldPasswordRequired = true;
-        System.out.println("7 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordSet = null;
         this.newPasswordSet = null;
         this.confirmPasswordSet = null;
@@ -74,7 +73,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.title = title;
         this.msg = msg;
         this.oldPasswordRequired = true;
-        System.out.println("6 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordSet = oldPasswordSet;
         this.newPasswordSet = newPasswordSet;
         this.confirmPasswordSet = confirmPasswordSet;
@@ -87,7 +85,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.title = title;
         this.msg = msg;
         this.oldPasswordRequired = true;
-        System.out.println("5 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordSet = oldPasswordSet;
         this.newPasswordSet = newPasswordSet;
         this.confirmPasswordSet = confirmPasswordSet;
@@ -99,7 +96,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
-        System.out.println("4 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordRequired = oldPasswordRequired;
         this.oldPasswordSet = null;
         this.newPasswordSet = null;
@@ -111,7 +107,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
-        System.out.println("3 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);       
         this.oldPasswordRequired = oldPasswordRequired;
         this.oldPasswordSet = null;
         this.newPasswordSet = null;
@@ -125,7 +120,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
-        System.out.println("2 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordRequired = oldPasswordRequired;
         this.oldPasswordSet = oldPasswordSet;
         this.newPasswordSet = newPasswordSet;
@@ -138,7 +132,6 @@ public class ChangePasswordDialog extends DialogFragment
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
-        System.out.println("1 ChangePasswordDialog: oldPasswordRequired:"+oldPasswordRequired);
         this.oldPasswordRequired = oldPasswordRequired;
         this.oldPasswordSet = oldPasswordSet;
         this.newPasswordSet = newPasswordSet;
@@ -156,6 +149,7 @@ public class ChangePasswordDialog extends DialogFragment
          * oldPassword = (ClearableEditText) dialogView
          * .findViewById(R.id.oldPassword);
          */
+        
         oldPassword = (ClearableEditText) dialogView
                 .findViewById(R.id.oldPassword);
         newPassword = (ClearableEditText) dialogView
@@ -174,40 +168,48 @@ public class ChangePasswordDialog extends DialogFragment
         if (this.confirmPasswordSet != null) {
             confirmPassword.setText(this.confirmPasswordSet);
         }
-
+        
         switch (this.initialFocus) {
         case DEFAULTFOCUS:
             if (this.oldPasswordRequired) {
                 if (oldPassword.getText().toString().trim().length() == 0) {
                     oldPassword.requestFocus();
+                    oldPassword.setSelection(oldPassword.getText().length());
                 } else if (oldPassword.getText().toString().trim().length() > 0
                         && newPassword.getText().toString().trim().length() == 0) {
                     newPassword.requestFocus();
+                    newPassword.setSelection(newPassword.getText().length());
                 } else if (oldPassword.getText().toString().trim().length() > 0
                         && newPassword.getText().toString().trim().length() > 0
                         && confirmPassword.getText().toString().trim().length() == 0) {
                     confirmPassword.requestFocus();
+                    confirmPassword.setSelection(confirmPassword.getText().length());
                 }
             } else {
                 oldPassword.setVisibility(View.GONE);
                 if (newPassword.getText().toString().trim().length() > 0
                         && confirmPassword.getText().toString().trim().length() == 0) {
                     confirmPassword.requestFocus();
+                    confirmPassword.setSelection(confirmPassword.getText().length());
                 }
             }
             break;
         case OLDPASSWORDFOCUS:
             if (this.oldPasswordRequired) {
                 oldPassword.requestFocus();
+                oldPassword.setSelection(oldPassword.getText().length());
             } else {
                 newPassword.requestFocus();
+                newPassword.setSelection(newPassword.getText().length());
             }
             break;
         case NEWPASSWORDFOCUS:
             newPassword.requestFocus();
+            newPassword.setSelection(newPassword.getText().length());
             break;
         case CONFIRMPASSWORDFOCUS:
             confirmPassword.requestFocus();
+            confirmPassword.setSelection(confirmPassword.getText().length());
             break;
         default:
             System.out
