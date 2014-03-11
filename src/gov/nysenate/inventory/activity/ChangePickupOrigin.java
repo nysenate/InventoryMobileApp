@@ -143,13 +143,9 @@ public class ChangePickupOrigin extends SenateActivity {
                 e.printStackTrace();
             }
 
-            try {
-                JSONArray json = new JSONArray(out.toString());
-                for (int i = 0; i < json.length(); i++) {
-                    locations.add(json.getString(i));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            List<Location> locs = TransactionParser.parseMultipleLocations(out.toString());
+            for (Location loc: locs) {
+                locations.add(loc.getLocationSummaryString());
             }
 
             Collections.sort(locations);
