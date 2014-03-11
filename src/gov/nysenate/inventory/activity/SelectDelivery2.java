@@ -8,6 +8,8 @@ import gov.nysenate.inventory.util.TransactionParser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.Intent;
@@ -54,6 +56,7 @@ public abstract class SelectDelivery2 extends SenateActivity {
         avaliablePickups = TransactionParser.parseMultiplePickups(getIntent().getStringArrayListExtra("pickups"));
 
         setStaticText(searchParameter, searchText, pageTitle, column1label, column2label, column3label, column4label, filteredPickups);
+        putInDecendingOrder(filteredPickups);
 
         PickupSearchList adapter = new PickupSearchList(this, R.layout.pickup_group_row, filteredPickups, searchParameter);
         searchResults.setAdapter(adapter);
@@ -74,6 +77,15 @@ public abstract class SelectDelivery2 extends SenateActivity {
             }
 
         });
+    }
+
+    private void putInDecendingOrder(List<Transaction> pickups) {
+        Collections.sort(pickups, Collections.reverseOrder(new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction lhs, Transaction rhs) {
+                return lhs.getPickupDate().compareTo(rhs.getPickupDate());
+            }
+        }));
     }
 
     @Override
