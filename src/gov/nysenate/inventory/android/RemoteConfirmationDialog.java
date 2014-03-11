@@ -7,6 +7,7 @@ import android.os.Build;
 import gov.nysenate.inventory.activity.Delivery3;
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.listener.VerMethodListener;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Toasty;
 
@@ -89,7 +90,7 @@ public class RemoteConfirmationDialog extends DialogFragment {
         remoteComment = (ClearableEditText) view.findViewById(R.id.remote_comments);
         remoteHelpReferenceNum = (ClearableEditText) view.findViewById(R.id.remote_helprefnum);
         remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-        verMethod.setOnItemSelectedListener(onlyDisplayOSRTextBoxWhenSelected);
+        verMethod.setOnItemSelectedListener(new VerMethodListener(verMethod, remoteHelpReferenceNum, remoteSigner));
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.remote_ver_method, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -202,21 +203,5 @@ public class RemoteConfirmationDialog extends DialogFragment {
             trans.setNareleaseby(remoteUser);
         }
     }
-
-    private OnItemSelectedListener onlyDisplayOSRTextBoxWhenSelected = new OnItemSelectedListener(){
-        @Override
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            if (verMethod.getSelectedItem() != null) {
-                if (verMethod.getSelectedItem().toString().equalsIgnoreCase("OSR Verified")) {
-                    remoteHelpReferenceNum.setVisibility(ClearableEditText.VISIBLE);
-                } else {
-                    remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-                }
-            }
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    };
 
 }

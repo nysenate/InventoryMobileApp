@@ -5,6 +5,7 @@ import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.OrigRemoteTask;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.listener.VerMethodListener;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
@@ -81,7 +82,7 @@ public class EnterRemote3 extends SenateActivity {
         remoteComment = (ClearableEditText) findViewById(R.id.remote_comments);
         remoteHelpReferenceNum = (ClearableEditText) findViewById(R.id.remote_helprefnum);
         remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-        verMethod.setOnItemSelectedListener(onlyDisplayOSRTextBoxWhenSelected);
+        verMethod.setOnItemSelectedListener(new VerMethodListener(verMethod, remoteHelpReferenceNum, remoteSigner));
 
         if (checkServerResponse() != OK) {
             noServerResponseMsg();
@@ -232,22 +233,6 @@ public class EnterRemote3 extends SenateActivity {
         }
         return allEmployeeNames;
     }
-
-    private AdapterView.OnItemSelectedListener onlyDisplayOSRTextBoxWhenSelected = new AdapterView.OnItemSelectedListener(){
-        @Override
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            if (verMethod.getSelectedItem() != null) {
-                if (verMethod.getSelectedItem().toString().equalsIgnoreCase("OSR Verified")) {
-                    remoteHelpReferenceNum.setVisibility(ClearableEditText.VISIBLE);
-                } else {
-                    remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
-                }
-            }
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    };
 
     public void cancelButton(View view) {
         if (checkServerResponse(true) == OK) {
