@@ -952,6 +952,15 @@ ChangePasswordDialogListener
                 //
                 proceedPastLoginScreen(loginStatus);
             }
+            else if (loginStatus.getNustatus() == loginStatus.ACCOUNT_LOCKED ) {
+                MsgAlert msgAlert = new MsgAlert(
+                        getApplicationContext(),
+                        "Account Locked",
+                        "!!ERROR: Your account is locked. Please contact STS/BAC.");
+                buttonLogin.getBackground().setAlpha(255);
+                progressBarLogin.setVisibility(View.INVISIBLE);
+                LoginActivity.password.setText("");
+            }
             else if (loginStatus.getNustatus() == loginStatus.PASSWORD_EXPIRED) {
                 allowUserToChangePassword(loginStatus);
             }
@@ -997,12 +1006,12 @@ ChangePasswordDialogListener
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();      
             }
-            else if (res.trim().startsWith("!!ERROR: ")) {
-                if (res.trim().startsWith("!!ERROR: No security clearance has been given")) {
+            else if (loginStatus.getNustatus() == loginStatus.NO_ACCESS) {
+                
                     AlertDialog.Builder builder = new AlertDialog.Builder(
                             LoginActivity.this);
                     builder.setMessage(
-                            Html.fromHtml(res.trim()))
+                            Html.fromHtml(loginStatus.getDestatus()))
                             .setTitle(
                                     Html.fromHtml("<b><font color='#000055'>NO SECURITY CLEARANCE FOR THIS APP</font></b>"))
                             .setPositiveButton(Html.fromHtml("<b>Close App</b>"),
@@ -1019,23 +1028,17 @@ ChangePasswordDialogListener
                     // show the alert message
                     Dialog dialog = builder.create();
                     dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();                    
-                }
-                else {
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(this, res.trim(), duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    buttonLogin.getBackground().setAlpha(255);
-                    progressBarLogin.setVisibility(View.INVISIBLE);
-                }
+                    dialog.show();         
+            }
+            else if (loginStatus.getNustatus() == loginStatus.INVALID_USERNAME_OR_PASSWORD) {       
+                new Toasty(this).showMessage( "!!ERROR: Invalid Username and/or Password.", Toast.LENGTH_LONG);
+                buttonLogin.getBackground().setAlpha(255);
+                progressBarLogin.setVisibility(View.INVISIBLE);
+                LoginActivity.password.setText("");
 
-            } else {
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(this,
-                        "!!ERROR: Invalid Username and/or Password.", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+            }
+            else {
+                new Toasty(this).showMessage( loginStatus.getDestatus(), Toast.LENGTH_LONG);
                 buttonLogin.getBackground().setAlpha(255);
                 progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.password.setText("");

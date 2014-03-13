@@ -48,7 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="39dp"
-        android:layout_toRightOf="@+id/button1"
         android:visibility="invisible" />
 
     <ImageButton

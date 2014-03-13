@@ -20,6 +20,7 @@ public class LoginStatus
  public final int PASSWORD_EXPIRES_SOON = 3; // Username/Password have been validated but password will expire soon
  public final int NO_ACCESS = 4;  // Username/Password have been validated but user does not have access to App.
  public final int PASSWORD_RULE_FAILURE = 5; // Password fails the rules setup for valid passwords
+ public final int ACCOUNT_LOCKED = 6; // Username/Password are correct but account is locked 
  public final int INVALID_USERNAME_OR_PASSWORD = 99;  // Invalid Username and/or Password
  public final int INVALID = 100;  // Invalid Username/password and the default value, covers Oracle Generic Login Errors
   

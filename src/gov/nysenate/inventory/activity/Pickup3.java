@@ -599,6 +599,9 @@ public class Pickup3 extends SenateActivity
                     response.getEntity().writeTo(out);
                     out.close();
                     responseString = out.toString();
+                    System.out.println("***Pickup Server response:\n'"
+                            + responseString + "'");
+                    
                 } else {
                     // Closes the connection.
                     response.getEntity().getContent().close();
