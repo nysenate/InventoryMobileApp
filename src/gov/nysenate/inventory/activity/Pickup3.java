@@ -28,16 +28,20 @@ import java.util.TimerTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
@@ -106,7 +110,8 @@ public class Pickup3 extends SenateActivity
     private CheckBox remoteBox;
     private CheckBox paperworkBox;
     private Spinner remoteShipType;
-
+    ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -423,7 +428,10 @@ public class Pickup3 extends SenateActivity
                 HttpResponse response;
                 String responseString = null;
                 try {
-                    response = httpclient.execute(new HttpGet(uri[0]));
+                    HttpPost httpPost = new HttpPost(uri[0]);
+                    
+                    response = httpclient.execute(new HttpPost(uri[0]));
+                    //response = httpclient.execute(new HttpGet(uri[0]));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -468,7 +476,7 @@ public class Pickup3 extends SenateActivity
         String URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
 
         new ProcessPickupTask().execute( URL + "/ImgUpload?nauser=" + LoginActivity.nauser
-                    + "&nuxrefem=" + nuxrefem, URL + "/Pickup?");
+                    + "&nuxrefem=" + nuxrefem, URL + "/Pickup");
     }
 
     public void returnToMoveMenu() {
@@ -559,8 +567,8 @@ public class Pickup3 extends SenateActivity
                             new InputStreamReader(response.getEntity()
                                     .getContent(), "UTF-8"));
                     responseString = reader.readLine();
-                    System.out.println("***Image Server response:\n'"
-                            + responseString + "'");
+                    /*System.out.println("***Image Server response:\n'"
+                            + responseString + "'");*/
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
@@ -588,19 +596,25 @@ public class Pickup3 extends SenateActivity
             HttpResponse response;
             responseString = null;
             try {
-
-                String pickupURL = uri[1] + "pickup=" + pickupJson
-                        + "&userFallback=" + LoginActivity.nauser;
-                System.out.println("pickupURL:" + pickupURL);
-                response = httpclient.execute(new HttpGet(pickupURL));
+                String pickupURL = uri[1];
+                postParams = new ArrayList<NameValuePair>();
+                postParams.add(new BasicNameValuePair("pickup", pickupJson));
+                postParams.add(new BasicNameValuePair("userFallback", LoginActivity.nauser));
+                
+                HttpPost httpPost = new HttpPost(pickupURL);
+                httpPost.setEntity(new UrlEncodedFormEntity(postParams));
+                    
+                //System.out.println("pickupURL:" + pickupURL);
+                //response = httpclient.execute(new HttpGet(pickupURL));
+                 response = httpclient.execute(httpPost);
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     response.getEntity().writeTo(out);
                     out.close();
                     responseString = out.toString();
-                    System.out.println("***Pickup Server response:\n'"
-                            + responseString + "'");
+                    /*System.out.println("***Pickup Server response:\n'"
+                            + responseString + "'");*/
                     
                 } else {
                     // Closes the connection.
