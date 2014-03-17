@@ -136,10 +136,9 @@
             android:name="gov.nysenate.inventory.activity.EditPickup2Activity"
             android:label="@string/title_activity_editpickup1"
             android:parentActivityName="gov.nysenate.inventory.activity.Move"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
-        </activity>        
+        </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.EditPickupMenu"
             android:label="@string/title_edit_pickup"
@@ -193,7 +192,6 @@
             android:name="gov.nysenate.inventory.activity.Delivery2"
             android:label="@string/title_activity_delivery2"
             android:parentActivityName="gov.nysenate.inventory.activity.Delivery1"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
@@ -223,7 +221,6 @@
                 android:name="gov.nysenate.inventory.activity.EnterRemote2"
                 android:label="@string/enter_remote_title"
                 android:parentActivityName="gov.nysenate.inventory.activity.Move"
-                android:launchMode="singleInstance"
                 android:screenOrientation="portrait">
         </activity>
         <activity

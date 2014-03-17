@@ -1,10 +1,15 @@
 package gov.nysenate.inventory.activity;
 
+import android.os.AsyncTask;
+import android.os.Build;
+import android.widget.*;
 import gov.nysenate.inventory.adapter.PickupSearchList;
+import gov.nysenate.inventory.android.GetAllPickupsListener;
+import gov.nysenate.inventory.android.GetAllPickupsTask;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.Toasty;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,22 +22,27 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import org.apache.http.HttpStatus;
 
-public abstract class SelectDelivery2 extends SenateActivity {
+public abstract class SelectDelivery2 extends SenateActivity implements GetAllPickupsListener {
 
     private List<Transaction> avaliablePickups;
     private ListView searchResults;
     private ProgressBar progressBar;
     private Button cancelButton;
+    private List<Transaction> filteredPickups;
+
+    private TextView pageTitle;
+    private TextView column1label;
+    private TextView column2label;
+    private TextView column3label;
+    private TextView column4label;
 
     protected abstract String getPageTitle();
 
     protected abstract Class getNextActivity();
+
+    protected abstract String getPickupsUrl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +50,42 @@ public abstract class SelectDelivery2 extends SenateActivity {
         setContentView(R.layout.activity_select_delivery_2);
         registerBaseActivityReceiver();
 
-        TextView pageTitle = (TextView) findViewById(R.id.title);
+        pageTitle = (TextView) findViewById(R.id.title);
         searchResults = (ListView) findViewById(R.id.listView1);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        TextView column1label = (TextView) findViewById(R.id.column1label);
-        TextView column2label = (TextView) findViewById(R.id.column2label);
-        TextView column3label = (TextView) findViewById(R.id.column3label);
-        TextView column4label = (TextView) findViewById(R.id.column4label);
+        column1label = (TextView) findViewById(R.id.column1label);
+        column2label = (TextView) findViewById(R.id.column2label);
+        column3label = (TextView) findViewById(R.id.column3label);
+        column4label = (TextView) findViewById(R.id.column4label);
         cancelButton = (Button) findViewById(R.id.cancelButton);
+    }
 
-        final List<Transaction> filteredPickups = new ArrayList<Transaction>();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        avaliablePickups = new ArrayList<Transaction>();
+        filteredPickups = new ArrayList<Transaction>();
 
+        GetAllPickupsTask task = new GetAllPickupsTask(this, getPickupsUrl(), avaliablePickups);
+        task.setProgressBar(progressBar);
+        if (checkServerResponse(true) == OK) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                task.execute();
+            }
+        }
+    }
+
+    @Override
+    public void onResponseExecute(Integer res) {
         SelectDelivery1.SearchByParam searchParameter = setSearchParam(getIntent().getStringExtra("searchParam"));
         String searchText = getIntent().getStringExtra("searchText");
-        avaliablePickups = TransactionParser.parseMultiplePickups(getIntent().getStringArrayListExtra("pickups"));
 
         setStaticText(searchParameter, searchText, pageTitle, column1label, column2label, column3label, column4label, filteredPickups);
         putInDecendingOrder(filteredPickups);
 
-        PickupSearchList adapter = new PickupSearchList(this, R.layout.pickup_group_row, filteredPickups, searchParameter);
+        PickupSearchList adapter = new PickupSearchList(SelectDelivery2.this, R.layout.pickup_group_row, filteredPickups, searchParameter);
         searchResults.setAdapter(adapter);
         searchResults.setTextFilterEnabled(true);
         searchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,17 +93,30 @@ public abstract class SelectDelivery2 extends SenateActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (checkServerResponse(true) == OK) {
-                    Transaction selectedPickup = filteredPickups.get(position);
-                    String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
-
-                    Intent intent = new Intent(SelectDelivery2.this, getNextActivity());
-                    intent.putExtra("nuxrpd", nuxrpd);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.in_right, R.anim.out_left);
+                    continueToNextActivity(position);
                 }
             }
 
         });
+
+        if (res == HttpStatus.SC_OK) {
+            return;
+        } else if (res == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            Toasty.displayCenteredMessage(SelectDelivery2.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
+        } else {
+            Toasty.displayCenteredMessage(SelectDelivery2.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void continueToNextActivity(int position) {
+        Transaction selectedPickup = filteredPickups.get(position);
+        String nuxrpd = Integer.toString(selectedPickup.getNuxrpd());
+
+        Intent intent = new Intent(this, getNextActivity());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("nuxrpd", nuxrpd);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     private void putInDecendingOrder(List<Transaction> pickups) {
@@ -86,13 +126,6 @@ public abstract class SelectDelivery2 extends SenateActivity {
                 return lhs.getPickupDate().compareTo(rhs.getPickupDate());
             }
         }));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        cancelButton.getBackground().setAlpha(255);
-        progressBar.getBackground().setAlpha(255);
     }
 
     @Override

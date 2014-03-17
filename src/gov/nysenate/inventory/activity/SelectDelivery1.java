@@ -1,8 +1,6 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.*;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Toasty;
@@ -45,7 +43,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public abstract class SelectDelivery1 extends SenateActivity {
+public abstract class SelectDelivery1 extends SenateActivity implements GetAllPickupsListener {
 
     public enum SearchByParam {PICKUPLOC, DELIVERYLOC, NAPICKUPBY, DATE}
 
@@ -83,19 +81,14 @@ public abstract class SelectDelivery1 extends SenateActivity {
         label1Value = (TextView) findViewById(R.id.tvLabel1Value);
         label2Title = (TextView) findViewById(R.id.tvLabel2Title);
         label2Value = (TextView) findViewById(R.id.tvLabel2Value);
+        cancelButton = (Button) findViewById(R.id.cancelBtn);
+        continueButton = (Button) findViewById(R.id.continueBtn);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         searchText = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteSearchBy);
         searchParam = (Spinner) findViewById(R.id.spinSearchByList);
 
         setupSearchTextAutoComplete();
-        searchParam.setSelection(getInitialSearchByParam());
-
-        if (checkServerResponse(true) == OK)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                new GetAllPickups().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                new GetAllPickups().execute();
-            }
+        setupSearchParam();
     }
 
     private void setupSearchTextAutoComplete() {
@@ -103,7 +96,6 @@ public abstract class SelectDelivery1 extends SenateActivity {
         searchText.setThreshold(1);
         searchText.addTextChangedListener(searchTextWatcher);
         searchText.setAdapter(adapter);
-
         searchText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -114,13 +106,50 @@ public abstract class SelectDelivery1 extends SenateActivity {
         });
     }
 
+    private void setupSearchParam() {
+        searchParam.setSelection(getInitialSearchByParam());
+        searchParam.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                searchText.setText("");
+                updateGUI(currentSearchByParam());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        continueButton = (Button) findViewById(R.id.continueBtn);
-        continueButton.getBackground().setAlpha(255);
-        cancelButton = (Button) findViewById(R.id.cancelBtn);
-        cancelButton.getBackground().setAlpha(255);
+
+        validPickups = new ArrayList<Transaction>();
+
+        GetAllPickupsTask task = new GetAllPickupsTask(this, getPickupsUrl(), validPickups);
+        task.setProgressBar(progressBar);
+        if (checkServerResponse(true) == OK) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                task.execute();
+            }
+        }
+    }
+
+    @Override
+    public void onResponseExecute(Integer res) {
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
+        updateGUI(currentSearchByParam());
+
+        if (res == HttpStatus.SC_OK) {
+            return;
+        } else if (res == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
+        } else {
+            Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
+        }
     }
 
     @Override
@@ -250,47 +279,51 @@ public abstract class SelectDelivery1 extends SenateActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            String loccode;
-            String text = searchText.getText().toString();
-            if (searchTextIsValidValue()) {
-                switch (currentSearchByParam()) {
-
-                    case PICKUPLOC:
-                        loccode = text.split("-")[0];
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                            new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } else {
-                            new LocationDetails(loccode).execute();
-                        }
-                        break;
-
-                    case DELIVERYLOC:
-                        loccode = text.split("-")[0];
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                            new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } else {
-                            new LocationDetails(loccode).execute();
-                        }
-                        break;
-
-                    case NAPICKUPBY:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                            new EmployeeDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } else {
-                            new EmployeeDetails().execute();
-                        }
-                        break;
-
-                    case DATE:
-                        int count = getCountForDate(searchText.getText().toString());
-                        label1Value.setText(Integer.toString(count));
-                        break;
-                }
-            } else {
-                setLabelsToNA();
-            }
+            displaySearchResultInfo();
         }
     };
+
+    private void displaySearchResultInfo() {
+        String loccode;
+        String text = searchText.getText().toString();
+        if (searchTextIsValidValue()) {
+            switch (currentSearchByParam()) {
+
+                case PICKUPLOC:
+                    loccode = text.split("-")[0];
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        new LocationDetails(loccode).execute();
+                    }
+                    break;
+
+                case DELIVERYLOC:
+                    loccode = text.split("-")[0];
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        new LocationDetails(loccode).execute();
+                    }
+                    break;
+
+                case NAPICKUPBY:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        new EmployeeDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        new EmployeeDetails().execute();
+                    }
+                    break;
+
+                case DATE:
+                    int count = getCountForDate(searchText.getText().toString());
+                    label1Value.setText(Integer.toString(count));
+                    break;
+            }
+        } else {
+            setLabelsToNA();
+        }
+    }
 
     private boolean searchTextIsValidValue() {
         String selection = searchText.getText().toString();
@@ -302,18 +335,18 @@ public abstract class SelectDelivery1 extends SenateActivity {
         return false;
     }
 
-    // TODO: only allow to continue if input is valid.
     public void continueButton(View view) {
         if (checkServerResponse(true) != OK) {
             return;
         }
         
         if (!searchTextIsValidValue()) {
-            Toasty.displayCenteredMessage(this, "Please Enter valid data", Toast.LENGTH_SHORT); // TODO improve message!
+            Toasty.displayCenteredMessage(this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
             return;
         }
 
         Intent intent = new Intent(this, getNextActivity());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("searchParam", searchParam.getSelectedItem().toString());
         intent.putExtra("searchText", searchText.getText().toString());
         ArrayList<String> json = new ArrayList<String>();
@@ -336,63 +369,6 @@ public abstract class SelectDelivery1 extends SenateActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_editpickup1, menu);
         return true;
-    }
-
-    private class GetAllPickups extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-//            String url = AppProperties.getBaseUrl(SelectDelivery1.this);
-//            url += "GetAllPickups?";
-//            url += "userFallback=" + LoginActivity.nauser;
-            String url = getPickupsUrl();
-
-            try {
-                response = httpClient.execute(new HttpGet(url));
-                response.getEntity().writeTo(out);
-                validPickups = TransactionParser.parseMultiplePickups(out.toString());
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return response.getStatusLine().getStatusCode();
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            updateGUI(currentSearchByParam());
-            searchParam.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                    searchText.setText("");
-                    updateGUI(currentSearchByParam());
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-
-            if (response == HttpStatus.SC_OK) {
-                return;
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
-            } else {
-                Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
-            }
-        }
     }
 
     private class LocationDetails extends AsyncTask<Void, Map<TextView, String>, String> {

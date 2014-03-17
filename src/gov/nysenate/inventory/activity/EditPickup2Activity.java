@@ -1,7 +1,16 @@
 package gov.nysenate.inventory.activity;
 
+import gov.nysenate.inventory.util.AppProperties;
 
 public class EditPickup2Activity extends SelectDelivery2 {
+
+    @Override
+    protected String getPickupsUrl() {
+        String url = AppProperties.getBaseUrl(this);
+        url += "GetAllPickups?";
+        url += "userFallback=" + LoginActivity.nauser;
+        return url;
+    }
 
     @Override
     protected String getPageTitle() {
