@@ -3,179 +3,177 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Delivery3" >
-    
+
+    <TextView
+            android:id="@+id/tvLblTitle"
+            style="@style/NormalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15sp"
+            android:text="@string/delivery3_msg"
+            android:textStyle="normal|bold" />
+
     <TableLayout
-        android:id="@+id/delivery_info3"        
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvLblTitle"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="22sp"
-        android:background="@drawable/customshape" >
-    	  	<TableRow>
-    	  	    <LinearLayout
-				    android:layout_width="fill_parent"
-    				android:layout_height="fill_parent"
-    				android:orientation="horizontal" >
-	    	  		<TextView
-    	    			android:id="@+id/tvLblDeliveryTo"
-       		 			android:layout_width="wrap_content"
-        				android:layout_height="wrap_content"
-        				android:layout_marginTop="7dp"
-        				android:layout_alignParentLeft="true"
-        				android:layout_alignParentTop="true"
-        				android:text="Delivery to:"
-        				style="@style/NormalText"    />
+            android:id="@+id/delivery_info3"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLblTitle"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="15sp"
+            android:background="@drawable/customshape" >
+        <TableRow>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+                <TextView
+                        android:id="@+id/tvLblDeliveryTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="Delivery to:"
+                        style="@style/NormalText"    />
 
-    	  	        	<TextView
-    	  	        	    android:id="@+id/textView2"
-    	  	        	    style="@style/NormalText"
-    	  	        	    android:layout_width="420dp"
-    	  	        	    android:layout_height="wrap_content"
-    	  	        	    android:layout_alignParentLeft="true"
-    	  	        	    android:layout_alignParentTop="true"
-    	  	        	    android:layout_marginLeft="10dp"
-    	  	        	    android:layout_marginTop="7dp"
-    	  	        	    android:text="@string/details" />
+                <TextView
+                        android:id="@+id/textView2"
+                        style="@style/NormalText"
+                        android:layout_width="420dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="7dp"
+                        android:text="@string/details" />
 
-	    	  	</LinearLayout>
-		 	</TableRow>
-    		<TableRow>
+            </LinearLayout>
+        </TableRow>
+        <TableRow>
 
-    			<TextView
-    			    android:id="@+id/tvItemCount"
-    			    style="@style/NormalText"
-    			    android:layout_width="match_parent"
-    			    android:layout_height="wrap_content"
-    			    android:layout_alignParentTop="true"
-    			    android:layout_marginLeft="330dp"
-    			    android:layout_marginTop="7dp"
-    			    android:text="Item Count:" />
+            <TextView
+                    android:id="@+id/tvItemCount"
+                    style="@style/NormalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="330dp"
+                    android:layout_marginTop="7dp"
+                    android:text="Item Count:" />
 
-    		</TableRow>		 	
-    </TableLayout>		
+        </TableRow>
+    </TableLayout>
     <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/delivery_info3"
-        android:layout_marginTop="29dp" >
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/delivery_info3"
+            android:layout_marginTop="29dp" >
     </ListView>
 
     <gov.nysenate.inventory.android.ClearableEditText
-        android:id="@+id/deliveryCommentsEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/sv_accept_sign_delivery3"
-        android:layout_alignRight="@+id/sv_accept_sign_delivery3"
-        android:layout_below="@+id/listView1"
-        android:ems="10"
-        android:hint="Delivery Comments Here"
-        android:inputType="textMultiLine" />
+            android:id="@+id/deliveryCommentsEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/sv_accept_sign_delivery3"
+            android:layout_alignRight="@+id/sv_accept_sign_delivery3"
+            android:layout_above="@+id/naemployee"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="Delivery Comments Here"
+            android:inputType="textMultiLine" />
 
     <ImageView
-        android:id="@+id/deliveryCommentsSpeechButton"
-        android:layout_width="40sp"
-        android:layout_height="40sp"
-        android:layout_alignTop="@+id/deliveryCommentsEditText"
-        android:layout_toRightOf="@+id/deliveryCommentsEditText"
-        android:clickable="true"
-        android:onClick="startCommentsSpeech"
-        android:src="@drawable/speech2txt" />
-
-    <gov.nysenate.inventory.android.SignatureView
-        android:id="@+id/sv_accept_sign_delivery3"
-        android:layout_width="500dp"
-        android:layout_height="100dp"
-        android:layout_above="@+id/btnDelivery3Cont"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="27dp"
-        android:background="@drawable/simplethinborder"
-        android:paddingLeft="100dp" />
+            android:id="@+id/deliveryCommentsSpeechButton"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_alignTop="@+id/deliveryCommentsEditText"
+            android:layout_toRightOf="@+id/deliveryCommentsEditText"
+            android:clickable="true"
+            android:onClick="startCommentsSpeech"
+            android:src="@drawable/speech2txt" />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
-        android:id="@+id/naemployee"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/sv_accept_sign_delivery3"
-        android:layout_centerHorizontal="true"
-        android:inputType="textNoSuggestions"
-        android:ems="10"
-        android:hint="@string/delivery_emp_list_hint"
-        android:singleLine="true"
-        >
+            android:id="@+id/naemployee"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sv_accept_sign_delivery3"
+            android:layout_centerHorizontal="true"
+            android:inputType="textNoSuggestions"
+            android:ems="10"
+            android:hint="@string/delivery_emp_list_hint"
+            android:singleLine="true"
+            />
 
-        <requestFocus />
-    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
-
-    <Button
-        android:id="@+id/btnDelivery3Cont"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="36dp"
-        android:background="@drawable/buttonshapegreen"
-        android:onClick="continueButton"
-        android:shadowColor="#000000"
-        android:shadowDx="01"
-        android:shadowDy="1"
-        android:shadowRadius="5"
-        android:text="Deliver Items"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+    <gov.nysenate.inventory.android.SignatureView
+            android:id="@+id/sv_accept_sign_delivery3"
+            android:layout_width="500dp"
+            android:layout_height="100dp"
+            android:layout_above="@+id/btnDelivery3Cont"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="27dp"
+            android:background="@drawable/simplethinborder"
+            android:paddingLeft="100dp" />
 
     <Button
-        android:id="@+id/btnDeliv3ClrSig"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_alignTop="@+id/btnDelivery3Cont"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/buttonshapegray"
-        android:onClick="clearSignatureButton"
-        android:shadowColor="#000000"
-        android:shadowDx="01"
-        android:shadowDy="1"
-        android:shadowRadius="5"
-        android:text="Clear Signature"
-        android:textColor="#FFFFFF"
-        android:textSize="25sp" />
+            android:id="@+id/btnDelivery3Cont"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/buttonshapegreen"
+            android:onClick="continueButton"
+            android:shadowColor="#000000"
+            android:shadowDx="01"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:text="Deliver Items"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
 
     <Button
-        android:id="@+id/btnDelivery3Back"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/btnDeliv3ClrSig"
-        android:background="@drawable/buttonshapeblue"
-        android:onClick="backButton"
-        android:shadowColor="#000000"
-        android:shadowDx="01"
-        android:shadowDy="1"
-        android:shadowRadius="5"
-        android:text="Back"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+            android:id="@+id/btnDeliv3ClrSig"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@+id/btnDelivery3Cont"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/buttonshapegray"
+            android:onClick="clearSignatureButton"
+            android:shadowColor="#000000"
+            android:shadowDx="01"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:text="Clear Signature"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
 
-   <ProgressBar
-        android:id="@+id/progBarDelivery3"
-        style="?android:attr/progressBarStyleLarge"        
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
-        android:layout_centerVertical="true"
-        android:visibility="invisible" />
+    <Button
+            android:id="@+id/btnDelivery3Back"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/btnDeliv3ClrSig"
+            android:background="@drawable/buttonshapeblue"
+            android:onClick="backButton"
+            android:shadowColor="#000000"
+            android:shadowDx="01"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:text="Back"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
 
-   <TextView
-       android:id="@+id/tvLblTitle"
-       style="@style/NormalText"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_centerHorizontal="true"
-       android:layout_marginTop="22sp"
-       android:text="@string/delivery3_msg"
-       android:textStyle="normal|bold" />
-    
+    <ProgressBar
+            android:id="@+id/progBarDelivery3"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shaperoundblue"
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
+
 </RelativeLayout>
