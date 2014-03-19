@@ -14,10 +14,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 
 import android.app.AlertDialog;
@@ -35,6 +39,8 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
 public class EditRemoteStatus extends SenateActivity {
 
@@ -242,21 +248,20 @@ public class EditRemoteStatus extends SenateActivity {
 
         @Override
         protected Integer doInBackground(Void... params) {
+            String url = AppProperties.getBaseUrl(EditRemoteStatus.this);
+            url += "ChangeRemoteStatus";
+
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response;
-            String json = "";
-            try {
-                json = URLEncoder.encode(pickup.toJson(), "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-
-            String url = AppProperties.getBaseUrl(EditRemoteStatus.this);
-            url += "ChangeRemoteStatus?trans=" + json +
-                    "&user=" + LoginActivity.nauser;
+            HttpPost post = new HttpPost(url);
 
             try {
-                response = httpClient.execute(new HttpGet(url));
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("trans", pickup.toJson()));
+                values.add(new BasicNameValuePair("user", LoginActivity.nauser));
+                post.setEntity(new UrlEncodedFormEntity(values));
+                response = httpClient.execute(post);
+
                 return response.getStatusLine().getStatusCode();
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
@@ -269,7 +274,7 @@ public class EditRemoteStatus extends SenateActivity {
         @Override
         protected void onPostExecute(Integer response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(EditRemoteStatus.this, Move.class);
+            Intent intent = new Intent(EditRemoteStatus.this, EditPickupMenu.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);

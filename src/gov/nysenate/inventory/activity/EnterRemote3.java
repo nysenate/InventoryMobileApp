@@ -21,16 +21,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
@@ -348,19 +348,17 @@ public class EnterRemote3 extends SenateActivity {
             Integer responseCode = null;
             String json = null;
 
-            try {
-                json = URLEncoder.encode(pickup.toJson(), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
             String url = AppProperties.getBaseUrl(EnterRemote3.this);
-            url += "EnterRemoteInfo?";
-            url += "trans=" + json;
+            url += "EnterRemoteInfo";
 
-            DefaultHttpClient httpClient = LoginActivity.getHttpClient();
+            HttpClient httpClient = LoginActivity.getHttpClient();
+            HttpPost httpPost = new HttpPost(url);
             try {
-                HttpResponse response = httpClient.execute(new HttpGet(url));
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("trans", pickup.toJson()));
+                httpPost.setEntity(new UrlEncodedFormEntity(values));
+
+                HttpResponse response = httpClient.execute(httpPost);
                 StatusLine statusLine = response.getStatusLine();
                 responseCode = statusLine.getStatusCode();
                 HttpEntity entity = response.getEntity();

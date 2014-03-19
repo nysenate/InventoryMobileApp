@@ -585,12 +585,6 @@ public class Pickup3 extends SenateActivity
             }
 
             pickup.setPickupDate(new Date());
-            String pickupJson = null;
-            try {
-                pickupJson = URLEncoder.encode(pickup.toJson(), "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
 
             HttpClient httpclient = LoginActivity.httpClient;
             HttpResponse response;
@@ -598,7 +592,7 @@ public class Pickup3 extends SenateActivity
             try {
                 String pickupURL = uri[1];
                 postParams = new ArrayList<NameValuePair>();
-                postParams.add(new BasicNameValuePair("pickup", pickupJson));
+                postParams.add(new BasicNameValuePair("pickup", pickup.toJson()));
                 postParams.add(new BasicNameValuePair("userFallback", LoginActivity.nauser));
                 
                 HttpPost httpPost = new HttpPost(pickupURL);

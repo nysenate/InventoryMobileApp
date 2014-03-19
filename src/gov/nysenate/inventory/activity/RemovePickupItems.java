@@ -3,6 +3,7 @@ package gov.nysenate.inventory.activity;
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Formatter;
@@ -11,10 +12,15 @@ import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 
 import android.app.AlertDialog;
@@ -27,6 +33,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
 public class RemovePickupItems extends SenateActivity {
 
@@ -200,14 +208,24 @@ public class RemovePickupItems extends SenateActivity {
 
         @Override
         protected Integer doInBackground(Void... arg0) {
+            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
+            url += "RemovePickupItems";
+
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response;
-            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
-            url += "RemovePickupItems?nuxrpd=" + pickup.getNuxrpd();
-            url += Formatter.generateGetArray("items[]", adapter.getSelectedItems(true));
-            url += "&userFallback=" + LoginActivity.nauser;
+            HttpPost post = new HttpPost(url);
+
             try {
-                response = httpClient.execute(new HttpGet(url));
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("nuxrpd", Integer.toString(pickup.getNuxrpd())));
+
+                for (InvItem aValue : adapter.getSelectedItems(true)) {
+                    values.add(new BasicNameValuePair("items", aValue.getNusenate()));
+                }
+
+                post.setEntity(new UrlEncodedFormEntity(values));
+                response = httpClient.execute(post);
+
                 return response.getStatusLine().getStatusCode();
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
