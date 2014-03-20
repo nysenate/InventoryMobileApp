@@ -276,6 +276,7 @@ public class EditRemoteStatus extends SenateActivity {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             Intent intent = new Intent(EditRemoteStatus.this, EditPickupMenu.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
             HttpUtils.displayResponseResults(EditRemoteStatus.this, response);
