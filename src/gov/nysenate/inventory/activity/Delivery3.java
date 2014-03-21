@@ -11,6 +11,7 @@ import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
@@ -21,17 +22,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -39,6 +36,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
@@ -334,23 +332,12 @@ public class Delivery3 extends SenateActivity
         progBarDelivery3.setVisibility(View.VISIBLE);
         this.btnDelivery3Cont.getBackground().setAlpha(45);
 
-        try {
-            naAcceptby = URLEncoder.encode(this.naemployeeView.getText()
-                    .toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
+        naAcceptby = naemployeeView.getText().toString();
+        deliveryComments = commentsEditText.getText().toString();
 
         if (this.invAdapter == null) {
             this.invAdapter = (InvSelListViewAdapter) this.listview
                     .getAdapter();
-        }
-        deliveryComments = null;
-        try {
-            deliveryComments = URLEncoder.encode(this.commentsEditText.getText()
-                    .toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
         }
 
         // check network connection
@@ -696,27 +683,15 @@ public class Delivery3 extends SenateActivity
                     delivery.setNuxrsccptsign(nuxrAcceptSign);
                 }
 
-                String deliveryjson = null;
-                try {
-                    deliveryjson = URLEncoder.encode(delivery.toJson(), "UTF-8");
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
-                }
+                String url = AppProperties.getBaseUrl(Delivery3.this);
+                url += "DeliveryConfirmation";
 
+                HttpPost httpPost = new HttpPost(url);
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("Delivery", delivery.toJson()));
                 try {
-                    StringBuilder urls = new StringBuilder();
-                    urls.append(uri[1].trim());
-                    if (uri[1].indexOf("?") > -1) {
-                        if (!uri[1].trim().endsWith("?")) {
-                            urls.append("&");
-                        }
-                    } else {
-                        urls.append("?");
-                    }
-                    urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);
-                    urls.append("&Delivery=" + deliveryjson);
-                    response = httpclient.execute(new HttpGet(urls.toString()));
+                    httpPost.setEntity(new UrlEncodedFormEntity(values));
+                    response = httpclient.execute(httpPost);
 
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -729,6 +704,9 @@ public class Delivery3 extends SenateActivity
                         response.getEntity().getContent().close();
                         throw new IOException(statusLine.getReasonPhrase());
                     }
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 } catch (ClientProtocolException e) {
                     // TODO Handle problems..
                 } catch (ConnectTimeoutException e) {
@@ -744,6 +722,7 @@ public class Delivery3 extends SenateActivity
                 } catch (IOException e) {
                     // TODO Handle problems..
                 }
+
                 res = responseString;
                 Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
                         + deliveryRequestTaskType + " response:" + res);
