@@ -49,9 +49,7 @@ public class CancelPickup extends SenateActivity {
         TextView commentsTitle = (TextView) findViewById(R.id.cancel_pickup_comments_title);
         ListView items = (ListView) findViewById(R.id.cancel_pickup_listview);
 
-        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-
-        String date = getIntent().getStringExtra("date");
+        pickup = EditPickupMenu.pickup;
 
         Adapter pickupListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, pickup.getPickupItems());
         items.setAdapter((ListAdapter) pickupListAdapter);

@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 public class EditPickupMenu extends SenateActivity implements OnItemClickListener
 {
-    private Transaction pickup;
+    public static Transaction pickup;
     private ProgressBar progressBar;
     private List<RowItem> menuRowItems;
     private static final String[] titles = { "Cancel Pickup", "Change Delivery Location", "Change Pickup Location",
@@ -138,7 +138,6 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         }
         Intent intent = new Intent(this, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("pickup", pickup.toJson());
         startActivity(intent);
         overridePendingTransition(inTransition, outTransition);
     }

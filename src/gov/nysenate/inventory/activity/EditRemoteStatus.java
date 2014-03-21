@@ -69,7 +69,7 @@ public class EditRemoteStatus extends SenateActivity {
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         remoteShipMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
 
-        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        pickup = EditPickupMenu.pickup;
 
         if (pickup.isRemote()) {
             oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));

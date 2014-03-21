@@ -57,9 +57,7 @@ public class RemovePickupItems extends SenateActivity {
         itemList = (ListView) findViewById(R.id.remove_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
-
-        String date = getIntent().getStringExtra("date");
+        pickup = EditPickupMenu.pickup;
 
         if (pickup.isRemote()) {
             oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
