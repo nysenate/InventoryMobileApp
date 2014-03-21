@@ -349,11 +349,6 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("searchParam", searchParam.getSelectedItem().toString());
         intent.putExtra("searchText", searchText.getText().toString());
-        ArrayList<String> json = new ArrayList<String>();
-        for (Transaction tran : validPickups) {
-            json.add(tran.toJson());
-        }
-        intent.putStringArrayListExtra("pickups", json);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
