@@ -220,7 +220,7 @@ public class RemovePickupItems extends SenateActivity {
                 values.add(new BasicNameValuePair("nuxrpd", Integer.toString(pickup.getNuxrpd())));
 
                 for (InvItem aValue : adapter.getSelectedItems(true)) {
-                    values.add(new BasicNameValuePair("items", aValue.getNusenate()));
+                    values.add(new BasicNameValuePair("items[]", aValue.getNusenate()));
                 }
 
                 post.setEntity(new UrlEncodedFormEntity(values));
