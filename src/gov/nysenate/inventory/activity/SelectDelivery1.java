@@ -124,7 +124,7 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     @Override
     protected void onResume() {
         super.onResume();
-
+        continueButton.setEnabled(true);
         validPickups = new ArrayList<Transaction>();
 
         GetAllPickupsTask task = new GetAllPickupsTask(this, getPickupsUrl(), validPickups);
@@ -344,9 +344,9 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
             Toasty.displayCenteredMessage(this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
             return;
         }
+        continueButton.setEnabled(false);
 
         Intent intent = new Intent(this, getNextActivity());
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("searchParam", searchParam.getSelectedItem().toString());
         intent.putExtra("searchText", searchText.getText().toString());
         startActivity(intent);
