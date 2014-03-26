@@ -17,15 +17,15 @@ public class Employee
     private transient String namidinit = null;
     private transient String nasuffix = null;
     private String naemployee = null;
-    public final int LAST_SUFFIX_FIRST_MI = -1000;
-    public final int LAST_FIRST_MI = -1001;
-    public final int LAST_SUFFIX_FIRST = -1002;
-    public final int FIRST_MI_LAST_SUFFIX = -1003;
-    public final int FIRST_MI_LAST = -1004;
-    public final int FIRST_LAST = -1005;
-    public final int LAST_FIRST = -1006;
-    public final int FIRST_LAST_SUFFIX = -1007;
-    public final int UNKNOWN = -9999;
+    public final transient int LAST_SUFFIX_FIRST_MI = -1000;
+    public final transient int LAST_FIRST_MI = -1001;
+    public final transient int LAST_SUFFIX_FIRST = -1002;
+    public final transient int FIRST_MI_LAST_SUFFIX = -1003;
+    public final transient int FIRST_MI_LAST = -1004;
+    public final transient int FIRST_LAST = -1005;
+    public final transient int LAST_FIRST = -1006;
+    public final transient int FIRST_LAST_SUFFIX = -1007;
+    public final transient int UNKNOWN = -9999;
     private int employeeNameOrder = FIRST_MI_LAST_SUFFIX;
 
     public Employee() {

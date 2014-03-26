@@ -19,14 +19,14 @@ public class InvItem implements Parcelable
 
     boolean selected = false;
 
-    final int DECOMMODITYF = -101;
-    final int TYPE = -102;
-    final int NUSENATE = -103;
-    final int CDCATEGORY = -104;
-    final int SELECTED = -105;
-    final int INTRANSIT = -106;
-    final int CDCOMMODITY = -107;
-    final int DECOMMENTS = -108;
+    final transient int DECOMMODITYF = -101;
+    final transient int TYPE = -102;
+    final transient int NUSENATE = -103;
+    final transient int CDCATEGORY = -104;
+    final transient int SELECTED = -105;
+    final transient int INTRANSIT = -106;
+    final transient int CDCOMMODITY = -107;
+    final transient int DECOMMENTS = -108;
 
     public InvItem(String nusenate, String cdcategory, String type,
             String decommodityf, String cdlocat) {
