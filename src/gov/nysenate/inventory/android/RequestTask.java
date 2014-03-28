@@ -155,7 +155,7 @@ public class RequestTask extends AsyncTask<String, String, String>
                 responseString = out.toString();
             } else {
                 // Closes the connection.
-                Log.w("HTTP1:", statusLine.getReasonPhrase());
+                Log.w("HTTP1:", statusLine.getReasonPhrase()+":"+statusLine.getStatusCode());
                 response.getEntity().getContent().close();
                 throw new IOException(statusLine.getReasonPhrase());
             }

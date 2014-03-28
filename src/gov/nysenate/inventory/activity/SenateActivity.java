@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -88,6 +90,7 @@ public abstract class SenateActivity extends Activity implements
     String defrmint = null;
     public static boolean changePasswordOnLogin = false;
     public LoginActivity currentLoginActivity = null;
+    protected final int DBASTRING = 5000, DBANAME = 5001, DBASERVER = 5002, DBAPORT = 5003;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,6 +227,9 @@ public abstract class SenateActivity extends Activity implements
         String URL  = "<N/A>";
         String server = "<N/A>";
         String port = "<N/A>";
+        
+        String dba = parseServerDatabaseString(DBANAME);
+        
         boolean httpServer = false;
         
         try {
@@ -242,36 +248,71 @@ public abstract class SenateActivity extends Activity implements
         }
         else {
             if (URL.toUpperCase().startsWith("HTTP://")) {
-                int period = URL.indexOf(".");
-                int colon = URL.indexOf(":");
-                if (period>-1) {
-                    server = URL.substring(0, period);
-                }
-                if (colon>-1) {
+                String IPADDRESS_PATTERN = 
+                        "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+
+                Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+                URL = URL.replaceAll("(?i)HTTP://", "");
+                Matcher matcher = pattern.matcher(URL);
+                boolean ipAddressFound = matcher.find();
+                if (ipAddressFound) {
+                    server =  matcher.group();
+                    System.out.println("ipAddressFound:"+server);
+                    URL = URL.replaceAll(server,"");
+                    int colon = URL.indexOf(":");
                     port = URL.substring(colon+1);
-                }            
-                else {
-                    port = "<N/A>";
+                    port = port.replaceAll("\\D+", "");
+                    httpServer = true;                    
                 }
-                port = port.replaceAll("\\D+", "");
-                server = server.replaceAll("(?i)HTTP://", "");
-                httpServer = true;
-            }
+                else {
+                    int period = URL.indexOf(".");
+                    int colon = URL.indexOf(":");
+                    System.out.println("ipAddressNOTFound:"+server);
+                    if (period>-1) {
+                        server = URL.substring(0, period);
+                    }
+                    if (colon>-1) {
+                        port = URL.substring(colon+1);
+                    }            
+                    else {
+                        port = "<N/A>";
+                    }
+                    port = port.replaceAll("\\D+", "");
+                    httpServer = true;
+                }
+              }
             else if (URL.toUpperCase().startsWith("HTTPS://")) {
-                int period = URL.indexOf(".");
-                int colon = URL.indexOf(":");
-                if (period>-1) {
-                    server = URL.substring(0, period);
-                }
-                if (colon>-1) {
+                String IPADDRESS_PATTERN = 
+                        "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+                
+                Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+                URL = URL.replaceAll("(?i)HTTPS://", "");
+                Matcher matcher = pattern.matcher(URL);
+                boolean ipAddressFound = matcher.find();
+                if (ipAddressFound) {
+                    server =  matcher.group();
+                    URL = URL.replaceAll(server,"");
+                    int colon = URL.indexOf(":");
                     port = URL.substring(colon+1);
+                    port = port.replaceAll("\\D+", "");
+                    httpServer = true;                    
                 }
-                else {
-                    port = "<N/A>";
+                else {                
+                    int period = URL.indexOf(".");
+                    int colon = URL.indexOf(":");
+                    if (period>-1) {
+                        server = URL.substring(0, period);
+                    }
+                    if (colon>-1) {
+                        port = URL.substring(colon+1);
+                    }
+                    else {
+                        port = "<N/A>";
+                    }
+                    port = port.replaceAll("\\D+", "");
+                    server = server.replaceAll("(?i)HTTPS://", "");
+                    httpServer = true;
                 }
-               port = port.replaceAll("\\D+", "");
-               server = server.replaceAll("(?i)HTTPS://", "");
-               httpServer = true;
             }
             else {
                 server = URL;
@@ -284,10 +325,16 @@ public abstract class SenateActivity extends Activity implements
         if (httpServer) {
             message = "<b>Version:</b> " + version + " ("
                     + versionCode + ") <br/><br/><b>Server:</b> " + server +" <br/><br/><b>Port:</b> "+port+"<br/>";
+            if (dba!=null && dba.trim().length()>0) {
+                message = message + "<br/><b>Database:</b> "+dba+"<br/>";
+            }
         }
         else {
             message = "<b>Version:</b> " + version + " ("
                     + versionCode + ") <br/><br/><b>Server:</b> " + URL +"<br/>";
+            if (dba!=null && dba.trim().length()>0) {
+                message = message + "<br/><b>Database:</b> "+dba+"<br/>";
+            }
         }
         
         // 1. Instantiate an AlertDialog.Builder with its constructor
@@ -486,6 +533,116 @@ public abstract class SenateActivity extends Activity implements
 
         // show it
         alertDialog.show();
+    }
+    
+    public String parseServerDatabaseString(int returnValue) {
+        String serverResponse = null;
+        AsyncTask<String, String, String> requestServerResponse = null;
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // fetch data
+
+            try {
+                // Get the URL from the properties
+                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
+                        .toString();
+                System.out.println("parseServerDatabaseString:"+URL+ "/GetDatabaseName");
+                requestServerResponse = new RequestTask().execute(URL
+                        + "/GetDatabaseName");
+
+                try {
+                    serverResponse = null;
+                    String resp = requestServerResponse.get();
+                    serverResponse = requestServerResponse.get().trim()
+                            .toString();
+                    if (serverResponse == null) {
+                        //noServerResponseMsg();
+                        return "";
+                    } else if (serverResponse.indexOf("Session timed out") > -1) {
+                        // TODO Handle Session Timeouts, for now, simply return nothing.
+                        return "";
+                    }
+                    else if (serverResponse.trim().length()==0) {
+                        //noServerResponseMsg();
+                        return "";
+                    }
+                    else {
+                        try {
+                            String[] splitDBAString = serverResponse.split(":");
+                            if (splitDBAString.length<1) {
+                                switch (returnValue) {
+                                case DBASTRING: 
+                                    return serverResponse;
+                                default:
+                                    return "";
+                                }
+                            }
+                            else {
+                                // dbaString = jdbc:{driver}:{driver type}:@{dba server}:{dba port}:{dba name}
+                                
+                                switch (returnValue) {
+                                case DBASTRING:
+                                    return serverResponse;
+                                case DBANAME:
+                                    if (splitDBAString.length>5) {
+                                        return splitDBAString[5];
+                                    }
+                                    else {
+                                        return "";
+                                    }
+                                case DBASERVER:
+                                    if (splitDBAString.length>3) {
+                                        return splitDBAString[3];
+                                    }
+                                    else {
+                                        return "";
+                                    }
+                                case DBAPORT:    
+                                    if (splitDBAString.length>4) {
+                                        return splitDBAString[4];
+                                    }
+                                    else {
+                                        return "";
+                                    }
+                                }
+                            }
+                            
+                        }
+                        catch (NullPointerException e1) {
+                            System.out.println("NULLPOINTER ERROR:"+e1.getMessage());
+                            e1.printStackTrace();
+                            return "";
+                        }
+                        catch (Exception e1) {
+                            System.out.println("ERROR:"+e1.getMessage());
+                            e1.printStackTrace();
+                            return "";
+                        }
+                        
+                    }
+
+                } catch (NullPointerException e) {
+                    noServerResponseMsg();
+                    return "";
+                }
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "";                
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return "";                
+            }
+        } else {
+            // TODO Handle Errors, for now, simply return nothing.
+            return "";
+        }
+        return "";        
+             
     }
 
     protected void onResume(Bundle savedInstanceState) {
