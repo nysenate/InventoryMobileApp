@@ -97,9 +97,9 @@ public class Transaction {
     public String getRemoteType() {
         if (this.isRemote()) {
             if (origin.getAdcity().equalsIgnoreCase("Albany"))
-                return "D";
+                return "RDL";
 
-            return "P";
+            return "RPK";
         }
         return "";
     }
