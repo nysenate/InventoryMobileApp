@@ -12,6 +12,7 @@ import gov.nysenate.inventory.model.Transaction;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import gov.nysenate.inventory.util.LocationParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -68,8 +69,8 @@ public class Pickup2Activity extends SenateActivity
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
 
-        origin = getIntent().getParcelableExtra("origin");
-        destination = getIntent().getParcelableExtra("destination");
+        origin = LocationParser.parseLocation(getIntent().getStringExtra("origin"));
+        destination = LocationParser.parseLocation(getIntent().getStringExtra("destination"));
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
         senateTagTV.addTextChangedListener(senateTagTextWatcher);

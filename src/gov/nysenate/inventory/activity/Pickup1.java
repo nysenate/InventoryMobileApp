@@ -5,7 +5,7 @@ import gov.nysenate.inventory.android.MsgAlert;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.LocationParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -310,8 +310,8 @@ public class Pickup1 extends SenateActivity
                 Intent intent = new Intent(this, Pickup2Activity.class);
                 origin = locations.get(allLocations.indexOf(currentFromLocation));
                 destination = locations.get(allLocations.indexOf(currentToLocation));
-                intent.putExtra("origin", origin);
-                intent.putExtra("destination", destination);
+                intent.putExtra("origin", origin.toJson());
+                intent.putExtra("destination", destination.toJson());
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
@@ -416,7 +416,7 @@ public class Pickup1 extends SenateActivity
                 startTimeout(LOCCODELIST_TIMEOUT);
             }
 
-            locations = TransactionParser.parseMultipleLocations(res);
+            locations = LocationParser.parseMultipleLocations(res);
             for (Location loc: locations) {
                 allLocations.add(loc.getLocationSummaryString());
             }

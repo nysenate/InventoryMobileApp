@@ -1,9 +1,8 @@
 package gov.nysenate.inventory.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.google.gson.Gson;
 
-public class Location implements Parcelable
+public class Location
 {
 
     private String cdloctype;
@@ -93,45 +92,7 @@ public class Location implements Parcelable
         return this.getAdstreet1() + " " + this.getAdcity() + ", " + this.getAdstate() + " " + this.getAdzipcode();
     }
 
-    // ---------- Code for Parcelable interface --------------
-
-    public Location(Parcel in) {
-        readFromParcel(in);
+    public String toJson() {
+        return new Gson().toJson(this);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cdlocat);
-        dest.writeString(cdloctype);
-        dest.writeString(adstreet1);
-        dest.writeString(adcity);
-        dest.writeString(adzipcode);
-    }
-
-    public void readFromParcel(Parcel in) {
-        // Read Parcel in same order we wrote it.
-        cdlocat = in.readString();
-        cdloctype = in.readString();
-        adstreet1 = in.readString();
-        adcity = in.readString();
-        adzipcode = in.readString();
-    }
-
-    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>()
-    {
-        @Override
-        public Location createFromParcel(Parcel in) {
-            return new Location(in);
-        }
-
-        @Override
-        public Location[] newArray(int size) {
-            return new Location[size];
-        }
-    };
 }
