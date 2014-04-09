@@ -109,16 +109,6 @@
         android:layout_marginLeft="5dp"
         android:entries="@array/remote_ship_types"
         android:gravity="center" />
-       
-    <CheckBox android:id="@+id/paperwork_checkbox"
-        android:layout_below="@+id/tablelayout_header1_pickup3"
-        android:layout_toRightOf="@+id/remote_ship_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:text="Request Delivery Paperwork"
-        android:onClick="paperworkRequestedClick"/>
-    
 
     <ListView
         android:id="@+id/listView1"

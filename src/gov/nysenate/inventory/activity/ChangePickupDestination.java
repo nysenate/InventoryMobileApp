@@ -5,10 +5,7 @@ import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.Toasty;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +20,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -140,7 +136,7 @@ public class ChangePickupDestination extends SenateActivity {
                 e.printStackTrace();
             }
 
-            List<Location> locs = TransactionParser.parseMultipleLocations(out.toString());
+            List<Location> locs = LocationParser.parseMultipleLocations(out.toString());
             for (Location loc: locs) {
                 locations.add(loc.getLocationSummaryString());
             }

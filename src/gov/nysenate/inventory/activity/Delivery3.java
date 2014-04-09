@@ -210,44 +210,6 @@ public class Delivery3 extends SenateActivity
         Delivery3.progBarDelivery3.setVisibility(View.INVISIBLE);
     }
 
-    public void noServerResponse() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        // set title
-        alertDialogBuilder.setTitle(Html
-                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
-                .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        dialog.dismiss();
-                    }
-                });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-    }
-
     public int getEmployeeId(String name) {
         for (Employee emp: employeeHiddenList) {
             if (emp.getEmployeeName().equalsIgnoreCase(name)) {

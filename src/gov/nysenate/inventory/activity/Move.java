@@ -52,7 +52,7 @@ public class Move extends SenateActivity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (checkServerResponse(true) != OK) {
-            noServerResponseMsg();
+            noServerResponse();
         }
 
         Intent intent;

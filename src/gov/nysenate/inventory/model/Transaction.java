@@ -36,18 +36,13 @@ public class Transaction {
     // Remote Info
     private int shipId;
     private String shipType;
+    private String shipTypeDesc;
     private String shipComments;
     private int verificationId;
     private String verificationMethod;
     private String verificationComments;
     private int employeeId;
     private String helpReferenceNum;
-
-    // Additional data
-    private Employee pickupByEmployee;
-    private Employee releaseByEmployee;
-    private Employee acceptByEmployee;
-    private Employee deliverByEmployee;
 
     public Transaction() {
         origin = new Location();
@@ -69,10 +64,6 @@ public class Transaction {
         verificationMethod = "";
         verificationComments = "";
         helpReferenceNum = "";
-        pickupByEmployee = new Employee();
-        releaseByEmployee = new Employee();
-        acceptByEmployee = new Employee();
-        deliverByEmployee = new Employee();
     }
 
     // shipType must exists for all remote transactions.
@@ -103,7 +94,6 @@ public class Transaction {
         }
         return "";
     }
-
 
     public String toJson() {
         Gson gson = new Gson();
@@ -190,6 +180,14 @@ public class Transaction {
 
     public void setShipType(String shipType) {
         this.shipType = shipType;
+    }
+
+    public String getShipTypeDesc() {
+        return shipTypeDesc;
+    }
+
+    public void setShipTypeDesc(String shipTypeDesc) {
+        this.shipTypeDesc = shipTypeDesc;
     }
 
     public String getShipComments() {
@@ -293,7 +291,11 @@ public class Transaction {
     }
 
     public void setNapickupby(String napickupby) {
-        this.napickupby = napickupby.toUpperCase();
+        if (napickupby != null) {
+            this.napickupby = napickupby.toUpperCase();
+        } else {
+            this.napickupby = "";
+        }
     }
 
     public String getNareleaseby() {
@@ -301,7 +303,11 @@ public class Transaction {
     }
 
     public void setNareleaseby(String nareleaseby) {
-        this.nareleaseby = nareleaseby.toUpperCase();
+        if (nareleaseby != null) {
+            this.nareleaseby = nareleaseby.toUpperCase();
+        } else {
+            this.nareleaseby = "";
+        }
     }
 
     public String getNuxrrelsign() {
@@ -364,7 +370,11 @@ public class Transaction {
     }
 
     public void setNadeliverby(String nadeliverby) {
-        this.nadeliverby = nadeliverby.toUpperCase();
+        if (nadeliverby != null) {
+            this.nadeliverby = nadeliverby.toUpperCase();
+        } else {
+            this.nadeliverby = "";
+        }
     }
 
     public String getNaacceptby() {
@@ -372,7 +382,11 @@ public class Transaction {
     }
 
     public void setNaacceptby(String naacceptby) {
-        this.naacceptby = naacceptby.toUpperCase();
+        if (naacceptby != null) {
+            this.naacceptby = naacceptby.toUpperCase();
+        } else {
+            this.naacceptby = "";
+        }
     }
 
     public String getNuxraccptsign() {
@@ -382,43 +396,12 @@ public class Transaction {
     public void setNuxrsccptsign(String nuxraccptsign) {
         this.nuxraccptsign = nuxraccptsign;
     }
+
     public String getOriginFullAddress() {
         return origin.getFullAddress();
     }
 
     public String getDestinationFullAddress() {
         return destination.getFullAddress();
-    }
-
-    public Employee getPickupByEmployee() {
-        return pickupByEmployee;
-    }
-
-    public Employee getReleaseByEmployee() {
-        return releaseByEmployee;
-    }
-
-    public Employee getAcceptByEmployee() {
-        return acceptByEmployee;
-    }
-
-    public Employee getDeliverByEmployee() {
-        return deliverByEmployee;
-    }
-
-    public void setPickupByEmployee(Employee pickupByEmployee) {
-        this.pickupByEmployee = pickupByEmployee;
-    }
-
-    public void setReleaseByEmployee(Employee releaseByEmployee) {
-        this.releaseByEmployee = releaseByEmployee;
-    }
-
-    public void setAcceptByEmployee(Employee acceptByEmployee) {
-        this.acceptByEmployee = acceptByEmployee;
-    }
-
-    public void setDeliverByEmployee(Employee deliverByEmployee) {
-        this.deliverByEmployee = deliverByEmployee;
     }
 }

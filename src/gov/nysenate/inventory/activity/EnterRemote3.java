@@ -85,7 +85,7 @@ public class EnterRemote3 extends SenateActivity {
         verMethod.setOnItemSelectedListener(new VerMethodListener(verMethod, remoteHelpReferenceNum, remoteSigner));
 
         if (checkServerResponse() != OK) {
-            noServerResponseMsg();
+            noServerResponse();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

@@ -496,44 +496,6 @@ public abstract class SenateActivity extends Activity implements
             startActivityForResult(intent, ITEMCOMMENTS);
         }
     }
-
-    public void noServerResponseMsg() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        // set title
-        alertDialogBuilder.setTitle(Html
-                .fromHtml("<font color='#000055'>NO SERVER RESPONSE</font>"));
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
-                .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        Context context = getApplicationContext();
-
-                        CharSequence text = "No action taken due to NO SERVER RESPONSE";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-
-                        dialog.dismiss();
-                    }
-                });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-    }
     
     public String parseServerDatabaseString(int returnValue) {
         String serverResponse = null;
@@ -624,7 +586,7 @@ public abstract class SenateActivity extends Activity implements
                     }
 
                 } catch (NullPointerException e) {
-                    noServerResponseMsg();
+                    noServerResponse();
                     return "";
                 }
 
@@ -657,7 +619,7 @@ public abstract class SenateActivity extends Activity implements
         InvApplication.activityResumed();
         checkInternetConnection();
         timer.cancel();
-        if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+        if(!((Object)this).getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
         timer.start();
     }
 
@@ -697,7 +659,7 @@ public abstract class SenateActivity extends Activity implements
                             .toString();
                     if (serverResponse == null) {
                         if (handleServerResponse) {
-                            noServerResponseMsg();
+                            noServerResponse();
                         }
                         return NO_SERVER_RESPONSE;
                     } else if (serverResponse.indexOf("Session timed out") > -1) {
@@ -709,7 +671,7 @@ public abstract class SenateActivity extends Activity implements
 
                 } catch (NullPointerException e) {
                     if (handleServerResponse) {
-                        noServerResponseMsg();
+                        noServerResponse();
                     }
                     return EXCEPTION_IN_CODE;
                 }
@@ -989,27 +951,27 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         myIntent.putExtra("TIMEOUTFROM", "softkey");
 		stContext.startActivity(myIntent);
 	}
-   
+
    @Override
     public void onUserInteraction(){
-	   		timer.cancel();
-	   		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+  		timer.cancel();
+  		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
     		  timer.start();
-    		  super.onUserInteraction();
-    		  System.out.println("name:: "+SenateActivity.this.getClass().getSimpleName());
+    	super.onUserInteraction();
+    	System.out.println("name:: " + ((Object)this).getClass().getSimpleName());
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	// TODO Auto-generated method stub
     	super.onCreate(savedInstanceState);
     	if(stContext == null)
     		stContext = getApplicationContext();
-    	if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+    	if(!((Object)this).getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
     	timer.start();
-    	setCurrentActivity(this.getClass().getSimpleName());
+    	setCurrentActivity(((Object)this).getClass().getSimpleName());
     }
-    
+
     public LoginStatus verifyLogin(String user_name, String password) {
         LoginStatus loginStatus = new LoginStatus();
         try {
