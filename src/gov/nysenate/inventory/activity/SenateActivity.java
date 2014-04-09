@@ -992,7 +992,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
    
    @Override
     public void onUserInteraction(){
-	   		  timer.cancel();
+	   		timer.cancel();
 	   		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
     		  timer.start();
     		  super.onUserInteraction();
