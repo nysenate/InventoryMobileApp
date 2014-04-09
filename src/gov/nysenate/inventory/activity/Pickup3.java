@@ -108,7 +108,6 @@ public class Pickup3 extends SenateActivity
     public String timeoutFrom = "pickup3";
     private Transaction pickup;
     private CheckBox remoteBox;
-    private CheckBox paperworkBox;
     private Spinner remoteShipType;
     ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
  
@@ -138,7 +137,6 @@ public class Pickup3 extends SenateActivity
         pickupCountTV = (TextView) findViewById(R.id.tv_count_pickup3);
         pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
         remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
-        paperworkBox = (CheckBox) findViewById(R.id.paperwork_checkbox);
         remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
         remoteShipType.setVisibility(Spinner.INVISIBLE);
 
@@ -836,9 +834,6 @@ public class Pickup3 extends SenateActivity
         btnPickup3ClrSig.setVisibility(Button.VISIBLE);
         sign.setVisibility(SignatureView.VISIBLE);
         employeeNamesView.setVisibility(TextView.VISIBLE);
-    }
-    public void paperworkRequestedClick(View view) {
-        // TODO: implement
     }
 
     private boolean isRemoteOptionVisible() {
