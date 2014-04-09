@@ -639,7 +639,7 @@ public class Pickup3 extends SenateActivity
             progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
 
             if (res == null) {
-                noServerResponseMsg();
+                noServerResponse();
                 return;
             } else if (res.indexOf("Session timed out") > -1) {
                 startTimeout(POSITIVEDIALOG_TIMEOUT);
@@ -698,7 +698,7 @@ public class Pickup3 extends SenateActivity
             Context context = getApplicationContext();
             CharSequence text = res.trim();
             if (res.length() == 0) {
-                noServerResponseMsg();
+                noServerResponse();
                 return;
             }
 
@@ -782,7 +782,7 @@ public class Pickup3 extends SenateActivity
             progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
 
             if (response == null) {
-                noServerResponseMsg();
+                noServerResponse();
                 return;
             } else if (response.indexOf("Session timed out") > -1) {
                 startTimeout(EMPLOYEELIST_TIMEOUT);
