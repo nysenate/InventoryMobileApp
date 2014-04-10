@@ -55,7 +55,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.ListView; 
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +91,16 @@ public abstract class SenateActivity extends Activity implements
     public static boolean changePasswordOnLogin = false;
     public LoginActivity currentLoginActivity = null;
     protected final int DBASTRING = 5000, DBANAME = 5001, DBASERVER = 5002, DBAPORT = 5003;
+    static boolean enablingWifi = false;
+    static boolean prevConnected = true; // Assume that connection was already found so
+                                  // that it doesn't show Wifi Connection Found
+                                  // for every Activity
+    static boolean curConnected = true; // Assume that connection was already found so
+                                        // that it doesn't show Wifi Connection Found
+                                        // for every Activity
+                                        // The Check Internet Service will check for
+                                        // connections and disconnections.
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -693,15 +703,6 @@ public abstract class SenateActivity extends Activity implements
     // WifiReceiver receiverWifi;
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
-    boolean enablingWifi = false;
-    boolean prevConnected = true; // Assume that connection was already found so
-                                  // that it doesn't show Wifi Connection Found
-                                  // for every Activity
-    boolean curConnected = true; // Assume that connection was already found so
-                                 // that it doesn't show Wifi Connection Found
-                                 // for every Activity
-                                 // The Check Internet Service will check for
-                                 // connections and disconnections.
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;

@@ -21,9 +21,9 @@ public class CheckInternet extends BroadcastReceiver
     // WifiReceiver receiverWifi;
     List<ScanResult> wifiList;
     ScanResult currentWifiResult;
-    boolean enablingWifi = false;
-    boolean prevConnected = false;
-    boolean curConnected = false;
+    static boolean enablingWifi = false;
+    static boolean prevConnected = false;
+    static boolean curConnected = false;
     int currentSignalStrength = 0;
     int prevSignalStrength = 0;
     Context context;
