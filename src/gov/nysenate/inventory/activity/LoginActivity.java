@@ -15,6 +15,7 @@ import gov.nysenate.inventory.util.Toasty;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -94,6 +95,12 @@ ChangePasswordDialogListener
     int lastNumericErrorLength = 0;
     public static Properties properties; // Since we want to refer to this in
                                          // other activities
+    public static int senateWifiFoundCount = 0;
+    public static int senateWifiLostCount = 0;
+    public static int chkintWifiFoundCount = 0;
+    public static int chkintWifiLostCount = 0;
+    public static Date wifiCountStart;
+    
     static AssetManager assetManager;
     Button buttonLogin;
     ProgressBar progressBarLogin;
@@ -134,6 +141,9 @@ ChangePasswordDialogListener
         super.currentLoginActivity = this;
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
+        if (wifiCountStart==null) {
+            wifiCountStart = new Date();
+        }
         // See if there is a Parent Activity, if there was one, then it must
         // have timed out.
         //Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");

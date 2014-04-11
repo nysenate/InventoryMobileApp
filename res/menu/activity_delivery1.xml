@@ -7,6 +7,22 @@
  	      android:title="@string/menu_change_password_title" 
  	      android:showAsAction="never">
  	</item>
+ 	
+  	<item android:id="@+id/changeWifiCountsMenu"
+ 	      android:orderInCategory="991"
+ 	      android:enabled="true" 
+ 	      android:visible="true" 
+ 	      android:title="Wifi Found/Lost Counts" 
+ 	      android:showAsAction="never">
+ 	</item>  
+ 	
+  	<item android:id="@+id/resetWifiCountsMenu"
+ 	      android:orderInCategory="992"
+ 	      android:enabled="true" 
+ 	      android:visible="true" 
+ 	      android:title="Reset Wifi Found/Lost Counts" 
+ 	      android:showAsAction="never">
+ 	</item> 	  		
         
  	<item android:id="@+id/aboutApp"
  	      android:orderInCategory="1000"

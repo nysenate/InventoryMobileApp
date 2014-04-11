@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.LoginActivity;
+
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -51,6 +53,8 @@ public class CheckInternet extends BroadcastReceiver
                     && cm.getActiveNetworkInfo().isConnected()) {
                 curConnected = cm.getActiveNetworkInfo().isConnected();
                 if (!prevConnected) {
+                    LoginActivity.chkintWifiFoundCount++;
+                    Log.i("CheckInternet", "****************WFI CONNECTION FOUND");
                     toast = Toast.makeText(context, "Wifi Connection found.",
                             duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -63,6 +67,8 @@ public class CheckInternet extends BroadcastReceiver
                 curConnected = false;
                 if (mainWifi.isWifiEnabled()) {
                     if (prevConnected) {
+                        LoginActivity.chkintWifiLostCount++;
+                        Log.i("CheckInternet", "****************WFI CONNECTION LOST");
                         duration = Toast.LENGTH_LONG;
                         toast = Toast.makeText(context,
                                 "Wifi Connection lost.", duration);

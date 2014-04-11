@@ -19,8 +19,11 @@ import gov.nysenate.inventory.util.Toasty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -114,6 +117,12 @@ public abstract class SenateActivity extends Activity implements
             NavUtils.navigateUpFromSameTask(this);
 
             overridePendingTransition(R.anim.in_left, R.anim.out_right);
+            return true;
+        case R.id.changeWifiCountsMenu:
+            showWifiCountsDialog();
+            return true;
+        case R.id.resetWifiCountsMenu:
+            resetWifiCounts();
             return true;
         case R.id.aboutApp:
             showAboutDialog();
@@ -372,6 +381,57 @@ public abstract class SenateActivity extends Activity implements
         messageText.setGravity(Gravity.CENTER);        
          
     }
+    
+    public void showWifiCountsDialog() {
+        StringBuffer message = new StringBuffer();
+        if (LoginActivity.wifiCountStart != null) {
+            message.append("<b>Wifi Count started at:</b> ");
+            message.append(new SimpleDateFormat("MM/dd/yy hh:mm:ssa", Locale.US).format(LoginActivity.wifiCountStart));
+            message.append("<br/><br/>");
+        }
+        message.append("<b>Check Internet Wifi Found Count:</b> ");
+        message.append(LoginActivity.chkintWifiFoundCount);
+        message.append("<br/><br/><b>Check Internet Wifi Lost Count:</b> ");
+        message.append(LoginActivity.chkintWifiLostCount);
+        message.append("<br/><br/><b>Senate Activity Wifi Found Count:</b> ");
+        message.append(LoginActivity.senateWifiFoundCount);
+        message.append("<br/><br/><b>Senate Activity Wifi Lost Count:</b> ");
+        message.append(LoginActivity.senateWifiLostCount);
+        
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog
+        // characteristics
+        builder.setTitle(Html
+                .fromHtml("<font color='#000055'>Wifi Found/Lost Counts</font>"));
+        builder.setMessage(Html.fromHtml(message.toString()));
+        // Add the buttons
+        builder.setPositiveButton(Html.fromHtml("<b>OK</b>"),
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+        messageText.setGravity(Gravity.CENTER);        
+         
+    }    
+    
+   public void resetWifiCounts() {
+       LoginActivity.senateWifiFoundCount = 0;
+       LoginActivity.senateWifiLostCount = 0;
+       LoginActivity.chkintWifiFoundCount = 0;
+       LoginActivity.chkintWifiLostCount = 0;
+       LoginActivity.wifiCountStart = new Date();
+       new Toasty(stContext).showMessage("Wifi counts were reset!!!");
+   }
     
    public ChangePasswordDialog showChangePasswordDialog() {
         return showChangePasswordDialog(null, null, null, null);
@@ -754,6 +814,9 @@ public abstract class SenateActivity extends Activity implements
                     && cm.getActiveNetworkInfo().isConnected()) {
                 curConnected = cm.getActiveNetworkInfo().isConnected();
                 if (!prevConnected) {
+                    Log.i("SenateActivity", "****************WFI CONNECTION FOUND");                    
+                    LoginActivity.senateWifiFoundCount++;
+                    
                     toast = Toast.makeText(context, "Wifi Connection found.",
                             duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -766,6 +829,8 @@ public abstract class SenateActivity extends Activity implements
                 curConnected = false;
                 if (mainWifi.isWifiEnabled()) {
                     if (prevConnected) {
+                        Log.i("SenateActivity", "****************WFI CONNECTION LOST");
+                        LoginActivity.senateWifiLostCount++;
                         toast = Toast.makeText(context,
                                 "Wifi Connection lost.", duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
