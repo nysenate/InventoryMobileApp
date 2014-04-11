@@ -141,6 +141,7 @@ public class RequestTask extends AsyncTask<String, String, String>
             if (currentMode == POST) {
                 HttpPost httpPost = new HttpPost(url.toString());
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                
                 response = httpClient.execute(httpPost);
             } else {
                 HttpGet httpGet = new HttpGet(url.toString());
@@ -148,7 +149,7 @@ public class RequestTask extends AsyncTask<String, String, String>
             }
 
             StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {               
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 response.getEntity().writeTo(out);
                 out.close();

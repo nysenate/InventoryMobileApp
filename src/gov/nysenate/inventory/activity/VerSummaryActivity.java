@@ -359,7 +359,7 @@ public class VerSummaryActivity extends SenateActivity
                 // Log.i("continueButton", "KeepSessionAlive RESPONSE:" +
                 // response);
                 if (resr1 == null || response == null
-                        || response.trim().length() == 0) {
+                        ) { //|| response.trim().length() == 0
                     this.noServerResponse();
                     return;
                 } else if (response.indexOf("Session timed out") > -1) {
@@ -368,7 +368,7 @@ public class VerSummaryActivity extends SenateActivity
                 }
             } catch (Exception e) {
                 if (resr1 == null || response == null
-                        || response.trim().length() == 0) {
+                        ) { //|| response.trim().length() == 0
                     this.noServerResponse();
                     return;
                 }
