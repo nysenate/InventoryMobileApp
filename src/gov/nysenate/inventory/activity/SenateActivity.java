@@ -1021,7 +1021,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
    @Override
     public void onUserInteraction(){
   		timer.cancel();
-  		if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+  		if(!((Object)this).getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
     		  timer.start();
     	super.onUserInteraction();
     	System.out.println("name:: " + ((Object)this).getClass().getSimpleName());
