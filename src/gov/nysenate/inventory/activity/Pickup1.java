@@ -414,6 +414,7 @@ public class Pickup1 extends SenateActivity
                 noServerResponse();
             } else if (res.indexOf("Session timed out") > -1) {
                 startTimeout(LOCCODELIST_TIMEOUT);
+                return null;
             }
 
             locations = LocationParser.parseMultipleLocations(res);

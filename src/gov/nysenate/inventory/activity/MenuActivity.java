@@ -89,6 +89,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id) {
+
         RowItem curRow = rowItems.get(position);
         if (curRow.getTitle().equalsIgnoreCase("Search")) {
             if (checkServerResponse(true) == OK) {

@@ -30,6 +30,8 @@ public class RequestTask extends AsyncTask<String, String, String>
     public final int POST = -3;
     List<NameValuePair> nameValuePairs;
 
+    public static final int SC_SESSION_TIMEOUT = 599;
+
     Properties properties;
 
     public int currentMode = -2;
@@ -152,6 +154,10 @@ public class RequestTask extends AsyncTask<String, String, String>
             StatusLine statusLine = response.getStatusLine();
             response.getEntity().writeTo(out);
             responseString = out.toString();
+            if (responseString == null && statusLine.getStatusCode() == SC_SESSION_TIMEOUT) {
+                responseString = "Session timed out";
+            }
+
             Log.w("HTTP1:", statusLine.getReasonPhrase() + ":" + statusLine.getStatusCode());
         } catch (ClientProtocolException e) {
             // TODO Handle problems..

@@ -51,9 +51,6 @@ public class Move extends SenateActivity implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (checkServerResponse(true) != OK) {
-            noServerResponse();
-        }
 
         Intent intent;
         RowItem curRow = rowItems.get(position);
