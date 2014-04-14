@@ -137,6 +137,7 @@ public class RequestTask extends AsyncTask<String, String, String>
         url.append("userFallback=");
         url.append(LoginActivity.nauser);
 
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             if (currentMode == POST) {
                 HttpPost httpPost = new HttpPost(url.toString());
@@ -149,17 +150,9 @@ public class RequestTask extends AsyncTask<String, String, String>
             }
 
             StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {               
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                out.close();
-                responseString = out.toString();
-            } else {
-                // Closes the connection.
-                Log.w("HTTP1:", statusLine.getReasonPhrase()+":"+statusLine.getStatusCode());
-                response.getEntity().getContent().close();
-                throw new IOException(statusLine.getReasonPhrase());
-            }
+            response.getEntity().writeTo(out);
+            responseString = out.toString();
+            Log.w("HTTP1:", statusLine.getReasonPhrase() + ":" + statusLine.getStatusCode());
         } catch (ClientProtocolException e) {
             // TODO Handle problems..
             Log.w("HTTP2:", e);
@@ -172,6 +165,14 @@ public class RequestTask extends AsyncTask<String, String, String>
             Log.w("HTTP3:", e);
         } catch (Exception e) {
             Log.w("HTTP4:", e);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    Log.w("HTTP5:", e);
+                }
+            }
         }
         res = responseString;
         return responseString;
