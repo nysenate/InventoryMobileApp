@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.activity;
 
+import android.view.Menu;
 import gov.nysenate.inventory.android.ChangePasswordDialog;
 import gov.nysenate.inventory.android.CommentsDialog;
 import gov.nysenate.inventory.android.InvApplication;
@@ -154,6 +155,12 @@ public abstract class SenateActivity extends Activity implements
         InvApplication.activityDestroyed();
         // unregisterReceiver(receiver);
         InvApplication.activityPaused();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_senate, menu);
+        return true;
     }
 
     // Quick shortcut for playing a single sound.
