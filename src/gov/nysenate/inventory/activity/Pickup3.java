@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.activity;
 
+import android.view.*;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
@@ -61,10 +62,6 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -96,6 +93,7 @@ public class Pickup3 extends SenateActivity
     static Button continueBtn;
     static Button cancelBtn;
     static Button btnPickup3ClrSig;
+    private ListView ListViewTab1;
 
     private TextView pickupCountTV;
     private TextView tvOriginPickup3;
@@ -124,7 +122,7 @@ public class Pickup3 extends SenateActivity
                 .setClearMsg("Do you want to clear the Pickup Comments?");
         commentsEditText.showClearMsg(true);
 
-        ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
+        ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
         pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
         pickup.setNapickupby(LoginActivity.nauser);
@@ -812,12 +810,28 @@ public class Pickup3 extends SenateActivity
             remoteShipType.setVisibility(Spinner.VISIBLE);
             if (isOriginLocationRemote()) {
                 hideNaReleaseByInfo();
+                expandItemList();
             }
         } else {
             remoteShipType.setVisibility(Spinner.INVISIBLE);
             pickup.setShipType("");
             showNaReleaseByInfo();
+            resetItemList();
         }
+    }
+
+    private void resetItemList() {
+        ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
+        params.height = 345;
+        ListViewTab1.setLayoutParams(params);
+        ListViewTab1.requestLayout();
+    }
+
+    private void expandItemList() {
+        ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
+        params.height = 525;
+        ListViewTab1.setLayoutParams(params);
+        ListViewTab1.requestLayout();
     }
 
     private boolean isOriginLocationRemote() {
