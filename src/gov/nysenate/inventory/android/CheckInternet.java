@@ -47,6 +47,9 @@ public class CheckInternet extends BroadcastReceiver
 
     public void turnWifiOn(Context context) {
         WifiManager mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        mainWifi.setWifiEnabled(true);
+        boolean success = mainWifi.setWifiEnabled(true);
+        if (!success) {
+            Toasty.displayCenteredMessage(context, "Unable to turn on Wifi, Please turn it on manually", Toast.LENGTH_SHORT);
+        }
     }
 }
