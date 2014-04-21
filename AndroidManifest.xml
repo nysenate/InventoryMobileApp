@@ -27,8 +27,8 @@
         android:theme="@style/AppTheme" >
         <receiver android:name="gov.nysenate.inventory.android.CheckInternet" >
             <intent-filter>
-                <action android:name="android.net.wifi.STATE_CHANGE" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.CONNECTION_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 
