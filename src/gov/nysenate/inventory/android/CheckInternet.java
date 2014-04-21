@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.android;
 
+import android.net.NetworkInfo;
 import gov.nysenate.inventory.activity.LoginActivity;
 
 import java.util.List;
@@ -32,6 +33,9 @@ public class CheckInternet extends BroadcastReceiver
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        
+        debugIntent(context, intent);
+        
         if (!InvApplication.isActivityVisible()) {
             Log.i("CheckInternet", "Invapp is invisible");
             return;
@@ -108,6 +112,43 @@ public class CheckInternet extends BroadcastReceiver
          * // 3. Get the AlertDialog from create() AlertDialog dialog =
          * builder.create(); dialog.show();
          */
+    }
+
+    private void debugIntent(Context context, Intent intent) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = cm.getActiveNetworkInfo();
+        int type = network.getType();
+
+        switch(type) {
+            case ConnectivityManager.TYPE_BLUETOOTH:
+                Log.i("CheckInternet", "Bluethoth connection.");
+                break;
+            case ConnectivityManager.TYPE_ETHERNET:
+                Log.i("CheckInternet", "Ethernet connection.");
+                break;
+            case ConnectivityManager.TYPE_MOBILE:
+                Log.i("CheckInternet", "Mobile connection.");
+                break;
+            case ConnectivityManager.TYPE_MOBILE_DUN:
+                Log.i("CheckInternet", "Mobile_Dun connection.");
+                break;
+            case ConnectivityManager.TYPE_MOBILE_HIPRI:
+                Log.i("CheckInternet", "Mobile_Hipri connection.");
+                break;
+            case ConnectivityManager.TYPE_MOBILE_MMS:
+                Log.i("CheckInternet", "Mobile_mms connection.");
+                break;
+            case ConnectivityManager.TYPE_MOBILE_SUPL:
+                Log.i("CheckInternet", "Mobile_supl connection.");
+                break;
+            case ConnectivityManager.TYPE_WIFI:
+                Log.i("CheckInternet", "Wifi connection.");
+                break;
+            case ConnectivityManager.TYPE_WIMAX:
+                Log.i("CheckInternet", "Wimax connection.");
+                break;
+        }
+
     }
 
     public void wifiAlert(String title, String msg) {
