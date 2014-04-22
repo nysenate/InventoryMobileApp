@@ -1,6 +1,9 @@
 package gov.nysenate.inventory.android;
 
 import android.content.*;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 import gov.nysenate.inventory.activity.LoginActivity;
 
 import android.net.wifi.WifiManager;
@@ -9,47 +12,69 @@ import gov.nysenate.inventory.util.Toasty;
 
 public class CheckInternet extends BroadcastReceiver
 {
+    private static boolean appConnected = true;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("android.net.wifi.CONNECTION_CHANGE")) {
+        if (intent.getAction().equals("android.net.wifi.supplicant.CONNECTION_CHANGE")) {
             handleConnectionChange(context, intent);
-
-        } else if (intent.getAction().equals("android.net.wifi.WIFI_STATE_CHANGED")) {
-            handleEnablingOrDisablingOfWifi(context, intent);
+        } else if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
+            handleConnectivityChange(context, intent);
         }
     }
 
     private void handleConnectionChange(Context context, Intent intent) {
-        boolean connected = intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false);
-
-        if (connected) {
-            Toasty.displayCenteredMessage(context, "Wifi connection found", Toast.LENGTH_SHORT);
-            LoginActivity.chkintWifiFoundCount++;
+        if (wifiEnabled(intent)) {
+            Log.i("CheckInternet", "Wifi connection enabled");
+            // Do nothing, A CONNECTIVITY_CHANGE intent will also be sent once a network connection is established.
         } else {
-            Toasty.displayCenteredMessage(context, "Wifi connection lost", Toast.LENGTH_SHORT);
-            LoginActivity.chkintWifiLostCount++;
-            // TODO: try to re-connect to SenateNet
+            Log.i("CheckInternet", "Wifi connection disabled");
+            turnOnWifi(context);
         }
     }
 
-    private void handleEnablingOrDisablingOfWifi(Context context, Intent intent) {
-        int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+    private boolean wifiEnabled(Intent intent) {
+        return intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false);
+    }
 
-        switch (state) {
-            case WifiManager.WIFI_STATE_DISABLED:
-                turnWifiOn(context);
-                break;
-            case WifiManager.WIFI_STATE_ENABLED:
-                Toasty.displayCenteredMessage(context, "Wifi has been turned back on.", Toast.LENGTH_SHORT);
-                break;
+    private void handleConnectivityChange(Context context, Intent intent) {
+        if (!activeConnection(intent)) {
+            if (appConnected) {
+                appConnectionLost(context);
+            }
+        } else {
+            if (connectionIsWifi(context)) {
+                appConnectionFound(context);
+            }
         }
     }
 
-    public void turnWifiOn(Context context) {
+    private void turnOnWifi(Context context) {
         WifiManager mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        boolean success = mainWifi.setWifiEnabled(true);
-        if (!success) {
+        if (!mainWifi.setWifiEnabled(true)) {
             Toasty.displayCenteredMessage(context, "Unable to turn on Wifi, Please turn it on manually", Toast.LENGTH_SHORT);
         }
+    }
+
+    private boolean activeConnection(Intent intent) {
+        return !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+    }
+
+    private void appConnectionLost(Context context) {
+        LoginActivity.chkintWifiLostCount++;
+        Toasty.displayCenteredMessage(context, "Wifi connection lost.", Toast.LENGTH_SHORT);
+        appConnected = false;
+    }
+
+    private boolean connectionIsWifi(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
+    }
+
+    private void appConnectionFound(Context context) {
+        LoginActivity.chkintWifiFoundCount++;
+        appConnected = true;
+        Toasty.displayCenteredMessage(context, "Wifi connection found.", Toast.LENGTH_SHORT);
     }
 }
