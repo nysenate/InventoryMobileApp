@@ -22,6 +22,7 @@ public class SoundAlert extends AsyncTask<Object, Integer, String>
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     // TODO Auto-generated method stub
+                    mp.reset();
                     mp.release();
                 }
 
