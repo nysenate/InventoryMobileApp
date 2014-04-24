@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.activity;
 
+import android.util.TypedValue;
 import android.view.*;
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
@@ -172,7 +173,7 @@ public class Delivery3 extends SenateActivity
             btnDeliv3ClrSig.setVisibility(Button.INVISIBLE);
 
             ViewGroup.LayoutParams params = listview.getLayoutParams();
-            params.height = 600;
+            params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 460, getResources().getDisplayMetrics());
             listview.setLayoutParams(params);
             listview.requestLayout();
         }

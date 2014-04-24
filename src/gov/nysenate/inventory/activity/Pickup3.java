@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.activity;
 
+import android.util.TypedValue;
 import android.view.*;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
@@ -825,14 +826,14 @@ public class Pickup3 extends SenateActivity
 
     private void resetItemList() {
         ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
-        params.height = 345;
+        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 260, getResources().getDisplayMetrics());
         ListViewTab1.setLayoutParams(params);
         ListViewTab1.requestLayout();
     }
 
     private void expandItemList() {
         ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
-        params.height = 525;
+        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400, getResources().getDisplayMetrics());
         ListViewTab1.setLayoutParams(params);
         ListViewTab1.requestLayout();
     }
