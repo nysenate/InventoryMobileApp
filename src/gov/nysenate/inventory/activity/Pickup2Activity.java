@@ -554,7 +554,8 @@ public class Pickup2Activity extends SenateActivity
                     + barcode_num);
             try {
                 res = null;
-                res = resr1.get().trim().toString();
+                res = resr1.get();
+
                 if (testResNull) { // Testing Purposes Only
                     res = null;
                     resr1 = null;
@@ -568,15 +569,15 @@ public class Pickup2Activity extends SenateActivity
                     // Log.i("TESTING", "A CALL noServerResponse");
                     noServerResponse(barcode_num);
                     return NO_SERVER_RESPONSE;
+                } else if (res.indexOf("Session timed out") > -1) {
+                    startTimeout(ITEMDETAILS_TIMEOUT);
+                    return SERVER_SESSION_TIMED_OUT;
                 } else if (res.toUpperCase().contains(
                         "DOES NOT EXIST IN SYSTEM")) {
                     // Log.i("TESTING",
                     // "A CALL barcodeDidNotExist");
                     barcodeDidNotExist(barcode_num);
                     return SENTAG_NOT_FOUND;
-                } else if (res.indexOf("Session timed out") > -1) {
-                    startTimeout(ITEMDETAILS_TIMEOUT);
-                    return SERVER_SESSION_TIMED_OUT;
                 } else {
                     try {
                         object = (JSONObject) new JSONTokener(res).nextValue();
