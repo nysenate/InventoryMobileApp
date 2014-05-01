@@ -61,9 +61,14 @@ public class CheckInternet extends BroadcastReceiver
     }
 
     private void appConnectionLost(Context context) {
-        LoginActivity.chkintWifiLostCount++;
-        Toasty.displayCenteredMessage(context, "Wifi connection lost.", Toast.LENGTH_SHORT);
-        appConnected = false;
+        if (appConnected) {
+            LoginActivity.chkintWifiLostCount++;
+            Toasty.displayCenteredMessage(context, "Wifi connection lost.", Toast.LENGTH_SHORT);
+            appConnected = false;
+        }
+        else {
+            Log.i("CheckInternet", "Wifi App disconnected ignored since it already had been disconnected");
+        }
     }
 
     private boolean connectionIsWifi(Context context) {
@@ -73,8 +78,13 @@ public class CheckInternet extends BroadcastReceiver
     }
 
     private void appConnectionFound(Context context) {
-        LoginActivity.chkintWifiFoundCount++;
-        appConnected = true;
-        Toasty.displayCenteredMessage(context, "Wifi connection found.", Toast.LENGTH_SHORT);
+        if (appConnected) {
+            Log.i("CheckInternet", "Wifi App connected ignored since it already had been connected");
+        }
+        else {
+            LoginActivity.chkintWifiFoundCount++;
+            appConnected = true;
+            Toasty.displayCenteredMessage(context, "Wifi connection found.", Toast.LENGTH_SHORT);
+        }
     }
 }
