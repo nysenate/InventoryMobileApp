@@ -143,6 +143,7 @@
         android:layout_alignLeft="@+id/blsignImageView"
         android:layout_alignRight="@+id/blsignImageView"
         android:layout_below="@+id/listView1"
+        android:maxLines="2"
         android:ems="10"
         android:hint="Pickup Comments Here"
         android:inputType="textMultiLine" />
