@@ -88,10 +88,28 @@ public class EditRemoteStatus extends SenateActivity {
         } else {
             remoteCheckBox.setChecked(false);
         }
-        remoteBoxClicked(remoteCheckBox);
+        remoteBoxClicked(remoteCheckBox, false);
     }
 
     public void remoteBoxClicked(View view) {
+        remoteBoxClicked(view, true);
+    }
+    
+    public void remoteBoxClicked(View view, boolean checkRemotePickupStatus) {
+        if (checkRemotePickupStatus) {
+            if (pickup.getOrigin().isRemote()) {
+                AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
+                        .setTitle("Error setting as Remote.")
+                        .setMessage("Pickup remote status cannot be changed.")
+                        .setCancelable(false)
+                        .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
+
+                errorMsg.show();
+                remoteCheckBox.setChecked(!((CheckBox) view).isChecked());
+                return;
+            }
+        }
+        
         if (((CheckBox) view).isChecked()) {
             // Can't be remote if both locations are local
             if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
