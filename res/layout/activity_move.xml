@@ -8,7 +8,7 @@
     <ListView
         android:id="@+id/moveMenu2"
         android:layout_width="400dp"
-        android:layout_height="340dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/customshape" >

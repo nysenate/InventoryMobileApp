@@ -50,7 +50,6 @@
         android:textSize="25sp"
         android:textStyle="bold"                
          >
-
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
    

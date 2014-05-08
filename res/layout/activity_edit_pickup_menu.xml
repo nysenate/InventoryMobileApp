@@ -4,24 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/edit_pickup_menu_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Edit Pickup"
-        android:textSize="28sp"
-        android:textStyle="bold" />
-
     <TableLayout
         android:id="@+id/pickup_info"
         android:layout_width="550dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_pickup_menu_title"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/customshape" >
 
         <TableRow>
@@ -132,17 +121,28 @@
                 style="@style/NormalText" />
         </TableRow>
     </TableLayout>
-    
+
+    <TextView
+        android:id="@+id/edit_pickup_menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pickup_info"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Edit Pickup Menu"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
 <ListView
         android:id="@+id/edit_pickup_menu_list"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pickup_info"
+        android:layout_below="@+id/edit_pickup_menu_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/customshape" >
     </ListView>
-    
+
        <ProgressBar
         android:id="@+id/edit_pickup_menu_progress_bar"
         style="?android:attr/progressBarStyleLarge"        
@@ -152,5 +152,5 @@
         android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
-    
+
 </RelativeLayout>

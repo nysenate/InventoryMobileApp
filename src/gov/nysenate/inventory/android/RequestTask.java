@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.LoginActivity;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -27,6 +29,8 @@ public class RequestTask extends AsyncTask<String, String, String>
     public final int GET = -2;
     public final int POST = -3;
     List<NameValuePair> nameValuePairs;
+
+    public static final int SC_SESSION_TIMEOUT = 599;
 
     Properties properties;
 
@@ -135,10 +139,12 @@ public class RequestTask extends AsyncTask<String, String, String>
         url.append("userFallback=");
         url.append(LoginActivity.nauser);
 
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             if (currentMode == POST) {
                 HttpPost httpPost = new HttpPost(url.toString());
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                
                 response = httpClient.execute(httpPost);
             } else {
                 HttpGet httpGet = new HttpGet(url.toString());
@@ -146,17 +152,13 @@ public class RequestTask extends AsyncTask<String, String, String>
             }
 
             StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                out.close();
-                responseString = out.toString();
-            } else {
-                // Closes the connection.
-                Log.w("HTTP1:", statusLine.getReasonPhrase());
-                response.getEntity().getContent().close();
-                throw new IOException(statusLine.getReasonPhrase());
+            response.getEntity().writeTo(out);
+            responseString = out.toString();
+            if (responseString == null && statusLine.getStatusCode() == SC_SESSION_TIMEOUT) {
+                responseString = "Session timed out";
             }
+
+            Log.w("HTTP1:", statusLine.getReasonPhrase() + ":" + statusLine.getStatusCode());
         } catch (ClientProtocolException e) {
             // TODO Handle problems..
             Log.w("HTTP2:", e);
@@ -169,6 +171,14 @@ public class RequestTask extends AsyncTask<String, String, String>
             Log.w("HTTP3:", e);
         } catch (Exception e) {
             Log.w("HTTP4:", e);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    Log.w("HTTP5:", e);
+                }
+            }
         }
         res = responseString;
         return responseString;

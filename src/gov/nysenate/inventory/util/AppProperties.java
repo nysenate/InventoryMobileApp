@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.util;
 
-import gov.nysenate.inventory.model.Toasty;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
