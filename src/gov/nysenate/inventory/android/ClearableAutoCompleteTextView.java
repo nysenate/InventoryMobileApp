@@ -1,5 +1,8 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +11,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 public class ClearableAutoCompleteTextView extends AutoCompleteTextView
@@ -111,7 +116,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -126,7 +131,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
 
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -145,6 +150,8 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     if (clearField) {
                         et.setText("");
                         ClearableAutoCompleteTextView.this.removeClearButton();
+                        for (ClearButtonListener clearButtonListener : listeners)
+                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {
@@ -162,6 +169,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                     int count) {
 
                 ClearableAutoCompleteTextView.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override
@@ -225,4 +235,9 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView
                 this.getCompoundDrawables()[3]);
     }
 
+    public void addClearButtonListener(ClearButtonListener listener) {
+        listeners.add(listener);
+    }
+    
+    
 }

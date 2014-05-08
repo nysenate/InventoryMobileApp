@@ -1,20 +1,26 @@
 package gov.nysenate.inventory.android;
 
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
@@ -29,7 +35,31 @@ public class ClearableEditText extends EditText
     public boolean clearField = true;
     private boolean suppressEnter = false;    
     private String clearMsg = "Do you want to clear this field?";
-    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();    
+    CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
+		
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			System.out.println(this.getClass().getSimpleName());
+			System.out.println(millisUntilFinished/1000);
+		}
+		
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
+			{
+				Intent intentTimeout = new Intent(context, LoginActivity.class);
+				intentTimeout.addFlags(200);
+				context.startActivity(intentTimeout);
+			}
+	        
+			
+		}
+		
+	};
+	
     OnKeyListener suppressEnterTab = new OnKeyListener() {
 
         @Override
@@ -111,7 +141,7 @@ public class ClearableEditText extends EditText
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
-                                .setPositiveButton(R.string.ok_button,
+                                .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -125,7 +155,7 @@ public class ClearableEditText extends EditText
                                                         .removeClearButton();
                                             }
                                         })
-                                .setNegativeButton(R.string.cancel_button,
+                                .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
                                         new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -144,7 +174,8 @@ public class ClearableEditText extends EditText
                     if (clearField) {
                         et.setText("");
                         ClearableEditText.this.removeClearButton();
-
+                        for (ClearButtonListener clearButtonListener : listeners)
+                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
                     }
 
                 } else {
@@ -156,7 +187,6 @@ public class ClearableEditText extends EditText
             }
         });
         
-      
 
         this.addTextChangedListener(new TextWatcher()
         {
@@ -165,6 +195,9 @@ public class ClearableEditText extends EditText
                     int count) {
 
                 ClearableEditText.this.manageClearButton();
+                SenateActivity.timer.cancel();
+                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                SenateActivity.timer.start();
             }
 
             @Override
@@ -202,13 +235,13 @@ public class ClearableEditText extends EditText
         return this.clearMsg;
     }
 
-    void addClearButton() {
+    public void addClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], imgX,
                 this.getCompoundDrawables()[3]);
     }
 
-    void removeClearButton() {
+    public void removeClearButton() {
         this.setCompoundDrawables(this.getCompoundDrawables()[0],
                 this.getCompoundDrawables()[1], null,
                 this.getCompoundDrawables()[3]);
@@ -232,5 +265,4 @@ public class ClearableEditText extends EditText
         this.setOnKeyListener(null);
         suppressEnter = false;
     }      
-    
 }
