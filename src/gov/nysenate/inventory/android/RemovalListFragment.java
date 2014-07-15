@@ -26,58 +26,7 @@ public class RemovalListFragment extends Fragment
         removalListAdapter = new RemovalRequestListAdapter(getActivity(), R.layout.removal_request_list, R.id.column1, items);
         removalList.setAdapter(removalListAdapter);
 
-        setupActionMode();
-
         return view;
-    }
-
-    private void setupActionMode() {
-        removalList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        removalList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.context_menu, menu);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.delete:
-                        deleteSelection();
-                        mode.finish();
-                        return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-
-            }
-        });
-    }
-
-    // TODO: update the activity.removalReqeust with the items deleted.... and Server!
-    private void deleteSelection() {
-        SparseBooleanArray boolArray = removalList.getCheckedItemPositions();
-        for (int i = 0; i < boolArray.size(); i ++) {
-            if (boolArray.get(i) == true) {
-                items.remove(i);
-            }
-        }
-        removalListAdapter.notifyDataSetChanged();
     }
 
     public void add(InvItem item) {

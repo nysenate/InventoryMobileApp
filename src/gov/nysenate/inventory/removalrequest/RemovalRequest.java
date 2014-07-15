@@ -37,6 +37,10 @@ public class RemovalRequest
         items.add(item);
     }
 
+    public void deleteItem(InvItem item) {
+        items.remove(item);
+    }
+
     public RemovalReason getReason() {
         return reason;
     }
