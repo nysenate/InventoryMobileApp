@@ -226,7 +226,7 @@ public abstract class SenateActivity extends Activity implements
     }
 
     @Override
-    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
+    public void commoditySelected(int rowSelected, Commodity commoditySelected, String comments) {
         // TODO Auto-generated method stub
 
     }

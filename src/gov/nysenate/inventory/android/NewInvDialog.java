@@ -55,6 +55,7 @@ public class NewInvDialog extends DialogFragment implements
     int position = -1;
     String nusenate = null;
     public int currentMode = MODE_KEYWORD_SEARCH;
+    private String comments;
 
     @SuppressLint("ValidFragment")
     public NewInvDialog(SenateActivity senateActivity, String title, String msg) {
@@ -136,20 +137,16 @@ public class NewInvDialog extends DialogFragment implements
                         // Don't write any code here.. but coded here for now
                         if (adapter != null && adapter.getRowSelected() > -1
                                 && adapter.getCount() > 0) {
-                            currentCommodity.setDecomments(etNewItemComments
-                                    .getText().toString());
+                            comments = etNewItemComments.getText().toString();
                             for (CommodityDialogListener commodityDialogListener : listeners)
-                                commodityDialogListener.commoditySelected(
-                                        position, currentCommodity);
+                                commodityDialogListener.commoditySelected(position, currentCommodity, comments);
                             dialog.dismiss();
                         } else if (etNewItemComments.getText().toString()
                                 .trim().length() > 0) {
                             currentCommodity = new Commodity();
-                            currentCommodity.setDecomments(etNewItemComments
-                                    .getText().toString());
+                            comments = etNewItemComments.getText().toString();
                             for (CommodityDialogListener commodityDialogListener : listeners)
-                                commodityDialogListener.commoditySelected(
-                                        position, currentCommodity);
+                                commodityDialogListener.commoditySelected(position, currentCommodity, comments);
                             dialog.dismiss();
                         } else {
                             int duration = Toast.LENGTH_SHORT;
@@ -342,10 +339,9 @@ public class NewInvDialog extends DialogFragment implements
         } else {
             Commodity currentCommodity = adapter.getCommodityAt(adapter
                     .getRowSelected());
-            tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity
-                    .getCdcommodty()
+            tvKeywordsToBlock.setText(Html.fromHtml(currentCommodity.getCode()
                     + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                    + currentCommodity.getDecommodityf()));
+                    + currentCommodity.getDescription()));
             tvKeywordsToBlock.setBackgroundColor(senateActivity
                     .getApplicationContext().getResources()
                     .getColor(R.color.blueveryverylight));
@@ -396,19 +392,15 @@ public class NewInvDialog extends DialogFragment implements
         public void onClick(View v) {
             if (adapter != null && adapter.getRowSelected() > -1
                     && adapter.getCount() > 0) {
-                currentCommodity.setDecomments(etNewItemComments.getText()
-                        .toString());
+                comments = etNewItemComments.getText().toString();
                 for (CommodityDialogListener commodityDialogListener : listeners)
-                    commodityDialogListener.commoditySelected(position,
-                            currentCommodity);
+                    commodityDialogListener.commoditySelected(position, currentCommodity, comments);
                 dialog.dismiss();
             } else if (etNewItemComments.getText().toString().trim().length() > 0) {
                 currentCommodity = new Commodity();
-                currentCommodity.setDecomments(etNewItemComments.getText()
-                        .toString());
+                comments = etNewItemComments.getText().toString();
                 for (CommodityDialogListener commodityDialogListener : listeners)
-                    commodityDialogListener.commoditySelected(position,
-                            currentCommodity);
+                    commodityDialogListener.commoditySelected(position, currentCommodity, comments);
                 dialog.dismiss();
             } else {
                 int duration = Toast.LENGTH_SHORT;

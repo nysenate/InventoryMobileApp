@@ -921,12 +921,6 @@ public class Delivery3 extends SenateActivity
 
     }
 
-    @Override
-    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
-        // TODO Auto-generated method stub
-
-    }
-
     public Transaction getDelivery() {
         return delivery;
     }

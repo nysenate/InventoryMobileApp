@@ -5,6 +5,6 @@ import gov.nysenate.inventory.model.Commodity;
 public interface CommodityDialogListener
 {
 
-    public void commoditySelected(int rowSelected, Commodity commoditySelected);
+    public void commoditySelected(int rowSelected, Commodity commoditySelected, String comments);
 
 }

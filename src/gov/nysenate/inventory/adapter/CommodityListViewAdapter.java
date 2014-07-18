@@ -48,8 +48,8 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             ArrayList<Commodity> commodityList) {
 
         for (int x = 0; x < commodityList.size(); x++) {
-            commodityList.get(x).setDecommodityf(
-                    this.returnFormated(commodityList.get(x).getDecommodityf(),
+            commodityList.get(x).setDescription(
+                    this.returnFormated(commodityList.get(x).getDescription(),
                             keywords));
         }
         return commodityList;
@@ -83,9 +83,9 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             rowItem = items.get(position);
 
             // holder.commodityListNucnt.setText(rowItem.getNucnt());
-            holder.commodityListCdcommodity.setText(rowItem.getCdcommodty());
+            holder.commodityListCdcommodity.setText(rowItem.getCode());
             holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem
-                    .getDecommodityf()));
+                    .getDescription()));
         } else {
             // holder.commodityListNucnt.setText("");
             holder.commodityListCdcommodity.setText("");
@@ -146,7 +146,7 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         this.setNotifyOnChange(true);
         if (this.items != null) {
             for (int x = this.items.size() - 1; x > -1; x--) {
-                if (this.items.get(x).getCdcommodty().equals(cdcommodity)) {
+                if (this.items.get(x).getCode().equals(cdcommodity)) {
                     this.items.remove(x);
                     itemsRemoved++;
                 }
@@ -162,7 +162,7 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         int rowCount = 0;
         word = word.toUpperCase();
         for (int x = 0; x < this.items.size(); x++) {
-            if (items.get(x).getDecommodityf().toUpperCase().indexOf(word) > -1) {
+            if (items.get(x).getDescription().toUpperCase().indexOf(word) > -1) {
                 rowCount++;
             }
         }
@@ -192,7 +192,7 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
     @Override
     public void OnDoubleTap(AdapterView parent, View view, int position, long id) {
         System.out.println("Double Clicked on " + position + ": "
-                + items.get(position).getDecommodityf());
+                + items.get(position).getDescription());
     }
 
     @Override

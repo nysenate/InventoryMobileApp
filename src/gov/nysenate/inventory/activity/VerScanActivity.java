@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
+import gov.nysenate.inventory.util.CommodityParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1194,38 +1195,14 @@ public class VerScanActivity extends SenateActivity implements
                     return;
                 }
                 String jsonString = resr1.get().trim().toString();
-                // Log.i("getCommodityList","SERVER RESPONSE:"+jsonString);
-
-                JSONArray jsonArray = new JSONArray(jsonString);
-                // this will populate the lists from the JSON array coming from
-                // server
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(i);
-                    Commodity curCommodity = new Commodity();
-                    curCommodity.setCdcategory(jo.getString("cdcategory"));
-                    curCommodity.setCdcommodity(jo.getString("cdcommodity"));
-                    curCommodity.setCDissunit(jo.getString("cdissunit"));
-                    curCommodity.setCdtype(jo.getString("cdtype"));
-                    curCommodity.setDecomments(jo.getString("decomments"));
-                    curCommodity.setDecommodityf(jo.getString("decommodityf"));
-                    curCommodity.setNucnt(jo.getString("nucnt"));
-                    curCommodity.setNuxrefco(jo.getString("nuxrefco"));
-
-                    commodityList.add(curCommodity);
-
-                }
+                System.out.println(jsonString);
+                commodityList = (ArrayList) CommodityParser.parseCommodities(jsonString);
 
                 // code for JSON ends
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -1589,7 +1566,7 @@ public class VerScanActivity extends SenateActivity implements
     }
 
     @Override
-    public void commoditySelected(int rowSelected, Commodity commoditySelected) {
+    public void commoditySelected(int rowSelected, Commodity commoditySelected, String comments) {
         try {
             InvItem newInvItem = new InvItem();
             if (senateTagNum) {
@@ -1601,10 +1578,10 @@ public class VerScanActivity extends SenateActivity implements
                 newInvItem.setNusenate("NEW" + formattedNumber);
             }
 
-            newInvItem.setCdcategory(commoditySelected.getCdcategory());
+            newInvItem.setCdcategory(commoditySelected.getCategory());
             newInvItem.setCdlocat(tvCdlocat.getText().toString());
             newInvItem.setType("NEW");
-            newInvItem.setCdcommodity(commoditySelected.getCdcommodty());
+            newInvItem.setCdcommodity(commoditySelected.getCode());
 
             // BH 8/21/13 - Request from Sheila.. Show as
             // "*** NEW ITEM ** CC: {Commodity Code}: {Any Comments}" instead of
@@ -1612,15 +1589,9 @@ public class VerScanActivity extends SenateActivity implements
             // as of 8/21/13 this is okay since decommodityf is only used as
             // display value. She
 
-            String decomments = null;
-            try {
-                decomments = commoditySelected.getDecomments().trim();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             newInvItem.setDecommodityf(Html.fromHtml(
-                    commoditySelected.getDecommodityf()).toString());
-            newInvItem.setDecomments(commoditySelected.getDecomments());
+                    commoditySelected.getDescription()).toString());
+            newInvItem.setDecomments(comments);
             addNewItem(newInvItem);
             // Log.i("commoditySelected",
             // "NEW INV ITEM COMMENTS:"+newInvItem.getDecomments());
