@@ -99,7 +99,7 @@ public class EditRemoteStatus extends SenateActivity {
         if (checkRemotePickupStatus) {
             if (pickup.getOrigin().isRemote()) {
                 AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
-                        .setTitle("Error setting as Remote.")
+                        .setTitle("Error setting Remote.")
                         .setMessage("Pickup remote status cannot be changed.")
                         .setCancelable(false)
                         .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
@@ -114,7 +114,7 @@ public class EditRemoteStatus extends SenateActivity {
             // Can't be remote if both locations are local
             if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
                 AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
-                .setTitle("Error setting as Remote.")
+                .setTitle("Error setting Remote.")
                 .setMessage("Albany to Albany transactions should not be processed as remote.")
                 .setCancelable(false)
                 .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);

@@ -21,6 +21,8 @@ import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
 import gov.nysenate.inventory.util.CommodityParser;
+import gov.nysenate.inventory.util.Toasty;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -202,6 +204,7 @@ public class VerScanActivity extends SenateActivity implements
                     if (lastClickedTo.equals("EXISTING")) {
                         lastRowFound = -1;
                     }
+                    checkAdapter();
                     foundAt = adapter.findTypePosNOTEqualTo("EXISTING",
                             lastRowFound + 1);
                     lastRowFound = foundAt;
@@ -249,6 +252,8 @@ public class VerScanActivity extends SenateActivity implements
                     if (lastClickedTo.equals("NEW")) {
                         lastRowFound = -1;
                     }
+                    
+                    checkAdapter();
                     foundAt = adapter.findTypePos("EXISTING", lastRowFound + 1);
                     lastRowFound = foundAt;
                     listView.setSelection(lastRowFound);
@@ -881,6 +886,8 @@ public class VerScanActivity extends SenateActivity implements
                  * Log.i("TEST", nusenate +
                  * " BEFORE REMOVE BARCODE INVLIST SIZE:" + invList.size());
                  */
+
+                checkAdapter();
                 adapter.removeBarCode(nusenate);
                 /*
                  * Log.i("TEST", nusenate +
@@ -1326,6 +1333,7 @@ public class VerScanActivity extends SenateActivity implements
     }
 
     public void updateChanges() {
+        checkAdapter();
         adapter.notifyDataSetChanged();
         count = adapter.getCount();
         int cntExisting = countOf(invList, "EXISTING");
@@ -1338,7 +1346,14 @@ public class VerScanActivity extends SenateActivity implements
                 + cntExisting));
         tv_counts_scanned.setText(Html.fromHtml("<b>Scanned</b><br />"
                 + cntScanned));
-        Log.i("check", "listview updated");
+    }
+    
+    public void checkAdapter() {
+        if (adapter==null) {
+            adapter = new InvListViewAdapter(this, R.layout.invlist_item, invList);    
+            listView.setAdapter(adapter);
+        }
+
     }
 
     public void handleItem() {
@@ -1542,6 +1557,8 @@ public class VerScanActivity extends SenateActivity implements
                 long id) {
             currentSortValue = parent.getItemAtPosition(pos).toString();
             Collections.sort(invList, new spinSortListComparator());
+            Log.i ("SortChangedListener", "check adapter");
+            checkAdapter();
             adapter.notifyDataSetChanged();
             // listView.setAdapter(adapter);
 

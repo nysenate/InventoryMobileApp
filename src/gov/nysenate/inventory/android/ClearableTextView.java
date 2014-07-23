@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -125,8 +126,10 @@ public class ClearableTextView extends TextView
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
+                        Log.i("ClearableTextView", "clearButtonListener  View:"+v.getClass().getName()+", Parent:"+v.getParent().getClass().getName()); 
                         for (ClearButtonListener clearButtonListener : listeners)
-                            clearButtonListener.onClearButtonPressed((AdapterView) v, v);
+                            clearButtonListener.onClearButtonPressed((ClearableTextView) v, v);
+ 
                     }
 
                 } else {

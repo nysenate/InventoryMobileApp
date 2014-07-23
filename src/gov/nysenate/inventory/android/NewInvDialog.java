@@ -1,11 +1,13 @@
 package gov.nysenate.inventory.android;
 
 import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.activity.VerScanActivity;
 import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
 import gov.nysenate.inventory.listener.ClearButtonListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
+import gov.nysenate.inventory.util.Toasty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -415,6 +417,10 @@ public class NewInvDialog extends DialogFragment implements
             }
 
         }
+    }
+
+    @Override
+    public void onClearButtonPressed(ClearableTextView parent, View view) {
     }
 
 }
