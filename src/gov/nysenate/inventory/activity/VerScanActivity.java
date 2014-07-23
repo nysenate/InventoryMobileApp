@@ -1557,7 +1557,7 @@ public class VerScanActivity extends SenateActivity implements
                 long id) {
             currentSortValue = parent.getItemAtPosition(pos).toString();
             Collections.sort(invList, new spinSortListComparator());
-            Log.i ("SortChangedListener", "check adapter");
+            Log.d ("SortChangedListener", "check adapter");
             checkAdapter();
             adapter.notifyDataSetChanged();
             // listView.setAdapter(adapter);

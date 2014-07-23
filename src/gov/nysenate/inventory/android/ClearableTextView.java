@@ -126,7 +126,7 @@ public class ClearableTextView extends TextView
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
-                        Log.i("ClearableTextView", "clearButtonListener  View:"+v.getClass().getName()+", Parent:"+v.getParent().getClass().getName()); 
+                        Log.d("ClearableTextView", "clearButtonListener  View:"+v.getClass().getName()+", Parent:"+v.getParent().getClass().getName()); 
                         for (ClearButtonListener clearButtonListener : listeners)
                             clearButtonListener.onClearButtonPressed((ClearableTextView) v, v);
  
