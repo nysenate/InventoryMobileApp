@@ -6,18 +6,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.removalrequest.RemovalRequest;
+import gov.nysenate.inventory.model.Item;
 
 import java.util.List;
 
-public class RemovalRequestListAdapter extends ArrayAdapter<InvItem>
+public class RemovalRequestListAdapter extends ArrayAdapter<Item>
 {
 
-    private List<InvItem> items;
+    private List<Item> items;
     private int resource;
 
-    public RemovalRequestListAdapter(Context context, int resource, int textViewResource, List<InvItem> items) {
+    public RemovalRequestListAdapter(Context context, int resource, int textViewResource, List<Item> items) {
         super(context, resource, textViewResource, items);
         this.resource = resource;
         this.items = items;
@@ -36,10 +35,10 @@ public class RemovalRequestListAdapter extends ArrayAdapter<InvItem>
             row.setBackgroundResource(R.drawable.selector_2);
         }
 
-        InvItem item = items.get(position);
+        Item item = items.get(position);
 
-        column1.setText(item.getNusenate());
-        column2.setText(item.getDecommodityf());
+        column1.setText(item.getBarcode());
+        column2.setText(item.getCommodity().getDescription());
 
         return row;
     }

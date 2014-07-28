@@ -2,12 +2,11 @@ package gov.nysenate.inventory.android;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
 import android.view.*;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import gov.nysenate.inventory.adapter.RemovalRequestListAdapter;
 import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class RemovalListFragment extends Fragment
 {
     private ListView removalList;
     private RemovalRequestListAdapter removalListAdapter;
-    private List<InvItem> items = new ArrayList<InvItem>();
+    private List<Item> items = new ArrayList<Item>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,18 +28,18 @@ public class RemovalListFragment extends Fragment
         return view;
     }
 
-    public void add(InvItem item) {
+    public void add(Item item) {
         items.add(item);
         removalListAdapter.notifyDataSetChanged();
     }
 
-    public void setItems(List<InvItem> removalItems) {
+    public void setItems(List<Item> removalItems) {
         items.clear();
         items.addAll(removalItems);
         removalListAdapter.notifyDataSetChanged();
     }
 
-    public List<InvItem> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 

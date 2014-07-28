@@ -10,8 +10,8 @@ import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.RemovalListFragment;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.AdjustCode;
-import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.removalrequest.RemovalRequest;
+import gov.nysenate.inventory.model.Item;
+import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -26,6 +26,7 @@ import org.apache.http.protocol.HttpContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EnterRemovalRequestActivity extends SenateActivity
@@ -52,14 +53,14 @@ public class EnterRemovalRequestActivity extends SenateActivity
         removalReasonCode = (Spinner) findViewById(R.id.removal_reason_code);
         removalReasonDescription = (TextView) findViewById(R.id.removal_reason_description);
         barcode = (EditText) findViewById(R.id.barcode_text);
-        Button cancelBtn = (Button) findViewById(R.id.cancel_btn); // TODO: setup buttons!
+        Button cancelBtn = (Button) findViewById(R.id.cancel_btn); // TODO: setup buttons! , change continue to submit
         Button continueBtn = (Button) findViewById(R.id.continue_btn);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         fragment = (RemovalListFragment) getFragmentManager().findFragmentById(R.id.removal_list_fragment);
 
         barcode.addTextChangedListener(barcodeWatcher);
 
-        removalRequest = new RemovalRequest(LoginActivity.nauser);
+        removalRequest = new RemovalRequest(LoginActivity.nauser, new Date());
 
         QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
         queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "/AdjustCodeServlet");
@@ -70,7 +71,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         super.onResume();
     }
 
-    public void add(InvItem item) {
+    public void add(Item item) {
         if (!allInfoEntered(barcode, removalReasonCode)) {
             return;
         }
@@ -93,7 +94,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         if (removalReason.getSelectedItem() == null) {
             Toasty.displayCenteredMessage(this, "Please select a Removal Code", Toast.LENGTH_SHORT);
             return false;
-        } else if (removalReason.getSelectedItem() != removalRequest.getReason()) {
+        } else if (removalReason.getSelectedItem() != removalRequest.getAdjustCode()) { // TODO: << this working after change?
             // TODO: display confirmation dialog.
         }
 
@@ -208,7 +209,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
                 barcode.setText("");
                 // TODO: play sounds
             } else {
-                InvItem item = ItemParser.parseItem(s);
+                Item item = ItemParser.parseItem(s);
                 add(item);
             }
 

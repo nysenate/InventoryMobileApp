@@ -4,18 +4,33 @@ import com.google.gson.Gson;
 
 public class Location
 {
-
     private String cdloctype;
     private String cdlocat;
     private String adstreet1;
+    private String street2;
     private String adcity;
     private String adzipcode;
     private String adstate;
+    private String description;
+    private String department;
 
     public Location() {
         cdloctype = "";
         cdlocat = "";
         adstreet1 = "";
+    }
+
+    // TODO: make into builder pattern.
+    public Location(String cdlocat, String cdloctype, String adstreet1, String adcity,
+                    String adzipcode, String adstate, String description, String department) {
+        this.cdlocat = cdlocat;
+        this.cdloctype = cdloctype;
+        this.adstreet1 = adstreet1;
+        this.adcity = adcity;
+        this.adzipcode = adzipcode;
+        this.adstate = adstate;
+        this.description = description;
+        this.department = department;
     }
 
     public Location(String summary) {
@@ -77,6 +92,30 @@ public class Location
 
     public void setAdstate(String adstate) {
         this.adstate = adstate;
+    }
+
+    public String getStreet2() {
+        return street2;
+    }
+
+    public void setStreet2(String street2) {
+        this.street2 = street2;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getLocationSummaryString() {
