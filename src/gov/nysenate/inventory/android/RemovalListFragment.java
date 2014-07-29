@@ -28,7 +28,7 @@ public class RemovalListFragment extends Fragment
         return view;
     }
 
-    public void add(Item item) {
+    public void addItem(Item item) {
         items.add(item);
         removalListAdapter.notifyDataSetChanged();
     }
