@@ -132,7 +132,6 @@ ChangePasswordDialogListener
     public static DefaultHttpClient httpClient;
     AlertDialog alertDialog = null;
     public static LoginStatus loginStatus = new LoginStatus();
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,11 +145,9 @@ ChangePasswordDialogListener
         }
         // See if there is a Parent Activity, if there was one, then it must
         // have timed out.
-        //Log.i("MAIN", "TIMEOUTFROM INITIALIZED TO NULL");
         try {
             Intent fromIntent = getIntent();
             timeoutFrom = fromIntent.getStringExtra("TIMEOUTFROM");
-            //Log.i("MAIN", "TIMEOUTFROM:" + timeoutFrom);
         } catch (Exception e) {
             timeoutFrom = null;
         }
@@ -159,7 +156,6 @@ ChangePasswordDialogListener
             Intent fromIntent = getIntent();
             updateChecked = Boolean.valueOf(fromIntent
                     .getStringExtra("UPDATECHECKED"));
-            //Log.i("UPDATECHECKED", "RETURNED:" + updateChecked);
         } catch (Exception e2) {
             updateChecked = false;
             Log.i("UPDATECHECKED", "EXCEPTION SO ASSUME FALSE");
@@ -169,12 +165,10 @@ ChangePasswordDialogListener
         tvWarnLabel = (TextView) findViewById(R.id.tvWarnLabel);
 
         if (timeoutFrom != null) {
-            //Log.i("MAIN", "THIS is going to be treated as a Timeout Activity");
             timeoutActivity = true;
         }
 
         currentActivity = this;
-        //Log.i("MAIN", "!!!!LOGINACTIVITY onCreate");
         resources = this.getResources();
         user_name = (ClearableEditText) findViewById(R.id.user_name);
         password = (ClearableEditText) findViewById(R.id.password);
@@ -679,6 +673,7 @@ ChangePasswordDialogListener
 
                         JSONObject responseObj;
                         try {
+                            Log.d(this.getClass().getName(), "CheckAppVersion Res:"+res);
                             responseObj = new JSONObject(res);
                             boolean success = responseObj.getBoolean("success");
                             //Log.i("LoginActivity", "CheckAppVersion returned success:"+ success);
