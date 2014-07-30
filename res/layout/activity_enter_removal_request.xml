@@ -23,27 +23,12 @@
             android:gravity="center_horizontal">
 
         <TextView
-                android:id="@+id/transaction_number_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="Transaction#:"
-                android:textSize="20sp"/>
-
-        <TextView
-                android:id="@+id/transaction_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="40dp"
-                android:text=""
-                android:textSize="20sp"/>
-
-        <TextView
                 android:id="@+id/date_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:text="Date:"
+                android:textStyle="bold"
                 android:textSize="20sp"/>
 
         <TextView
@@ -55,12 +40,24 @@
     </LinearLayout>
 
 
+    <TextView
+            android:id="@+id/removal_reason_title"
+            android:layout_below="@id/id_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:text="Select Removal Reason"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
     <Spinner
             android:id="@+id/removal_reason_code"
             android:layout_below="@id/id_info"
-            android:layout_width="150dp"
+            android:layout_toRightOf="@+id/removal_reason_title"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"/>
 
@@ -73,6 +70,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:text=""
+            android:textStyle="bold"
             android:textSize="20sp"/>
 
     <TextView
@@ -80,17 +78,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="5dp"
             android:layout_below="@id/removal_reason_code"
-            android:text="Scan items for removal from inventory"
+            android:text="Please scan items for removal from Inventory"
+            android:textStyle="bold"
             android:textSize="20sp"/>
 
     <EditText
             android:id="@+id/barcode_text"
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             android:layout_below="@id/barcode_scan_title"
@@ -99,12 +98,37 @@
             android:inputType="number"
             android:hint="Senate Tag#"/>
 
+    <TextView
+            android:id="@+id/count_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/barcode_scan_title"
+            android:layout_toRightOf="@id/barcode_text"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="10dp"
+            android:text="Count:"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+    <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/barcode_scan_title"
+            android:layout_toRightOf="@id/count_title"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="0"
+            android:textSize="20sp"/>
+
     <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_below="@id/barcode_text"
+            android:layout_below="@id/barcode_scan_title"
             style="?android:attr/progressBarStyleLarge"
             android:background="@drawable/shaperoundblue"
             android:visibility="gone"/>
@@ -131,7 +155,7 @@
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:text="Cancel"
-            />
+            android:onClick="onCancelBtnClick"/>
 
 
     <Button
@@ -146,8 +170,8 @@
             android:background="@drawable/buttonshapegreen"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
-            android:text="Submit"
-            />
+            android:text="Save"
+            android:onClick="onSaveBtnClick"/>
 
 
 </RelativeLayout>

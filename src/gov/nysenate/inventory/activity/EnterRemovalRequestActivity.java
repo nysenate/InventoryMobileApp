@@ -1,16 +1,23 @@
 package gov.nysenate.inventory.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
 import com.google.gson.Gson;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.RemovalListFragment;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.model.AdjustCode;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
@@ -35,31 +42,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EnterRemovalRequestActivity extends SenateActivity
+public class EnterRemovalRequestActivity extends SenateActivity implements UpdateRemovalRequest.UpdateRemovalRequestI
 {
-    private TextView transactionNumber;
     private TextView date;
     private Spinner removalReasonCode;
     private TextView removalReasonDescription;
     private EditText barcode;
     private RemovalListFragment fragment;
+    private TextView count;
     private ProgressBar progressBar;
 
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
 
     private void initalizeUI() {
-        transactionNumber = (TextView) findViewById(R.id.transaction_number);
         date = (TextView) findViewById(R.id.date);
         removalReasonCode = (Spinner) findViewById(R.id.removal_reason_code);
         removalReasonDescription = (TextView) findViewById(R.id.removal_reason_description);
         barcode = (EditText) findViewById(R.id.barcode_text);
         Button cancelBtn = (Button) findViewById(R.id.cancel_btn); // TODO: setup buttons!, change continue to submit.
         Button continueBtn = (Button) findViewById(R.id.continue_btn);
+        count = (TextView) findViewById(R.id.count);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         fragment = (RemovalListFragment) getFragmentManager().findFragmentById(R.id.removal_list_fragment);
     }
@@ -76,10 +84,11 @@ public class EnterRemovalRequestActivity extends SenateActivity
         barcode.setEnabled(false); // Must select an adjustment code before entering items.
         removalRequest = new RemovalRequest(LoginActivity.nauser.toUpperCase(), new Date());
         removalRequest.setStatus("PE");
-        date.setText(removalRequest.getDate().toString());
+        SimpleDateFormat sdf = ((InvApplication) getApplication()).getDateTimeFormat();
+        date.setText(sdf.format(removalRequest.getDate()));
 
         QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
-        queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "/AdjustCodeServlet");
+        queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
     }
 
     private TextWatcher barcodeWatcher = new TextWatcher() {
@@ -95,7 +104,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
             if (text.length() == 6) {
                 GetItem task = new GetItem();
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "/Item?barcode=" + text.toString());
+                        AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());
             }
         }
     };
@@ -149,60 +158,61 @@ public class EnterRemovalRequestActivity extends SenateActivity
         removalRequest.addItem(item);
         fragment.addItem(item);
         clearBarcode();
-
-        UpdateRemovalRequest task = new UpdateRemovalRequest();
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "/RemovalRequest");
+        updateCount();
     }
 
-    public class UpdateRemovalRequest extends AsyncTask<String, Void, Integer>
-    {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+    private void updateCount() {
+        count.setText(String.valueOf(fragment.getItems().size()));
+    }
 
-        @Override
-        protected Integer doInBackground(String... urls) {
-            HttpPost httpPost = new HttpPost(urls[0]);
-            List<NameValuePair> values = new ArrayList<NameValuePair>();
-            values.add(new BasicNameValuePair("RemovalRequest", new Gson().toJson(removalRequest)));
+    public void onCancelBtnClick(View view) {
+        finish();
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }
 
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            CookieStore store = LoginActivity.getHttpClient().getCookieStore();
-            HttpContext context = new BasicHttpContext();
-            context.setAttribute(ClientContext.COOKIE_STORE, store);
+    public void onSaveBtnClick(View view) {
+        displayConfirmationDialog();
+    }
 
-            int statusCode = 0;
-            HttpResponse response = null;
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(values));
-                response = httpClient.execute(httpPost, context);
-                statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == HttpStatus.SC_OK && transactionNumber.getText().length() < 1) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    response.getEntity().writeTo(out);
-                    removalRequest = RemovalRequestParser.parseRemovalRequest(out.toString());
-                }
-                response.getEntity().consumeContent();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+    private void displayConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+        .setCancelable(false)
+        .setTitle("Confirmation")
+        .setMessage("Are you sure you want to save this Removal Request of " + count.getText().toString() + " items?")
+        .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
+        .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UpdateRemovalRequest task = new UpdateRemovalRequest(removalRequest, EnterRemovalRequestActivity.this);
+                task.setProgressBar(progressBar);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "RemovalRequest");
             }
-            return statusCode;
-        }
+        });
+        builder.show();
+    }
 
-        @Override
-        protected void onPostExecute(Integer statusCode) {
-            if (statusCode == HttpStatus.SC_OK) {
-                transactionNumber.setText(String.valueOf(removalRequest.getTransactionNum()));
-            } else {
-                // TODO: handle this error better.
-                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Error updating RR", Toast.LENGTH_SHORT);
-            }
+    @Override
+    public void onRemovalRequestUpdated(RemovalRequest rr) {
+        String message = "";
+        if (rr != null) {
+            message = "Removal Request successfully saved, Request# " + rr.getTransactionNum() + ".";
+        } else {
+            message = "Error saving Removal Reqeust, Please contact STS/BAC";
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Info")
+                .setMessage(message)
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(EnterRemovalRequestActivity.this, Move.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+                    }
+                });
+        builder.show();
     }
 
     public class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
