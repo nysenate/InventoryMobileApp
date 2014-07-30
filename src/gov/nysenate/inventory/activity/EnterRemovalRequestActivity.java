@@ -65,8 +65,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         removalReasonCode = (Spinner) findViewById(R.id.removal_reason_code);
         removalReasonDescription = (TextView) findViewById(R.id.removal_reason_description);
         barcode = (EditText) findViewById(R.id.barcode_text);
-        Button cancelBtn = (Button) findViewById(R.id.cancel_btn); // TODO: setup buttons!, change continue to submit.
-        Button continueBtn = (Button) findViewById(R.id.continue_btn);
         count = (TextView) findViewById(R.id.count);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         fragment = (RemovalListFragment) getFragmentManager().findFragmentById(R.id.removal_list_fragment);
@@ -87,8 +85,10 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         SimpleDateFormat sdf = ((InvApplication) getApplication()).getDateTimeFormat();
         date.setText(sdf.format(removalRequest.getDate()));
 
-        QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
-        queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
+        if (checkServerResponse(true) == OK) {
+            QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
+            queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
+        }
     }
 
     private TextWatcher barcodeWatcher = new TextWatcher() {
@@ -102,9 +102,11 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         @Override
         public void afterTextChanged(Editable text) {
             if (text.length() == 6) {
-                GetItem task = new GetItem();
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());
+                if (checkServerResponse(true) == OK) {
+                    GetItem task = new GetItem();
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                            AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());
+                }
             }
         }
     };
@@ -119,9 +121,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         @Override
         public Item handleBackgroundResult(String out, int responseCode) {
             Item item = null;
-            if (responseCode == HttpStatus.SC_OK) {
-                item = ItemParser.parseItem(out);
-            }
+            item = ItemParser.parseItem(out);
             return item;
         }
 
@@ -166,12 +166,16 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     }
 
     public void onCancelBtnClick(View view) {
-        finish();
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        if (checkServerResponse(true) == OK) {
+            finish();
+            overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        }
     }
 
     public void onSaveBtnClick(View view) {
-        displayConfirmationDialog();
+        if (checkServerResponse(true) == OK) {
+            displayConfirmationDialog();
+        }
     }
 
     private void displayConfirmationDialog() {
@@ -259,7 +263,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
                 removalReasonDescription.setText(code.getDescription());
                 removalRequest.setAdjustCode(code);
 
-                // Also allow entering of barcodes // TODO; do we want this here?
                 barcode.setEnabled(true);
             }
         }
