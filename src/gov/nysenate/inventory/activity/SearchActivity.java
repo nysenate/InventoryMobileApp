@@ -325,9 +325,12 @@ public class SearchActivity extends SenateActivity
 
         // Get the URL from the properties
         URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-        //System.out.println(URL + "/SerialList?nuserial="+nuserialPartial+"&maxResults=50");
+        //System.out.println(URL + "SerialList?nuserial="+nuserialPartial+"&maxResults=50");
+        if (! URL.endsWith("/")) {
+            URL += "/";
+        }           
         AsyncTask<String, String, String> resr1 = new RequestTask()
-                .execute(URL + "/SerialList?nuserial="+nuserialPartial+"&maxResults=50");
+                .execute(URL + "SerialList?nuserial="+nuserialPartial+"&maxResults=50");
         
         serialList = new ArrayList<InvSerialNumber>();
         int statusNum  = 0;
@@ -662,9 +665,12 @@ public class SearchActivity extends SenateActivity
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }                   
                 Log.i("Activity Search afterTextChanged ", "URL " + URL);
                 AsyncTask<String, String, String> resr1 = new RequestTask()
-                        .execute(URL + "/Search?barcode_num=" + barcode_num);
+                        .execute(URL + "Search?barcode_num=" + barcode_num);
                 try {
                     res = null;
                     res = resr1.get().trim().toString();

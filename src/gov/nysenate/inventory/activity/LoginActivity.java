@@ -213,6 +213,9 @@ ChangePasswordDialogListener
                                           // use same object elsewhere in
                                           // project
             URL = properties.get("WEBAPP_BASE_URL").toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }              
             this.defrmint = properties.get("DEFRMINT").toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -660,9 +663,12 @@ ChangePasswordDialogListener
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }                   
                 AsyncTask<String, String, String> resr1 = new RequestTask()
                         .execute(URL
-                                + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+                                + "CheckAppVersion?appName=InventoryMobileApp.apk");
                 try {
                     String res = resr1.get().trim().toString();
                     if (res == null) {
@@ -730,7 +736,7 @@ ChangePasswordDialogListener
         BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM",
                 "THIS WAS FROM ANDROID");
         AsyncTask<String, String, String> resr1 = new RequestTask(nameValuePair)
-                .execute(URL + "/TestPostServlet");
+                .execute(URL + "TestPostServlet");
         String res;
         try {
             res = null;
@@ -859,7 +865,7 @@ ChangePasswordDialogListener
         postParams.add( new BasicNameValuePair("user", userName));
         postParams.add( new BasicNameValuePair("newPassword", newPassword));
         AsyncTask<String, String, String> resr1;
-        resr1 = new RequestTask(postParams).execute("/ChangePassword");
+        resr1 = new RequestTask(postParams).execute("ChangePassword");
         String res = null;
         buttonLogin.getBackground().setAlpha(255);
         try {
@@ -908,8 +914,11 @@ ChangePasswordDialogListener
                     //if (loginStatusParam==null) 
                     String URL = LoginActivity.properties
                             .get("WEBAPP_BASE_URL").toString();
+                    if (! URL.endsWith("/")) {
+                        URL += "/";
+                    }                       
                     AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/Login?user=" + user_name + "&pwd="
+                            .execute(URL + "Login?user=" + user_name + "&pwd="
                                     + password+"&defrmint="+defrmint);
                     try {
                         /*System.out.println("login url:"+ "/Login?user=" + user_name + "&pwd="

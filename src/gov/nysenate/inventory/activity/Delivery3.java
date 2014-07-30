@@ -325,12 +325,15 @@ public class Delivery3 extends SenateActivity
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }
                 this.deliveryRequestTaskType = "Delivery";
                 String deliveryURL = URL
-                        + "/DeliveryConfirmation?";
+                        + "DeliveryConfirmation?";
 
                 resr1 = new DeliveryRequestTask().execute(URL
-                        + "/ImgUpload?nauser=" + LoginActivity.nauser
+                        + "ImgUpload?nauser=" + LoginActivity.nauser
                         + "&nuxrefem=" + nuxrefem, deliveryURL);
 
                 try {
@@ -812,11 +815,13 @@ public class Delivery3 extends SenateActivity
 
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }            
             this.deliveryRequestTaskType = "EmployeeDeliveryList";
             AsyncTask<String, String, String> resr1 = new DeliveryRequestTask()
-                    .execute(URL + "/EmployeeList", URL
-                            + "/GetPickup?nuxrpd=" + nuxrpd);
+                    .execute(URL + "EmployeeList", URL
+                            + "GetPickup?nuxrpd=" + nuxrpd);
 
             try {
                 try {

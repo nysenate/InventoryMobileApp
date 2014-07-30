@@ -265,6 +265,9 @@ public abstract class SenateActivity extends Activity implements
                                           // use same object elsewhere in
                                           // project
             URL = properties.get("WEBAPP_BASE_URL").toString().trim();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
             this.defrmint = properties.get("DEFRMINT").toString();            
         } catch (IOException e) {
             e.printStackTrace();
@@ -587,9 +590,12 @@ public abstract class SenateActivity extends Activity implements
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
-                System.out.println("parseServerDatabaseString:"+URL+ "/GetDatabaseName");
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }   
+                System.out.println("parseServerDatabaseString:"+URL+ "GetDatabaseName");
                 requestServerResponse = new RequestTask().execute(URL
-                        + "/GetDatabaseName");
+                        + "GetDatabaseName");
 
                 try {
                     serverResponse = null;
@@ -727,8 +733,11 @@ public abstract class SenateActivity extends Activity implements
                 // Get the URL from the properties
                 String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }                   
                 requestServerResponse = new RequestTask().execute(URL
-                        + "/KeepSessionAlive");
+                        + "KeepSessionAlive");
 
                 try {
                     serverResponse = null;
@@ -1060,9 +1069,12 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                     // if (loginStatusParam==null)
                     String URL = LoginActivity.properties
                             .get("WEBAPP_BASE_URL").toString();
+                    if (! URL.endsWith("/")) {
+                        URL += "/";
+                    }                       
                     //System.out.println ("/Login?user=" + user_name + "&pwd="+ password + "&defrmint=" + defrmint);
                     AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/Login?user=" + user_name + "&pwd="
+                            .execute(URL + "Login?user=" + user_name + "&pwd="
                                     + password + "&defrmint=" + defrmint);
                     try {
                         /*
@@ -1297,7 +1309,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         postParams.add( new BasicNameValuePair("user", userName));
         postParams.add( new BasicNameValuePair("newPassword", newPassword));
         AsyncTask<String, String, String> resr1;
-        resr1 = new RequestTask(postParams).execute("/ChangePassword");
+        resr1 = new RequestTask(postParams).execute("ChangePassword");
         String res = null;
         try {
             res = resr1.get().trim().toString();

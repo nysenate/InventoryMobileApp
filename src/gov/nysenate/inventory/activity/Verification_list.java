@@ -92,9 +92,12 @@ public class Verification_list extends Activity
                     // Get the URL from the properties
                     String URL = LoginActivity.properties
                             .get("WEBAPP_BASE_URL").toString();
+                    if (! URL.endsWith("/")) {
+                        URL += "/";
+                    }                       
 
                     AsyncTask<String, String, String> resr1 = new RequestTask()
-                            .execute(URL + "/ItemDetails?barcode_num="
+                            .execute(URL + "ItemDetails?barcode_num="
                                     + barcode_num);
                     try {
                         res = resr1.get().trim().toString();

@@ -105,9 +105,12 @@ public class UpgradeActivity extends SenateActivity
             Intent msgIntent = new Intent(this, InvWebService.class);
             String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
 
             msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
-                    + "/CheckAppVersion?appName=InventoryMobileApp.apk");
+                    + "CheckAppVersion?appName=InventoryMobileApp.apk");
             startService(msgIntent);
         }
 

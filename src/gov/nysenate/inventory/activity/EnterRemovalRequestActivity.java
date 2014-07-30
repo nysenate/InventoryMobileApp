@@ -80,7 +80,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
 
     private void updateServer() {
 //        UpdateRemovalRequest task = new UpdateRemovalRequest(request);
-//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "/URL...");
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "URL...");
 //
         clear();
         barcode.requestFocus();

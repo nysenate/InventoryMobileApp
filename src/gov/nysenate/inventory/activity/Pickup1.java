@@ -401,6 +401,9 @@ public class Pickup1 extends SenateActivity
             if (LoginActivity.properties != null) {
                 URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                         .toString();
+                if (! URL.endsWith("/")) {
+                    URL += "/";
+                }                   
             } else {
                 MsgAlert msgAlert = new MsgAlert(
                         this,
@@ -408,7 +411,7 @@ public class Pickup1 extends SenateActivity
                         "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
             }
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocCodeList");
+                    .execute(URL + "LocCodeList");
             res = resr1.get();
             if (res == null) {
                 noServerResponse();
@@ -433,9 +436,11 @@ public class Pickup1 extends SenateActivity
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }   
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocationDetails?barcode_num=" + locCode);
+                    .execute(URL + "LocationDetails?barcode_num=" + locCode);
             try {
                 try {
                     res = null;
@@ -491,7 +496,7 @@ public class Pickup1 extends SenateActivity
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocationDetails?barcode_num=" + locCode);
+                    .execute(URL + "LocationDetails?barcode_num=" + locCode);
             try {
                 try {
                     res = null;

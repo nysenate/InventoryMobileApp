@@ -547,9 +547,11 @@ public class Pickup2Activity extends SenateActivity
             // Get the URL from the properties
             String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
-
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }   
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/ItemDetails?barcode_num=" + barcode_num);
+                    .execute(URL + "ItemDetails?barcode_num=" + barcode_num);
             System.out.println("URL CALL:" + URL + "/ItemDetails?barcode_num="
                     + barcode_num);
             try {

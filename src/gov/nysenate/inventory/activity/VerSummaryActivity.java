@@ -351,8 +351,11 @@ public class VerSummaryActivity extends SenateActivity
              * "Check for Session by using KeepSessionAlive");
              */
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/KeepSessionAlive");
+                    .execute(URL + "KeepSessionAlive");
             String response = null;
             try {
                 response = resr1.get().toString();
@@ -591,7 +594,7 @@ public class VerSummaryActivity extends SenateActivity
                 postParams.add(new BasicNameValuePair("scannedItems", jsonArray
                         .toString()));
                 resr1 = new RequestTask(postParams)
-                        .execute("/VerificationReports");
+                        .execute("VerificationReports");
 
                 Log.i("submitVerification", "SUBMIT TO URL");
 

@@ -742,9 +742,12 @@ public class VerScanActivity extends SenateActivity implements
 
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/ItemsList?loc_code=" + loc_code);
+                    .execute(URL + "ItemsList?loc_code=" + loc_code);
 
             try {
 
@@ -1152,11 +1155,17 @@ public class VerScanActivity extends SenateActivity implements
 
         // Get the URL from the properties
         URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-
+        if (! URL.endsWith("/")) {
+            URL += "/";
+        }   
+        
         if (networkInfo != null && networkInfo.isConnected()) {
 
             // Get the URL from the properties
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
 
             // Log.i("getCommodityList", URL + "/getCommodityList?keywords=" +
             // NewInvDialog.tvKeywordsToBlock.getText().toString());
@@ -1176,7 +1185,7 @@ public class VerScanActivity extends SenateActivity implements
 
             };
 
-            resr1.execute(URL + "/CommodityList?keywords="
+            resr1.execute(URL + "CommodityList?keywords="
                     + NewInvDialog.tvKeywordsToBlock.getText().toString());
 
             try {
@@ -1295,7 +1304,7 @@ public class VerScanActivity extends SenateActivity implements
             // scannedItems.add(barcode);
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/ItemDetails?barcode_num=" + nusenate);
+                    .execute(URL + "ItemDetails?barcode_num=" + nusenate);
             try {
                 if (testResNull) { // Testing Purposes Only
                     resr1 = null;

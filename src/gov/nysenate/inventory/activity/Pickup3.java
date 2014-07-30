@@ -474,8 +474,11 @@ public class Pickup3 extends SenateActivity
         }
         continueBtn.getBackground().setAlpha(45);
         String URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+        if (! URL.endsWith("/")) {
+            URL += "/";
+        }   
 
-        new ProcessPickupTask().execute( URL + "/ImgUpload?nauser=" + LoginActivity.nauser
+        new ProcessPickupTask().execute( URL + "ImgUpload?nauser=" + LoginActivity.nauser
                     + "&nuxrefem=" + nuxrefem, URL + "/Pickup");
     }
 

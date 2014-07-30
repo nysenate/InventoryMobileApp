@@ -340,7 +340,7 @@ public class Verification extends SenateActivity
             status = "yes";
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocationDetails?barcode_num="
+                    .execute(URL + "LocationDetails?barcode_num="
                             + barcode_num);
             try {
                 try {
@@ -434,9 +434,12 @@ public class Verification extends SenateActivity
             // Get the URL from the properties
 
             URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            if (! URL.endsWith("/")) {
+                URL += "/";
+            }               
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "/LocCodeList");
+                    .execute(URL + "LocCodeList");
             try {
                 try {
                     res = null;
