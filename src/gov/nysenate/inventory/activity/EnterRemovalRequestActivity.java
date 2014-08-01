@@ -4,17 +4,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
-import com.google.gson.Gson;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.RemovalListFragment;
+import gov.nysenate.inventory.android.RemovalRequestItemsList;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
@@ -23,25 +21,8 @@ import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.*;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +34,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     private Spinner removalReasonCode;
     private TextView removalReasonDescription;
     private EditText barcode;
-    private RemovalListFragment fragment;
+    private RemovalRequestItemsList fragment;
     private TextView count;
     private ProgressBar progressBar;
 
@@ -67,7 +48,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         barcode = (EditText) findViewById(R.id.barcode_text);
         count = (TextView) findViewById(R.id.count);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        fragment = (RemovalListFragment) getFragmentManager().findFragmentById(R.id.removal_list_fragment);
+        fragment = (RemovalRequestItemsList) getFragmentManager().findFragmentById(R.id.removal_item_list_fragment);
     }
 
     @Override
@@ -198,10 +179,10 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
         String message = "";
-        if (rr != null) {
+        if (rr != null) { // TODO: include more info
             message = "Removal Request successfully saved, Request# " + rr.getTransactionNum() + ".";
         } else {
-            message = "Error saving Removal Reqeust, Please contact STS/BAC";
+            message = "Error saving Removal Reqeust. Please contact STS/BAC";
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(false)

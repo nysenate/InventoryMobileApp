@@ -4,25 +4,24 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ListView;
-import gov.nysenate.inventory.adapter.RemovalRequestListAdapter;
-import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.adapter.RemovalRequestItemListAdapter;
 import gov.nysenate.inventory.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemovalListFragment extends Fragment
+public class RemovalRequestItemsList extends Fragment
 {
     private ListView removalList;
-    private RemovalRequestListAdapter removalListAdapter;
+    private RemovalRequestItemListAdapter removalListAdapter;
     private List<Item> items = new ArrayList<Item>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_removal_list, container);
-        removalList = (ListView) view.findViewById(R.id.removal_list);
+        View view = inflater.inflate(R.layout.fragment_removal_item_list, container);
+        removalList = (ListView) view.findViewById(R.id.removal_item_list);
 
-        removalListAdapter = new RemovalRequestListAdapter(getActivity(), R.layout.removal_request_list, R.id.column1, items);
+        removalListAdapter = new RemovalRequestItemListAdapter(getActivity(), R.layout.removal_request_item_list_adapter, R.id.column1, items);
         removalList.setAdapter(removalListAdapter);
 
         return view;

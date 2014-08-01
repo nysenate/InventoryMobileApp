@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
     <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_margin="20dp"
-            android:text="Inventory Removal Requests."
+            android:text="Edit Inventory Removal Request."
             android:textSize="26sp"/>
 
-    <LinearLayout
-            android:id="@+id/date_info"
-            android:layout_width="match_parent"
+    <TableLayout
+            android:id="@+id/original_info"
+            android:layout_width="550dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:layout_below="@+id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/customshape" >
 
+        <TableRow>
+        <TextView
+                android:id="@+id/transaction_num_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Request#:"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+        <TextView
+                android:id="@+id/transaction_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp"/>
+
+        </TableRow>
+        <TableRow>
         <TextView
                 android:id="@+id/date_title"
                 android:layout_width="wrap_content"
@@ -37,24 +55,25 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textSize="20sp"/>
-    </LinearLayout>
+        </TableRow>
 
+    </TableLayout>
 
     <TextView
             android:id="@+id/removal_reason_title"
-            android:layout_below="@id/date_info"
+            android:layout_below="@id/original_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
-            android:text="Select Removal Reason"
+            android:text="Removal Reason"
             android:textStyle="bold"
             android:textSize="20sp"/>
 
     <Spinner
-            android:id="@+id/removal_reason_code"
-            android:layout_below="@id/date_info"
+            android:id="@+id/adjust_code"
+            android:layout_below="@id/original_info"
             android:layout_toRightOf="@+id/removal_reason_title"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -62,9 +81,9 @@
             android:layout_marginRight="20dp"/>
 
     <TextView
-            android:id="@+id/removal_reason_description"
-            android:layout_below="@id/date_info"
-            android:layout_toRightOf="@+id/removal_reason_code"
+            android:id="@+id/adjust_code_description"
+            android:layout_below="@id/original_info"
+            android:layout_toRightOf="@+id/adjust_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -73,74 +92,48 @@
             android:textStyle="bold"
             android:textSize="20sp"/>
 
-    <TextView
-            android:id="@+id/barcode_scan_title"
+    <CheckBox
+            android:id="@+id/submit_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/removal_reason_code"
-            android:text="Please scan items for removal from Inventory"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
-
-    <EditText
-            android:id="@+id/barcode_text"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:layout_below="@id/barcode_scan_title"
-            android:digits="0123456789"
-            android:maxLength="6"
-            android:inputType="number"
-            android:hint="Senate Tag#"/>
-
-    <TextView
-            android:id="@+id/count_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/barcode_scan_title"
-            android:layout_toRightOf="@id/barcode_text"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="10dp"
-            android:text="Count:"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-
-    <TextView
-            android:id="@+id/count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/barcode_scan_title"
-            android:layout_toRightOf="@id/count_title"
+            android:layout_below="@id/removal_reason_title"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="0"
+            android:text="Submit to Inventory Management for review"
+            android:onClick="submitToMgmtCheckBoxClicked"
             android:textSize="20sp"/>
 
     <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/removal_request_item_list"
             android:layout_centerInParent="true"
-            android:layout_below="@id/barcode_scan_title"
             style="?android:attr/progressBarStyleLarge"
             android:background="@drawable/shaperoundblue"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 
-    <fragment
-            android:name="gov.nysenate.inventory.android.RemovalRequestItemsList"
-            android:id="@+id/removal_item_list_fragment"
-            android:layout_below="@id/barcode_text"
+    <TextView
+            android:id="@+id/listview_title"
+            android:layout_below="@id/submit_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="Select Items to delete from Removal Request."
+            android:textSize="16sp"/>
+
+    <ListView
+            android:id="@+id/removal_request_item_list"
+            android:layout_below="@+id/listview_title"
             android:layout_width="match_parent"
-            android:layout_height="465dp"
-            tools:layout="@layout/fragment_removal_item_list"/>
-
+            android:layout_height="450dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+    </ListView>
 
     <Button
             android:id="@+id/cancel_btn"
@@ -173,7 +166,4 @@
             android:text="Save"
             android:onClick="onSaveBtnClick"/>
 
-
 </RelativeLayout>
-
-

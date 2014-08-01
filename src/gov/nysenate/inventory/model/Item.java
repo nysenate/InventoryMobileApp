@@ -63,4 +63,21 @@ public class Item
     public void setStatus(ItemStatus status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        if (id != item.id) return false;
+        if (barcode != null ? !barcode.equals(item.barcode) : item.barcode != null) return false;
+        if (commodity != null ? !commodity.equals(item.commodity) : item.commodity != null) return false;
+        if (location != null ? !location.equals(item.location) : item.location != null) return false;
+        if (serialNumber != null ? !serialNumber.equals(item.serialNumber) : item.serialNumber != null) return false;
+        if (status != item.status) return false;
+
+        return true;
+    }
 }

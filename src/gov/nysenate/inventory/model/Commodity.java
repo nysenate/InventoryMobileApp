@@ -40,4 +40,21 @@ public class Commodity
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Commodity commodity = (Commodity) o;
+
+        if (id != commodity.id) return false;
+        if (category != null ? !category.equals(commodity.category) : commodity.category != null) return false;
+        if (code != null ? !code.equals(commodity.code) : commodity.code != null) return false;
+        if (description != null ? !description.equals(commodity.description) : commodity.description != null)
+            return false;
+        if (type != null ? !type.equals(commodity.type) : commodity.type != null) return false;
+
+        return true;
+    }
 }
