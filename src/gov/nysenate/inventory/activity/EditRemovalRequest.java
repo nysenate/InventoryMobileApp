@@ -170,7 +170,29 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         if (noChangesMade()) {
             Toasty.displayCenteredMessage(this, "You have not made any changes", Toast.LENGTH_SHORT);
             return;
+        } else if (allItemsDeleted()) {
+            confirmDeleteAllItems();
+        } else {
+            confirmationDialog();
         }
+    }
+
+    private void confirmDeleteAllItems() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Confirmation")
+                .setMessage(Html.fromHtml("You have selected all items to be deleted. This will delete the entire Inventory Removal Reqeust."))
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        confirmationDialog();
+                    }
+                });
+        builder.show();
+    }
+
+    private void confirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle("Confirmation")
@@ -183,6 +205,15 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
                     }
                 });
         builder.show();
+    }
+
+    private boolean allItemsDeleted() {
+        for (Item i: removalRequest.getItems()) {
+            if (i.getStatus() != ItemStatus.INACTIVE) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean noChangesMade() {

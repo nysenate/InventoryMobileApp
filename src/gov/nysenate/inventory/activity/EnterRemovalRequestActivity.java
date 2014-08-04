@@ -110,32 +110,45 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         protected void onPostExecute(Item item) {
             progressBar.setVisibility(ProgressBar.GONE);
             if (item != null) {
-                if (item.getStatus() == ItemStatus.ACTIVE) {
-                    add(item);
-                } else {
-                    switch(item.getStatus()) {
-                        case IN_TRANSIT:
-                            Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is In Transit, It cannot be removed right now.", Toast.LENGTH_SHORT);
-                            break;
-                        case INACTIVE:
-                            Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is already Inactive.", Toast.LENGTH_SHORT);
-                            break;
-                        case PENDING_REMOVAL:
-                            Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item has already been added to the Inventory Removal Requests", Toast.LENGTH_SHORT);
-                            break;
-                    }
-                    clearBarcode();
-                }
+                    checkItemStatus(item);
             } else {
-                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Invalid Barcode", Toast.LENGTH_SHORT);
+                playSound(R.raw.error);
+                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
                 barcode.setText("");
-                // TODO: play sounds
+            }
+        }
+
+        private void checkItemStatus(Item item) {
+            if (removalRequest.getItems().contains(item)) {
+                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "You have already scanned that item.", Toast.LENGTH_SHORT);
+                clearBarcode();
+                playSound(R.raw.warning);
+                return;
+            }
+            if (item.getStatus() == ItemStatus.ACTIVE) {
+                add(item);
+                playSound(R.raw.ok);
+            } else {
+                switch (item.getStatus()) {
+                    case IN_TRANSIT:
+                        Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is In Transit, It cannot be removed right now.", Toast.LENGTH_SHORT);
+                        break;
+                    case INACTIVE:
+                        Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is Inactive.", Toast.LENGTH_SHORT);
+                        break;
+                    case PENDING_REMOVAL:
+                        Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item has already been added to the Inventory Removal Requests", Toast.LENGTH_SHORT);
+                        break;
+                    case DOES_NOT_EXIST:
+                        Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Invalid Barcode", Toast.LENGTH_SHORT);
+                }
+                playSound(R.raw.warning);
+                clearBarcode();
             }
         }
     }
 
     public void add(Item item) {
-        item.setStatus(ItemStatus.PENDING_REMOVAL);
         removalRequest.addItem(item);
         fragment.addItem(item);
         clearBarcode();
@@ -154,8 +167,20 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     }
 
     public void onSaveBtnClick(View view) {
-        if (checkServerResponse(true) == OK) {
-            displayConfirmationDialog();
+        if (checkServerResponse(true) != OK) {
+            return;
+        }
+        if (removalRequest.getItems().isEmpty()) {
+            Toasty.displayCenteredMessage(this, "You have not scanned any items to remove from inventory.", Toast.LENGTH_SHORT);
+            return;
+        }
+        setItemsAsPendingRemoval();
+        displayConfirmationDialog();
+    }
+
+    private void setItemsAsPendingRemoval() {
+        for (Item i: removalRequest.getItems()) {
+            i.setStatus(ItemStatus.PENDING_REMOVAL);
         }
     }
 
@@ -179,15 +204,19 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
         String message = "";
-        if (rr != null) { // TODO: include more info
-            message = "Removal Request successfully saved, Request# " + rr.getTransactionNum() + ".";
+        if (rr != null) {
+            message = "Removal Request successfully saved. <br><br>" +
+                    "Request# " + rr.getTransactionNum() + ".<br>" +
+                    "Date: " + ((InvApplication) getApplication()).getDateTimeFormat().format(rr.getDate()) + ". <br>" +
+                    "Removal Reason: " + rr.getAdjustCode().getDescription() + ".";
+
         } else {
             message = "Error saving Removal Reqeust. Please contact STS/BAC";
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle("Info")
-                .setMessage(message)
+                .setMessage(Html.fromHtml(message))
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

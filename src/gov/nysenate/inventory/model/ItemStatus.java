@@ -6,5 +6,6 @@ public enum ItemStatus
     INACTIVE,
     NEW,
     IN_TRANSIT,
-    PENDING_REMOVAL
+    PENDING_REMOVAL,
+    DOES_NOT_EXIST
 }
