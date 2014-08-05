@@ -19,7 +19,7 @@ public class Move extends SenateActivity implements OnItemClickListener {
     private static final String[] titles = new String[]{"New Pickup", "Edit Existing Pickup", "Delivery", "Enter Remote Info",
             "Removal Request", "Edit Removal Request", "Main Menu"};
     private static final Integer[] images = {R.drawable.pickup, R.drawable.editpickup,
-            R.drawable.delivery2, R.drawable.enterremote, R.drawable.pickup, R.drawable.pickup, R.drawable.mainmenu};
+            R.drawable.delivery2, R.drawable.enterremote, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.mainmenu};
 
     private List<RowItem> rowItems;
 
