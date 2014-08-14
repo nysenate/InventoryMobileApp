@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.InvApplication;
@@ -60,7 +62,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         initalizeUI();
 
         barcode.addTextChangedListener(barcodeWatcher);
-        barcode.setEnabled(false); // Must select an adjustment code before entering items.
+        disableBarcode();
         removalRequest = new RemovalRequest(LoginActivity.nauser.toUpperCase(), new Date());
         removalRequest.setStatus("PE");
         SimpleDateFormat sdf = ((InvApplication) getApplication()).getDateTimeFormat();
@@ -273,7 +275,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
                 removalReasonDescription.setText(code.getDescription());
                 removalRequest.setAdjustCode(code);
 
-                barcode.setEnabled(true);
+                enableBarcode();
             }
         }
 
@@ -293,6 +295,25 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     private void clearBarcode() {
         barcode.setText("");
         barcode.requestFocus();
+    }
+
+    private void disableBarcode() {
+        barcode.setFocusableInTouchMode(false); // Must select an adjustment code before entering items.
+
+        barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Please select a Removal Reason.", Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void enableBarcode() {
+        barcode.setFocusableInTouchMode(true);
+        barcode.setOnClickListener(null);
+        barcode.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 
 }
