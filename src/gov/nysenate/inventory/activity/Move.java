@@ -17,9 +17,9 @@ import android.widget.ListView;
 
 public class Move extends SenateActivity implements OnItemClickListener {
     private static final String[] titles = new String[]{"New Pickup", "Edit Existing Pickup", "Delivery", "Enter Remote Info",
-            "Removal Request", "Edit Removal Request", "Main Menu"};
+            "Main Menu"};
     private static final Integer[] images = {R.drawable.pickup, R.drawable.editpickup,
-            R.drawable.delivery2, R.drawable.enterremote, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.mainmenu};
+            R.drawable.delivery2, R.drawable.enterremote, R.drawable.mainmenu};
 
     private List<RowItem> rowItems;
 
@@ -62,10 +62,6 @@ public class Move extends SenateActivity implements OnItemClickListener {
             intent = editPickup();
         } else if (curRow.getTitle().equalsIgnoreCase("Enter Remote Info")) {
             intent = enterRemote();
-        } else if (curRow.getTitle().equalsIgnoreCase("Removal Request")) {
-            intent = removalRequest();
-        } else if (curRow.getTitle().equalsIgnoreCase("Edit Removal Request")) {
-            intent = editRemovalRequest();
         } else {
             onBackPressed();
             return;
@@ -89,14 +85,6 @@ public class Move extends SenateActivity implements OnItemClickListener {
 
     private Intent enterRemote() {
         return new Intent(this, EnterRemote1.class);
-    }
-
-    private Intent removalRequest() {
-        return new Intent(this, EnterRemovalRequestActivity.class);
-    }
-
-    private Intent editRemovalRequest() {
-        return new Intent(this, EditRemovalRequestSelection.class);
     }
 
     @Override

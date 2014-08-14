@@ -4,18 +4,8 @@
     android:layout_height="match_parent"
     tools:context=".MenuActivity" >
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pickupCommentsSpeechButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/customshape" >
-    </ListView>
-
     <ImageView
-        android:id="@+id/pickupCommentsSpeechButton"
+        android:id="@+id/nysenateLogo"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
@@ -23,14 +13,24 @@
         android:src="@drawable/nysenatelogo" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/title"
         android:layout_width="400dp"
         android:layout_height="100dp"
-        android:layout_alignBottom="@+id/pickupCommentsSpeechButton"
+        android:layout_alignBottom="@+id/nysenateLogo"
         android:layout_marginBottom="18dp"
         android:layout_marginLeft="22dp"
-        android:layout_toRightOf="@+id/pickupCommentsSpeechButton"
+        android:layout_toRightOf="@+id/nysenateLogo"
         android:src="@drawable/invapplogo" />
+
+    <ListView
+            android:id="@+id/list"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nysenateLogo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/customshape" >
+    </ListView>
 
     
    <ProgressBar

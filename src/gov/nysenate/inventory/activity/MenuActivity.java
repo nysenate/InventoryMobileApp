@@ -63,11 +63,11 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         InvApplication app = ((InvApplication)getApplicationContext());
         int cdseclevel = app.getCdseclevel();
         if (cdseclevel == 1) {
-            titles = new String[]{ "Search", "Verification", "Move Items", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.slogout };
+            titles = new String[]{ "Search", "Verification", "Move Items", "Removal Request", "Edit Removal Request", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.slogout };
         } else {
-            titles = new String[]{ "Search", "Move Items", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.slogout };
+            titles = new String[]{ "Search", "Move Items", "Removal Request", "Edit Removal Request", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.slogout };
         }
 
         rowItems = new ArrayList<RowItem>();
@@ -89,29 +89,24 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id) {
-
-        RowItem curRow = rowItems.get(position);
-        if (curRow.getTitle().equalsIgnoreCase("Search")) {
-            if (checkServerResponse(true) == OK) {
-                this.search(view);
-            }
-        } else if (curRow.getTitle().equalsIgnoreCase("Verification")) {
-            if (checkServerResponse(true) == OK) {
-                this.verify(view);
-            }
-        } else if (curRow.getTitle().equalsIgnoreCase("Move Items")) {
-            this.addItem(view);
-        } else if (curRow.getTitle().equalsIgnoreCase("Logout")) {
-            //Log.i("MENU LOGOUT", "Calling logout");
-            this.logout(view);
+        if (checkServerResponse(true) != OK) {
+            return;
         }
 
-        /*
-         * Toast toast = Toast.makeText(getApplicationContext(), "TEST Item " +
-         * (position + 1) + ": " + rowItems.get(position), Toast.LENGTH_SHORT);
-         * toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
-         * toast.show();
-         */
+        String selection = rowItems.get(position).getTitle();
+        if (selection.equalsIgnoreCase("Search")) {
+            this.search(view);
+        } else if (selection.equalsIgnoreCase("Verification")) {
+            this.verify(view);
+        } else if (selection.equalsIgnoreCase("Move Items")) {
+            this.addItem(view);
+        } else if (selection.equalsIgnoreCase("Logout")) {
+            this.logout(view);
+        } else if (selection.equalsIgnoreCase("Removal Request")) {
+            removalReqeust();
+        } else if (selection.equalsIgnoreCase("Edit Removal Request")) {
+            editRemovalReqeust();
+        }
     }
 
     @Override
@@ -168,6 +163,18 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         NavUtils.navigateUpFromSameTask(this);
         finish();
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }
+
+    private void removalReqeust() {
+        Intent intent = new Intent(this, EnterRemovalRequestActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+    }
+
+    private void editRemovalReqeust() {
+        Intent intent = new Intent(this, EditRemovalRequestSelection.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     public void search(View view) {
