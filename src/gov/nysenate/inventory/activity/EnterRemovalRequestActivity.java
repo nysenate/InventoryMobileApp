@@ -34,7 +34,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
 {
     private TextView date;
     private Spinner removalReasonCode;
-    private TextView removalReasonDescription;
     private EditText barcode;
     private RemovalRequestItemsList fragment;
     private TextView count;
@@ -46,7 +45,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     private void initalizeUI() {
         date = (TextView) findViewById(R.id.date);
         removalReasonCode = (Spinner) findViewById(R.id.removal_reason_code);
-        removalReasonDescription = (TextView) findViewById(R.id.removal_reason_description);
         barcode = (EditText) findViewById(R.id.barcode_text);
         count = (TextView) findViewById(R.id.count);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -231,7 +229,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         builder.show();
     }
 
-    public class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
+    private class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
         @Override
         protected void onPreExecute() {
         }
@@ -255,12 +253,12 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     }
 
     private void initializeAdjustCodeSpinner() {
-        ArrayList<String> codes = new ArrayList<String>();
-        for (AdjustCode ac : adjustCodes) {
-            codes.add(ac.getCode());
+        ArrayList<String> codeAndDescriptions = new ArrayList<String>();
+        for (AdjustCode code : adjustCodes) {
+            codeAndDescriptions.add(code.toString());
         }
 
-        ArrayAdapter<CharSequence> spinAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, codes.toArray(new String[codes.size()]));
+        ArrayAdapter<CharSequence> spinAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, codeAndDescriptions.toArray(new String[codeAndDescriptions.size()]));
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         removalReasonCode.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
 
@@ -272,7 +270,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (removalReasonCode.getSelectedItem() != null) {
                 AdjustCode code = getAdjustCode(removalReasonCode.getSelectedItem().toString());
-                removalReasonDescription.setText(code.getDescription());
                 removalRequest.setAdjustCode(code);
 
                 enableBarcode();
@@ -283,10 +280,10 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         public void onNothingSelected(AdapterView<?> parent) {  }
     }
 
-    private AdjustCode getAdjustCode(String code) {
-        for (AdjustCode ac : adjustCodes) {
-            if (ac.getCode().equals(code)) {
-                return ac;
+    private AdjustCode getAdjustCode(String codeAndDescription) {
+        for (AdjustCode code : adjustCodes) {
+            if (code.toString().equals(codeAndDescription)) {
+                return code;
             }
         }
         return null;

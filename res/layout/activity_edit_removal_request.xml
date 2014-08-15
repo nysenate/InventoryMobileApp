@@ -9,7 +9,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_margin="20dp"
-            android:text="Edit Inventory Removal Request."
+            android:text="Edit Inventory Removal Request"
+            android:textStyle="bold"
             android:textSize="26sp"/>
 
     <TableLayout
