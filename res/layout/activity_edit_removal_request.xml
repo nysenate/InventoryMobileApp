@@ -93,17 +93,6 @@
             android:textStyle="bold"
             android:textSize="20sp"/>
 
-    <CheckBox
-            android:id="@+id/submit_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/removal_reason_title"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            android:text="Submit to Inventory Management for review"
-            android:onClick="submitToMgmtCheckBoxClicked"
-            android:textSize="20sp"/>
-
     <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -116,7 +105,7 @@
 
     <TextView
             android:id="@+id/listview_title"
-            android:layout_below="@id/submit_check_box"
+            android:layout_below="@id/removal_reason_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -129,12 +118,25 @@
             android:id="@+id/removal_request_item_list"
             android:layout_below="@+id/listview_title"
             android:layout_width="match_parent"
-            android:layout_height="460dp"
+            android:layout_height="440dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp">
     </ListView>
+
+
+    <CheckBox
+            android:id="@+id/submit_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/cancel_btn"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="Submit to Inventory Management for review"
+            android:onClick="submitToMgmtCheckBoxClicked"
+            android:textSize="20sp"/>
 
     <Button
             android:id="@+id/cancel_btn"

@@ -42,6 +42,7 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
     private TextView adjustCodeDescription;
     private ListView itemList;
     private ProgressBar progressBar;
+    private CheckBox checkbox;
 
     private void initializeViewObjects() {
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
@@ -50,6 +51,8 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         adjustCodeDescription = (TextView) findViewById(R.id.adjust_code_description);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        checkbox = (CheckBox) findViewById(R.id.submit_check_box);
+        checkbox.setEnabled(false);
     }
 
     @Override
@@ -130,6 +133,7 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
                 removalRequest = rr;
                 initializeItemListAdapter();
                 updateView();
+                checkbox.setEnabled(true);
             } else {
                 Toasty.displayCenteredMessage(EditRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
             }

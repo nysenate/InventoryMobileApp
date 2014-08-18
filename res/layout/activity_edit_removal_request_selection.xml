@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_margin="20dp"
-            android:text="Select Removal Request to Edit."
+            android:text="Please select a removal request to edit."
             android:textSize="26sp"/>
 
     <ProgressBar
@@ -34,29 +34,42 @@
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Request#"
-                android:layout_marginTop="10dp"
+                android:layout_weight="5"
+                android:text="Date"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="30dp"/>
+                android:layout_marginLeft="30dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:text="Reason"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Date"
-                android:layout_marginTop="10dp"
+                android:text="Count"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Count"
-                android:layout_marginTop="10dp"
+                android:layout_weight="3"
+                android:text="Request#"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
     </LinearLayout>
 
     <ListView
@@ -64,7 +77,7 @@
             android:layout_below="@+id/column_names"
             android:layout_width="match_parent"
             android:layout_height="650dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp">

@@ -29,6 +29,7 @@ public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
         TextView column1 = (TextView) row.findViewById(R.id.column1);
         TextView column2 = (TextView) row.findViewById(R.id.column2);
         TextView column3 = (TextView) row.findViewById(R.id.column3);
+        TextView column4 = (TextView) row.findViewById(R.id.column4);
 
         if (position % 2 > 0) {
             row.setBackgroundResource(R.drawable.selector_1);
@@ -38,9 +39,10 @@ public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
 
         RemovalRequest rr = rrs.get(position);
 
-        column1.setText(String.valueOf(rr.getTransactionNum()));
-        column2.setText(sdf.format(rr.getDate()));
+        column1.setText(sdf.format(rr.getDate()));
+        column2.setText(rr.getAdjustCode().getDescription());
         column3.setText(String.valueOf(rr.getItems().size()));
+        column4.setText(String.valueOf(rr.getTransactionNum()));
 
         return row;
     }
