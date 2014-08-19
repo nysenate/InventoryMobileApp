@@ -39,7 +39,6 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
     private TextView transactionNumView;
     private TextView date;
     private Spinner adjustCodeView;
-    private TextView adjustCodeDescription;
     private ListView itemList;
     private ProgressBar progressBar;
     private CheckBox checkbox;
@@ -48,7 +47,6 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
         date = (TextView) findViewById(R.id.date);
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
-        adjustCodeDescription = (TextView) findViewById(R.id.adjust_code_description);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         checkbox = (CheckBox) findViewById(R.id.submit_check_box);
@@ -155,7 +153,7 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
     private int removalRequestAdjustCodePosition() {
         int size = adjustCodeView.getAdapter().getCount();
         for (int i = 0; i < size; i++) {
-            if (removalRequest.getAdjustCode().getCode().equals(adjustCodeView.getAdapter().getItem(i))) {
+            if (removalRequest.getAdjustCode().toString().equals(adjustCodeView.getAdapter().getItem(i))) {
                 return i;
             }
         }
@@ -278,7 +276,7 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
     private void initializeAdjustCodeSpinner() {
         ArrayList<String> codes = new ArrayList<String>();
         for (AdjustCode ac : adjustCodes) {
-            codes.add(ac.getCode());
+            codes.add(ac.toString());
         }
 
         ArrayAdapter<CharSequence> spinAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, codes.toArray(new String[codes.size()]));
@@ -292,7 +290,6 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (adjustCodeView.getSelectedItem() != null) {
                 AdjustCode code = getAdjustCode(adjustCodeView.getSelectedItem().toString());
-                adjustCodeDescription.setText(code.getDescription());
                 removalRequest.setAdjustCode(code);
             }
         }
@@ -301,10 +298,10 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         public void onNothingSelected(AdapterView<?> parent) {  }
     }
 
-    private AdjustCode getAdjustCode(String code) {
-        for (AdjustCode ac : adjustCodes) {
-            if (ac.getCode().equals(code)) {
-                return ac;
+    private AdjustCode getAdjustCode(String codeAndDescription) {
+        for (AdjustCode code : adjustCodes) {
+            if (code.toString().equals(codeAndDescription)) {
+                return code;
             }
         }
         return null;

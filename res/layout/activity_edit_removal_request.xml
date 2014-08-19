@@ -76,22 +76,10 @@
             android:id="@+id/adjust_code"
             android:layout_below="@id/original_info"
             android:layout_toRightOf="@+id/removal_reason_title"
-            android:layout_width="100dp"
+            android:layout_width="275dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"/>
-
-    <TextView
-            android:id="@+id/adjust_code_description"
-            android:layout_below="@id/original_info"
-            android:layout_toRightOf="@+id/adjust_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:text=""
-            android:textStyle="bold"
-            android:textSize="20sp"/>
 
     <ProgressBar
             android:id="@+id/progress_bar"

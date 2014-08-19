@@ -71,6 +71,9 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (checkServerResponse() != OK) {
+            return;
+        }
         Intent intent;
         String title = menuItems.get(position).getTitle();
         if (title.equalsIgnoreCase("New Request")) {
