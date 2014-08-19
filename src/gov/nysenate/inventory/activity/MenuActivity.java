@@ -63,11 +63,11 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         InvApplication app = ((InvApplication)getApplicationContext());
         int cdseclevel = app.getCdseclevel();
         if (cdseclevel == 1) {
-            titles = new String[]{ "Search", "Verification", "Move Items", "Removal Request", "Edit Removal Request", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.slogout };
+            titles = new String[]{ "Search", "Verification", "Move Items", "Inventory Removal", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout };
         } else {
-            titles = new String[]{ "Search", "Move Items", "Removal Request", "Edit Removal Request", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.slogout };
+            titles = new String[]{ "Search", "Move Items", "Inventory Removal", "Logout" };
+            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout };
         }
 
         rowItems = new ArrayList<RowItem>();
@@ -102,10 +102,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
             this.addItem(view);
         } else if (selection.equalsIgnoreCase("Logout")) {
             this.logout(view);
-        } else if (selection.equalsIgnoreCase("Removal Request")) {
-            removalReqeust();
-        } else if (selection.equalsIgnoreCase("Edit Removal Request")) {
-            editRemovalReqeust();
+        } else if (selection.equalsIgnoreCase("Inventory Removal")) {
+            inventoryRemoval();
         }
     }
 
@@ -165,14 +163,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 
-    private void removalReqeust() {
-        Intent intent = new Intent(this, EnterRemovalRequestActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
-    }
-
-    private void editRemovalReqeust() {
-        Intent intent = new Intent(this, EditRemovalRequestSelection.class);
+    private void inventoryRemoval() {
+        Intent intent = new Intent(this, InventoryRemovalMenu.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
