@@ -57,6 +57,7 @@ public class EditRemovalRequestSelection extends SenateActivity
 
     @Override
     protected void onResume() {
+        super.onResume();
         checkServerResponse(true);
     }
 

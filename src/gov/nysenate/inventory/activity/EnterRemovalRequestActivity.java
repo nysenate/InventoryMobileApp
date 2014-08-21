@@ -55,6 +55,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerBaseActivityReceiver();
+        setContentView(R.layout.activity_enter_removal_request);
 
         initalizeUI();
 
@@ -73,6 +74,7 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
 
     @Override
     protected void onResume() {
+        super.onResume();
         checkServerResponse(true);
     }
 
