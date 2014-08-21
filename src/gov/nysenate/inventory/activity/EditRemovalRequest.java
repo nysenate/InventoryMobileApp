@@ -66,6 +66,11 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         }
     }
 
+    @Override
+    protected void onResume() {
+        checkServerResponse(true);
+    }
+
     private void initializeAdjustCodes() {
         QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
         queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
@@ -169,6 +174,9 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
     }
 
     public void onSaveBtnClick(View view) {
+        if (checkServerResponse(true) != OK) {
+            return;
+        }
         if (noChangesMade()) {
             Toasty.displayCenteredMessage(this, "You have not made any changes", Toast.LENGTH_SHORT);
             return;

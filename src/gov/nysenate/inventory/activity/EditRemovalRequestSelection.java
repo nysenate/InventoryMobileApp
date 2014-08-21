@@ -42,7 +42,9 @@ public class EditRemovalRequestSelection extends SenateActivity
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                continueToNextActivity(position);
+                if (checkServerResponse() == OK) {
+                    continueToNextActivity(position);
+                }
             }
         });
 
@@ -51,6 +53,11 @@ public class EditRemovalRequestSelection extends SenateActivity
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                     AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE&user=" + LoginActivity.nauser);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        checkServerResponse(true);
     }
 
     private void continueToNextActivity(int position) {

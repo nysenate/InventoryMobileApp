@@ -54,7 +54,6 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_removal_request);
         registerBaseActivityReceiver();
 
         initalizeUI();
@@ -70,6 +69,11 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
             QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
             queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        checkServerResponse(true);
     }
 
     private TextWatcher barcodeWatcher = new TextWatcher() {
