@@ -49,6 +49,12 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
         menu.setOnItemClickListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkServerResponse(true);
+    }
+
     private List<RowItem> populateMenuBySecurityStatus(int securityLevel) {
         List<RowItem> items = new ArrayList<RowItem>();
         String[] titles = null;
@@ -81,9 +87,7 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
         } else if (title.equalsIgnoreCase("Edit/Submit Request")) {
             intent = new Intent(this, EditRemovalRequestSelection.class);
         } else if (title.equalsIgnoreCase("Verify Request")) {
-            Toasty.displayCenteredMessage(this, "Not yet implemented", Toast.LENGTH_SHORT);
-            return;
-            // TODO impelemnt;
+            intent = new Intent(this, ApproveRemovalRequestSelection.class);
         } else {
             onBackPressed();
             return;

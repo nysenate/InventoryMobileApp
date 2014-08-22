@@ -24,11 +24,11 @@
             android:visibility="gone"/>
 
     <fragment
-            android:name="gov.nysenate.inventory.android.RemovalRequestListFragment"
-            android:id="@+id/removal_request_list_fragment"
-            android:layout_below="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:name="gov.nysenate.inventory.android.RemovalRequestListFragment"
+        android:id="@+id/removal_request_list_fragment"
+        android:layout_below="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <fragment
             android:name="gov.nysenate.inventory.android.CancelBtnFragment"
@@ -40,5 +40,6 @@
             android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
 
 </RelativeLayout>

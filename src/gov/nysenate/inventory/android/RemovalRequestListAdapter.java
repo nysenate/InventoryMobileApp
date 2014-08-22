@@ -13,7 +13,6 @@ import java.util.Locale;
 
 public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
 {
-
     private List<RemovalRequest> rrs;
     private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ssa", Locale.US);
 
@@ -30,6 +29,7 @@ public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
         TextView column2 = (TextView) row.findViewById(R.id.column2);
         TextView column3 = (TextView) row.findViewById(R.id.column3);
         TextView column4 = (TextView) row.findViewById(R.id.column4);
+        TextView column5 = (TextView) row.findViewById(R.id.column5);
 
         if (position % 2 > 0) {
             row.setBackgroundResource(R.drawable.selector_1);
@@ -40,9 +40,10 @@ public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
         RemovalRequest rr = rrs.get(position);
 
         column1.setText(sdf.format(rr.getDate()));
-        column2.setText(rr.getAdjustCode().getDescription());
-        column3.setText(String.valueOf(rr.getItems().size()));
-        column4.setText(String.valueOf(rr.getTransactionNum()));
+        column2.setText(rr.getEmployee());
+        column3.setText(rr.getAdjustCode().getDescription());
+        column4.setText(String.valueOf(rr.getItems().size()));
+        column5.setText(String.valueOf(rr.getTransactionNum()));
 
         return row;
     }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EditRemovalRequestSelection extends SenateActivity
+public class ApproveRemovalRequestSelection extends SenateActivity
         implements RemovalRequestListFragment.RemovalRequestListFragmentI, CancelBtnFragment.CancelBtnOnClick
 {
     private List<RemovalRequest> rrs = new ArrayList<RemovalRequest>();
@@ -28,31 +28,30 @@ public class EditRemovalRequestSelection extends SenateActivity
     private ProgressBar bar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_removal_request_selection);
+        setContentView(R.layout.activity_approve_request_selection);
         registerBaseActivityReceiver();
 
         rrList = (RemovalRequestListFragment) getFragmentManager().findFragmentById(R.id.removal_request_list_fragment);
-
         bar = (ProgressBar) findViewById(R.id.progress_bar);
 
+        queryRemovalRequests();
+    }
+
+    private void queryRemovalRequests() {
         if (checkServerResponse(true) == OK) {
             GetRemovalRequests task = new GetRemovalRequests();
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                    AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE");
+                    AppProperties.getBaseUrl(ApproveRemovalRequestSelection.this) + "RemovalRequest?status=SI");
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkServerResponse(true);
-    }
-
-    @Override
-    public void cancelBtnOnClick(View v) {
-        onBackPressed();
+    private void populateListAdapter(List<RemovalRequest> rrs) {
+        Collections.sort(rrs);
+        this.rrs.clear();
+        this.rrs.addAll(rrs);
+        rrList.refreshDisplay();
     }
 
     @Override
@@ -64,11 +63,18 @@ public class EditRemovalRequestSelection extends SenateActivity
     public void nextActivity(int position) {
         RemovalRequest rr = rrs.get(position);
         String transactionNum = String.valueOf(rr.getTransactionNum());
-        Intent intent = new Intent(this, EditRemovalRequest.class);
+        Intent intent = new Intent(this, ApproveRemovalRequest.class);
         intent.putExtra("transactionNum", transactionNum);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
+
+    @Override
+    public void cancelBtnOnClick(View v) {
+        super.onBackPressed();
+    }
+
+    /* --- Background Tasks ---*/
 
     private class GetRemovalRequests extends BaseAsyncTask<String, Void, List<RemovalRequest>> {
         @Override
@@ -89,18 +95,11 @@ public class EditRemovalRequestSelection extends SenateActivity
         protected void onPostExecute(List<RemovalRequest> rrs) {
             bar.setVisibility(ProgressBar.INVISIBLE);
             if (rrs != null) {
-                updateAdapter(rrs);
+                populateListAdapter(rrs);
             } else {
-                Toasty.displayCenteredMessage(EditRemovalRequestSelection.this,
+                Toasty.displayCenteredMessage(ApproveRemovalRequestSelection.this,
                         "Error getting Removal Requests from server. Please try again.", Toast.LENGTH_SHORT);
             }
         }
-    }
-
-    private void updateAdapter(List<RemovalRequest> rrs) {
-        Collections.sort(rrs);
-        this.rrs.clear();
-        this.rrs.addAll(rrs);
-        rrList.refreshDisplay();
     }
 }
