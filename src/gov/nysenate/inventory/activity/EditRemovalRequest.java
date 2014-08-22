@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.*;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.adapter.RemovalRequestItemSelectionAdapter;
+import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
@@ -27,7 +28,8 @@ import org.apache.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditRemovalRequest extends SenateActivity implements UpdateRemovalRequest.UpdateRemovalRequestI
+public class EditRemovalRequest extends SenateActivity
+        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick
 {
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
@@ -275,11 +277,9 @@ public class EditRemovalRequest extends SenateActivity implements UpdateRemovalR
         return deleted;
     }
 
-    public void onCancelBtnClick(View view) {
-        if (checkServerResponse(true) == OK) {
-            finish();
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        }
+    @Override
+    public void cancelBtnOnClick(View v) {
+        onBackPressed();
     }
 
     private void initializeAdjustCodeSpinner() {

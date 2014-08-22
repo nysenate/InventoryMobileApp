@@ -76,11 +76,22 @@
             android:id="@+id/removal_request_list"
             android:layout_below="@+id/column_names"
             android:layout_width="match_parent"
-            android:layout_height="650dp"
+            android:layout_height="625dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp">
     </ListView>
+
+    <fragment
+            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
+            android:id="@+id/cancel_btn_fragment"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </RelativeLayout>

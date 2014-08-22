@@ -118,7 +118,7 @@
             android:id="@+id/submit_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/cancel_btn"
+            android:layout_below="@id/removal_request_item_list"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="20dp"
@@ -126,20 +126,16 @@
             android:onClick="submitToMgmtCheckBoxClicked"
             android:textSize="20sp"/>
 
-    <Button
-            android:id="@+id/cancel_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+    <fragment
+            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
+            android:id="@+id/cancel_btn_fragment"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/buttonshapered"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Cancel"
-            android:onClick="onCancelBtnClick"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 
     <Button

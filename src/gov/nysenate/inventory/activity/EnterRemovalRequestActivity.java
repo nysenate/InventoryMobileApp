@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.RemovalRequestItemsList;
 import gov.nysenate.inventory.android.R;
@@ -30,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EnterRemovalRequestActivity extends SenateActivity implements UpdateRemovalRequest.UpdateRemovalRequestI
+public class EnterRemovalRequestActivity extends SenateActivity
+        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick
 {
     private TextView date;
     private Spinner removalReasonCode;
@@ -165,11 +167,9 @@ public class EnterRemovalRequestActivity extends SenateActivity implements Updat
         count.setText(String.valueOf(fragment.getItems().size()));
     }
 
-    public void onCancelBtnClick(View view) {
-        if (checkServerResponse(true) == OK) {
-            finish();
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        }
+    @Override
+    public void cancelBtnOnClick(View v) {
+        onBackPressed();
     }
 
     public void onSaveBtnClick(View view) {

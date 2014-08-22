@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemovalRequestListAdapter;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EditRemovalRequestSelection extends SenateActivity
+public class EditRemovalRequestSelection extends SenateActivity implements CancelBtnFragment.CancelBtnOnClick
 {
     private ListView list;
     private RemovalRequestListAdapter adapter;
@@ -68,6 +69,11 @@ public class EditRemovalRequestSelection extends SenateActivity
         intent.putExtra("transactionNum", transactionNum);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
+    }
+
+    @Override
+    public void cancelBtnOnClick(View v) {
+        onBackPressed();
     }
 
     private class GetRemovalRequests extends BaseAsyncTask<String, Void, List<RemovalRequest>> {

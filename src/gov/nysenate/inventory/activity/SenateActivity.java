@@ -144,8 +144,10 @@ public abstract class SenateActivity extends Activity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        if (checkServerResponse(true) == OK) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        }
     }
 
     @Override
