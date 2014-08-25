@@ -39,6 +39,7 @@ public class EditRemovalRequest extends SenateActivity
     private String originalStatus;
 
     private TextView transactionNumView;
+    private TextView requestedBy;
     private TextView date;
     private Spinner adjustCodeView;
     private ListView itemList;
@@ -47,6 +48,7 @@ public class EditRemovalRequest extends SenateActivity
 
     private void initializeViewObjects() {
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
+        requestedBy = (TextView) findViewById(R.id.requested_by);
         date = (TextView) findViewById(R.id.date);
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
@@ -153,6 +155,7 @@ public class EditRemovalRequest extends SenateActivity
 
     private void updateView() {
         transactionNumView.setText(String.valueOf(removalRequest.getTransactionNum()));
+        requestedBy.setText(removalRequest.getEmployee());
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
         adapter.notifyDataSetChanged();
