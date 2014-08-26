@@ -45,6 +45,7 @@ public class EditRemovalRequest extends SenateActivity
     private ListView itemList;
     private ProgressBar progressBar;
     private CheckBox checkbox;
+    private Button saveBtn;
 
     private void initializeViewObjects() {
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
@@ -53,6 +54,7 @@ public class EditRemovalRequest extends SenateActivity
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        saveBtn = (Button) findViewById(R.id.continue_btn);
         checkbox = (CheckBox) findViewById(R.id.submit_check_box);
         checkbox.setEnabled(false);
     }
@@ -180,11 +182,15 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     public void onSaveBtnClick(View view) {
+        saveBtn.setEnabled(false);
+
         if (checkServerResponse(true) != OK) {
+            saveBtn.setEnabled(true);
             return;
         }
         if (noChangesMade()) {
             Toasty.displayCenteredMessage(this, "You have not made any changes", Toast.LENGTH_SHORT);
+            saveBtn.setEnabled(true);
             return;
         } else if (allItemsDeleted()) {
             confirmDeleteAllItems();
@@ -198,7 +204,12 @@ public class EditRemovalRequest extends SenateActivity
                 .setCancelable(false)
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml("You have selected all items to be deleted. This will delete the entire Inventory Removal Reqeust."))
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveBtn.setEnabled(true);
+                    }
+                })
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -213,7 +224,12 @@ public class EditRemovalRequest extends SenateActivity
                 .setCancelable(false)
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml(getChangesMessage()))
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveBtn.setEnabled(true);
+                    }
+                })
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -264,10 +280,9 @@ public class EditRemovalRequest extends SenateActivity
         } else {
             Toasty.displayCenteredMessage(this, "Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_SHORT);
         }
-        Intent intent = new Intent(this, Move.class);
+        Intent intent = new Intent(this, InventoryRemovalMenu.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     private List<Item> getItemsDeleted() {

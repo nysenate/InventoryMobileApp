@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -125,7 +126,7 @@
             android:id="@+id/approve_all_btn"
             android:layout_width="200dp"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="40dp"
             android:layout_below="@+id/directions"
             android:layout_toRightOf="@id/barcode"
@@ -133,16 +134,13 @@
             android:text="Approve All"
             android:onClick="onApproveAll"/>
 
-    <ListView
-            android:id="@+id/removal_request_item_list"
+    <fragment
+            android:id="@+id/list_fragment"
+            android:name="gov.nysenate.inventory.android.RemovalRequestListSelectionFragment"
             android:layout_below="@+id/barcode"
-            android:layout_width="match_parent"
-            android:layout_height="440dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-    </ListView>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/removal_request_list_selection_fragment"/>
 
     <ProgressBar
             android:id="@+id/progress_bar"
@@ -153,26 +151,23 @@
             android:background="@drawable/shaperoundblue"
             android:visibility="invisible"/>
 
-    <Button
-            android:id="@+id/cancel_btn"
-            android:layout_width="177dp"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
+    <fragment
+            android:id="@+id/cancel_btn_fragment"
+            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/buttonshapered"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Cancel"
-            android:onClick="onCancelBtnClick"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/cancel_btn_fragment"/>
 
     <Button
             android:id="@+id/reject_btn"
             android:layout_width="177dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/cancel_btn"
+            android:layout_toRightOf="@+id/cancel_btn_fragment"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="10dp"
@@ -181,9 +176,9 @@
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:text="Reject"
-            android:onClick="onCancelBtnClick"/>
+            android:onClick="onRejectBtnClick"/>
     <Button
-            android:id="@+id/continue_btn"
+            android:id="@+id/approve_submit_btn"
             android:layout_width="177dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
@@ -194,7 +189,7 @@
             android:background="@drawable/buttonshapegreen"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
-            android:text="Save"
-            android:onClick="onSaveBtnClick"/>
+            android:text="Approve"
+            android:onClick="onApproveBtnSubmit"/>
 
 </RelativeLayout>

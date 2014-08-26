@@ -40,6 +40,8 @@ public class EnterRemovalRequestActivity extends SenateActivity
     private RemovalRequestItemsList fragment;
     private TextView count;
     private ProgressBar progressBar;
+    private Button saveBtn;
+
 
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
@@ -50,6 +52,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         barcode = (EditText) findViewById(R.id.barcode_text);
         count = (TextView) findViewById(R.id.count);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        saveBtn = (Button) findViewById(R.id.continue_btn);
         fragment = (RemovalRequestItemsList) getFragmentManager().findFragmentById(R.id.removal_item_list_fragment);
     }
 
@@ -173,11 +176,16 @@ public class EnterRemovalRequestActivity extends SenateActivity
     }
 
     public void onSaveBtnClick(View view) {
+        saveBtn.setEnabled(false);
+
         if (checkServerResponse(true) != OK) {
+            saveBtn.setEnabled(true);
             return;
         }
+
         if (removalRequest.getItems().isEmpty()) {
             Toasty.displayCenteredMessage(this, "You have not scanned any items to remove from inventory.", Toast.LENGTH_SHORT);
+            saveBtn.setEnabled(true);
             return;
         }
         setItemsAsPendingRemoval();
@@ -195,7 +203,13 @@ public class EnterRemovalRequestActivity extends SenateActivity
         .setCancelable(false)
         .setTitle("Confirmation")
         .setMessage("Are you sure you want to save this Removal Request of " + count.getText().toString() + " items?")
-        .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
+        .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveBtn.setEnabled(true);
+            }
+        })
+
         .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -226,10 +240,9 @@ public class EnterRemovalRequestActivity extends SenateActivity
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(EnterRemovalRequestActivity.this, Move.class);
+                        Intent intent = new Intent(EnterRemovalRequestActivity.this, InventoryRemovalMenu.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.in_left, R.anim.out_right);
                     }
                 });
         builder.show();

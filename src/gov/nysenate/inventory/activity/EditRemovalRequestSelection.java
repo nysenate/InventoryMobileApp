@@ -62,6 +62,10 @@ public class EditRemovalRequestSelection extends SenateActivity
 
     @Override
     public void nextActivity(int position) {
+        if (checkServerResponse() != OK) {
+            return;
+        }
+
         RemovalRequest rr = rrs.get(position);
         String transactionNum = String.valueOf(rr.getTransactionNum());
         Intent intent = new Intent(this, EditRemovalRequest.class);

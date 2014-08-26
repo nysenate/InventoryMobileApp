@@ -1,23 +1,39 @@
 package gov.nysenate.inventory.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.*;
+import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RemovalRequestListSelectionFragment;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
+import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.RemovalRequestParser;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpStatus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ApproveRemovalRequest extends SenateActivity
+        implements RemovalRequestListSelectionFragment.RRListSelectionFragmentI, CancelBtnFragment.CancelBtnOnClick, UpdateRemovalRequest.UpdateRemovalRequestI
 {
     private RemovalRequest removalRequest;
+    private List<Item> items = new ArrayList<Item>();
 
     private EditText barcode;
-    private ListView list;
+    private RemovalRequestListSelectionFragment list;
     private TextView transactionNum;
     private TextView requestedBy;
     private TextView adjustCode;
@@ -36,9 +52,50 @@ public class ApproveRemovalRequest extends SenateActivity
         adjustCode = (TextView) findViewById(R.id.adjust_code);
         date = (TextView) findViewById(R.id.date);
         barcode = (EditText) findViewById(R.id.barcode);
-        list = (ListView) findViewById(R.id.removal_request_item_list);
+        list = (RemovalRequestListSelectionFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
+
+        barcode.addTextChangedListener(barcodeTextWatcher);
 
         queryRemovalRequest();
+    }
+
+    private TextWatcher barcodeTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 6) {
+                if (checkServerResponse() == OK && items != null) {
+                    Item item = getItemByBarcode(s.toString());
+                    if (item != null) {
+                        list.approveItem(item);
+                        barcode.setText("");
+                        playSound(R.raw.ok);
+                    } else {
+                        playSound(R.raw.warning);
+                        Toasty.displayCenteredMessage(ApproveRemovalRequest.this,
+                                "Scanned Item is not part of the Removal Request", Toast.LENGTH_SHORT);
+                    }
+                } else {
+                    playSound(R.raw.warning);
+                }
+            }
+        }
+    };
+
+    private Item getItemByBarcode(String barcode) {
+        for (Item i : items) {
+            if (i.getBarcode().equals(barcode)) {
+                return i;
+            }
+        }
+        return null;
     }
 
     private void queryRemovalRequest() {
@@ -55,15 +112,134 @@ public class ApproveRemovalRequest extends SenateActivity
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
     }
 
-    private void initializeListAdapter() {
-//        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, removalRequest.getItems());
-//        list.setAdapter(adapter);
+    private void initializeItems() {
+        items.clear();
+        items.addAll(removalRequest.getItems());
+        list.refresh();
     }
 
-    // TODO:
-    // Buttons
-    // barcode textWatcher
-    // list adapter.
+    @Override
+    public List<Item> getItemsReference() {
+        return items;
+    }
+
+    public void onApproveAll(View view) {
+        list.approveAll();
+    }
+
+    @Override
+    public void cancelBtnOnClick(View v) {
+        super.onBackPressed();
+    }
+
+    public void onRejectBtnClick(View v) {
+        final Button rejectBtn = (Button) findViewById(R.id.reject_btn);
+        rejectBtn.setEnabled(false);
+
+        if (checkServerResponse() != OK) {
+            rejectBtn.setEnabled(true);
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Confirmation")
+                .setMessage(Html.fromHtml("Are you sure you want to <b>Reject</b> this Removal Request?"))
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        rejectBtn.setEnabled(true);
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (checkServerResponse(true) == OK) {
+                            removalRequest.setStatus("RJ");
+                            saveChanges();
+                        }
+                    }
+
+                });
+        builder.show();
+    }
+
+    public void onApproveBtnSubmit(View v) {
+        final Button approvalBtn = (Button) findViewById(R.id.approve_submit_btn);
+        approvalBtn.setEnabled(false);
+
+        if (checkServerResponse() != OK) {
+            approvalBtn.setEnabled(true);
+            return;
+        }
+
+        if (allItemsApproved()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setTitle("Confirmation")
+                    .setMessage(Html.fromHtml("Are you sure you want to <b>Approve</b> this Removal Request?"))
+                    .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            approvalBtn.setEnabled(true);
+                        }
+                    })
+
+                    .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (checkServerResponse(true) == OK) {
+                                removalRequest.setStatus("SM");
+                                saveChanges();
+                            }
+                        }
+
+                    });
+            builder.show();
+        } else {
+            Toasty.displayCenteredMessage(this, "All items must be approved.", Toast.LENGTH_SHORT);
+            approvalBtn.setEnabled(true);
+        }
+    }
+
+    private boolean allItemsApproved() {
+        boolean allApproved = true;
+        List<Item> approvedItems = list.getApprovedItems();
+
+        for (Item i : removalRequest.getItems()) {
+            if (!approvedItems.contains(i)) {
+                allApproved = false;
+                break;
+            }
+        }
+
+        return allApproved;
+    }
+
+    private void saveChanges() {
+        UpdateRemovalRequest task = new UpdateRemovalRequest(removalRequest, this);
+        task.setProgressBar(progressBar);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "RemovalRequest");
+        returnToInventoryRemovalMenu();
+    }
+
+    private void returnToInventoryRemovalMenu() {
+        Intent intent = new Intent(this, InventoryRemovalMenu.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRemovalRequestUpdated(RemovalRequest rr) {
+        if (rr != null) {
+            Toasty.displayCenteredMessage(this,"Removal Request successfully updated.", Toast.LENGTH_SHORT);
+        } else {
+            Toasty.displayCenteredMessage(this,"Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_SHORT);
+        }
+    }
 
     /* --- Background --- */
 
@@ -89,7 +265,7 @@ public class ApproveRemovalRequest extends SenateActivity
             if (rr != null) {
                 removalRequest = rr;
                 initializeOriginalInfo(rr);
-                initializeListAdapter();
+                initializeItems();
             } else {
                 Toasty.displayCenteredMessage(ApproveRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
             }
