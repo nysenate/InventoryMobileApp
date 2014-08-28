@@ -27,12 +27,12 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
     private static final String[] TITLES_SEC_STATUS_0 = new String[]
             {"New Request", "Edit/Submit Request", "Main Menu"};
     private static final String[] TITLES_SEC_STATUS_1 = new String[]
-            {"New Request", "Edit/Submit Request", "Verify Request", "Main Menu"};
+            {"Approve/Reject Request", "Main Menu"};
 
     private static final Integer[] IMAGES_SEC_STATUS_0 =
             {R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.mainmenu};
     private static final Integer[] IMAGES_SEC_STATUS_1 =
-            {R.drawable.removalrequest, R.drawable.editremovalrequest, R.drawable.arrow, R.drawable.mainmenu};
+            {R.drawable.arrow, R.drawable.mainmenu};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
             intent = new Intent(this, EnterRemovalRequestActivity.class);
         } else if (title.equalsIgnoreCase("Edit/Submit Request")) {
             intent = new Intent(this, EditRemovalRequestSelection.class);
-        } else if (title.equalsIgnoreCase("Verify Request")) {
+        } else if (title.equalsIgnoreCase("Approve/Reject Request")) {
             intent = new Intent(this, ApproveRemovalRequestSelection.class);
         } else {
             onBackPressed();

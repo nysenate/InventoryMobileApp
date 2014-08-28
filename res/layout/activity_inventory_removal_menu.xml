@@ -17,7 +17,7 @@
 
     <ListView
             android:id="@+id/removal_menu"
-            android:layout_width="400dp"
+            android:layout_width="450dp"
             android:layout_below="@+id/title"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
