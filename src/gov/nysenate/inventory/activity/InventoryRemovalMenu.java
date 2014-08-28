@@ -67,9 +67,11 @@ public class InventoryRemovalMenu extends SenateActivity implements OnItemClickL
             images = IMAGES_SEC_STATUS_1;
         }
 
-        for (int i = 0; i < titles.length; i++) {
-            RowItem item = new RowItem(images[i], titles[i]);
-            items.add(item);
+        if (titles != null) {
+            for (int i = 0; i < titles.length; i++) {
+                RowItem item = new RowItem(images[i], titles[i]);
+                items.add(item);
+            }
         }
 
         return items;
