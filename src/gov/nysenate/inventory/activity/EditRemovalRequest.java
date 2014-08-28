@@ -40,6 +40,7 @@ public class EditRemovalRequest extends SenateActivity
 
     private TextView transactionNumView;
     private TextView requestedBy;
+    private TextView status;
     private TextView date;
     private Spinner adjustCodeView;
     private ListView itemList;
@@ -50,7 +51,8 @@ public class EditRemovalRequest extends SenateActivity
     private void initializeViewObjects() {
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
         requestedBy = (TextView) findViewById(R.id.requested_by);
-        date = (TextView) findViewById(R.id.date);
+        status = (TextView) findViewById(R.id.status);
+        date = (TextView) findViewById(R.id.date); // TODO pupulate status.
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -158,6 +160,7 @@ public class EditRemovalRequest extends SenateActivity
     private void updateView() {
         transactionNumView.setText(String.valueOf(removalRequest.getTransactionNum()));
         requestedBy.setText(removalRequest.getEmployee());
+        status.setText(removalRequest.getStatus());
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
         adapter.notifyDataSetChanged();
@@ -177,7 +180,7 @@ public class EditRemovalRequest extends SenateActivity
         if (((CheckBox) view).isChecked()) {
             removalRequest.setStatus("SI");
         } else {
-            removalRequest.setStatus("PE");
+            removalRequest.setStatus(originalStatus);
         }
     }
 

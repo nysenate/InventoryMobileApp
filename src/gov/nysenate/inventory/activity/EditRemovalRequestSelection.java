@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RRListStatusFragment;
 import gov.nysenate.inventory.android.RemovalRequestListFragment;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.model.RemovalRequest;
@@ -21,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class EditRemovalRequestSelection extends SenateActivity
-        implements RemovalRequestListFragment.RemovalRequestListFragmentI, CancelBtnFragment.CancelBtnOnClick
+        implements RRListStatusFragment.RRListStatusFragmentI, CancelBtnFragment.CancelBtnOnClick
 {
     private List<RemovalRequest> rrs = new ArrayList<RemovalRequest>();
-    private RemovalRequestListFragment rrList;
+    private RRListStatusFragment rrList;
     private ProgressBar bar;
 
     @Override
@@ -33,7 +34,7 @@ public class EditRemovalRequestSelection extends SenateActivity
         setContentView(R.layout.activity_edit_removal_request_selection);
         registerBaseActivityReceiver();
 
-        rrList = (RemovalRequestListFragment) getFragmentManager().findFragmentById(R.id.removal_request_list_fragment);
+        rrList = (RRListStatusFragment) getFragmentManager().findFragmentById(R.id.removal_request_list_fragment);
 
         bar = (ProgressBar) findViewById(R.id.progress_bar);
 

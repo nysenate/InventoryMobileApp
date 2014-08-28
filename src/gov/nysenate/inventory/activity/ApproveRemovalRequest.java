@@ -1,6 +1,7 @@
 package gov.nysenate.inventory.activity;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,10 +11,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
-import gov.nysenate.inventory.android.CancelBtnFragment;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RemovalRequestListSelectionFragment;
+import gov.nysenate.inventory.android.*;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.model.Item;
@@ -27,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApproveRemovalRequest extends SenateActivity
-        implements RemovalRequestListSelectionFragment.RRListSelectionFragmentI, CancelBtnFragment.CancelBtnOnClick, UpdateRemovalRequest.UpdateRemovalRequestI
+        implements RemovalRequestListSelectionFragment.RRListSelectionFragmentI,
+        CancelBtnFragment.CancelBtnOnClick, UpdateRemovalRequest.UpdateRemovalRequestI,
+        RRRejectConfirmationDialog.RRRejectConfirmationDialogI
 {
     private RemovalRequest removalRequest;
     private List<Item> items = new ArrayList<Item>();
@@ -39,6 +39,7 @@ public class ApproveRemovalRequest extends SenateActivity
     private TextView adjustCode;
     private TextView date;
     private ProgressBar progressBar;
+    Button rejectBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class ApproveRemovalRequest extends SenateActivity
         adjustCode = (TextView) findViewById(R.id.adjust_code);
         date = (TextView) findViewById(R.id.date);
         barcode = (EditText) findViewById(R.id.barcode);
+        rejectBtn = (Button) findViewById(R.id.reject_btn);
         list = (RemovalRequestListSelectionFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
 
         barcode.addTextChangedListener(barcodeTextWatcher);
@@ -133,7 +135,6 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     public void onRejectBtnClick(View v) {
-        final Button rejectBtn = (Button) findViewById(R.id.reject_btn);
         rejectBtn.setEnabled(false);
 
         if (checkServerResponse() != OK) {
@@ -141,28 +142,19 @@ public class ApproveRemovalRequest extends SenateActivity
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle("Confirmation")
-                .setMessage(Html.fromHtml("Are you sure you want to <b>Reject</b> this Removal Request?"))
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        rejectBtn.setEnabled(true);
-                    }
-                })
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+        DialogFragment dialog = RRRejectConfirmationDialog.newInstance(removalRequest, this);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "reject_dialog");
+    }
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (checkServerResponse(true) == OK) {
-                            removalRequest.setStatus("RJ");
-                            saveChanges();
-                        }
-                    }
+    @Override
+    public void onRejectBtnPositiveClick() {
+        saveChanges();
+    }
 
-                });
-        builder.show();
+    @Override
+    public void onRejectBtnNegativeClick() {
+        rejectBtn.setEnabled(true);
     }
 
     public void onApproveBtnSubmit(View v) {

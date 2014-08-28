@@ -12,6 +12,7 @@ public class RemovalRequest implements Comparable<RemovalRequest>
     private String employee;
     private Date date;
     private String status;
+    private String inventoryControlComments;
 
     public RemovalRequest(String employee, Date date) {
         this.employee = employee;
@@ -67,6 +68,14 @@ public class RemovalRequest implements Comparable<RemovalRequest>
         this.status = status;
     }
 
+    public String getInventoryControlComments() {
+        return inventoryControlComments;
+    }
+
+    public void setInventoryControlComments(String inventoryControlComments) {
+        this.inventoryControlComments = inventoryControlComments;
+    }
+
     @Override
     public int compareTo(RemovalRequest another) {
         return this.transactionNum - another.getTransactionNum();
@@ -83,9 +92,23 @@ public class RemovalRequest implements Comparable<RemovalRequest>
         if (adjustCode != null ? !adjustCode.equals(that.adjustCode) : that.adjustCode != null) return false;
         if (date != null ? !date.equals(that.date) : that.date != null) return false;
         if (employee != null ? !employee.equals(that.employee) : that.employee != null) return false;
+        if (inventoryControlComments != null ? !inventoryControlComments.equals(that.inventoryControlComments) : that.inventoryControlComments != null)
+            return false;
         if (items != null ? !items.equals(that.items) : that.items != null) return false;
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = transactionNum;
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        result = 31 * result + (adjustCode != null ? adjustCode.hashCode() : 0);
+        result = 31 * result + (employee != null ? employee.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (inventoryControlComments != null ? inventoryControlComments.hashCode() : 0);
+        return result;
     }
 }

@@ -233,15 +233,13 @@
                 android:name="gov.nysenate.inventory.activity.EnterRemovalRequestActivity"
                 android:label="@string/inventory_removal"
                 android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan" >
+                android:screenOrientation="portrait" >
         </activity>
         <activity
                 android:name="gov.nysenate.inventory.activity.EditRemovalRequestSelection"
                 android:label="@string/inventory_removal"
                 android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan" >
+                android:screenOrientation="portrait">
         </activity>
         <activity android:name="gov.nysenate.inventory.activity.EditRemovalRequest"
                   android:label="@string/inventory_removal"

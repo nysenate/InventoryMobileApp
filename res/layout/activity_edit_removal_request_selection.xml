@@ -24,7 +24,7 @@
             android:visibility="gone"/>
 
     <fragment
-            android:name="gov.nysenate.inventory.android.RemovalRequestListFragment"
+            android:name="gov.nysenate.inventory.android.RRListStatusFragment"
             android:id="@+id/removal_request_list_fragment"
             android:layout_below="@+id/title"
             android:layout_width="wrap_content"
