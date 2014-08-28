@@ -48,7 +48,7 @@ public class ApproveRemovalRequestSelection extends SenateActivity
     }
 
     private void populateListAdapter(List<RemovalRequest> rrs) {
-        Collections.sort(rrs);
+        Collections.sort(rrs, Collections.reverseOrder());
         this.rrs.clear();
         this.rrs.addAll(rrs);
         rrList.refreshDisplay();
