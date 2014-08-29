@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <TextView
@@ -119,6 +120,16 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"/>
 
+    <Button
+            android:id="@+id/inventory_control_comments"
+            android:layout_toRightOf="@+id/adjust_code"
+            android:layout_below="@+id/original_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reject Comments"
+            android:visibility="invisible"
+            android:onClick="showInventoryControlComments"/>
+
     <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -173,7 +184,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:layout="@layout/cancel_btn_fragment"/>
 
 
     <Button

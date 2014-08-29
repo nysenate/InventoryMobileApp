@@ -47,16 +47,18 @@ public class EditRemovalRequest extends SenateActivity
     private ProgressBar progressBar;
     private CheckBox checkbox;
     private Button saveBtn;
+    private Button rejectComments;
 
     private void initializeViewObjects() {
         transactionNumView = (TextView) findViewById(R.id.transaction_num);
         requestedBy = (TextView) findViewById(R.id.requested_by);
         status = (TextView) findViewById(R.id.status);
-        date = (TextView) findViewById(R.id.date); // TODO pupulate status.
+        date = (TextView) findViewById(R.id.date);
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         saveBtn = (Button) findViewById(R.id.continue_btn);
+        rejectComments = (Button) findViewById(R.id.inventory_control_comments);
         checkbox = (CheckBox) findViewById(R.id.submit_check_box);
         checkbox.setEnabled(false);
     }
@@ -164,6 +166,30 @@ public class EditRemovalRequest extends SenateActivity
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
         adapter.notifyDataSetChanged();
+        setupRejectCommentsBtn();
+    }
+
+    private void setupRejectCommentsBtn() {
+        if (rejectCommentsExist()) {
+            rejectComments.setVisibility(View.VISIBLE);
+            rejectComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditRemovalRequest.this)
+                            .setCancelable(true)
+                            .setTitle("Reject Comments")
+                            .setMessage(removalRequest.getInventoryControlComments())
+                            .setNeutralButton("Done", null);
+
+                    builder.show();
+                }
+            });
+        }
+    }
+
+    private boolean rejectCommentsExist() {
+        return removalRequest.getInventoryControlComments() != null
+                && removalRequest.getInventoryControlComments().length() > 0;
     }
 
     private int removalRequestAdjustCodePosition() {

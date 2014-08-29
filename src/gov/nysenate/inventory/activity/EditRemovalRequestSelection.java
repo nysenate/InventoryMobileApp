@@ -41,7 +41,7 @@ public class EditRemovalRequestSelection extends SenateActivity
         if (checkServerResponse(true) == OK) {
             GetRemovalRequests task = new GetRemovalRequests();
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                    AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE");
+                    AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE&status=RJ");
         }
     }
 
