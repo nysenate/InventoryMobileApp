@@ -164,7 +164,7 @@ public class Pickup2Activity extends SenateActivity
                 if ((flag == 0) && (barcodeFound == false)) {
                     int returnedStatus = -1;
                     returnedStatus = getItemDetails();
-                    if (returnedStatus == SERVER_SESSION_TIMED_OUT) {
+                    if (returnedStatus == SERVER_SESSION_TIMED_OUT ) {
                         return;
                     }
                 }
@@ -600,6 +600,14 @@ public class Pickup2Activity extends SenateActivity
                     vl.CDLOCAT = object.getString("cdlocatto");
                     vl.CDINTRANSIT = object.getString("cdintransit");
                     vl.CDSTATUS = object.getString("cdstatus");
+
+
+                    if (object.getString("pending_removal").equals("Y")) {
+                        errorMessage(barcode_num, "Item Pending Removal.",
+                                "Senate Tag# " + barcode_num +
+                                " is pending removal and cannot be moved at this time.");
+                        return 0;
+                    }
 
                     if (vl.CDSTATUS.equalsIgnoreCase("I")) {
                         errorMessage(

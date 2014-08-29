@@ -37,6 +37,7 @@ public class RRRejectConfirmationDialog extends DialogFragment
         initializeUI(view);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setView(view);
         alertDialogBuilder.setTitle("Confirmation");
         alertDialogBuilder.setMessage(Html.fromHtml("Are you sure you want to <b>Reject</b> this Removal Request?" +
@@ -52,6 +53,7 @@ public class RRRejectConfirmationDialog extends DialogFragment
         alertDialogBuilder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                handler.onRejectBtnNegativeClick();
             }
         });
 
