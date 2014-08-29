@@ -60,6 +60,10 @@ public class RemovalRequestListSelectionFragment extends Fragment {
         adapter.approveAll();
     }
 
+    public void disapproveAll() {
+        adapter.disapproveAll();
+    }
+
     public void refresh() {
         adapter.notifyDataSetChanged();
     }

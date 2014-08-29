@@ -39,7 +39,8 @@ public class ApproveRemovalRequest extends SenateActivity
     private TextView adjustCode;
     private TextView date;
     private ProgressBar progressBar;
-    Button rejectBtn;
+    private Button rejectBtn;
+    private Button approveBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class ApproveRemovalRequest extends SenateActivity
         date = (TextView) findViewById(R.id.date);
         barcode = (EditText) findViewById(R.id.barcode);
         rejectBtn = (Button) findViewById(R.id.reject_btn);
+        approveBtn = (Button) findViewById(R.id.approve_all_btn);
         list = (RemovalRequestListSelectionFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
 
         barcode.addTextChangedListener(barcodeTextWatcher);
@@ -126,7 +128,18 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     public void onApproveAll(View view) {
-        list.approveAll();
+        String approveText = "Approve All";
+        String disapproveText = "Disapprove All";
+
+
+        if (approveBtn.getText().toString().equals(approveText)) {
+            list.approveAll();
+            approveBtn.setText(disapproveText);
+        } else {
+            list.disapproveAll();
+            approveBtn.setText(approveText);
+        }
+
     }
 
     @Override

@@ -69,4 +69,10 @@ public class RRApprovalListAdapter extends ArrayAdapter<Item>
             itemsSelectionStatus.get(i).setChecked(true);
         }
     }
+
+    public void disapproveAll() {
+        for (Item i : itemsSelectionStatus.keySet()) {
+            itemsSelectionStatus.get(i).setChecked(false);
+        }
+    }
 }
