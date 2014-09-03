@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/barcode_scan_title"
-            android:layout_toRightOf="@id/barcode_text"
+            android:layout_toLeftOf="@+id/count"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
             android:layout_marginBottom="10dp"
@@ -105,9 +105,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/barcode_scan_title"
-            android:layout_toRightOf="@id/count_title"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:text="0"
             android:textSize="20sp"/>
@@ -126,6 +127,7 @@
             android:name="gov.nysenate.inventory.android.RemovalRequestItemsList"
             android:id="@+id/removal_item_list_fragment"
             android:layout_below="@id/barcode_text"
+            android:layout_above="@+id/cancel_btn_fragment"
             android:layout_width="match_parent"
             android:layout_height="465dp"
             tools:layout="@layout/fragment_removal_item_list"/>

@@ -127,9 +127,9 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginRight="30dp"
             android:layout_below="@+id/directions"
-            android:layout_toRightOf="@id/barcode"
+            android:layout_alignParentRight="true"
             android:textSize="26sp"
             android:text="Approve All"
             android:onClick="onApproveAll"/>
@@ -138,6 +138,7 @@
             android:id="@+id/list_fragment"
             android:name="gov.nysenate.inventory.android.RemovalRequestListSelectionFragment"
             android:layout_below="@+id/barcode"
+            android:layout_above="@+id/cancel_btn_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout="@layout/removal_request_list_selection_fragment"/>
