@@ -119,6 +119,7 @@ public class ApproveRemovalRequest extends SenateActivity
     private void initializeItems() {
         items.clear();
         items.addAll(removalRequest.getItems());
+        list.itemsInitialized();
         list.refresh();
     }
 
