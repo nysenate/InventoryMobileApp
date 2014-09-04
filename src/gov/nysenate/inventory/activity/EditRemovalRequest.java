@@ -162,11 +162,19 @@ public class EditRemovalRequest extends SenateActivity
     private void updateView() {
         transactionNumView.setText(String.valueOf(removalRequest.getTransactionNum()));
         requestedBy.setText(removalRequest.getEmployee());
-        status.setText(removalRequest.getStatus());
+        populateStatus();
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
         adapter.notifyDataSetChanged();
         setupRejectCommentsBtn();
+    }
+
+    private void populateStatus() {
+        if (removalRequest.getStatus().equals("RJ")) {
+            status.setText(removalRequest.getStatus() + " - Rejected");
+        } else if (removalRequest.getStatus().equals("PE")) {
+            status.setText(removalRequest.getStatus() + " - Pending");
+        }
     }
 
     private void setupRejectCommentsBtn() {
