@@ -14,11 +14,18 @@ import java.util.List;
 
 public class RemovalRequestItemSelectionAdapter extends ArrayAdapter<Item>
 {
-    private List<Item> items;
+    public interface RemovalRequestItemSelectionAdapterI {
+        public void itemCheckBoxPressed();
+    }
 
-    public RemovalRequestItemSelectionAdapter(Context context, int resourceId, int textViewResource, List<Item> items) {
+    private List<Item> items;
+    private RemovalRequestItemSelectionAdapterI handler;
+
+    public RemovalRequestItemSelectionAdapter(Context context, int resourceId, int textViewResource,
+                                              List<Item> items, RemovalRequestItemSelectionAdapterI handler) {
         super(context, resourceId, textViewResource, items);
         this.items = items;
+        this.handler = handler;
     }
 
     @Override
@@ -35,18 +42,26 @@ public class RemovalRequestItemSelectionAdapter extends ArrayAdapter<Item>
             row.setBackgroundResource(R.drawable.selector_2);
         }
 
-        Item item = items.get(position);
+        final Item item = items.get(position);
         column1.setText(item.getBarcode());
         column2.setText(item.getCommodity().getDescription());
+
+        if (item.getStatus().equals(ItemStatus.PENDING_REMOVAL)) {
+            checkbox.setChecked(false);
+        } else {
+            checkbox.setChecked(true);
+        }
 
         checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    items.get(position).setStatus(ItemStatus.INACTIVE);
+                if (item.getStatus().equals(ItemStatus.PENDING_REMOVAL)) {
+                    item.setStatus(ItemStatus.INACTIVE);
                 } else {
-                    items.get(position).setStatus(ItemStatus.ACTIVE);
+                    items.get(position).setStatus(ItemStatus.PENDING_REMOVAL);
                 }
+
+                handler.itemCheckBoxPressed();
             }
         });
 

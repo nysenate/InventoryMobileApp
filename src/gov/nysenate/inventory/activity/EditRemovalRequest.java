@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditRemovalRequest extends SenateActivity
-        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick
+        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick,
+        RemovalRequestItemSelectionAdapter.RemovalRequestItemSelectionAdapterI
 {
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
@@ -42,6 +43,7 @@ public class EditRemovalRequest extends SenateActivity
     private TextView requestedBy;
     private TextView status;
     private TextView date;
+    private TextView itemCount;
     private Spinner adjustCodeView;
     private ListView itemList;
     private ProgressBar progressBar;
@@ -54,6 +56,7 @@ public class EditRemovalRequest extends SenateActivity
         requestedBy = (TextView) findViewById(R.id.requested_by);
         status = (TextView) findViewById(R.id.status);
         date = (TextView) findViewById(R.id.date);
+        itemCount = (TextView) findViewById(R.id.item_count);
         adjustCodeView = (Spinner) findViewById(R.id.adjust_code);
         itemList = (ListView) findViewById(R.id.removal_request_item_list);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -155,7 +158,7 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void initializeItemListAdapter() {
-        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, removalRequest.getItems());
+        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, removalRequest.getItems(), this);
         itemList.setAdapter(adapter);
     }
 
@@ -163,6 +166,8 @@ public class EditRemovalRequest extends SenateActivity
         transactionNumView.setText(String.valueOf(removalRequest.getTransactionNum()));
         requestedBy.setText(removalRequest.getEmployee());
         populateStatus();
+//        itemCount.setText(String.valueOf(removalRequest.getItems().size()));
+        itemCheckBoxPressed();
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
         adapter.notifyDataSetChanged();
@@ -370,4 +375,23 @@ public class EditRemovalRequest extends SenateActivity
         }
         return null;
     }
+
+
+    /** Indicates a checkbox in the list view has been pressed */
+    @Override
+    public void itemCheckBoxPressed() {
+        itemCount.setText(String.valueOf(numberOfActiveItems()));
+    }
+
+    private int numberOfActiveItems() {
+        int count = 0;
+        for (Item item : removalRequest.getItems()) {
+            if (item.getStatus().equals(ItemStatus.PENDING_REMOVAL)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
 }
