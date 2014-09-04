@@ -80,21 +80,34 @@
         </TableRow>
 
         <TableRow>
-        <TextView
-                android:id="@+id/date_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="Date:"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
 
-        <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="20sp"/>
+            <TextView
+                    android:id="@+id/date_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:text="Date:"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+
+            <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="20"
+                    android:text=""
+                    android:textSize="20sp"/>
+
+            <Button
+                    android:id="@+id/inventory_control_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="37dp"
+                    android:layout_weight="1"
+                    android:text="Reject Comments"
+                    android:visibility="visible"
+                    android:textSize="16sp"
+                    android:onClick="showInventoryControlComments"/>
         </TableRow>
 
     </TableLayout>
@@ -140,17 +153,6 @@
             android:layout_marginTop="10dp"
             android:textSize="20sp"/>
 
-
-    <Button
-            android:id="@+id/inventory_control_comments"
-            android:layout_toRightOf="@+id/adjust_code"
-            android:layout_below="@+id/original_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reject Comments"
-            android:visibility="invisible"
-            android:onClick="showInventoryControlComments"/>
-
     <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -176,7 +178,7 @@
             android:id="@+id/removal_request_item_list"
             android:layout_below="@+id/listview_title"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="380dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
