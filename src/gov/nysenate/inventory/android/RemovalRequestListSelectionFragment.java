@@ -74,4 +74,5 @@ public class RemovalRequestListSelectionFragment extends Fragment {
     public void itemsInitialized() {
         adapter.itemsInitialized();
     }
+
 }

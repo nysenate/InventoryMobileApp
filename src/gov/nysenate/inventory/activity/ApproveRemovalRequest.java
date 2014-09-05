@@ -38,6 +38,7 @@ public class ApproveRemovalRequest extends SenateActivity
     private TextView requestedBy;
     private TextView adjustCode;
     private TextView date;
+    private TextView itemsRemaining;
     private ProgressBar progressBar;
     private Button rejectBtn;
     private Button approveBtn;
@@ -53,6 +54,7 @@ public class ApproveRemovalRequest extends SenateActivity
         requestedBy = (TextView) findViewById(R.id.requested_by);
         adjustCode = (TextView) findViewById(R.id.adjust_code);
         date = (TextView) findViewById(R.id.date);
+        itemsRemaining = (TextView) findViewById(R.id.item_count);
         barcode = (EditText) findViewById(R.id.barcode);
         rejectBtn = (Button) findViewById(R.id.reject_btn);
         approveBtn = (Button) findViewById(R.id.approve_all_btn);
@@ -79,19 +81,24 @@ public class ApproveRemovalRequest extends SenateActivity
                     Item item = getItemByBarcode(s.toString());
                     if (item != null) {
                         list.approveItem(item);
-                        barcode.setText("");
+                        updateRemainingCount();
                         playSound(R.raw.ok);
                     } else {
                         playSound(R.raw.warning);
                         Toasty.displayCenteredMessage(ApproveRemovalRequest.this,
                                 "Scanned Item is not part of the Removal Request", Toast.LENGTH_SHORT);
                     }
+                    barcode.setText("");
                 } else {
                     playSound(R.raw.warning);
                 }
             }
         }
     };
+
+    private void updateRemainingCount() {
+        itemsRemaining.setText(String.valueOf(remainingItemCount()));
+    }
 
     private Item getItemByBarcode(String barcode) {
         for (Item i : items) {
@@ -140,7 +147,7 @@ public class ApproveRemovalRequest extends SenateActivity
             list.disapproveAll();
             approveBtn.setText(approveText);
         }
-
+        updateRemainingCount();
     }
 
     @Override
@@ -212,17 +219,7 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     private boolean allItemsApproved() {
-        boolean allApproved = true;
-        List<Item> approvedItems = list.getApprovedItems();
-
-        for (Item i : removalRequest.getItems()) {
-            if (!approvedItems.contains(i)) {
-                allApproved = false;
-                break;
-            }
-        }
-
-        return allApproved;
+        return remainingItemCount() == 0 ? true : false;
     }
 
     private void saveChanges() {
@@ -245,6 +242,10 @@ public class ApproveRemovalRequest extends SenateActivity
         } else {
             Toasty.displayCenteredMessage(this,"Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_SHORT);
         }
+    }
+
+    private int remainingItemCount() {
+        return removalRequest.getItems().size() - list.getApprovedItems().size();
     }
 
     /* --- Background --- */
@@ -272,6 +273,7 @@ public class ApproveRemovalRequest extends SenateActivity
                 removalRequest = rr;
                 initializeOriginalInfo(rr);
                 initializeItems();
+                updateRemainingCount();
             } else {
                 Toasty.displayCenteredMessage(ApproveRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
             }

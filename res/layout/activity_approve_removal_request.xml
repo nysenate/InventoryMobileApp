@@ -108,6 +108,27 @@
             android:textStyle="bold"
             android:textSize="20sp"/>
 
+    <TextView
+            android:id="@+id/item_count_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/original_info"
+            android:layout_toLeftOf="@+id/item_count"
+            android:layout_alignBaseline="@id/directions"
+            android:text="Item Count:"
+            android:textSize="20sp"/>
+
+    <TextView
+            android:id="@+id/item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/original_info"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/directions"
+            android:layout_marginRight="32dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"/>
+
     <EditText
             android:id="@+id/barcode"
             android:layout_width="250dp"
@@ -139,7 +160,7 @@
             android:name="gov.nysenate.inventory.android.RemovalRequestListSelectionFragment"
             android:layout_below="@+id/barcode"
             android:layout_above="@+id/cancel_btn_fragment"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout="@layout/removal_request_list_selection_fragment"/>
 
