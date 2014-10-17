@@ -183,6 +183,7 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void setupRejectCommentsBtn() {
+        
         if (rejectCommentsExist()) {
             rejectComments.setVisibility(View.VISIBLE);
             rejectComments.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +214,10 @@ public class EditRemovalRequest extends SenateActivity
             }
         }
         return 0;
+    }
+    
+    public void showInventoryControlComments (View view) {
+        
     }
 
     public void submitToMgmtCheckBoxClicked(View view) {

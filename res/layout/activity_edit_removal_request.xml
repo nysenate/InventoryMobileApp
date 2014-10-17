@@ -105,9 +105,8 @@
                     android:layout_height="37dp"
                     android:layout_weight="1"
                     android:text="Reject Comments"
-                    android:visibility="visible"
-                    android:textSize="16sp"
-                    android:onClick="showInventoryControlComments"/>
+                    android:visibility="invisible"
+                    android:textSize="16sp"/>
         </TableRow>
 
     </TableLayout>

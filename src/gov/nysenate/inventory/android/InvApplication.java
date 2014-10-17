@@ -15,7 +15,7 @@ public class InvApplication extends Application
     public void setCdseclevel(int level) {
         cdseclevel = level;
     }
-
+    
     public int getCdseclevel() {
         return cdseclevel;
     }
