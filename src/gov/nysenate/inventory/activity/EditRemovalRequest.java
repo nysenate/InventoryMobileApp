@@ -215,10 +215,6 @@ public class EditRemovalRequest extends SenateActivity
         }
         return 0;
     }
-    
-    public void showInventoryControlComments (View view) {
-        
-    }
 
     public void submitToMgmtCheckBoxClicked(View view) {
         if (((CheckBox) view).isChecked()) {
