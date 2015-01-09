@@ -12,6 +12,7 @@ import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.EmployeeParser;
 import gov.nysenate.inventory.util.Toasty;
 import gov.nysenate.inventory.util.TransactionParser;
 
@@ -22,11 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -317,7 +314,7 @@ public class Pickup3 extends SenateActivity
                 displayInvalidEmployeeMessage(employeeNamesView.getEditableText().toString().trim());
                 return;
             }
-            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getEmployeeXref();
+            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getNuxrefem();
 
             if (!sign.isSigned()) {
                 displayNoSignatureMessage();
@@ -759,22 +756,12 @@ public class Pickup3 extends SenateActivity
                 return responseString;
             }
 
-            JSONArray jsonArray;
-            try {
-                jsonArray = new JSONArray(responseString);
-
-                for (int x = 0; x < jsonArray.length(); x++) {
-                    JSONObject jo = new JSONObject();
-                    jo = jsonArray.getJSONObject(x);
-                    Employee currentEmployee = new Employee();
-                    currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-                            jo.getString("naemployee"));
-                    employeeHiddenList.add(currentEmployee);
-                    employeeNameList.add(jo.getString("naemployee"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            List<Employee> currentEmployees = EmployeeParser.parseMultipleEmployees(responseString);
+            employeeHiddenList.addAll(currentEmployees);
+            for (Employee emp: currentEmployees) {
+                employeeNameList.add(emp.getFullName());
             }
+
             Collections.sort(employeeNameList);
 
             return responseString;

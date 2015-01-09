@@ -16,8 +16,6 @@ import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,7 +227,7 @@ public class EnterRemote3 extends SenateActivity {
     public List<String> getAllEmployeeNames() {
         List<String> allEmployeeNames = new ArrayList<String>();
         for (Employee emp: employeeNameList) {
-            allEmployeeNames.add(emp.getEmployeeName());
+            allEmployeeNames.add(emp.getFullName());
         }
         return allEmployeeNames;
     }
@@ -320,8 +318,8 @@ public class EnterRemote3 extends SenateActivity {
 
     public int getEmployeeId(String name) {
         for (Employee emp: employeeNameList) {
-            if (emp.getEmployeeName().equalsIgnoreCase(name)) {
-                return emp.getEmployeeXref();
+            if (emp.getFullName().equalsIgnoreCase(name)) {
+                return emp.getNuxrefem();
             }
         }
         return 0;

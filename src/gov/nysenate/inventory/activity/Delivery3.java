@@ -8,11 +8,11 @@ import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemoteConfirmationDialog;
 import gov.nysenate.inventory.android.SignatureView;
-import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.EmployeeParser;
 import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.BufferedReader;
@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -213,8 +212,8 @@ public class Delivery3 extends SenateActivity
 
     public int getEmployeeId(String name) {
         for (Employee emp: employeeHiddenList) {
-            if (emp.getEmployeeName().equalsIgnoreCase(name)) {
-                return emp.getEmployeeXref();
+            if (emp.getFullName().equalsIgnoreCase(name)) {
+                return emp.getNuxrefem();
             }
         }
         return 0;
@@ -238,7 +237,7 @@ public class Delivery3 extends SenateActivity
                 return;
             }
 
-            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getEmployeeXref();
+            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getNuxrefem();
 
             if (!sign.isSigned()) {
                 displayNoSignatureMessage();
@@ -900,21 +899,10 @@ public class Delivery3 extends SenateActivity
         employeeHiddenList = new ArrayList<Employee>();
         employeeNameList = new ArrayList<String>();
 
-        try {
-            JSONArray jsonArray = new JSONArray(employeeList);
-            Log.i("Delivery3", "EMPLOYEE LIST 1");
-            for (int x = 0; x < jsonArray.length(); x++) {
-                JSONObject jo = new JSONObject();
-                jo = jsonArray.getJSONObject(x);
-                Employee currentEmployee = new Employee();
-                currentEmployee.setEmployeeData(jo.getInt("nuxrefem"),
-                        jo.getString("naemployee"));
-                employeeHiddenList.add(currentEmployee);
-                employeeNameList.add(jo.getString("naemployee"));
-            }
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        List<Employee> currentEmployees = EmployeeParser.parseMultipleEmployees(employeeList);
+        employeeHiddenList.addAll(currentEmployees);
+        for (Employee emp: currentEmployees) {
+            employeeNameList.add(emp.getFullName());
         }
 
         Collections.sort(employeeNameList);

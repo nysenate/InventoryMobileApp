@@ -1129,7 +1129,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
 
     public int findEmployee(String employeeName, List<Employee> empList) {
         for (int x = 0; x < empList.size(); x++) {
-            if (employeeName.equals(empList.get(x).getEmployeeName())) {
+            if (employeeName.equals(empList.get(x).getFullName())) {
                 return x;
             }
         }
