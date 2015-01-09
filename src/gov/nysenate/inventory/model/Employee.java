@@ -11,7 +11,6 @@ public class Employee {
     private String namidinit = null;
     private String nasuffix = null;
     private String naemail = null;
-    private transient String naemployee = null;
 
     public Employee () {
     }
@@ -78,13 +77,5 @@ public class Employee {
 
     public void setNaemail(String naemail) {
         this.naemail = naemail;
-    }
-
-    public String getNaemployee() {
-        return naemployee;
-    }
-
-    public void setNaemployee(String naemployee) {
-        this.naemployee = naemployee;
     }
 }
