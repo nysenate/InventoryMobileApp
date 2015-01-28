@@ -1,217 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
-            android:text="Approve/Reject Inventory Removal Request"
-            android:textStyle="bold"
-            android:textSize="26sp"/>
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:text="Approve/Reject Inventory Removal Request"
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
     <TableLayout
-            android:id="@+id/original_info"
-            android:layout_width="550dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/customshape" >
+        android:id="@+id/original_info"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/customshape" >
 
         <TableRow>
-            <TextView
-                    android:id="@+id/transaction_num_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Request#:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
 
             <TextView
-                    android:id="@+id/transaction_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:id="@+id/transaction_num_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Request#:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/transaction_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
         </TableRow>
+
         <TableRow>
-            <TextView
-                    android:id="@+id/requested_by_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Requested By:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
 
             <TextView
-                    android:id="@+id/requested_by"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:id="@+id/requested_by_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Requested By:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/requested_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
         </TableRow>
+
         <TableRow>
-            <TextView
-                    android:id="@+id/adjust_code_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Removal Reason:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
 
             <TextView
-                    android:id="@+id/adjust_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:id="@+id/adjust_code_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Removal Reason:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/adjust_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
         </TableRow>
+
         <TableRow>
-            <TextView
-                    android:id="@+id/date_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Date:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
 
             <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:id="@+id/date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Date:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
         </TableRow>
     </TableLayout>
 
     <TextView
-            android:id="@+id/directions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/original_info"
-            android:text="Please scan all items or Approve All."
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+        android:id="@+id/directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/original_info"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:text="Please scan all items or Approve All."
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
-            android:id="@+id/item_count_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/original_info"
-            android:layout_toLeftOf="@+id/item_count"
-            android:layout_alignBaseline="@id/directions"
-            android:text="Item Count:"
-            android:textSize="20sp"/>
+        android:id="@+id/item_count_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/directions"
+        android:layout_below="@id/original_info"
+        android:layout_toLeftOf="@+id/item_count"
+        android:text="Item Count:"
+        android:textSize="20sp" />
 
     <TextView
-            android:id="@+id/item_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/original_info"
-            android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/directions"
-            android:layout_marginRight="32dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"/>
+        android:id="@+id/item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/directions"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/original_info"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="32dp"
+        android:textSize="20sp" />
 
     <EditText
-            android:id="@+id/barcode"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:layout_below="@id/directions"
-            android:digits="0123456789"
-            android:maxLength="6"
-            android:inputType="number"
-            android:hint="Senate Tag#"/>
+        android:id="@+id/barcode"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/directions"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:digits="0123456789"
+        android:hint="Senate Tag#"
+        android:inputType="number"
+        android:maxLength="6" />
 
     <Button
-            android:id="@+id/approve_all_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
-            android:layout_below="@+id/directions"
-            android:layout_alignParentRight="true"
-            android:textSize="26sp"
-            android:text="Approve All"
-            android:onClick="onApproveAll"/>
+        android:id="@+id/approve_all_btn"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/directions"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
+        android:onClick="onApproveAll"
+        android:text="Approve All"
+        android:textSize="26sp" />
 
     <fragment
-            android:id="@+id/list_fragment"
-            android:name="gov.nysenate.inventory.android.RemovalRequestListSelectionFragment"
-            android:layout_below="@+id/barcode"
-            android:layout_above="@+id/cancel_btn_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/removal_request_list_selection_fragment"/>
+        android:id="@+id/list_fragment"
+        android:name="gov.nysenate.inventory.android.RemovalRequestListSelectionFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cancel_btn_fragment"
+        android:layout_below="@+id/barcode"
+        tools:layout="@layout/removal_request_list_selection_fragment" />
 
     <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            style="?android:attr/progressBarStyleLarge"
-            android:background="@drawable/shaperoundblue"
-            android:visibility="invisible"/>
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shaperoundblue"
+        android:visibility="invisible" />
 
     <fragment
-            android:id="@+id/cancel_btn_fragment"
-            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/cancel_btn_fragment"/>
+        android:id="@+id/cancel_btn_fragment"
+        android:name="gov.nysenate.inventory.android.CancelBtnFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="10dp"
+        tools:layout="@layout/cancel_btn_fragment" />
 
     <Button
-            android:id="@+id/reject_btn"
-            android:layout_width="177dp"
-            android:layout_height="50dp"
-            android:layout_toRightOf="@+id/cancel_btn_fragment"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/buttonshapered"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Reject"
-            android:onClick="onRejectBtnClick"/>
+        android:id="@+id/reject_btn"
+        android:layout_width="177dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/cancel_btn_fragment"
+        android:background="@drawable/buttonshapered"
+        android:onClick="onRejectBtnClick"
+        android:text="Reject"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
     <Button
-            android:id="@+id/approve_submit_btn"
-            android:layout_width="177dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/buttonshapegreen"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Approve"
-            android:onClick="onApproveBtnSubmit"/>
+        android:id="@+id/approve_submit_btn"
+        android:layout_width="177dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="onApproveBtnSubmit"
+        android:text="Approve"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>

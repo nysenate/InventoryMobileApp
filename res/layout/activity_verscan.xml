@@ -3,172 +3,174 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VerScanActivity" >
+
     <TableLayout
         android:id="@+id/tableLayout1"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignBottom="@+id/preferencePWD"
-        android:layout_toRightOf="@+id/preferencePWD"
-        >
-  		<TableRow>
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/preferencePWD" >
 
-    		<TextView
-    		    android:id="@+id/tv_counts_scanned"
-    		    android:layout_width="100dp"
-    		    android:layout_height="wrap_content"
-    		    android:layout_alignParentTop="true"
-    		    android:gravity="center"
-    		    android:hint="@string/count"
-    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+        <TableRow>
 
-    		</TextView>  		    
-		    <TextView
-       			android:id="@+id/tv_counts_new"
-        		android:layout_width="100dp"
-        		android:layout_height="wrap_content"
-        		android:layout_alignParentTop="true"
-        		android:gravity="center"
-        		android:hint="@string/count"
-       		 	android:textAppearance="?android:attr/textAppearanceMedium" >
-    		</TextView>
-    		<TextView
-        		android:id="@+id/tv_counts_existing"
-        		android:layout_width="100dp"
-        		android:layout_height="wrap_content"
-        		android:layout_alignParentTop="true"
-        		android:gravity="center"
-        		android:hint="@string/count"
-        		android:textAppearance="?android:attr/textAppearanceMedium" >
-    		</TextView>
-   		</TableRow>
-    </TableLayout>	
-    
+            <TextView
+                android:id="@+id/tv_counts_scanned"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:hint="@string/count"
+                android:textAppearance="?android:attr/textAppearanceMedium" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_counts_new"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:hint="@string/count"
+                android:textAppearance="?android:attr/textAppearanceMedium" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_counts_existing"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:hint="@string/count"
+                android:textAppearance="?android:attr/textAppearanceMedium" >
+            </TextView>
+        </TableRow>
+    </TableLayout>
+
     <TextView
         android:id="@+id/textView1"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
         android:text="@string/verify_msg2"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        style="@style/NormalText"    />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/preferencePWD"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="50dp"
-   		android:digits="0123456789"
-		android:maxLength="6"
+        android:digits="0123456789"
         android:ems="10"
         android:hint="@string/barcode_number"
         android:inputType="number"
+        android:maxLength="6"
         android:maxWidth="10dp"
-        style="@style/NormalText"   
-        android:textStyle="bold"
-        android:singleLine="true"    >
+        android:singleLine="true"
+        android:textStyle="bold" >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
 
-	<Spinner
-	    android:id="@+id/spinSortList"
-	    android:layout_width="190dp"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/textView1"
-	    android:layout_toRightOf="@+id/tvLblSortBy"
-	    android:entries="@array/verify_sort"
-	    android:gravity="center"
-	    style="@style/NormalText"   
-	    android:textStyle="bold" />
-    
+    <Spinner
+        android:id="@+id/spinSortList"
+        style="@style/NormalText"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_toRightOf="@+id/tvLblSortBy"
+        android:entries="@array/verify_sort"
+        android:gravity="center"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/preferenceList"
         android:layout_width="wrap_content"
         android:layout_height="670dp"
-        android:layout_alignParentLeft="true"
         android:layout_above="@+id/btnVerListCont"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/preferencePWD" >
     </ListView>
 
-<Button
-    android:id="@+id/btnVerListCancel"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true"
-    android:layout_marginBottom="15dp"
-    android:layout_marginLeft="19dp"
-    android:background="@drawable/buttonshapered"
-    android:onClick="cancelButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Cancel"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnVerListCancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="19dp"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-<Button
-    android:id="@+id/btnVerListCont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignBaseline="@+id/btnVerListCancel"
-    android:layout_alignBottom="@+id/btnVerListCancel"
-    android:layout_alignParentRight="true"
-    android:layout_marginRight="17dp"
-    android:background="@drawable/buttonshapegreen"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Continue"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnVerListCont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnVerListCancel"
+        android:layout_alignBottom="@+id/btnVerListCancel"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="17dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-<TextView
-    android:id="@+id/tvLblSortBy"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/btnVerListCancel"
-    android:layout_alignTop="@+id/tvLblSortBy"
-    android:layout_marginLeft="145dp"
-    android:layout_below="@+id/textView1"
-    android:layout_marginTop="3dp"
-    android:text="Sort By:"
-    android:textSize="25sp"
-    android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tvLblSortBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnVerListCancel"
+        android:layout_alignTop="@+id/tvLblSortBy"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="145dp"
+        android:layout_marginTop="3dp"
+        android:text="Sort By:"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
-<TextView
-    android:id="@+id/tvCdlocat"
-    style="@style/NormalText"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_marginLeft="10dp"
-    android:layout_alignTop="@+id/textView1"
-    android:background="@drawable/customshape"
-    android:text="" />
+    <TextView
+        android:id="@+id/tvCdlocat"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/textView1"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/customshape"
+        android:text="" />
 
-<Button
-    android:id="@+id/btnNoSenateTagAdd"
-    android:layout_width="100dp"
-    android:layout_height="45dp"
-    android:layout_above="@+id/tvLblSortBy"
-    android:layout_alignRight="@+id/btnVerListCont"
-    android:background="@drawable/buttonshapeblue"
-    android:onClick="noSenateTagAdd"
-    android:layout_alignBottom="@+id/tvCdlocat"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="No Sen Tag#"
-    android:textColor="#FFFFFF" />
-        
+    <Button
+        android:id="@+id/btnNoSenateTagAdd"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:layout_above="@+id/tvLblSortBy"
+        android:layout_alignBottom="@+id/tvCdlocat"
+        android:layout_alignRight="@+id/btnVerListCont"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="noSenateTagAdd"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="No Sen Tag#"
+        android:textColor="#FFFFFF" />
+
 </RelativeLayout>

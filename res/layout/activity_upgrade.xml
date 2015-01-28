@@ -1,85 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
- xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
- android:layout_height="match_parent" tools:context=".UpgradeActivity"
- android:padding="5dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".UpgradeActivity" >
 
- <ProgressBar
-     android:id="@+id/pbDownloadProgress"
-     style="?android:attr/progressBarStyleHorizontal"
-     android:layout_width="fill_parent"
-     android:layout_height="wrap_content"
-     android:layout_alignParentLeft="true"
-     android:layout_centerVertical="true"
-     android:layout_centerHorizontal="true"
-     android:indeterminate="false"
-     android:maxHeight="10dip"
-     android:minHeight="10dip"
-     android:progressDrawable="@drawable/progressgreen" />
+    <ProgressBar
+        android:id="@+id/pbDownloadProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="false"
+        android:maxHeight="10dip"
+        android:minHeight="10dip"
+        android:progressDrawable="@drawable/progressgreen" />
 
- <TextView
-     android:id="@+id/tvDownloadProgress"
-     android:layout_width="500sp"
-     android:layout_height="wrap_content"
-     android:layout_below="@+id/pbDownloadProgress"
-     android:layout_centerHorizontal="true"
-     android:layout_marginTop="22dp"
-     android:gravity="center"
-     android:text="0 mb / 0 mb     (0%)"
-     android:textAppearance="?android:attr/textAppearanceLarge"
-     android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tvDownloadProgress"
+        android:layout_width="500sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pbDownloadProgress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:gravity="center"
+        android:text="0 mb / 0 mb     (0%)"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
- <TextView
-     android:id="@+id/lbDownloadProgress"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_above="@+id/pbDownloadProgress"
-     android:layout_centerHorizontal="true"
-     android:layout_marginBottom="22dp"
-     android:text="Download Progress"
-     android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TextView
+        android:id="@+id/lbDownloadProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pbDownloadProgress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="22dp"
+        android:text="Download Progress"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
- <ImageView
-     android:id="@+id/lgDownload"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_above="@+id/currentVersion"
-     android:layout_centerHorizontal="true"
-     android:layout_marginBottom="84dp"
-     android:src="@drawable/download" />
+    <ImageView
+        android:id="@+id/lgDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/currentVersion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="84dp"
+        android:src="@drawable/download" />
 
- <TextView
-     android:id="@+id/currentVersion"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_above="@+id/newVersion"
-     android:layout_centerHorizontal="true"
-     android:layout_marginBottom="26dp"
-     android:text="Current Version: ???"
-     android:textAppearance="?android:attr/textAppearanceLarge"
-     android:textStyle="bold" />
+    <TextView
+        android:id="@+id/currentVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/newVersion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:text="Current Version: ???"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
- <TextView
-     android:id="@+id/newVersion"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_above="@+id/lbDownloadProgress"
-     android:layout_centerHorizontal="true"
-     android:layout_marginBottom="56dp"
-     android:text="Updating to Version: ???"
-     android:textAppearance="?android:attr/textAppearanceLarge"
-     android:textStyle="bold" />
+    <TextView
+        android:id="@+id/newVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lbDownloadProgress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="56dp"
+        android:text="Updating to Version: ???"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
- <TextView
-     android:id="@+id/lbUpdateActivity"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:layout_above="@+id/currentVersion"
-     android:layout_centerHorizontal="true"
-     android:layout_marginBottom="38dp"
-     android:text="Updating to new version...."
-     android:textAppearance="?android:attr/textAppearanceLarge"
-     android:textSize="30sp"
-     android:textStyle="bold" />
- 
+    <TextView
+        android:id="@+id/lbUpdateActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/currentVersion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="38dp"
+        android:text="Updating to new version...."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
 </RelativeLayout>

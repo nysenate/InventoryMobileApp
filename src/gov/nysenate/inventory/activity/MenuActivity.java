@@ -119,7 +119,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
         switch (item.getItemId()) {
         case android.R.id.home:
-            final Activity currentActivity = this;
             // 1. Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -310,7 +309,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     @Override
     public void onBackPressed() {
-        final Activity currentActivity = this;
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

@@ -3,29 +3,29 @@
     android:id="@+id/rlcomlist"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-   
+
     <TextView
         android:id="@+id/commodityListCdcommodity"
         android:layout_width="100dip"
-        android:layout_height="wrap_content"	
-        android:layout_alignParentLeft="true"     
-        android:layout_marginRight="5dip"   
-		android:gravity="center_vertical"        
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip"
+        android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
-     <TextView
-         android:id="@+id/commodityListDecommodityf"
-         android:layout_width="425dip"
-         android:layout_height="wrap_content"
-         android:layout_alignParentTop="true"
-         android:layout_toRightOf="@+id/commodityListCdcommodity"
-         android:gravity="center_vertical"
-         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-    
+    <TextView
+        android:id="@+id/commodityListDecommodityf"
+        android:layout_width="425dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/commodityListCdcommodity"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
 </RelativeLayout>

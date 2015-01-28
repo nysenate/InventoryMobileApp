@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
 
     <TextView
-            android:id="@+id/column1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+        android:id="@+id/column1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
     <TextView
-            android:id="@+id/column2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:layout_marginLeft="20dp"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+        android:id="@+id/column2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="5"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
     <CheckBox
-            android:id="@+id/check_box"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"/>
+        android:id="@+id/check_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

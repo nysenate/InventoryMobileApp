@@ -21,104 +21,104 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Original Pickup Information"
-                android:textStyle="bold"
                 android:textColor="@color/bluedark"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/old_pickup_location_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Pickup Location:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/old_pickup_location"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/old_delivery_location_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Delivery Location:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/old_delivery_location"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_by_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Pickup By:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_by"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_count_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Item Count:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_count"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_date_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Date:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_date"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
     </TableLayout>
 
@@ -133,7 +133,7 @@
         android:textSize="28sp"
         android:textStyle="bold" />
 
-<ListView
+    <ListView
         android:id="@+id/edit_pickup_menu_list"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
@@ -143,14 +143,14 @@
         android:background="@drawable/customshape" >
     </ListView>
 
-       <ProgressBar
+    <ProgressBar
         android:id="@+id/edit_pickup_menu_progress_bar"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
 
 </RelativeLayout>

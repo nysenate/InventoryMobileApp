@@ -1,8 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.os.AsyncTask;
-import android.os.Build;
-import android.widget.*;
 import gov.nysenate.inventory.adapter.PickupSearchList;
 import gov.nysenate.inventory.android.GetAllPickupsListener;
 import gov.nysenate.inventory.android.GetAllPickupsTask;
@@ -17,12 +14,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.View;
-import org.apache.http.HttpStatus;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public abstract class SelectDelivery2 extends SenateActivity implements GetAllPickupsListener {
 

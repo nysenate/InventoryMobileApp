@@ -6,17 +6,18 @@
 
     <TextView
         android:id="@+id/textView1"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="17dp"
         android:text="@string/verify_msg1"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        style="@style/NormalText"    />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
+        style="@style/NormalText"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -26,7 +27,6 @@
         android:ems="10"
         android:hint="@string/location_code"
         android:singleLine="true"
-        style="@style/NormalText"   
         android:textStyle="bold" />
 
     <TableLayout
@@ -42,31 +42,30 @@
 
             <TextView
                 android:id="@+id/tvHeadDetails"
+                style="@style/NormalText"
                 android:layout_gravity="center"
                 android:layout_span="2"
                 android:gravity="center"
                 android:text="Selected Location Information "
-                style="@style/NormalText"   
                 android:textColor="@color/bluedark" />
         </TableRow>
-
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tvLabelOffice"
+                style="@style/NormalText"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
                 android:gravity="right"
-                android:text="Resp Center Hd:"
-                style="@style/NormalText"    />
+                android:text="Resp Center Hd:" />
 
             <TextView
                 android:id="@+id/tvOffice"
+                style="@style/NormalText"
                 android:layout_marginTop="20dp"
                 android:gravity="left"
-                android:text="N/A"
-                style="@style/NormalText"    />
+                android:text="N/A" />
         </TableRow>
 
         <TableRow>
@@ -81,76 +80,76 @@
 
             <TextView
                 android:id="@+id/tvDescript"
+                style="@style/NormalText"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="left"
-                android:text="N/A"
-                style="@style/NormalText"    />
+                android:text="N/A" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tbLabelCount"
+                style="@style/NormalText"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
                 android:gravity="right"
-                android:text="Item Count:"
-                style="@style/NormalText"    />
+                android:text="Item Count:" />
 
             <TextView
                 android:id="@+id/tvCount"
+                style="@style/NormalText"
                 android:layout_marginTop="20dp"
                 android:gravity="left"
-                android:text="N/A"
-                style="@style/NormalText"    />
+                android:text="N/A" />
         </TableRow>
     </TableLayout>
 
-<Button
-    android:id="@+id/btnVerify1Cancel"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignBaseline="@+id/btnVerify1Cont"
-    android:layout_alignBottom="@+id/btnVerify1Cont"
-    android:layout_alignLeft="@+id/autoCompleteTextView1"
-    android:background="@drawable/buttonshapered"
-    android:onClick="cancelButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Cancel"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnVerify1Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnVerify1Cont"
+        android:layout_alignBottom="@+id/btnVerify1Cont"
+        android:layout_alignLeft="@+id/autoCompleteTextView1"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-<Button
-    android:id="@+id/btnVerify1Cont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_marginBottom="32dp"
-    android:layout_marginRight="35dp"
-    android:background="@drawable/buttonshapegreen"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Continue"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnVerify1Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginRight="35dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
-   <ProgressBar
+    <ProgressBar
         android:id="@+id/progBarVerify"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
 
 </RelativeLayout>

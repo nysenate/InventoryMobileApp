@@ -145,21 +145,21 @@
             android:parentActivityName="gov.nysenate.inventory.activity.Move"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
-        </activity>        
+        </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.CancelPickup"
             android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.activity.Move"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
-        </activity>        
+        </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.ChangePickupDestination"
             android:label="@string/title_edit_pickup"
             android:parentActivityName="gov.nysenate.inventory.activity.Move"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
-        </activity>        
+        </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.ChangePickupOrigin"
             android:label="@string/title_edit_pickup"
@@ -212,58 +212,62 @@
             android:exported="false" />
 
         <activity
-                android:name="gov.nysenate.inventory.activity.EnterRemote1"
-                android:label="@string/enter_remote_title"
-                android:parentActivityName="gov.nysenate.inventory.activity.Move"
-                android:screenOrientation="portrait">
+            android:name="gov.nysenate.inventory.activity.EnterRemote1"
+            android:label="@string/enter_remote_title"
+            android:parentActivityName="gov.nysenate.inventory.activity.Move"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-                android:name="gov.nysenate.inventory.activity.EnterRemote2"
-                android:label="@string/enter_remote_title"
-                android:parentActivityName="gov.nysenate.inventory.activity.Move"
-                android:screenOrientation="portrait">
+            android:name="gov.nysenate.inventory.activity.EnterRemote2"
+            android:label="@string/enter_remote_title"
+            android:parentActivityName="gov.nysenate.inventory.activity.Move"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-                android:name="gov.nysenate.inventory.activity.EnterRemote3"
-                android:label="@string/enter_remote_title"
-                android:parentActivityName="gov.nysenate.inventory.activity.Move"
-                android:screenOrientation="portrait">
+            android:name="gov.nysenate.inventory.activity.EnterRemote3"
+            android:label="@string/enter_remote_title"
+            android:parentActivityName="gov.nysenate.inventory.activity.Move"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-                android:name="gov.nysenate.inventory.activity.EnterRemovalRequestActivity"
-                android:label="@string/inventory_removal"
-                android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                android:screenOrientation="portrait" >
+            android:name="gov.nysenate.inventory.activity.EnterRemovalRequestActivity"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-                android:name="gov.nysenate.inventory.activity.EditRemovalRequestSelection"
-                android:label="@string/inventory_removal"
-                android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan">
+            android:name="gov.nysenate.inventory.activity.EditRemovalRequestSelection"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity android:name="gov.nysenate.inventory.activity.EditRemovalRequest"
-                  android:label="@string/inventory_removal"
-                  android:parentActivityName="gov.nysenate.inventory.activity.EditRemovalRequestSelection"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustPan" >
+        <activity
+            android:name="gov.nysenate.inventory.activity.EditRemovalRequest"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.EditRemovalRequestSelection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity android:name="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                  android:label="@string/inventory_removal"
-                  android:parentActivityName="gov.nysenate.inventory.activity.MenuActivity"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustPan" >
+        <activity
+            android:name="gov.nysenate.inventory.activity.InventoryRemovalMenu"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.MenuActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity android:name="gov.nysenate.inventory.activity.ApproveRemovalRequestSelection"
-                  android:label="@string/inventory_removal"
-                  android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustPan" >
+        <activity
+            android:name="gov.nysenate.inventory.activity.ApproveRemovalRequestSelection"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.InventoryRemovalMenu"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity android:name="gov.nysenate.inventory.activity.ApproveRemovalRequest"
-                  android:label="@string/inventory_removal"
-                  android:parentActivityName="gov.nysenate.inventory.activity.ApproveRemovalRequestSelection"
-                  android:screenOrientation="portrait" >
+        <activity
+            android:name="gov.nysenate.inventory.activity.ApproveRemovalRequest"
+            android:label="@string/inventory_removal"
+            android:parentActivityName="gov.nysenate.inventory.activity.ApproveRemovalRequestSelection"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

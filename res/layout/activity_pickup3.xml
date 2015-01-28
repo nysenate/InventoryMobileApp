@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/textView1"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -15,98 +16,94 @@
         android:layout_marginLeft="21sp"
         android:layout_marginTop="22sp"
         android:gravity="center"
-        android:text="@string/pickup3_title"
-        style="@style/NormalText"    />
+        android:text="@string/pickup3_title" />
 
-   
-   <TableLayout
-       android:id="@+id/tablelayout_header1_pickup3"       
-       android:layout_width="550dp"
-       android:layout_height="wrap_content"
-       android:layout_below="@+id/textView1"
-       android:layout_marginTop="18dp"
-       android:layout_marginBottom="10dp"
-       android:layout_centerHorizontal="true"
-       android:background="@drawable/customshape" >
+    <TableLayout
+        android:id="@+id/tablelayout_header1_pickup3"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/customshape" >
 
-       <TableRow>
+        <TableRow>
 
-           <TextView
-               android:id="@+id/tv_label_origin_pickup3"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Origin:"
-       		   style="@style/NormalText"   	               
-			 />
+            <TextView
+                android:id="@+id/tv_label_origin_pickup3"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Origin:" />
 
-           <TextView
-               android:id="@+id/tv_origin_pickup3"
-               android:gravity="left"
-               android:text="N/A"
-               android:layout_width="364dp"
-               android:layout_height="wrap_content"               
-       		   style="@style/NormalText"   	               
-              android:textStyle="bold" />
-       </TableRow>
-
-       <TableRow>
-
-           <TextView
-               android:id="@+id/tv_label_destination_pickup3"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Destination:"
-       		   style="@style/NormalText"                  
-       		    />
-
-           <TextView
-               android:id="@+id/tv_destination_pickup3"
-               android:gravity="left"
-               android:text="N/A"
-               android:layout_width="364dp"
-               android:layout_height="wrap_content"               
-       		   style="@style/NormalText"   		               
-               android:textStyle="bold" />
-
-       </TableRow>
-       
-   		<TableRow>
-        	<TextView
-               android:id="@+id/tv_label_count_pickup3"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Pickup Count:"
-       		   style="@style/NormalText"   	               
-			 />
-       		<TextView
-        		android:id="@+id/tv_count_pickup3"
+            <TextView
+                android:id="@+id/tv_origin_pickup3"
+                style="@style/NormalText"
                 android:layout_width="364dp"
-                android:layout_height="wrap_content"               
-        		android:layout_alignParentRight="true"
-        		android:ems="10"
-        		android:hint="@string/count" 
-       			style="@style/NormalText"   		
-        		android:textStyle="bold"  />
-        		
-   		</TableRow>    
-   </TableLayout>
-   
-   <CheckBox android:id="@+id/remote_checkbox"
-       android:layout_below="@+id/tablelayout_header1_pickup3"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginLeft="25dp"
-       android:text="Remote"
-       android:onClick="remoteBoxClicked"/>
-       
-   <Spinner
-        android:id="@+id/remote_ship_type"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="N/A"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_label_destination_pickup3"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Destination:" />
+
+            <TextView
+                android:id="@+id/tv_destination_pickup3"
+                style="@style/NormalText"
+                android:layout_width="364dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="N/A"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_label_count_pickup3"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup Count:" />
+
+            <TextView
+                android:id="@+id/tv_count_pickup3"
+                style="@style/NormalText"
+                android:layout_width="364dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:ems="10"
+                android:hint="@string/count"
+                android:textStyle="bold" />
+        </TableRow>
+    </TableLayout>
+
+    <CheckBox
+        android:id="@+id/remote_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tablelayout_header1_pickup3"
-        android:layout_toRightOf="@+id/remote_checkbox"
+        android:layout_marginLeft="25dp"
+        android:onClick="remoteBoxClicked"
+        android:text="Remote" />
+
+    <Spinner
+        android:id="@+id/remote_ship_type"
         style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tablelayout_header1_pickup3"
         android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/remote_checkbox"
         android:entries="@array/remote_ship_types"
         android:gravity="center" />
 
@@ -116,10 +113,8 @@
         android:layout_height="260dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/remote_checkbox"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-         >
-
+        android:layout_marginTop="10dp" >
     </ListView>
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
@@ -127,11 +122,11 @@
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/blsignImageView"
-        android:inputType="textNoSuggestions"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="@string/pickup_emp_list_hint" 
-        android:singleLine="true"   >
+        android:hint="@string/pickup_emp_list_hint"
+        android:inputType="textNoSuggestions"
+        android:singleLine="true" >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
@@ -143,10 +138,10 @@
         android:layout_alignLeft="@+id/blsignImageView"
         android:layout_alignRight="@+id/blsignImageView"
         android:layout_below="@+id/listView1"
-        android:maxLines="2"
         android:ems="10"
         android:hint="Pickup Comments Here"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:maxLines="2" />
 
     <ImageView
         android:id="@+id/pickupCommentsSpeechButton"
@@ -168,22 +163,22 @@
         android:background="@drawable/simplethinborder"
         android:paddingLeft="100dp" />
 
-<Button
-    android:id="@+id/btnPickup3Cont"
-    android:layout_width="200dp"
-    android:layout_height="50dp"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
-    android:layout_marginBottom="36dp"
-    android:background="@drawable/buttonshapegreen"
-    android:onClick="continueButton"
-    android:shadowColor="#000000"
-    android:shadowDx="01"
-    android:shadowDy="1"
-    android:shadowRadius="5"
-    android:text="Pickup Items"
-    android:textColor="#FFFFFF"
-    android:textSize="30sp" />
+    <Button
+        android:id="@+id/btnPickup3Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Pickup Items"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/btnPickup3ClrSig"
@@ -216,16 +211,15 @@
         android:text="Back"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
-    
-   <ProgressBar
+
+    <ProgressBar
         android:id="@+id/progBarPickup3"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
-    
 
 </RelativeLayout>

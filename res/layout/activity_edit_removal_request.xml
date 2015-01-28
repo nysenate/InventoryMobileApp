@@ -1,228 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
     <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
-            android:text="Edit Inventory Removal Request"
-            android:textStyle="bold"
-            android:textSize="26sp"/>
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:text="Edit Inventory Removal Request"
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
     <TableLayout
-            android:id="@+id/original_info"
-            android:layout_width="550dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/customshape" >
+        android:id="@+id/original_info"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/customshape" >
 
         <TableRow>
-        <TextView
+
+            <TextView
                 android:id="@+id/transaction_num_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:text="Request#:"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <TextView
+            <TextView
                 android:id="@+id/transaction_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="20sp"/>
-
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                    android:id="@+id/requested_by_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Requested By:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
-
-            <TextView
-                    android:id="@+id/requested_by"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
-
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                    android:id="@+id/status_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="Status:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
-
-            <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                    android:id="@+id/date_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="10dp"
-                    android:text="Date:"
-                    android:textStyle="bold"
-                    android:textSize="20sp"/>
+                android:id="@+id/requested_by_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Requested By:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="20"
-                    android:text=""
-                    android:textSize="20sp"/>
+                android:id="@+id/requested_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/status_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Status:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:text="Date:"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="20"
+                android:text=""
+                android:textSize="20sp" />
 
             <Button
-                    android:id="@+id/inventory_control_comments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="37dp"
-                    android:layout_weight="1"
-                    android:text="Reject Comments"
-                    android:visibility="invisible"
-                    android:textSize="16sp"/>
+                android:id="@+id/inventory_control_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:layout_weight="1"
+                android:text="Reject Comments"
+                android:textSize="16sp"
+                android:visibility="invisible" />
         </TableRow>
-
     </TableLayout>
 
     <TextView
-            android:id="@+id/removal_reason_title"
-            android:layout_below="@id/original_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:text="Removal Reason"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+        android:id="@+id/removal_reason_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/original_info"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Removal Reason"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <Spinner
-            android:id="@+id/adjust_code"
-            android:layout_below="@id/original_info"
-            android:layout_toRightOf="@+id/removal_reason_title"
-            android:layout_width="275dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp"/>
+        android:id="@+id/adjust_code"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/original_info"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/removal_reason_title" />
 
     <TextView
-            android:id="@+id/item_count_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/adjust_code"
-            android:layout_below="@id/original_info"
-            android:layout_marginTop="10dp"
-            android:text="Item Count:"
-            android:textSize="20sp"/>
+        android:id="@+id/item_count_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/original_info"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/adjust_code"
+        android:text="Item Count:"
+        android:textSize="20sp" />
 
     <TextView
-            android:id="@+id/item_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/item_count_title"
-            android:layout_below="@id/original_info"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"/>
+        android:id="@+id/item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/original_info"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/item_count_title"
+        android:textSize="20sp" />
 
     <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/removal_request_item_list"
-            android:layout_centerInParent="true"
-            style="?android:attr/progressBarStyleLarge"
-            android:background="@drawable/shaperoundblue"
-            android:visibility="invisible"/>
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/removal_request_item_list"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shaperoundblue"
+        android:visibility="invisible" />
 
     <TextView
-            android:id="@+id/listview_title"
-            android:layout_below="@id/removal_reason_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_centerHorizontal="true"
-            android:text="Select Items to delete from Removal Request."
-            android:textSize="16sp"/>
+        android:id="@+id/listview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/removal_reason_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Select Items to delete from Removal Request."
+        android:textSize="16sp" />
 
     <ListView
-            android:id="@+id/removal_request_item_list"
-            android:layout_below="@+id/listview_title"
-            android:layout_width="match_parent"
-            android:layout_height="380dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
+        android:id="@+id/removal_request_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_below="@+id/listview_title"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp" >
     </ListView>
 
-
     <CheckBox
-            android:id="@+id/submit_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/removal_request_item_list"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="Submit to Inventory Management for review"
-            android:onClick="submitToMgmtCheckBoxClicked"
-            android:textSize="20sp"/>
+        android:id="@+id/submit_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/removal_request_item_list"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:onClick="submitToMgmtCheckBoxClicked"
+        android:text="Submit to Inventory Management for review"
+        android:textSize="20sp" />
 
     <fragment
-            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
-            android:id="@+id/cancel_btn_fragment"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/cancel_btn_fragment"/>
-
+        android:id="@+id/cancel_btn_fragment"
+        android:name="gov.nysenate.inventory.android.CancelBtnFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="10dp"
+        tools:layout="@layout/cancel_btn_fragment" />
 
     <Button
-            android:id="@+id/continue_btn"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/buttonshapegreen"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Save"
-            android:onClick="onSaveBtnClick"/>
+        android:id="@+id/continue_btn"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="onSaveBtnClick"
+        android:text="Save"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>

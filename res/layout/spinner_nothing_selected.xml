@@ -2,10 +2,10 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     style="?android:attr/spinnerItemStyle"
-    android:singleLine="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
-    android:textSize="18sp"
+    android:singleLine="true"
+    android:text="[Select One]"
     android:textColor="#808080"
-    android:text="[Select One]" />
+    android:textSize="18sp" />

@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
-            android:text="Please select a removal request to edit."
-            android:textSize="26sp"/>
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:text="Please select a removal request to edit."
+        android:textSize="26sp" />
 
     <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            style="?android:attr/progressBarStyleLarge"
-            android:background="@drawable/shaperoundblue"
-            android:visibility="gone"/>
-
-    <fragment
-        android:name="gov.nysenate.inventory.android.RemovalRequestListFragment"
-        android:id="@+id/removal_request_list_fragment"
-        android:layout_below="@+id/title"
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shaperoundblue"
+        android:visibility="gone" />
 
     <fragment
-            android:name="gov.nysenate.inventory.android.CancelBtnFragment"
-            android:id="@+id/cancel_btn_fragment"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="17dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:id="@+id/removal_request_list_fragment"
+        android:name="gov.nysenate.inventory.android.RemovalRequestListFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title" />
 
+    <fragment
+        android:id="@+id/cancel_btn_fragment"
+        android:name="gov.nysenate.inventory.android.CancelBtnFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>

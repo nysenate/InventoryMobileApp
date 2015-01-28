@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlkeywordlistrow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rlkeywordlistrow"
     android:orientation="horizontal" >
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/etKeyword"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
+        android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:inputType="textNoSuggestions"
-		android:focusable="true"
-		android:focusableInTouchMode="true"        
-        android:ems="10" >
+        android:textColor="#000000" >
+
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
+
     <TextView
- 	    android:id="@+id/tvKeywordCnt"
+        android:id="@+id/tvKeywordCnt"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:gravity ="center"
-        android:textColor="#000000"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
         android:inputType="textNoSuggestions"
-		android:focusable="true"
-		android:focusableInTouchMode="true"        
-        >
-        
+        android:textColor="#000000" >
     </TextView>
 
     <Button
         android:id="@+id/btnDeleteKeyword"
         android:layout_width="120sp"
         android:layout_height="28sp"
-        android:background="@drawable/buttonshapered"
         android:layout_marginLeft="15sp"
+        android:background="@drawable/buttonshapered"
         android:shadowColor="#000000"
         android:shadowDx="01"
         android:shadowDy="1"

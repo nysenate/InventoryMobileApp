@@ -17,7 +17,7 @@
         android:text="@string/pickup1_header_text" />
 
     <LinearLayout
-        android:id="@+id/pickup_info1"        
+        android:id="@+id/pickup_info1"
         android:layout_width="550dp"
         android:layout_height="230dp"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
@@ -25,85 +25,85 @@
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginTop="10dp" >
 
-    <TableLayout
-        android:id="@+id/pickup_info1a"
-        android:layout_width="550dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:background="@drawable/customshape" >
+        <TableLayout
+            android:id="@+id/pickup_info1a"
+            android:layout_width="550dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:background="@drawable/customshape" >
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvHeadDetails1"
-                style="@style/NormalText"
-                android:layout_gravity="center"
-                android:layout_span="2"
-                android:gravity="center"
-                android:text="Pickup Location"
-                android:textColor="@color/bluedark" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/tvHeadDetails1"
+                    style="@style/NormalText"
+                    android:layout_gravity="center"
+                    android:layout_span="2"
+                    android:gravity="center"
+                    android:text="Pickup Location"
+                    android:textColor="@color/bluedark" />
+            </TableRow>
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvLabelOffice1"
-                style="@style/NormalText"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Resp Center Hd:" />
+                <TextView
+                    android:id="@+id/tvLabelOffice1"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Resp Center Hd:" />
 
-            <TextView
-                android:id="@+id/tvOffice1"
-                style="@style/NormalText"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/tvOffice1"
+                    style="@style/NormalText"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvLabelDescr1"
-                style="@style/NormalText"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Address:" />
+                <TextView
+                    android:id="@+id/tvLabelDescr1"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Address:" />
 
-            <TextView
-                android:id="@+id/tvDescript1"
-                style="@style/NormalText"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/tvDescript1"
+                    style="@style/NormalText"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tbLabelCount1"
-                style="@style/NormalText"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Item Count:" />
+                <TextView
+                    android:id="@+id/tbLabelCount1"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Item Count:" />
 
-            <TextView
-                android:id="@+id/tvCount1"
-                style="@style/NormalText"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"                
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:id="@+id/tvCount1"
+                    style="@style/NormalText"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -113,99 +113,97 @@
         android:layout_alignLeft="@+id/autoCompleteTextView2"
         android:layout_alignRight="@+id/autoCompleteTextView2"
         android:layout_below="@+id/autoCompleteTextView2"
-        android:layout_marginTop="10dp"
-        >
+        android:layout_marginTop="10dp" >
+
         <TableLayout
-        android:id="@+id/pickup_info2A"
-        android:layout_width="550dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/customshape" 
-        >
+            android:id="@+id/pickup_info2A"
+            android:layout_width="550dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/customshape" >
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvHeadDetails2"
-                android:layout_gravity="center"
-                android:layout_span="2"
-                android:gravity="center"
-                android:text="Delivery Location"
-                style="@style/NormalText"
-                android:textColor="@color/bluedark" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/tvHeadDetails2"
+                    style="@style/NormalText"
+                    android:layout_gravity="center"
+                    android:layout_span="2"
+                    android:gravity="center"
+                    android:text="Delivery Location"
+                    android:textColor="@color/bluedark" />
+            </TableRow>
 
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvLabelOffice2"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Resp Center Hd:"
-                style="@style/NormalText" />
+                <TextView
+                    android:id="@+id/tvLabelOffice2"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Resp Center Hd:" />
 
-            <TextView
-                android:id="@+id/tvOffice2"
-                style="@style/NormalText"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A" />
+                <TextView
+                    android:id="@+id/tvOffice2"
+                    style="@style/NormalText"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
 
-        </TableRow>
+            <TableRow>
 
-        <TableRow>
+                <TextView
+                    android:id="@+id/tvLabelDescr2"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Address:" />
 
-            <TextView
-                android:id="@+id/tvLabelDescr2"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Address:"
-                style="@style/NormalText" />
+                <TextView
+                    android:id="@+id/tvDescript2"
+                    style="@style/NormalText"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/tvDescript2"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A"
-                style="@style/NormalText" />
-        </TableRow>
+            <TableRow>
 
-        <TableRow>
+                <TextView
+                    android:id="@+id/tbLabelCount2"
+                    style="@style/NormalText"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Item Count:" />
 
-            <TextView
-                android:id="@+id/tbLabelCount2"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:gravity="right"
-                android:text="Item Count:"
-                style="@style/NormalText" />
-
-            <TextView
-                android:id="@+id/tvCount2"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:text="N/A"
-                style="@style/NormalText" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:id="@+id/tvCount2"
+                    style="@style/NormalText"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="N/A" />
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignRight="@+id/textView1"
         android:layout_below="@+id/pickup_info1"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="@string/select_dest_loc"
- 		style="@style/NormalText"        
         android:nextFocusDown="@+id/autoCompleteTextView1"
         android:singleLine="true"
         android:textStyle="bold" >
@@ -266,12 +264,11 @@
         android:layout_below="@+id/textView1"
         android:ems="10"
         android:hint="@string/select_origin_loc"
-        android:singleLine="true"
         android:nextFocusDown="@+id/autoCompleteTextView2"
+        android:singleLine="true"
         android:textStyle="bold" >
 
         <requestFocus />
-
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
 </RelativeLayout>

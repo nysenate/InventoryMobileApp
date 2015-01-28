@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
     <Button
-            android:id="@+id/cancel_btn"
-            android:layout_width="177dp"
-            android:layout_height="50dp"
-            android:background="@drawable/buttonshapered"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:text="Cancel"/>
+        android:id="@+id/cancel_btn"
+        android:layout_width="177dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshapered"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>

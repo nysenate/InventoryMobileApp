@@ -24,8 +24,8 @@
         android:layout_toRightOf="@+id/searchByTitle"
         android:entries="@array/editpickup_searchby"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/autoCompleteSearchBy"
@@ -38,9 +38,9 @@
         android:layout_marginLeft="22dp"
         android:layout_marginTop="20dp"
         android:ems="10"
+        android:hint="Scan or enter location code."
         android:singleLine="true"
-        android:textStyle="bold"
-        android:hint="Scan or enter location code." >
+        android:textStyle="bold" >
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>

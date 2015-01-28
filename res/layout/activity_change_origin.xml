@@ -32,104 +32,104 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Original Pickup Information"
-                android:textStyle="bold"  
                 android:textColor="@color/bluedark"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/old_pickup_location_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Pickup Location:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/old_pickup_location"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/old_delivery_location_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Delivery Location:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/old_delivery_location"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_by_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Pickup By:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_by"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_count_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Item Count:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_count"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/pickup_date_title"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
                 android:text="Date:"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pickup_date"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="18sp"
-                style="@style/NormalText" />
+                android:textSize="18sp" />
         </TableRow>
     </TableLayout>
 
@@ -147,88 +147,83 @@
             <TextView
                 android:id="@+id/new_origin_title"
                 android:layout_marginRight="10dp"
-                android:text="New Pickup Location"
                 android:gravity="right"
+                android:text="New Pickup Location"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
                 android:id="@+id/autoCompleteTextView1"
                 style="@style/NormalText"
-                android:gravity="left"
                 android:ems="14"
-                android:textSize="20sp"
+                android:gravity="left"
                 android:hint="Select new pickup location"
+                android:textSize="20sp"
                 android:textStyle="bold" >
 
                 <requestFocus />
             </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
         </TableRow>
-        
+
         <TableRow>
 
             <TextView
                 android:id="@+id/tvLabelOfficeD"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
- 				style="@style/NormalText"
- 				android:textSize="20sp"
-                android:text="Resp Center Hd:" />
+                android:text="Resp Center Hd:"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvOfficeD"
+                style="@style/NormalText"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                style="@style/NormalText"
-                android:textSize="20sp"   
-                android:text="N/A" />
+                android:text="N/A"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
                 android:id="@+id/tvLabelDescrD"
+                style="@style/NormalText"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="right"
-                style="@style/NormalText"
-                android:textSize="20sp"   
-                android:text="Address:" />
+                android:text="Address:"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvDescriptD"
+                style="@style/NormalText"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="left"
-                style="@style/NormalText"
-                android:textSize="20sp" 
-                android:text="N/A" />
+                android:text="N/A"
+                android:textSize="20sp" />
         </TableRow>
-
-
     </TableLayout>
 
- 
-   
     <Button
         android:id="@+id/cancel_btn"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/buttonshapeblue"
         android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapeblue"
+        android:onClick="backButton"
         android:shadowColor="#000000"
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
         android:text="Back"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:onClick="backButton"
-        />
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/continue_btn"
@@ -236,26 +231,25 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/buttonshapegreen"
         android:layout_marginBottom="36dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
         android:shadowColor="#000000"
         android:shadowDx="01"
         android:shadowDy="1"
         android:shadowRadius="5"
         android:text="Update Location"
         android:textColor="#FFFFFF"
-        android:textSize="26sp"
-        android:onClick="continueButton"
-        />
-    
-     <ProgressBar
+        android:textSize="26sp" />
+
+    <ProgressBar
         android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
 
 </RelativeLayout>

@@ -6,8 +6,6 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.TransactionParser;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 

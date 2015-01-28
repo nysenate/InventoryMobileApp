@@ -1,10 +1,13 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.GetAllPickupsListener;
+import gov.nysenate.inventory.android.GetAllPickupsTask;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Toasty;
-import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

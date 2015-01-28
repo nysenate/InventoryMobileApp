@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.util.TypedValue;
-import android.view.*;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
@@ -20,10 +18,13 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -35,7 +36,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -43,9 +43,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -60,6 +57,12 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -106,7 +109,7 @@ public class Pickup3 extends SenateActivity
     private CheckBox remoteBox;
     private Spinner remoteShipType;
     ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
- 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +125,8 @@ public class Pickup3 extends SenateActivity
 
         ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
-        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra("pickup"));
+        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra(
+                "pickup"));
         pickup.setNapickupby(LoginActivity.nauser);
 
         scannedBarcodeNumbers = pickup.getPickupItems();
@@ -134,17 +138,24 @@ public class Pickup3 extends SenateActivity
         pickupCountTV.setText(Integer.toString(pickup.getPickupItems().size()));
         remoteBox = (CheckBox) findViewById(R.id.remote_checkbox);
         remoteShipType = (Spinner) findViewById(R.id.remote_ship_type);
-        remoteShipType.setVisibility(Spinner.INVISIBLE);
+        remoteShipType.setVisibility(View.INVISIBLE);
 
         // Display a "hint" in the spinner.
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.remote_ship_types, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        remoteShipType.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
-        remoteShipType.setOnItemSelectedListener(new OnItemSelectedListener(){
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter
+                .createFromResource(this, R.array.remote_ship_types,
+                        android.R.layout.simple_spinner_item);
+        spinAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        remoteShipType.setAdapter(new NothingSelectedSpinnerAdapter(
+                spinAdapter, R.layout.spinner_nothing_selected, this));
+        remoteShipType.setOnItemSelectedListener(new OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                    int position, long id) {
                 if (remoteShipType.getSelectedItem() != null) {
-                    pickup.setShipType(remoteShipType.getSelectedItem().toString());
+                    pickup.setShipType(remoteShipType.getSelectedItem()
+                            .toString());
                 }
             }
 
@@ -302,7 +313,9 @@ public class Pickup3 extends SenateActivity
 
         if (isRemoteOptionVisible()) {
             if (remoteShipType.getSelectedItem() == null) {
-                Toasty.displayCenteredMessage(this, "You must pick a remote shipping option.", Toast.LENGTH_SHORT);
+                Toasty.displayCenteredMessage(this,
+                        "You must pick a remote shipping option.",
+                        Toast.LENGTH_SHORT);
                 return;
             }
         }
@@ -311,10 +324,12 @@ public class Pickup3 extends SenateActivity
         if (!pickup.isRemote() || pickup.isRemoteDelivery()) {
             emp = employeeNamesView.getEditableText().toString();
             if (!selectedEmployeeValid(emp, employeeHiddenList)) {
-                displayInvalidEmployeeMessage(employeeNamesView.getEditableText().toString().trim());
+                displayInvalidEmployeeMessage(employeeNamesView
+                        .getEditableText().toString().trim());
                 return;
             }
-            nuxrefem = employeeHiddenList.get(findEmployee(emp, employeeHiddenList)).getNuxrefem();
+            nuxrefem = employeeHiddenList.get(
+                    findEmployee(emp, employeeHiddenList)).getNuxrefem();
 
             if (!sign.isSigned()) {
                 displayNoSignatureMessage();
@@ -329,21 +344,25 @@ public class Pickup3 extends SenateActivity
 
     private void displayPickupConfirmationDialog() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this)
-        .setTitle(Html.fromHtml("<font color='#000055'>Pickup Confirmation</font>"))
-        .setMessage("Are you sure you want to pickup these " + scannedBarcodeNumbers.size() + " items?")
-        .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-        {
-            private boolean positiveButtonPressed = false;
+                .setTitle(
+                        Html.fromHtml("<font color='#000055'>Pickup Confirmation</font>"))
+                .setMessage(
+                        "Are you sure you want to pickup these "
+                                + scannedBarcodeNumbers.size() + " items?")
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
+                        new DialogInterface.OnClickListener()
+                        {
+                            private boolean positiveButtonPressed = false;
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (!positiveButtonPressed) {
-                    positiveButtonPressed = true;
-                    positiveDialog();
-                }
-            }
-        })
-        .setNegativeButton(Html.fromHtml("<b>No</b>"), null);
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                if (!positiveButtonPressed) {
+                                    positiveButtonPressed = true;
+                                    positiveDialog();
+                                }
+                            }
+                        }).setNegativeButton(Html.fromHtml("<b>No</b>"), null);
 
         AlertDialog dialog = confirmDialog.create();
         dialog.show();
@@ -423,9 +442,9 @@ public class Pickup3 extends SenateActivity
                 String responseString = null;
                 try {
                     HttpPost httpPost = new HttpPost(uri[0]);
-                    
+
                     response = httpclient.execute(new HttpPost(uri[0]));
-                    //response = httpclient.execute(new HttpGet(uri[0]));
+                    // response = httpclient.execute(new HttpGet(uri[0]));
                     StatusLine statusLine = response.getStatusLine();
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -461,7 +480,7 @@ public class Pickup3 extends SenateActivity
                 return "!!ERROR: Invalid requestTypeTask:"
                         + pickupRequestTaskType;
             }
-            
+
         }
     }
 
@@ -471,12 +490,13 @@ public class Pickup3 extends SenateActivity
         }
         continueBtn.getBackground().setAlpha(45);
         String URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-        if (! URL.endsWith("/")) {
+        if (!URL.endsWith("/")) {
             URL += "/";
-        }   
+        }
 
-        new ProcessPickupTask().execute( URL + "ImgUpload?nauser=" + LoginActivity.nauser
-                    + "&nuxrefem=" + nuxrefem, URL + "/Pickup");
+        new ProcessPickupTask().execute(URL + "ImgUpload?nauser="
+                + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, URL
+                + "/Pickup");
     }
 
     public void returnToMoveMenu() {
@@ -493,14 +513,15 @@ public class Pickup3 extends SenateActivity
     }
 
     public void getEmployeeList() {
-            new GetEmployeeListTask().execute();
+        new GetEmployeeListTask().execute();
     }
 
-    private class ProcessPickupTask extends AsyncTask<String, Void, String> {
+    private class ProcessPickupTask extends AsyncTask<String, Void, String>
+    {
 
         @Override
         protected void onPreExecute() {
-            progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+            progBarPickup3.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -567,8 +588,10 @@ public class Pickup3 extends SenateActivity
                             new InputStreamReader(response.getEntity()
                                     .getContent(), "UTF-8"));
                     responseString = reader.readLine();
-                    /*System.out.println("***Image Server response:\n'"
-                            + responseString + "'");*/
+                    /*
+                     * System.out.println("***Image Server response:\n'" +
+                     * responseString + "'");
+                     */
                     int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
                     if (nuxrsignLoc > -1) {
                         NUXRRELSIGN = responseString.substring(nuxrsignLoc + 9)
@@ -592,24 +615,28 @@ public class Pickup3 extends SenateActivity
             try {
                 String pickupURL = uri[1];
                 postParams = new ArrayList<NameValuePair>();
-                postParams.add(new BasicNameValuePair("pickup", pickup.toJson()));
-                postParams.add(new BasicNameValuePair("userFallback", LoginActivity.nauser));
-                
+                postParams
+                        .add(new BasicNameValuePair("pickup", pickup.toJson()));
+                postParams.add(new BasicNameValuePair("userFallback",
+                        LoginActivity.nauser));
+
                 HttpPost httpPost = new HttpPost(pickupURL);
                 httpPost.setEntity(new UrlEncodedFormEntity(postParams));
-                    
-                //System.out.println("pickupURL:" + pickupURL);
-                //response = httpclient.execute(new HttpGet(pickupURL));
-                 response = httpclient.execute(httpPost);
+
+                // System.out.println("pickupURL:" + pickupURL);
+                // response = httpclient.execute(new HttpGet(pickupURL));
+                response = httpclient.execute(httpPost);
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     response.getEntity().writeTo(out);
                     out.close();
                     responseString = out.toString();
-                    /*System.out.println("***Pickup Server response:\n'"
-                            + responseString + "'");*/
-                    
+                    /*
+                     * System.out.println("***Pickup Server response:\n'" +
+                     * responseString + "'");
+                     */
+
                 } else {
                     // Closes the connection.
                     response.getEntity().getContent().close();
@@ -636,7 +663,7 @@ public class Pickup3 extends SenateActivity
 
         @Override
         protected void onPostExecute(String response) {
-            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+            progBarPickup3.setVisibility(View.INVISIBLE);
 
             if (res == null) {
                 noServerResponse();
@@ -646,7 +673,8 @@ public class Pickup3 extends SenateActivity
                 return;
             } else if (res.startsWith("***WARNING:")
                     || res.startsWith("!!ERROR:")) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Pickup3.this);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        Pickup3.this);
 
                 // set title
                 alertDialogBuilder.setTitle(Html
@@ -655,16 +683,15 @@ public class Pickup3 extends SenateActivity
 
                 // set dialog message
                 alertDialogBuilder
-                .setMessage(
-                        Html.fromHtml(res.trim()
-                                + "<br/> Continue (Y/N)?"))
-                                .setCancelable(false)
-                                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                                        new DialogInterface.OnClickListener()
+                        .setMessage(
+                                Html.fromHtml(res.trim()
+                                        + "<br/> Continue (Y/N)?"))
+                        .setCancelable(false)
+                        .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
+                                new DialogInterface.OnClickListener()
                                 {
                                     @Override
-                                    public void onClick(
-                                            DialogInterface dialog,
+                                    public void onClick(DialogInterface dialog,
                                             int id) {
                                         // if this button is clicked,
                                         // just close
@@ -673,12 +700,11 @@ public class Pickup3 extends SenateActivity
                                         dialog.dismiss();
                                     }
                                 })
-                                .setPositiveButton(Html.fromHtml("<b>No</b>"),
-                                        new DialogInterface.OnClickListener()
+                        .setPositiveButton(Html.fromHtml("<b>No</b>"),
+                                new DialogInterface.OnClickListener()
                                 {
                                     @Override
-                                    public void onClick(
-                                            DialogInterface dialog,
+                                    public void onClick(DialogInterface dialog,
                                             int id) {
                                         // if this button is clicked,
                                         // just close
@@ -713,11 +739,12 @@ public class Pickup3 extends SenateActivity
         }
     }
 
-    private class GetEmployeeListTask extends AsyncTask<Void, Void, String> {
+    private class GetEmployeeListTask extends AsyncTask<Void, Void, String>
+    {
 
         @Override
         protected void onPreExecute() {
-            progBarPickup3.setVisibility(ProgressBar.VISIBLE);
+            progBarPickup3.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -752,13 +779,15 @@ public class Pickup3 extends SenateActivity
                 // TODO Handle problems..
             }
 
-            if (responseString == null || responseString.indexOf("Session timed out") != -1) {
+            if (responseString == null
+                    || responseString.indexOf("Session timed out") != -1) {
                 return responseString;
             }
 
-            List<Employee> currentEmployees = EmployeeParser.parseMultipleEmployees(responseString);
+            List<Employee> currentEmployees = EmployeeParser
+                    .parseMultipleEmployees(responseString);
             employeeHiddenList.addAll(currentEmployees);
-            for (Employee emp: currentEmployees) {
+            for (Employee emp : currentEmployees) {
                 employeeNameList.add(emp.getFullName());
             }
 
@@ -769,7 +798,7 @@ public class Pickup3 extends SenateActivity
 
         @Override
         protected void onPostExecute(String response) {
-            progBarPickup3.setVisibility(ProgressBar.INVISIBLE);
+            progBarPickup3.setVisibility(View.INVISIBLE);
 
             if (response == null) {
                 noServerResponse();
@@ -779,8 +808,8 @@ public class Pickup3 extends SenateActivity
                 return;
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Pickup3.this,
-                    android.R.layout.simple_dropdown_item_1line,
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    Pickup3.this, android.R.layout.simple_dropdown_item_1line,
                     employeeNameList);
 
             employeeNamesView.setThreshold(1);
@@ -789,25 +818,27 @@ public class Pickup3 extends SenateActivity
     }
 
     public void remoteBoxClicked(View view) {
-        if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
+        if (!pickup.getOrigin().isRemote()
+                && !pickup.getDestination().isRemote()) {
             AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
-            .setTitle("INVALID REMOTE PICKUP")
-            .setMessage("!!ERROR: Albany to Albany PICKUPs cannot be processed as Remote.")
-            .setCancelable(false)
-            .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
+                    .setTitle("INVALID REMOTE PICKUP")
+                    .setMessage(
+                            "!!ERROR: Albany to Albany PICKUPs cannot be processed as Remote.")
+                    .setCancelable(false)
+                    .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
 
             errorMsg.show();
             remoteBox.setChecked(false);
             return;
         }
         if (((CheckBox) view).isChecked()) {
-            remoteShipType.setVisibility(Spinner.VISIBLE);
+            remoteShipType.setVisibility(View.VISIBLE);
             if (isOriginLocationRemote()) {
                 hideNaReleaseByInfo();
                 expandItemList();
             }
         } else {
-            remoteShipType.setVisibility(Spinner.INVISIBLE);
+            remoteShipType.setVisibility(View.INVISIBLE);
             pickup.setShipType("");
             showNaReleaseByInfo();
             resetItemList();
@@ -816,14 +847,18 @@ public class Pickup3 extends SenateActivity
 
     private void resetItemList() {
         ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
-        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 260, getResources().getDisplayMetrics());
+        params.height = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 260, getResources()
+                        .getDisplayMetrics());
         ListViewTab1.setLayoutParams(params);
         ListViewTab1.requestLayout();
     }
 
     private void expandItemList() {
         ViewGroup.LayoutParams params = ListViewTab1.getLayoutParams();
-        params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400, getResources().getDisplayMetrics());
+        params.height = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 400, getResources()
+                        .getDisplayMetrics());
         ListViewTab1.setLayoutParams(params);
         ListViewTab1.requestLayout();
     }
@@ -833,18 +868,18 @@ public class Pickup3 extends SenateActivity
     }
 
     private void hideNaReleaseByInfo() {
-        btnPickup3ClrSig.setVisibility(Button.INVISIBLE);
-        sign.setVisibility(SignatureView.INVISIBLE);
-        employeeNamesView.setVisibility(TextView.INVISIBLE);
+        btnPickup3ClrSig.setVisibility(View.INVISIBLE);
+        sign.setVisibility(View.INVISIBLE);
+        employeeNamesView.setVisibility(View.INVISIBLE);
     }
 
     private void showNaReleaseByInfo() {
-        btnPickup3ClrSig.setVisibility(Button.VISIBLE);
-        sign.setVisibility(SignatureView.VISIBLE);
-        employeeNamesView.setVisibility(TextView.VISIBLE);
+        btnPickup3ClrSig.setVisibility(View.VISIBLE);
+        sign.setVisibility(View.VISIBLE);
+        employeeNamesView.setVisibility(View.VISIBLE);
     }
 
     private boolean isRemoteOptionVisible() {
-        return (remoteShipType.getVisibility() == Spinner.VISIBLE) ? true : false;
+        return (remoteShipType.getVisibility() == View.VISIBLE) ? true : false;
     }
 }

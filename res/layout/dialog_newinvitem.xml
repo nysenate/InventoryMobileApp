@@ -3,118 +3,118 @@
     android:id="@+id/dgNewInvItemTop"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-<LinearLayout 
-    android:id="@+id/dgNewInvItem"
-    android:layout_width="fill_parent"
-    android:layout_height="540sp"
-    android:orientation="vertical" >
-    <TableLayout
-	    android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"    >
+
+    <LinearLayout
+        android:id="@+id/dgNewInvItem"
+        android:layout_width="fill_parent"
+        android:layout_height="540sp"
+        android:orientation="vertical" >
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
             >
-        <TableRow>
 
-            <TextView
-                android:id="@+id/tvMsg"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_span="2"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-   		            
-        </TableRow>
-            
-        <TableRow>
+            <TableRow>
 
-            <TextView
-                android:id="@+id/tvLblCdcommodity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Commodity Code:"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold" />
-   		            
-        </TableRow>
-        <TableRow>
-       <LinearLayout
+                <TextView
+                    android:id="@+id/tvMsg"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_span="2"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLblCdcommodity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Commodity Code:"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <gov.nysenate.inventory.android.ClearableTextView
+                        android:id="@+id/tvKeywordsToBlock"
+                        android:layout_width="518sp"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:hint="Enter or speak one or more Commodity Keywords to tag Commodity "
+                        android:onClick="editKeywordList"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ImageView
+                        android:id="@+id/btnKeywordSpeech"
+                        android:layout_width="29sp"
+                        android:layout_height="29sp"
+                        android:clickable="true"
+                        android:onClick="startKeywordSpeech"
+                        android:src="@drawable/speech2txt" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow>
+
+                <ListView
+                    android:id="@+id/searchResults"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200sp"
+                    android:layout_span="2" >
+                </ListView>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/tvLblNewItemComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Additional Information/Comments:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            
-            <gov.nysenate.inventory.android.ClearableTextView
-                android:id="@+id/tvKeywordsToBlock"
-                android:layout_width="518sp"
+            android:orientation="horizontal" >
+
+            <gov.nysenate.inventory.android.ClearableEditText
+                android:id="@+id/etNewItemComments"
+                android:layout_width="530sp"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:hint="Enter or speak one or more Commodity Keywords to tag Commodity "
-                android:onClick="editKeywordList"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Enter additional information/comments here" />
 
             <ImageView
-                android:id="@+id/btnKeywordSpeech"
-                android:layout_width="29sp"
-                android:layout_height="29sp"
+                android:id="@+id/btnNewItemCommentSpeech"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_weight="1"
                 android:clickable="true"
-                android:onClick="startKeywordSpeech"
+                android:onClick="startNewItemSpeech"
                 android:src="@drawable/speech2txt" />
-            </LinearLayout>
-        </TableRow>
-        
-        <TableRow>
-            <ListView
-				android:id="@+id/searchResults"
-        		android:layout_width="fill_parent"
-             	android:layout_height="200sp"
-             	android:layout_span="2"
-             	   >
-                
-            </ListView>
-        </TableRow>
-    </TableLayout>
+        </LinearLayout>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvLblNewItemComments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Additional Information/Comments:"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold" />
-    
-    <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-        <gov.nysenate.inventory.android.ClearableEditText
-            android:id="@+id/etNewItemComments"
-            android:layout_width="530sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Enter additional information/comments here" />
-
-        <ImageView
-            android:id="@+id/btnNewItemCommentSpeech"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="startNewItemSpeech"
-            android:src="@drawable/speech2txt" />
-      
-     </LinearLayout>
-
-</LinearLayout> 
-  <ProgressBar
+    <ProgressBar
         android:id="@+id/progBarNewInvItem"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
+
 </RelativeLayout>

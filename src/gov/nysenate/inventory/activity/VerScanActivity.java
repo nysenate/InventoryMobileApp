@@ -13,15 +13,13 @@ import gov.nysenate.inventory.listener.CommentsDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.util.CommodityParser;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
-
-import gov.nysenate.inventory.util.CommodityParser;
-import gov.nysenate.inventory.util.Toasty;
 
 import org.json.JSONArray;
 import org.json.JSONException;

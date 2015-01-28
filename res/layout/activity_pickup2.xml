@@ -4,167 +4,158 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/pad20dp"
     tools:context=".Pickup2Activity" >
- 
+
     <ListView
         android:id="@+id/listView1"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
+        android:layout_above="@+id/btnPickup2Cancel"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
-        android:layout_above="@+id/btnPickup2Cancel"
         android:layout_marginBottom="18dp"
         android:layout_marginTop="76dp" >
     </ListView>
 
-
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/etNusenate"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
         android:layout_marginTop="7dp"
-		android:digits="0123456789"
-		android:maxLength="6"        
+        android:digits="0123456789"
         android:ems="10"
-        android:maxWidth="10dp"      
         android:hint="@string/barcode_number"
         android:inputType="number"
+        android:maxLength="6"
+        android:maxWidth="10dp"
         android:singleLine="true"
-        style="@style/NormalText"   
-        android:textStyle="bold"  
-        />
-    
-	<Button
-    	android:id="@+id/btnPickup2Cont"
-    	android:layout_width="200dp"
-    	android:layout_height="50dp"
-    	android:layout_marginRight="7dp"
-    	android:layout_alignParentBottom="true"
-    	android:layout_alignParentRight="true"
-    	android:layout_marginBottom="36dp"
-    	android:background="@drawable/buttonshapegreen"
-    	android:onClick="continueButton"
-    	android:shadowColor="#000000"
-    	android:shadowDx="01"
-    	android:shadowDy="1"
-    	android:shadowRadius="5"
-    	android:text="Continue"
-    	android:textColor="#FFFFFF"
-    	android:textSize="30sp"
-    	/>
+        android:textStyle="bold" />
 
-	<Button
-    	android:id="@+id/btnPickup2Cancel"
-    	android:layout_width="200dp"
-    	android:layout_height="50dp"
-    	android:layout_alignBaseline="@+id/btnPickup2Cont"
-    	android:layout_alignBottom="@+id/btnPickup2Cont"
-    	android:layout_alignParentLeft="true"
-    	android:layout_marginLeft="18dp"
-    	android:background="@drawable/buttonshapered"
-    	android:onClick="cancelButton"
-    	android:shadowColor="#000000"
-    	android:shadowDx="01"
-    	android:shadowDy="1"
-    	android:shadowRadius="5"
-    	android:text="Cancel"
-    	android:textColor="#FFFFFF"
-    	android:textSize="30sp"
-    	/>
-	
-   <ProgressBar
+    <Button
+        android:id="@+id/btnPickup2Cont"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="36dp"
+        android:layout_marginRight="7dp"
+        android:background="@drawable/buttonshapegreen"
+        android:onClick="continueButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnPickup2Cancel"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnPickup2Cont"
+        android:layout_alignBottom="@+id/btnPickup2Cont"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="18dp"
+        android:background="@drawable/buttonshapered"
+        android:onClick="cancelButton"
+        android:shadowColor="#000000"
+        android:shadowDx="01"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <ProgressBar
         android:id="@+id/progBarPickup2"
-        style="?android:attr/progressBarStyleLarge"        
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/shaperoundblue"
         android:layout_centerVertical="true"
+        android:background="@drawable/shaperoundblue"
         android:visibility="invisible" />
-   
-   <TableLayout
-       android:id="@+id/tablelayout_header1_pickup2"       
-       android:layout_width="550dp"
-       android:layout_height="wrap_content"
-       android:layout_below="@+id/tvInstructions"
-       android:layout_marginTop="7dp"
-       android:layout_centerHorizontal="true"
-       android:background="@drawable/customshape" >
 
-       <TableRow>
+    <TableLayout
+        android:id="@+id/tablelayout_header1_pickup2"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInstructions"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/customshape" >
 
-           <TextView
-               android:id="@+id/tv_label_origin_pickup2"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Origin:"
-       		   style="@style/NormalText"   		               
-               />
+        <TableRow>
 
-           <TextView
-               android:id="@+id/tv_origin_pickup2"
-               android:gravity="left"
-               android:text="N/A"
-               android:layout_width="350dp"
-               android:layout_height="wrap_content"
-       		   style="@style/NormalText"   	               
-               android:textStyle="bold" />
-       </TableRow>
+            <TextView
+                android:id="@+id/tv_label_origin_pickup2"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Origin:" />
 
-       <TableRow>
+            <TextView
+                android:id="@+id/tv_origin_pickup2"
+                style="@style/NormalText"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="N/A"
+                android:textStyle="bold" />
+        </TableRow>
 
-           <TextView
-               android:id="@+id/tv_label_destination_pickup2"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Destination:"
-       		   style="@style/NormalText"   		               
-               />
+        <TableRow>
 
-           <TextView
-               android:id="@+id/tv_destination_pickup2"
-               android:gravity="left"
-               android:text="N/A"
-               android:layout_width="350dp"
-               android:layout_height="wrap_content"
-       		   style="@style/NormalText"                  
-               android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_label_destination_pickup2"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Destination:" />
 
-       </TableRow>
-       
-   		<TableRow>
-        	<TextView
-               android:id="@+id/tv_label_count_pickup2"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:text="Pickup Count:"
-       		   style="@style/NormalText"   		               
-               />
-       		<TextView
-        		android:id="@+id/tv_count_pickup2"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
-        		android:layout_alignParentRight="true"
-        		android:ems="10"
-        		android:hint="@string/count" 
-       			style="@style/NormalText"   		
-        		android:textStyle="bold"  />
-        		
-   		</TableRow>    
+            <TextView
+                android:id="@+id/tv_destination_pickup2"
+                style="@style/NormalText"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="N/A"
+                android:textStyle="bold" />
+        </TableRow>
 
-       
-   </TableLayout>
+        <TableRow>
 
-   <TextView
-       android:id="@+id/tvInstructions"
-       style="@style/NormalText"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"
-       android:layout_centerHorizontal="true"
-       android:layout_marginTop="7dp"
-       android:gravity="right"
-       android:text="Please scan or enter item Tag#&apos;s to be Picked Up" />
-    
+            <TextView
+                android:id="@+id/tv_label_count_pickup2"
+                style="@style/NormalText"
+                android:layout_marginRight="10dp"
+                android:gravity="right"
+                android:text="Pickup Count:" />
+
+            <TextView
+                android:id="@+id/tv_count_pickup2"
+                style="@style/NormalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:ems="10"
+                android:hint="@string/count"
+                android:textStyle="bold" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:gravity="right"
+        android:text="Please scan or enter item Tag#&apos;s to be Picked Up" />
+
 </RelativeLayout>

@@ -11,7 +11,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
-import gov.nysenate.inventory.adapter.RemovalRequestItemSelectionAdapter.RemovalRequestComparer;
+import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.android.*;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
@@ -24,7 +24,6 @@ import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ApproveRemovalRequest extends SenateActivity
@@ -45,7 +44,7 @@ public class ApproveRemovalRequest extends SenateActivity
     private ProgressBar progressBar;
     private Button rejectBtn;
     private Button approveBtn;
-    RemovalRequestComparer removalRequestComparer = new RemovalRequestComparer();    
+    RemovalRequestComparer removalRequestComparer;    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,7 +127,8 @@ public class ApproveRemovalRequest extends SenateActivity
 
     private void initializeItems() {
         items.clear();
-        items.addAll(removalRequest.getItems());
+        removalRequestComparer = new RemovalRequestComparer();
+        items.addAll(removalRequest.getItems()); 
         Collections.sort(items, removalRequestComparer);
         list.itemsInitialized();
         list.refresh();
@@ -284,51 +284,4 @@ public class ApproveRemovalRequest extends SenateActivity
         }
     }
     
-    public class RemovalRequestComparer implements Comparator<Item> {
-        @Override
-        public int compare(Item item1, Item item2) {
-            String description1 = "";
-            
-            try {
-                description1 = item1.getCommodity().getDescription();
-            }
-            catch (Exception e) {
-                
-            }
-            
-            String description2 = "";
-            try {
-                description2 = item2.getCommodity().getDescription();
-            }
-            catch (Exception e) {
-                
-            }
-            
-            int value1 = description1.compareTo(description2);
-            if (value1 == 0) {
-                int serialNumber1 = 0;
-                try {
-                    serialNumber1 = Integer.parseInt(item1.getSerialNumber());
-                }
-                catch (Exception e) {
-                    
-                }
-                
-                int serialNumber2 = 0;
-                try {
-                    serialNumber2 = Integer.parseInt(item2.getSerialNumber());
-                }
-                catch (Exception e) {
-                    
-                }
-                
-                int value2 = serialNumber1 - serialNumber2;
-                
-                return value2;
-            }
-            return value1;
-        }
-
-      }       
-
 }

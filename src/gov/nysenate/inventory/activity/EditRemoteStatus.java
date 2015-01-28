@@ -8,11 +8,8 @@ import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Toasty;
-import gov.nysenate.inventory.util.TransactionParser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +19,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,15 +32,13 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
 
-public class EditRemoteStatus extends SenateActivity {
+public class EditRemoteStatus extends SenateActivity
+{
 
     private Transaction pickup;
     private CheckBox remoteCheckBox;
@@ -65,22 +61,31 @@ public class EditRemoteStatus extends SenateActivity {
         remoteComments = (ClearableEditText) findViewById(R.id.remote_comments);
 
         // Display a "hint" in the spinner.
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.remote_ship_types, R.layout.spinner24_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        remoteShipMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter
+                .createFromResource(this, R.array.remote_ship_types,
+                        R.layout.spinner24_item);
+        spinAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        remoteShipMethod.setAdapter(new NothingSelectedSpinnerAdapter(
+                spinAdapter, R.layout.spinner_nothing_selected, this));
 
         pickup = EditPickupMenu.pickup;
 
         if (pickup.isRemote()) {
-            oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
-            oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+            oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin()
+                    .getLocationSummaryStringRemoteAppended()));
+            oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination()
+                    .getLocationSummaryStringRemoteAppended()));
         } else {
-            oldPickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
-            oldDeliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
+            oldPickupLocation.setText(pickup.getOrigin()
+                    .getLocationSummaryString());
+            oldDeliveryLocation.setText(pickup.getDestination()
+                    .getLocationSummaryString());
         }
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
+        SimpleDateFormat sdf = ((InvApplication) getApplicationContext())
+                .getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         if (pickup.isRemote()) {
@@ -94,7 +99,7 @@ public class EditRemoteStatus extends SenateActivity {
     public void remoteBoxClicked(View view) {
         remoteBoxClicked(view, true);
     }
-    
+
     public void remoteBoxClicked(View view, boolean checkRemotePickupStatus) {
         if (checkRemotePickupStatus) {
             if (pickup.getOrigin().isRemote()) {
@@ -109,29 +114,31 @@ public class EditRemoteStatus extends SenateActivity {
                 return;
             }
         }
-        
+
         if (((CheckBox) view).isChecked()) {
             // Can't be remote if both locations are local
-            if (!pickup.getOrigin().isRemote() && !pickup.getDestination().isRemote()) {
+            if (!pickup.getOrigin().isRemote()
+                    && !pickup.getDestination().isRemote()) {
                 AlertDialog.Builder errorMsg = new AlertDialog.Builder(this)
-                .setTitle("Error setting Remote.")
-                .setMessage("Albany to Albany transactions should not be processed as remote.")
-                .setCancelable(false)
-                .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
+                        .setTitle("Error setting Remote.")
+                        .setMessage(
+                                "Albany to Albany transactions should not be processed as remote.")
+                        .setCancelable(false)
+                        .setNeutralButton(Html.fromHtml("<b>Ok</b>"), null);
 
                 errorMsg.show();
                 remoteCheckBox.setChecked(false);
                 return;
             }
-            remoteShipMethod.setVisibility(Spinner.VISIBLE);
+            remoteShipMethod.setVisibility(View.VISIBLE);
             remoteShipMethod.setSelection(convertShipMethodToSpinnerPosition());
-            remoteComments.setVisibility(EditText.VISIBLE);
+            remoteComments.setVisibility(View.VISIBLE);
             remoteComments.setText(pickup.getShipComments());
         } else {
             remoteShipMethod.setSelection(0);
-            remoteShipMethod.setVisibility(Spinner.INVISIBLE);
+            remoteShipMethod.setVisibility(View.INVISIBLE);
             remoteComments.setText("");
-            remoteComments.setVisibility(EditText.INVISIBLE);
+            remoteComments.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -140,10 +147,12 @@ public class EditRemoteStatus extends SenateActivity {
             if (allInfoEntered()) {
                 displayConfirmationDialog();
             } else {
-                Toasty.displayCenteredMessage(this, "You must select a ship method.", Toast.LENGTH_SHORT);
+                Toasty.displayCenteredMessage(this,
+                        "You must select a ship method.", Toast.LENGTH_SHORT);
             }
         } else {
-            Toasty.displayCenteredMessage(this, "You have not made any changes.", Toast.LENGTH_SHORT);
+            Toasty.displayCenteredMessage(this,
+                    "You have not made any changes.", Toast.LENGTH_SHORT);
         }
     }
 
@@ -154,13 +163,16 @@ public class EditRemoteStatus extends SenateActivity {
     }
 
     private boolean anythingWasEdited() {
-        // Careful, remoteShipMethod.getSelectedItem() returns null if nothing (hint) is selected.
+        // Careful, remoteShipMethod.getSelectedItem() returns null if nothing
+        // (hint) is selected.
         if (!remoteCheckBox.isChecked() && !pickup.isRemote()) {
             return false;
         }
-        if (remoteCheckBox.isChecked() != pickup.isRemote() ||
-                !remoteShipMethod.getSelectedItem().toString().equals(pickup.getShipType()) ||
-                !remoteComments.getText().toString().equals(pickup.getShipComments())) {
+        if (remoteCheckBox.isChecked() != pickup.isRemote()
+                || !remoteShipMethod.getSelectedItem().toString()
+                        .equals(pickup.getShipType())
+                || !remoteComments.getText().toString()
+                        .equals(pickup.getShipComments())) {
             return true;
         }
         return false;
@@ -168,7 +180,8 @@ public class EditRemoteStatus extends SenateActivity {
 
     private boolean allInfoEntered() {
         // A Remote shipment must specify a ship method.
-        if (remoteCheckBox.isChecked() && remoteShipMethod.getSelectedItem() == null) {
+        if (remoteCheckBox.isChecked()
+                && remoteShipMethod.getSelectedItem() == null) {
             return false;
         }
         return true;
@@ -176,40 +189,49 @@ public class EditRemoteStatus extends SenateActivity {
 
     private void displayConfirmationDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
-        .setCancelable(false)
-        .setTitle("Update Remote Status")
-        .setMessage(Html.fromHtml(changesMadeMessage()))
-        .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
+                .setCancelable(false)
+                .setTitle("Update Remote Status")
+                .setMessage(Html.fromHtml(changesMadeMessage()))
+                .setNegativeButton(Html.fromHtml("<b>No</b>"),
+                        new DialogInterface.OnClickListener()
+                        {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        })
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                            }
+                        })
 
-        .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
+                        new DialogInterface.OnClickListener()
+                        {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                setNewValuesInPickup();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new EditRemoteStatusTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new EditRemoteStatusTask().execute();
-                }
-            }
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                dialog.dismiss();
+                                setNewValuesInPickup();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                                    new EditRemoteStatusTask()
+                                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } else {
+                                    new EditRemoteStatusTask().execute();
+                                }
+                            }
 
-            private void setNewValuesInPickup() {
-                if (remoteShipMethod.getSelectedItem() != null) {
-                    pickup.setShipType(remoteShipMethod.getSelectedItem().toString());
-                    pickup.setShipComments(remoteComments.getText().toString());
-                } else {
-                    // pickup is not remote
-                    pickup.setShipType("");
-                    pickup.setShipComments("");
-                }
-            }
-        });
+                            private void setNewValuesInPickup() {
+                                if (remoteShipMethod.getSelectedItem() != null) {
+                                    pickup.setShipType(remoteShipMethod
+                                            .getSelectedItem().toString());
+                                    pickup.setShipComments(remoteComments
+                                            .getText().toString());
+                                } else {
+                                    // pickup is not remote
+                                    pickup.setShipType("");
+                                    pickup.setShipComments("");
+                                }
+                            }
+                        });
 
         dialog.show();
     }
@@ -224,13 +246,18 @@ public class EditRemoteStatus extends SenateActivity {
             changes += "Remote = ";
             changes += remoteCheckBox.isChecked() ? "<b>Yes</b>" : "<b>No</b>";
         }
-        if (remoteShipMethod.getSelectedItem() != null && !remoteShipMethod.getSelectedItem().toString().equals(pickup.getShipType())) {
+        if (remoteShipMethod.getSelectedItem() != null
+                && !remoteShipMethod.getSelectedItem().toString()
+                        .equals(pickup.getShipType())) {
             changes += "<br/>";
-            changes += "Ship method = " + "<b>" + remoteShipMethod.getSelectedItem().toString() + "</b>";
+            changes += "Ship method = " + "<b>"
+                    + remoteShipMethod.getSelectedItem().toString() + "</b>";
         }
-        if (!remoteComments.getText().toString().equals(pickup.getShipComments())) {
+        if (!remoteComments.getText().toString()
+                .equals(pickup.getShipComments())) {
             changes += "<br/>";
-            changes += "Comments = " + "<b>" + remoteComments.getText().toString() + "</b>";
+            changes += "Comments = " + "<b>"
+                    + remoteComments.getText().toString() + "</b>";
         }
         return message + changes + end;
     }
@@ -254,14 +281,15 @@ public class EditRemoteStatus extends SenateActivity {
         return 0;
     }
 
-    private class EditRemoteStatusTask extends AsyncTask<Void, Void, Integer> {
+    private class EditRemoteStatusTask extends AsyncTask<Void, Void, Integer>
+    {
 
         ProgressBar progressBar;
 
         @Override
         protected void onPreExecute() {
             progressBar = (ProgressBar) findViewById(R.id.edit_remote_progress_bar);
-            progressBar.setVisibility(ProgressBar.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -291,8 +319,9 @@ public class EditRemoteStatus extends SenateActivity {
 
         @Override
         protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(EditRemoteStatus.this, EditPickupMenu.class);
+            progressBar.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(EditRemoteStatus.this,
+                    EditPickupMenu.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
             startActivity(intent);

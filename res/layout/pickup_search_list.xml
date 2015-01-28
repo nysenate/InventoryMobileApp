@@ -12,7 +12,7 @@
         android:layout_centerHorizontal="true" >
 
         <TableRow>
-            <TextView
+            <TextView
                 android:id="@+id/pickup_search_colum1"
                 android:layout_width="125dp"
                 android:layout_height="wrap_content"

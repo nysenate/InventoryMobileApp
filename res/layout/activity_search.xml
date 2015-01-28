@@ -11,64 +11,67 @@
 
     <TextView
         android:id="@+id/textView2"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/SearchActivity_MSG"
-        style="@style/NormalText"    />
-	<Spinner
-	    android:id="@+id/spinSearchBy"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+        android:text="@string/SearchActivity_MSG" />
+
+    <Spinner
+        android:id="@+id/spinSearchBy"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="5sp"
-        android:layout_alignLeft="@+id/textView2"
-	    android:entries="@array/search_searchby"
-	    android:gravity="center"
-	    style="@style/NormalText"
-	    android:textStyle="bold" />    
+        android:entries="@array/search_searchby"
+        android:gravity="center"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
+        android:layout_marginTop="7dp"
         android:layout_toRightOf="@+id/spinSearchBy"
         android:gravity="top"
-        android:orientation="horizontal"
-        android:layout_marginTop="7dp">    
-    <gov.nysenate.inventory.android.ClearableEditText
-        android:id="@+id/barcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       	android:digits="0123456789"       	
-        android:ems="10"
-		android:maxLength="6"        
-        android:hint="@string/barcode_number"
-        android:inputType="number"
-        android:padding="4dip"
-        android:singleLine="true"  
-        android:maxWidth="10dp"
-        style="@style/NormalText"   
-        android:textStyle="bold"         
-                 >
-    </gov.nysenate.inventory.android.ClearableEditText>
-    <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
-        android:id="@+id/acNuserial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="20"
-        android:hint="Serial#"
-        android:padding="4dip"
-        android:singleLine="true"  
-        android:maxWidth="10dp"
-        style="@style/NormalText"   
-        android:visibility="invisible"    
-        android:textStyle="bold"       
-	    >
-    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
-        
+        android:orientation="horizontal" >
+
+        <gov.nysenate.inventory.android.ClearableEditText
+            android:id="@+id/barcode"
+            style="@style/NormalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:ems="10"
+            android:hint="@string/barcode_number"
+            android:inputType="number"
+            android:maxLength="6"
+            android:maxWidth="10dp"
+            android:padding="4dip"
+            android:singleLine="true"
+            android:textStyle="bold" >
+        </gov.nysenate.inventory.android.ClearableEditText>
+
+        <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
+            android:id="@+id/acNuserial"
+            style="@style/NormalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:hint="Serial#"
+            android:maxWidth="10dp"
+            android:padding="4dip"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:visibility="invisible" >
+        </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
     </LinearLayout>
+
     <TextView
         android:id="@+id/textView1"
+        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -77,8 +80,7 @@
         android:lines="10"
         android:padding="4dip"
         android:paddingTop="30dp"
-        android:text="@string/details"
-        style="@style/NormalText"    />    
+        android:text="@string/details" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -86,188 +88,198 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="80dp">
-    	<TableLayout
-        	android:id="@+id/tableLayout1"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:background="@drawable/customshape"
-        	android:layout_marginRight="20dp">
-  			<TableRow
-  		    	android:layout_width="match_parent">
-            	<TextView
-                	android:id="@+id/tvHeadDetailsS"
-                	android:layout_width="match_parent"
-             		android:text="Details"
-             		android:layout_gravity="center_horizontal"
-                	android:layout_span="2"
-                	style="@style/NormalText"   
-                	android:textColor="@color/bluedark" />
+        android:layout_marginTop="80dp" >
 
-        	</TableRow>
-        
-        	<TableRow>
-    			<TextView
-        			android:id="@+id/tvLabelBarcd"
-       	 			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-            		android:gravity="right"
-        			android:text="Senate Tag#:"
-        			style="@style/NormalText"   
-        			android:textStyle="bold" />
-       
-    			<TextView
-        			android:id="@+id/tvBarcode"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"   
-        			android:textStyle="bold" />
-			</TableRow>
-    		<TableRow
-    		    android:id="@+id/rwNuserial"
-    		    >
-        	     <TextView
-        			android:id="@+id/tvLblNuserial"
-       	 			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-            		android:gravity="right"
-        			android:text="Serial#:"
-        			style="@style/NormalText"   
-        			android:textStyle="bold" />
-       
-    			<TextView
-        			android:id="@+id/tvNuserial"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"   
-        			android:textStyle="bold" />
-			</TableRow>
-       	
-    		<TableRow>
-				<TextView
-	   				android:id="@+id/tvLabelDescr"
-	    			android:layout_width="wrap_content"
-	    			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-            		android:gravity="right"
-	    			android:text="Description:"
-	    			style="@style/NormalText"   
-	    			android:textColor="@color/black" />
-    
-    			<TextView
-        			android:id="@+id/tvDescription"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"   
-        			android:textColor="@color/black" />
-			</TableRow>
-			<TableRow>
-			    <TextView
-			        android:id="@+id/tvLabelCommodityCd"
-			        android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-        			android:gravity="right"
-        			android:text="Commodity Code:"
-        			style="@style/NormalText"
-        			android:textColor="@color/black"    />
-			    
-			    <TextView
-			        android:id="@+id/tvCommodityCd"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"
-        			android:textColor="@color/black"    />
-			</TableRow>
-    		<TableRow>	
-    			<TextView
-        			android:id="@+id/tvLabelCat"
-        			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-            		android:gravity="right"
-        			android:text="Category:"
-        			style="@style/NormalText"   
-        			android:textColor="@color/black" />
-    
-    			<TextView
-        			android:id="@+id/tvCategory"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"   
-        			android:textColor="@color/black" />
-			</TableRow>
-			<TableRow>
-    			<TextView
-        			android:id="@+id/tvLabelLoc"
-        			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-            		android:gravity="right"
-        			android:text="Location:"
-        			style="@style/NormalText"   
-        			android:textColor="@color/black" />
-    
-    			<TextView
-        			android:id="@+id/tvLocation"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"   
-        			android:textColor="@color/black" />
-   			</TableRow> 
-			<TableRow>   	
-   				<TextView
-        			android:id="@+id/tvLabelDtinvntry"
-        			android:layout_width="wrap_content"
-        			android:layout_height="wrap_content"
-        			android:layout_marginRight="15dp"
-        			android:layout_marginTop="10dp"
-        			android:layout_marginBottom="10dp"
-        			android:gravity="right"
-        			android:text="Inventory Dt:"
-        			style="@style/NormalText"
-        			android:textColor="@color/black"    />
-    
-    			<TextView
-        			android:id="@+id/tvDateInvntry"
-        			android:layout_width="355dp"
-        			android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-        			android:width="0dip"
-        			android:text="N/A"
-        			style="@style/NormalText"
-        			android:textColor="@color/black"    />
-			</TableRow>
-			
-  		</TableLayout>
-	</LinearLayout>
-	
+        <TableLayout
+            android:id="@+id/tableLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/customshape" >
+
+            <TableRow android:layout_width="match_parent" >
+
+                <TextView
+                    android:id="@+id/tvHeadDetailsS"
+                    style="@style/NormalText"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_span="2"
+                    android:text="Details"
+                    android:textColor="@color/bluedark" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelBarcd"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Senate Tag#:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvBarcode"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textStyle="bold"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow android:id="@+id/rwNuserial" >
+
+                <TextView
+                    android:id="@+id/tvLblNuserial"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Serial#:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvNuserial"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textStyle="bold"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelDescr"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Description:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvDescription"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelCommodityCd"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Commodity Code:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvCommodityCd"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelCat"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Category:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvCategory"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelLoc"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Location:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:width="0dip" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/tvLabelDtinvntry"
+                    style="@style/NormalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right"
+                    android:text="Inventory Dt:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvDateInvntry"
+                    style="@style/NormalText"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="N/A"
+                    android:textColor="@color/black"
+                    android:width="0dip" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnSrchBck"
         android:layout_width="200dp"
@@ -284,5 +296,5 @@
         android:text="Back"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
-   
+
 </RelativeLayout>

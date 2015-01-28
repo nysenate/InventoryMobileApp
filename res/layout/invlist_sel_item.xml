@@ -2,48 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rsllist"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-     >
+    android:layout_height="fill_parent" >
 
-     <ImageView
+    <ImageView
         android:id="@+id/invSelListSpeech"
         android:layout_width="50dip"
-        android:layout_toRightOf="@+id/invSelListBarcode"
         android:layout_height="wrap_content"
-    	android:gravity="center_vertical"        
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/invSelListBarcode"
+        android:gravity="center_vertical" />
+
     <TextView
         android:id="@+id/invSelListBarcode"
         android:layout_width="100dip"
-        android:layout_height="wrap_content"	
-        android:layout_alignParentLeft="true"     
-        android:layout_marginRight="5dip"   
-		android:gravity="center_vertical"        
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip"
+        android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
-     <TextView
-         android:id="@+id/invSelListDescr"
-         android:layout_width="460dip"
-         android:layout_height="wrap_content"
-         android:layout_alignParentTop="true"
-         android:layout_toRightOf="@+id/invSelListBarcode"
-         android:gravity="center_vertical"
-         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-         android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    <TextView
+        android:id="@+id/invSelListDescr"
+        android:layout_width="460dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/invSelListBarcode"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
-     <CheckBox
-         android:id="@+id/invSelListSelected"
-         android:layout_width="wrap_content"
-         android:layout_height="50dp"
-         android:gravity="right|center_vertical"        
-         android:layout_alignParentRight="true"
-         android:layout_toRightOf="@+id/invListDescr"
-         android:paddingRight="10dp"         
-          />
+    <CheckBox
+        android:id="@+id/invSelListSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/invListDescr"
+        android:gravity="right|center_vertical"
+        android:paddingRight="10dp" />
 
 </RelativeLayout>

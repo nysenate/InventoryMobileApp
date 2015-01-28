@@ -39,8 +39,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="30sp" />
 
-
-
     <ProgressBar
         android:id="@+id/progressBarVerifyList"
         style="?android:attr/progressBarStyleLarge"
@@ -57,7 +55,7 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="72dp"
-        android:background="@null"        
+        android:background="@null"
         android:onClick="okButton"
         android:src="@drawable/bcancel" />
 

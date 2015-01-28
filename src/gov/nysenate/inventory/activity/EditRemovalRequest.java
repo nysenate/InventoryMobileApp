@@ -1,13 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Html;
-import android.view.View;
-import android.widget.*;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.adapter.RemovalRequestItemSelectionAdapter;
 import gov.nysenate.inventory.android.CancelBtnFragment;
@@ -23,10 +15,28 @@ import gov.nysenate.inventory.util.AdjustCodeParser;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.RemovalRequestParser;
 import gov.nysenate.inventory.util.Toasty;
-import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.HttpStatus;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class EditRemovalRequest extends SenateActivity
         implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick,
