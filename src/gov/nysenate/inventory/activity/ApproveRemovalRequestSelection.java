@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import gov.nysenate.inventory.adapter.RemovalRequestItemSelectionAdapter.RemovalRequestComparer;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemovalRequestListFragment;
