@@ -1,16 +1,15 @@
 package gov.nysenate.inventory.adapter;
 
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
-
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+import java.util.List;
 
 public class PrefListViewAdapter extends ArrayAdapter<InvItem>
 {

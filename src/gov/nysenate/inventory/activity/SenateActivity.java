@@ -1,46 +1,9 @@
 package gov.nysenate.inventory.activity;
 
-import android.view.Menu;
-import gov.nysenate.inventory.android.ChangePasswordDialog;
-import gov.nysenate.inventory.android.CommentsDialog;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.KeywordDialog;
-import gov.nysenate.inventory.android.MsgAlert;
-import gov.nysenate.inventory.android.NewInvDialog;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.android.SoundAlert;
-import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
-import gov.nysenate.inventory.listener.CommodityDialogListener;
-import gov.nysenate.inventory.listener.OnKeywordChangeListener;
-import gov.nysenate.inventory.model.Commodity;
-import gov.nysenate.inventory.model.Employee;
-import gov.nysenate.inventory.model.LoginStatus;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -57,11 +20,30 @@ import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView; 
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
+import gov.nysenate.inventory.listener.CommodityDialogListener;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
+import gov.nysenate.inventory.model.Commodity;
+import gov.nysenate.inventory.model.Employee;
+import gov.nysenate.inventory.model.LoginStatus;
+import gov.nysenate.inventory.util.Toasty;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class SenateActivity extends Activity implements
         CommodityDialogListener, OnKeywordChangeListener, ChangePasswordDialogListener

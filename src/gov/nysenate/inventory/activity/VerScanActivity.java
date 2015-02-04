@@ -1,30 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
-import gov.nysenate.inventory.adapter.InvListViewAdapter;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.CommentsDialog;
-import gov.nysenate.inventory.android.KeywordDialog;
-import gov.nysenate.inventory.android.MsgAlert;
-import gov.nysenate.inventory.android.NewInvDialog;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.listener.CommentsDialogListener;
-import gov.nysenate.inventory.listener.CommodityDialogListener;
-import gov.nysenate.inventory.model.Commodity;
-import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.util.CommodityParser;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -40,20 +15,27 @@ import android.text.Html;
 import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
+import gov.nysenate.inventory.adapter.InvListViewAdapter;
+import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.listener.CommentsDialogListener;
+import gov.nysenate.inventory.listener.CommodityDialogListener;
+import gov.nysenate.inventory.model.Commodity;
+import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.util.CommodityParser;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
 
 public class VerScanActivity extends SenateActivity implements
         CommodityDialogListener, CommentsDialogListener

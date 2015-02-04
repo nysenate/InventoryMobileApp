@@ -1,31 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.android.ChangePasswordDialog;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.InvWebService;
-import gov.nysenate.inventory.android.MsgAlert;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
-import gov.nysenate.inventory.model.DBAdapter;
-import gov.nysenate.inventory.model.LoginStatus;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -52,16 +26,30 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
+import gov.nysenate.inventory.model.DBAdapter;
+import gov.nysenate.inventory.model.LoginStatus;
+import gov.nysenate.inventory.util.Toasty;
+import org.apache.http.NameValuePair;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 //   WIFI Code Added Below
 

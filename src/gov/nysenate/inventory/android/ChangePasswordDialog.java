@@ -1,11 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //...G
 @SuppressLint("ValidFragment")

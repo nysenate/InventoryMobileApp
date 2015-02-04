@@ -1,19 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.InvListViewAdapter;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.HttpUtils;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,11 +7,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
+import gov.nysenate.inventory.adapter.InvListViewAdapter;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 
 public class CancelPickup extends SenateActivity {

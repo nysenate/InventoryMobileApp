@@ -1,27 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,12 +8,27 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Toasty;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditRemoteStatus extends SenateActivity
 {

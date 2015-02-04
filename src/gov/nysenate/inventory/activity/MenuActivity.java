@@ -1,16 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.CustomListViewAdapter;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.DBAdapter;
-import gov.nysenate.inventory.model.RowItem;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +16,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+import gov.nysenate.inventory.adapter.CustomListViewAdapter;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.DBAdapter;
+import gov.nysenate.inventory.model.RowItem;
+import gov.nysenate.inventory.util.Toasty;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuActivity extends SenateActivity implements OnItemClickListener
 {

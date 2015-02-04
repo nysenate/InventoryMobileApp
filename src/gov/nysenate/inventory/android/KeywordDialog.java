@@ -1,12 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.adapter.KeywordListViewAdapter;
-import gov.nysenate.inventory.listener.OnKeywordChangeListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,6 +14,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.KeywordListViewAdapter;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //...
 @SuppressLint("ValidFragment")

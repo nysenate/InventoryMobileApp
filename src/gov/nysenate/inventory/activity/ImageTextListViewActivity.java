@@ -1,12 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.CustomListViewAdapter;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.RowItem;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -15,6 +8,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+import gov.nysenate.inventory.adapter.CustomListViewAdapter;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.RowItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageTextListViewActivity extends Activity implements
         OnItemClickListener

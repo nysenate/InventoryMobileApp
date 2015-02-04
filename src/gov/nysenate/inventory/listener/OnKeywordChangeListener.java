@@ -1,7 +1,7 @@
 package gov.nysenate.inventory.listener;
 
-import gov.nysenate.inventory.android.KeywordDialog;
 import android.widget.ListView;
+import gov.nysenate.inventory.android.KeywordDialog;
 
 public interface OnKeywordChangeListener
 {

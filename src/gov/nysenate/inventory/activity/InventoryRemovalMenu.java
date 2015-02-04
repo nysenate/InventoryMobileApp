@@ -1,5 +1,11 @@
 package gov.nysenate.inventory.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
@@ -7,13 +13,6 @@ import gov.nysenate.inventory.model.RowItem;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 public class InventoryRemovalMenu extends SenateActivity implements
         OnItemClickListener

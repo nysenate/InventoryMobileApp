@@ -1,12 +1,12 @@
 package gov.nysenate.inventory.util;
 
-import java.io.File;
-
 import android.app.DownloadManager;
 import android.database.Cursor;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.util.Log;
+
+import java.io.File;
 
 public class DownloadsObserver extends FileObserver
 {

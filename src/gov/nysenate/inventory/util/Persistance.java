@@ -1,10 +1,10 @@
 package gov.nysenate.inventory.util;
 
+import android.content.Context;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import android.content.Context;
 
 public class Persistance {
     private int length;

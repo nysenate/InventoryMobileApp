@@ -1,10 +1,10 @@
 package gov.nysenate.inventory.model;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-
-import com.google.gson.Gson;
 
 /**
  * Maps to the Database table FM12INVINTRANS.

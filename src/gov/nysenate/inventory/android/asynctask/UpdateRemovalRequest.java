@@ -2,14 +2,11 @@ package gov.nysenate.inventory.android.asynctask;
 
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import com.google.gson.Gson;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.RemovalRequestParser;
-import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;

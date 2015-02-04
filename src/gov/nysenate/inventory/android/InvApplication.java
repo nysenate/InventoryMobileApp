@@ -1,9 +1,9 @@
 package gov.nysenate.inventory.android;
 
+import android.app.Application;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import android.app.Application;
 
 public class InvApplication extends Application
 {

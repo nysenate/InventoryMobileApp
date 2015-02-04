@@ -12,7 +12,6 @@ import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class RemovalRequestItemSelectionAdapter extends ArrayAdapter<Item>

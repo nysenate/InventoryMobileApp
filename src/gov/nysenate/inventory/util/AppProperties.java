@@ -1,12 +1,12 @@
 package gov.nysenate.inventory.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class AppProperties {
 

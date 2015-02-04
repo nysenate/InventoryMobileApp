@@ -1,21 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.PickupSearchList;
-import gov.nysenate.inventory.android.GetAllPickupsListener;
-import gov.nysenate.inventory.android.GetAllPickupsTask;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.apache.http.HttpStatus;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,12 +7,21 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import gov.nysenate.inventory.adapter.PickupSearchList;
+import gov.nysenate.inventory.android.GetAllPickupsListener;
+import gov.nysenate.inventory.android.GetAllPickupsTask;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.Toasty;
+import org.apache.http.HttpStatus;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class SelectDelivery2 extends SenateActivity implements GetAllPickupsListener {
 

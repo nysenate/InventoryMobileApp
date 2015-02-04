@@ -1,16 +1,9 @@
 package gov.nysenate.inventory.android;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import gov.nysenate.inventory.activity.LoginActivity;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -21,8 +14,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class RequestTask extends AsyncTask<String, String, String>
 {

@@ -1,14 +1,13 @@
 package gov.nysenate.inventory.util;
 
-import gov.nysenate.inventory.model.Transaction;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import gov.nysenate.inventory.model.Transaction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionParser {
 

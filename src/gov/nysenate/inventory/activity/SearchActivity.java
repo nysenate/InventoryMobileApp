@@ -1,24 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.InvSerialAdapter;
-import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.model.InvSerialNumber;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-
-import javax.xml.transform.Result;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,24 +11,30 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.Html;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextWatcher;
+import android.text.*;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+import gov.nysenate.inventory.adapter.InvSerialAdapter;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RequestTask;
+import gov.nysenate.inventory.model.InvSerialNumber;
+import gov.nysenate.inventory.util.Toasty;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import javax.xml.transform.Result;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class SearchActivity extends SenateActivity
 {

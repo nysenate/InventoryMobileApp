@@ -1,26 +1,25 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.android.CancelBtnFragment;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RRListStatusFragment;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
-import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.RemovalRequestParser;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.http.HttpStatus;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import gov.nysenate.inventory.android.CancelBtnFragment;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RRListStatusFragment;
+import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.comparator.RemovalRequestComparer;
+import gov.nysenate.inventory.model.RemovalRequest;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.RemovalRequestParser;
+import gov.nysenate.inventory.util.Toasty;
+import org.apache.http.HttpStatus;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class EditRemovalRequestSelection extends SenateActivity
         implements RRListStatusFragment.RRListStatusFragmentI, CancelBtnFragment.CancelBtnOnClick
@@ -28,6 +27,8 @@ public class EditRemovalRequestSelection extends SenateActivity
     private List<RemovalRequest> rrs = new ArrayList<RemovalRequest>();
     private RRListStatusFragment rrList;
     private ProgressBar bar;
+    private RemovalRequestComparer removalRequestComparer = new RemovalRequestComparer();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class EditRemovalRequestSelection extends SenateActivity
     }
 
     private void updateAdapter(List<RemovalRequest> rrs) {
-        Collections.sort(rrs, Collections.reverseOrder());
+        Collections.sort(rrs, Collections.reverseOrder());;
         this.rrs.clear();
         this.rrs.addAll(rrs);
         rrList.refreshDisplay();

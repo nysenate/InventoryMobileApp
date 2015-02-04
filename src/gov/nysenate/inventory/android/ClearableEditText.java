@@ -1,12 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.ClearButtonListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +16,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClearableEditText extends EditText
 {

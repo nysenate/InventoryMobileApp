@@ -1,5 +1,6 @@
 package gov.nysenate.inventory.comparator;
 
+import android.util.Log;
 import gov.nysenate.inventory.model.Item;
 
 import java.util.Comparator;
@@ -26,23 +27,23 @@ public class RemovalRequestComparer implements Comparator<Item> {
         
         int value1 = description1.compareTo(description2);
         if (value1 == 0) {
-            int serialNumber1 = 0;
+            int barcode1 = 0;
             try {
-                serialNumber1 = Integer.parseInt(item1.getSerialNumber());
+                barcode1 = Integer.parseInt(item1.getBarcode());
             }
             catch (Exception e) {
                 
             }
             
-            int serialNumber2 = 0;
+            int barcode2 = 0;
             try {
-                serialNumber2 = Integer.parseInt(item2.getSerialNumber());
+                barcode2 = Integer.parseInt(item2.getBarcode());
             }
             catch (Exception e) {
                 
             }
             
-            int value2 = serialNumber1 - serialNumber2;
+            int value2 = barcode1 - barcode2;
             
             return value2;
         }

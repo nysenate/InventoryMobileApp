@@ -1,20 +1,10 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.android.InvWebService;
-import gov.nysenate.inventory.android.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -29,6 +19,10 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import gov.nysenate.inventory.android.InvWebService;
+import gov.nysenate.inventory.android.R;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class UpgradeActivity extends SenateActivity
 {

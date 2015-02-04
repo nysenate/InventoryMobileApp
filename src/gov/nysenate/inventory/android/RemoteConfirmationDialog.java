@@ -1,9 +1,18 @@
 package gov.nysenate.inventory.android;
 
-import java.util.ArrayList;
-
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.*;
 import gov.nysenate.inventory.activity.Delivery3;
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
@@ -11,22 +20,7 @@ import gov.nysenate.inventory.listener.VerMethodListener;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Toasty;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
+import java.util.ArrayList;
 
 public class RemoteConfirmationDialog extends DialogFragment {
 

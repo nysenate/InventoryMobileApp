@@ -1,22 +1,16 @@
 package gov.nysenate.inventory.adapter;
 
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvSerialNumber;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Filter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvSerialNumber;
+import gov.nysenate.inventory.util.Toasty;
+
+import java.util.ArrayList;
 
 public class InvSerialAdapter extends ArrayAdapter
 {

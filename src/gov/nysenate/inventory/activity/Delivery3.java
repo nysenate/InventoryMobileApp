@@ -1,45 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.util.TypedValue;
-import android.view.*;
-import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
-import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RemoteConfirmationDialog;
-import gov.nysenate.inventory.android.SignatureView;
-import gov.nysenate.inventory.model.Employee;
-import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.EmployeeParser;
-import gov.nysenate.inventory.util.TransactionParser;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-
-import org.apache.http.*;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -56,14 +16,41 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
+import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.model.Employee;
+import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.EmployeeParser;
+import gov.nysenate.inventory.util.TransactionParser;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
+import java.io.*;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class Delivery3 extends SenateActivity
 {
@@ -709,6 +696,7 @@ public class Delivery3 extends SenateActivity
                     urls.append(LoginActivity.nauser);
                     response = httpclient.execute(new HttpGet(urls.toString()));
                     StatusLine statusLine = response.getStatusLine();
+
                     if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
                         response.getEntity().writeTo(out);
@@ -815,10 +803,12 @@ public class Delivery3 extends SenateActivity
                 URL += "/";
             }            
             this.deliveryRequestTaskType = "EmployeeDeliveryList";
+
+
             AsyncTask<String, String, String> resr1 = new DeliveryRequestTask()
                     .execute(URL + "EmployeeList", URL
                             + "GetPickup?nuxrpd=" + nuxrpd);
-
+            Log.i("EMPLOYEELIST", "Get Employee List URL:"+URL + "EmployeeList");
             try {
                 try {
                     res = null;
@@ -836,6 +826,7 @@ public class Delivery3 extends SenateActivity
                     e.printStackTrace();
                     return;
                 }
+                Log.i("EMPLOYEELIST","Get Employee List URL:"+res);
 
                 String jsonString = resr1.get().trim().toString();
                 delivery = TransactionParser.parseTransaction(jsonString);
@@ -897,15 +888,20 @@ public class Delivery3 extends SenateActivity
         employeeNameList = new ArrayList<String>();
 
         List<Employee> currentEmployees = EmployeeParser.parseMultipleEmployees(employeeList);
+        //Log.d("Delivery3", "currentEmployees:"+currentEmployees.size());
         employeeHiddenList.addAll(currentEmployees);
         for (Employee emp: currentEmployees) {
+            //Log.d("Delivery3", "addingetFullName:"+emp.getFullName());
             employeeNameList.add(emp.getFullName());
         }
+        //Log.d("Delivery3","employeeNameList:"+employeeNameList.size());
 
         Collections.sort(employeeNameList);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, employeeNameList);
+
+        //Log.d("Delivery3","Employee Adapter Count:"+adapter.getCount());
 
         naemployeeView.setAdapter(adapter);
 

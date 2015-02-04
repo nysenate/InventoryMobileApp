@@ -1,5 +1,13 @@
 package gov.nysenate.inventory.adapter;
 
+import android.content.Context;
+import android.text.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.*;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.R;
@@ -7,25 +15,6 @@ import gov.nysenate.inventory.listener.OnItemDoubleTapListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.text.Editable;
-import android.text.Html;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class KeywordListViewAdapter extends ArrayAdapter<String> implements
         OnItemDoubleTapListener

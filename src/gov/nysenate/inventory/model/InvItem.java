@@ -1,10 +1,9 @@
 package gov.nysenate.inventory.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class InvItem implements Parcelable
 {

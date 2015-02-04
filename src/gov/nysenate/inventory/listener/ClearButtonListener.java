@@ -1,8 +1,8 @@
 package gov.nysenate.inventory.listener;
 
-import gov.nysenate.inventory.android.ClearableTextView;
 import android.view.View;
 import android.widget.AdapterView;
+import gov.nysenate.inventory.android.ClearableTextView;
 
 public interface ClearButtonListener
 {

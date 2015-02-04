@@ -1,12 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import gov.nysenate.inventory.adapter.CustomListViewAdapter;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.RowItem;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +7,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import gov.nysenate.inventory.adapter.CustomListViewAdapter;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.RowItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Move extends SenateActivity implements OnItemClickListener {
     private static final String[] titles = new String[]{"New Pickup", "Edit Existing Pickup", "Delivery", "Enter Remote Info",

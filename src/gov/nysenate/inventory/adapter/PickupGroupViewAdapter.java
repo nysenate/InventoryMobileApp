@@ -1,10 +1,5 @@
 package gov.nysenate.inventory.adapter;
 
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.PickupGroup;
-
-import java.util.List;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -13,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.PickupGroup;
+
+import java.util.List;
 
 public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
 {

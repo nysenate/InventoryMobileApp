@@ -1,9 +1,8 @@
 package gov.nysenate.inventory.util;
 
-import org.apache.http.HttpStatus;
-
 import android.content.Context;
 import android.widget.Toast;
+import org.apache.http.HttpStatus;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

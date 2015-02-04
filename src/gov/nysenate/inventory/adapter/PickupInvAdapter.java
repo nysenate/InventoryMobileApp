@@ -1,10 +1,5 @@
 package gov.nysenate.inventory.adapter;
 
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
-
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+import java.util.List;
 
 public class PickupInvAdapter extends ArrayAdapter<InvItem>
 {

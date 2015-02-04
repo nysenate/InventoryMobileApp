@@ -1,13 +1,14 @@
 package gov.nysenate.inventory.android;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-import gov.nysenate.inventory.activity.LoginActivity;
-
 import android.net.wifi.WifiManager;
+import android.util.Log;
 import android.widget.Toast;
+import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.util.Toasty;
 
 public class CheckInternet extends BroadcastReceiver

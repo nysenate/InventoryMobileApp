@@ -1,17 +1,5 @@
 package gov.nysenate.inventory.android;
 
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.activity.VerScanActivity;
-import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
-import gov.nysenate.inventory.listener.ClearButtonListener;
-import gov.nysenate.inventory.listener.CommodityDialogListener;
-import gov.nysenate.inventory.listener.OnKeywordChangeListener;
-import gov.nysenate.inventory.model.Commodity;
-import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,13 +11,17 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+import gov.nysenate.inventory.listener.CommodityDialogListener;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
+import gov.nysenate.inventory.model.Commodity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //...G
 @SuppressLint("ValidFragment")
