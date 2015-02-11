@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.widget.ProgressBar;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -56,7 +56,7 @@ public class GetAllPickupsTask extends AsyncTask<Void, Void, Integer> {
         try {
             response = new DefaultHttpClient().execute(new HttpGet(url), context);
             response.getEntity().writeTo(out);
-            List<Transaction> pickups = TransactionParser.parseMultiplePickups(out.toString());
+            List<Transaction> pickups = Serializer.deserialize(out.toString(), Transaction.class);
             allPickups.addAll(pickups);
         } catch (ClientProtocolException e) {
             e.printStackTrace();

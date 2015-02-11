@@ -24,7 +24,7 @@ import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.LocationParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -448,7 +448,7 @@ public class Verification extends SenateActivity
                 String jsonString = resr1.get().trim().toString();
                 JSONArray jsonArray = new JSONArray(jsonString);
 
-                locations = LocationParser.parseMultipleLocations(res);
+                locations = Serializer.deserialize(res, Location.class);
                 for (Location loc: locations) {
                               locCodeList.add(loc.getLocationSummaryString());
                      }

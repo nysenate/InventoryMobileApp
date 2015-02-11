@@ -26,7 +26,7 @@ import gov.nysenate.inventory.listener.CommentsDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.util.CommodityParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1192,7 +1192,7 @@ public class VerScanActivity extends SenateActivity implements
                 }
                 String jsonString = resr1.get().trim().toString();
                 System.out.println(jsonString);
-                commodityList = (ArrayList) CommodityParser.parseCommodities(jsonString);
+                commodityList = (ArrayList) Serializer.deserialize(jsonString, Commodity.class);
 
                 // code for JSON ends
             } catch (InterruptedException e) {

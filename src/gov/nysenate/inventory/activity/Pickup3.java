@@ -28,9 +28,8 @@ import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.EmployeeParser;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
-import gov.nysenate.inventory.util.TransactionParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -104,8 +103,7 @@ public class Pickup3 extends SenateActivity
 
         ListViewTab1 = (ListView) findViewById(R.id.listView1);
 
-        pickup = TransactionParser.parseTransaction(getIntent().getStringExtra(
-                "pickup"));
+        pickup = Serializer.deserialize(getIntent().getStringExtra("pickup"), Transaction.class).get(0);
         pickup.setNapickupby(LoginActivity.nauser);
 
         scannedBarcodeNumbers = pickup.getPickupItems();
@@ -595,7 +593,7 @@ public class Pickup3 extends SenateActivity
                 String pickupURL = uri[1];
                 postParams = new ArrayList<NameValuePair>();
                 postParams
-                        .add(new BasicNameValuePair("pickup", pickup.toJson()));
+                        .add(new BasicNameValuePair("pickup", Serializer.serialize(pickup)));
                 postParams.add(new BasicNameValuePair("userFallback",
                         LoginActivity.nauser));
 
@@ -763,8 +761,7 @@ public class Pickup3 extends SenateActivity
                 return responseString;
             }
 
-            List<Employee> currentEmployees = EmployeeParser
-                    .parseMultipleEmployees(responseString);
+            List<Employee> currentEmployees = Serializer.deserialize(responseString, Employee.class);
             employeeHiddenList.addAll(currentEmployees);
             for (Employee emp : currentEmployees) {
                 employeeNameList.add(emp.getFullName());

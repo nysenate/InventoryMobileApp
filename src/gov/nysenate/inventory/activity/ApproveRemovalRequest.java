@@ -18,7 +18,7 @@ import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.RemovalRequestParser;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpStatus;
 
@@ -265,7 +265,7 @@ public class ApproveRemovalRequest extends SenateActivity
         public RemovalRequest handleBackgroundResult(String out, int responseCode) {
             RemovalRequest rr = null;
             if (responseCode == HttpStatus.SC_OK) {
-                rr = RemovalRequestParser.parseRemovalRequest(out);
+                rr = Serializer.deserialize(out, RemovalRequest.class).get(0);
             }
             return rr;
         }

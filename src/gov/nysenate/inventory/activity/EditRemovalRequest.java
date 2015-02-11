@@ -19,9 +19,8 @@ import gov.nysenate.inventory.model.AdjustCode;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.util.AdjustCodeParser;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.RemovalRequestParser;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpStatus;
 
@@ -100,7 +99,7 @@ public class EditRemovalRequest extends SenateActivity
         public List<AdjustCode> handleBackgroundResult(String out, int responseCode) {
             List<AdjustCode> codes = null;
             if (responseCode == HttpStatus.SC_OK) {
-                codes = AdjustCodeParser.parseAdjustCodes(out.toString());
+                codes = Serializer.deserialize(out.toString(), AdjustCode.class);
             }
             return codes;
         }
@@ -136,7 +135,7 @@ public class EditRemovalRequest extends SenateActivity
         public RemovalRequest handleBackgroundResult(String out, int responseCode) {
             RemovalRequest rr = null;
             if (responseCode == HttpStatus.SC_OK) {
-                rr = RemovalRequestParser.parseRemovalRequest(out);
+                rr = Serializer.deserialize(out, RemovalRequest.class).get(0);
             }
             return rr;
         }

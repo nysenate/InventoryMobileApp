@@ -25,7 +25,7 @@ import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.LocationParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -62,8 +62,8 @@ public class Pickup2Activity extends SenateActivity
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
 
-        origin = LocationParser.parseLocation(getIntent().getStringExtra("origin"));
-        destination = LocationParser.parseLocation(getIntent().getStringExtra("destination"));
+        origin = Serializer.deserialize(getIntent().getStringExtra("origin"), Location.class).get(0);
+        destination = Serializer.deserialize(getIntent().getStringExtra("destination"), Location.class).get(0);
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
         senateTagTV.addTextChangedListener(senateTagTextWatcher);
@@ -467,7 +467,7 @@ public class Pickup2Activity extends SenateActivity
             trans.setOrigin(origin);
             trans.setDestination(destination);
             trans.setPickupItems(scannedItems);
-            intent.putExtra("pickup", trans.toJson());
+            intent.putExtra("pickup", Serializer.serialize(trans));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }

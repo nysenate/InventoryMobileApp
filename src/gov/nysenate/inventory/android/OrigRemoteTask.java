@@ -7,7 +7,7 @@ import android.widget.Spinner;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -51,7 +51,7 @@ public class OrigRemoteTask extends AsyncTask<Void, Void, Integer>{
             response = client.execute(new HttpGet(url));
             response.getEntity().writeTo(out);
             if (out.size() > 0) {
-                original = TransactionParser.parseTransaction(out.toString());
+                original = Serializer.deserialize(out.toString(), Transaction.class).get(0);
             }
         } catch (IOException e) {
             e.printStackTrace();

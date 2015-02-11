@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.model;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 public class Location
@@ -140,10 +138,6 @@ public class Location
 
     public String getFullAddress() {
         return this.getAdstreet1() + " " + this.getAdcity() + ", " + this.getAdstate() + " " + this.getAdzipcode();
-    }
-
-    public String toJson() {
-        return new Gson().toJson(this);
     }
 
     @Override

@@ -18,7 +18,7 @@ import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.LocationParser;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -129,7 +129,7 @@ public class ChangePickupOrigin extends SenateActivity {
                 e.printStackTrace();
             }
 
-            List<Location> locs = LocationParser.parseMultipleLocations(out.toString());
+            List<Location> locs = Serializer.deserialize(out.toString(), Location.class);
             for (Location loc: locs) {
                 locations.add(loc.getLocationSummaryString());
             }

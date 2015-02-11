@@ -16,8 +16,8 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.RowItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
-import gov.nysenate.inventory.util.TransactionParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -159,7 +159,7 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
                 Log.i("EditPickupMenu", "Server Pickup Response:"+out.toString());
-                pickup = TransactionParser.parseTransaction(out.toString());
+                pickup = Serializer.deserialize(out.toString(), Transaction.class).get(0);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
