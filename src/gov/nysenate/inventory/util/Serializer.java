@@ -12,10 +12,20 @@ public class Serializer {
 
     private static final Gson gson = new Gson();
 
+    /**
+     * Serialize an object into a json string
+     */
     public static <T> String serialize(T type) {
         return gson.toJson(type);
     }
 
+    /**
+     * Constructs a list of objects from a json string.
+     * @param json The json string.
+     * @param clazz The type of objects.
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> deserialize(String json, Class<T> clazz) {
         List<T> results = new ArrayList<>();
         JsonParser parser = new JsonParser();

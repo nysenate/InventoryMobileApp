@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class HttpUtils {
 
+    public static final int SC_SESSION_TIMEOUT = 599;
+
     // Displays appropriate messages to user after an attempt to update the database
     public static void displayResponseResults(Context context, Integer code) {
         if (code != null) {

@@ -6,11 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.*;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,16 +21,21 @@ import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
+import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.dto.SearchDto;
 import gov.nysenate.inventory.model.InvSerialNumber;
+import gov.nysenate.inventory.model.Item;
+import gov.nysenate.inventory.model.ItemStatus;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import javax.xml.transform.Result;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class SearchActivity extends SenateActivity
@@ -300,8 +302,12 @@ public class SearchActivity extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             if (barcode.getText().toString().length() >= 6) {
-                getSearchDetails();
-
+                if (checkServerResponse(true) == OK) {
+                    SearchByBarcode itemSearch = new SearchByBarcode();
+                    itemSearch.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                                 AppProperties.getBaseUrl(SearchActivity.this)
+                                                 + "Search?barcode_num=" + barcode.getText());
+                }
             }
         }
     };
@@ -638,58 +644,25 @@ public class SearchActivity extends SenateActivity
            acNuserial.setThreshold(1);
        }     */
 
-    public void getSearchDetails() {
-        try {
-            String barcode_num = barcode.getText().toString().trim();
-            Log.i("Activity Search afterTextChanged ", "Senate Tag#"
-                    + barcode_num);
-            // check network connection
-            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                // fetch data
-                status = "yes";
-                // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                if (! URL.endsWith("/")) {
-                    URL += "/";
-                }                   
-                Log.i("Activity Search afterTextChanged ", "URL " + URL);
-                AsyncTask<String, String, String> resr1 = new RequestTask()
-                        .execute(URL + "Search?barcode_num=" + barcode_num);
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    //Log.i("Search res ", "res:" + res);
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(SEARCH_TIMEOUT);
-                        return;
-                    }
+    private class SearchByBarcode extends BaseAsyncTask<String, Void, SearchDto> {
 
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                status = "yes1";
-            } else {
-                // display error
-                status = "no";
+        @Override
+        public SearchDto handleBackgroundResult(String out, int responseCode) {
+            if (out == null) {
+                return null;
             }
-            if (res.toUpperCase(Locale.ENGLISH).contains("DOES NOT EXIST IN SYSTEM")) {
-                tvBarcode.setText(barcode.getText().toString()
-                        + " - !!ERROR: DOES NOT EXIST.");
-                int color = Integer.parseInt("bb0000", 16) + 0xFF000000;
-                tvBarcode.setTextColor(color);
+            status = "yes";
+            return Serializer.deserialize(out, SearchDto.class).get(0);
+        }
+
+        @Override
+        protected void onPostExecute(SearchDto searchDto) {
+            if (searchDto == null) {
+                noServerResponse();
+            }
+            if (searchDto.getItem().getStatus() == ItemStatus.DOES_NOT_EXIST) {
+                tvBarcode.setText(barcode.getText().toString() + " - !!ERROR: DOES NOT EXIST.");
+                tvBarcode.setTextColor(Integer.parseInt("bb0000", 16) + 0xFF000000);
                 tvNuserial.setText("N/A");
                 tvDescription.setText("N/A");
                 tvCategory.setText("N/A");
@@ -697,81 +670,32 @@ public class SearchActivity extends SenateActivity
                 tvDateInvntry.setText("N/A");
                 tvCommodityCd.setText("N/A");
                 rwNuserial.setVisibility(View.VISIBLE);
-
-            } else {
-                int color = Integer.parseInt("000000", 16) + 0xFF000000;
-                tvBarcode.setTextColor(color);
-                try {
-                    JSONObject object = (JSONObject) new JSONTokener(res)
-                            .nextValue();
-                    StringBuilder nusenateMsg = new StringBuilder();
-                    nusenateMsg.append(object.getString("nusenate"));
-                    String cdstatus = object.getString("cdstatus");
-                    //Log.i("TEST", "CDSTATUS:(" + cdstatus + ")");
-                    if (cdstatus.equalsIgnoreCase("I")) {
-                        nusenateMsg.append(" <font color='RED'>(INACTIVE) ");
-                        nusenateMsg.append(object.getString("deadjust"));
-                        //Log.i("TEST", "INACTIVE CDSTATUS:(" + cdstatus + ")");
-                    }
-
-                    //Log.i("TEST", "Senate Tag#:" + nusenateMsg);
-                    tvBarcode.setText(Html.fromHtml(nusenateMsg.toString()));
-                    try {
-                        tvNuserial.setText(object.getString("nuserial"));
-                    }
-                    catch (JSONException e1) {
-                        tvNuserial.setText("N/A");
-                    }
-
-                    if (tvNuserial.getText().toString().trim().length()>0) {
-                        rwNuserial.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        rwNuserial.setVisibility(View.GONE);
-                    }
-                    
-                    tvDescription.setText(object.getString("decommodityf")
-                            .replaceAll("&#34;", "\""));
-                    tvCategory.setText(object.getString("cdcategory"));
-                    tvLocation.setText(object.getString("cdlocatto")
-                            + " ("
-                            + object.getString("cdloctypeto")
-                            + ") "
-                            + object.getString("adstreet1to").replaceAll(
-                                    "&#34;", "\""));
-                    tvDateInvntry.setText(object.getString("dtlstinvntry"));
-                    tvCommodityCd.setText(object.getString("commodityCd"));
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    tvDescription.setText("!!ERROR: " + e.getMessage());
-                    tvCategory.setText("Please contact STS/BAC.");
-                    tvLocation.setText("N/A");
-                    tvNuserial.setText("N/A");
-                    tvDateInvntry.setText("N/A");
-                    tvCommodityCd.setText("N/A");
-                    rwNuserial.setVisibility(View.VISIBLE);
-
-                    e.printStackTrace();
-                }
             }
-            // textView.setText("\n" + res);
+            else {
+                Item item = searchDto.getItem();
+                tvBarcode.setTextColor(Integer.parseInt("000000", 16) + 0xFF000000);
+                String message = item.getBarcode();
+                if (item.getStatus() == ItemStatus.INACTIVE) {
+                    message += " <font color='RED'>(INACTIVE) ";
+                    message += item.getAdjustCode().getDescription();
+                }
+                tvBarcode.setText(Html.fromHtml(message));
+                if (item.getSerialNumber() == null) {
+                    rwNuserial.setVisibility(View.GONE);
+                } else {
+                    rwNuserial.setVisibility(View.VISIBLE);
+                    tvNuserial.setText(item.getSerialNumber());
+                }
+                tvDescription.setText(item.getCommodity().getDescription());
+                tvCategory.setText(item.getCommodity().getCategory());
+                tvLocation.setText(item.getLocation().getCdlocat()
+                        + " (" + item.getLocation().getCdloctype() + " )"
+                        + item.getLocation().getAdstreet1());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+                tvDateInvntry.setText(sdf.format(searchDto.getLastInventoried()));
+                tvCommodityCd.setText(item.getCommodity().getCode());
+            }
             barcode.setText("");
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-              @Override
-              public void run() {
-                  acNuserial.setText("");
-              }
-            }, 100);
-        } catch (Exception e) {
-            tvDescription.setText("!!ERROR: " + e.getMessage());
-            tvCategory.setText("Please contact STS/BAC.");
-            tvLocation.setText("N/A");
-            tvNuserial.setText("N/A");
-            tvDateInvntry.setText("N/A");
-            tvCommodityCd.setText("N/A");
-            rwNuserial.setVisibility(View.VISIBLE);
         }
     }
 
@@ -825,8 +749,13 @@ public class SearchActivity extends SenateActivity
         switch (requestCode) {
         case SEARCH_TIMEOUT:
             if (resultCode == RESULT_OK) {
-                getSearchDetails();
-                break;
+                if (checkServerResponse(true) == OK) {
+                    SearchByBarcode itemSearch = new SearchByBarcode();
+                    itemSearch.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                                 AppProperties.getBaseUrl(SearchActivity.this)
+                                                 + "Search?barcode_num=" + barcode.getText());
+                    break;
+                }
             }
         }
     }
