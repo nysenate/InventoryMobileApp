@@ -26,6 +26,8 @@ import gov.nysenate.inventory.listener.CommentsDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.model.Item;
+import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1002,7 +1004,10 @@ public class VerScanActivity extends SenateActivity implements
         // attempts to add an item with
         // the else condition.
 
-        String serverResponse = getItemDetails(nusenate, false);
+        String serverResponse = null;
+        if (checkServerResponse(true) == OK) {
+            serverResponse = getItemDetails(nusenate, false);
+        }
 
         /*
          * Log.i("AddItem", "nusenate:" + nusenate + " Server RESPONSE:" +
@@ -1012,102 +1017,96 @@ public class VerScanActivity extends SenateActivity implements
         if (serverResponse == null) {
             noServerResponse();
             return NO_SERVER_RESPONSE;
-        } else if (res.indexOf("Session timed out") > -1) {
-            startTimeout(ITEMDETAILS_TIMEOUT);
-            return SERVER_SESSION_TIMED_OUT;
-        } else if (res.contains("Does not exist in system")) {
+        }
+
+        Item item = Serializer.deserialize(serverResponse, Item.class).get(0);
+
+        if (item.getStatus() == ItemStatus.DOES_NOT_EXIST) {
             // Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
             nusenateDidNotExist(nusenate);
             return SENTAG_NOT_FOUND;
-        } else {
-            JSONObject jo;
-            try {
-                jo = new JSONObject(serverResponse);
-                verList vl = new verList();
-                vl.NUSENATE = nusenate;
-                String nusenateReturned = null;
-                vl.CDCATEGORY = jo.getString("cdcategory");
-                vl.CDLOCAT = jo.getString("cdlocatto");
-                vl.CDSTATUS = jo.getString("cdstatus");
-                try {
-                    vl.CDLOCTYPE = jo.getString("cdloctypeto");
-                }
-                catch (Exception e) {
-                    vl.CDLOCTYPE = "(N/A)";
-                }
-                nusenateReturned = jo.getString("nusenate");
-
-                if (nusenateReturned == null) {
-                    vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                    vl.CONDITION = "NEW";
-                    nusenateDidNotExist(nusenate);
-                    return SENTAG_NOT_FOUND;
-                } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
-                    vl.DECOMMODITYF = jo.getString("decommodityf");
-                    inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
-
-                    inactiveInvItem.setType("INACTIVE");
-
-                    inactiveMessage(
-                            nusenate,
-                            "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
-                                    + "</b> has been <b>INACTIVATED</b>.",
-                            "Item Description: <b>"
-                                    + vl.DECOMMODITYF
-                                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
-                    return -4;
-
-                } else {
-                    // Log.i("TESTING",
-                    // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
-                    vl.DECOMMODITYF = jo.getString("decommodityf")
-                            + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
-                    vl.CONDITION = "DIFFERENT LOCATION";
-                    playSound(R.raw.warning);
-                }
-                StringBuilder s_new = new StringBuilder();
-                // s_new.append(vl.NUSENATE); since the desc coming from
-                // server already contains barcode number we wont add it
-                // again
-                // s_new.append(" ");
-                s_new.append("ADDED: ");
-                s_new.append(vl.NUSENATE);
-                s_new.append(": ");
-                s_new.append(vl.CDCATEGORY);
-                s_new.append(" ");
-                s_new.append(vl.DECOMMODITYF);
-
-                // display toster
-                Context context = getApplicationContext();
-                CharSequence text = s_new;
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-
-                // 3/15/13 BH Coded below to use InvItem Objects to display
-                // the list.
-                InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                        vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
-                invList.add(invItem);
-                cntScanned++;
-
-                scannedItems.add(invItem);
-                AllScannedItems.add(invItem);
-                newItems.add(invItem); // to keep track of (number+details)
-                                       // for summary
-                currentState = NONE;
-
-                return OK;
-            } catch (JSONException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return EXCEPTION_IN_CODE;
-            }
         }
+        verList vl = new verList();
+        vl.NUSENATE = item.getBarcode();
+        String nusenateReturned = null;
+        vl.CDCATEGORY = item.getCommodity().getCategory();
+        vl.CDLOCAT = item.getLocation().getCdlocat();
+
+        try {
+            vl.CDLOCTYPE = item.getLocation().getCdloctype();
+        }
+        catch (Exception e) {
+            vl.CDLOCTYPE = "(N/A)";
+        }
+        nusenateReturned = item.getBarcode();
+
+        if (nusenateReturned == null) {
+            vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+            vl.CONDITION = "NEW";
+            nusenateDidNotExist(nusenate);
+            return SENTAG_NOT_FOUND;
+        } else if (item.getStatus() == ItemStatus.INACTIVE) {
+            vl.DECOMMODITYF = item.getCommodity().getDescription();
+            inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                                          vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+
+            inactiveInvItem.setType("INACTIVE");
+
+            inactiveMessage(
+                    nusenate,
+                    "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
+                    + "</b> has been <b>INACTIVATED</b>.",
+                    "Item Description: <b>"
+                    + vl.DECOMMODITYF
+                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
+            return -4;
+
+        } else {
+            // Log.i("TESTING",
+            // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
+            vl.DECOMMODITYF = item.getCommodity().getDescription()
+                              + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
+            vl.CONDITION = "DIFFERENT LOCATION";
+            playSound(R.raw.warning);
+        }
+        StringBuilder s_new = new StringBuilder();
+        // s_new.append(vl.NUSENATE); since the desc coming from
+        // server already contains barcode number we wont add it
+        // again
+        // s_new.append(" ");
+        s_new.append("ADDED: ");
+        s_new.append(vl.NUSENATE);
+        s_new.append(": ");
+        s_new.append(vl.CDCATEGORY);
+        s_new.append(" ");
+        s_new.append(vl.DECOMMODITYF);
+
+        // display toster
+        Context context = getApplicationContext();
+        CharSequence text = s_new;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+
+        // 3/15/13 BH Coded below to use InvItem Objects to display
+        // the list.
+        InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                                      vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+        invList.add(invItem);
+        cntScanned++;
+
+        scannedItems.add(invItem);
+        AllScannedItems.add(invItem);
+        newItems.add(invItem); // to keep track of (number+details)
+        // for summary
+        currentState = NONE;
+
+        return OK;
     }
+
+
 
     public void addKeyword(View view) {
         // Log.i("addKeyword", "addKeyword adding row");
@@ -1268,11 +1267,6 @@ public class VerScanActivity extends SenateActivity implements
         return keywordList;
     }
 
-    public String getItemDetails(String nusenate) {
-        return getItemDetails(nusenate, true); // By default, check for a
-                                               // timeout
-    }
-
     public String getItemDetails(String nusenate, boolean checkTimeout) {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1286,18 +1280,10 @@ public class VerScanActivity extends SenateActivity implements
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "ItemDetails?barcode_num=" + nusenate);
             try {
-                if (testResNull) { // Testing Purposes Only
-                    resr1 = null;
-                    Log.i("TEST RESNULL", "RES SET TO NULL");
-                }
                 res = null;
                 res = resr1.get().trim().toString();
                 if (res == null) {
                     noServerResponse();
-                    return res;
-                } else if (checkTimeout
-                        && res.indexOf("Session timed out") > -1) {
-                    startTimeout(ITEMDETAILS_TIMEOUT);
                     return res;
                 }
 
