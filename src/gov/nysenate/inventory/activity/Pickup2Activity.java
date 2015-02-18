@@ -542,9 +542,7 @@ public class Pickup2Activity extends SenateActivity
                 URL += "/";
             }   
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "ItemDetails?barcode_num=" + barcode_num);
-            System.out.println("URL CALL:" + URL + "/ItemDetails?barcode_num="
-                    + barcode_num);
+                    .execute(URL + "Item?barcode=" + barcode_num);
             try {
                 res = null;
                 res = resr1.get();

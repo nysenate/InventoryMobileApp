@@ -22,7 +22,7 @@ import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
-import gov.nysenate.inventory.dto.SearchDto;
+import gov.nysenate.inventory.dto.ItemInventoriedDetails;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
@@ -306,7 +306,7 @@ public class SearchActivity extends SenateActivity
                     SearchByBarcode itemSearch = new SearchByBarcode();
                     itemSearch.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                                                  AppProperties.getBaseUrl(SearchActivity.this)
-                                                 + "Search?barcode_num=" + barcode.getText());
+                                                 + "Item?barcode=" + barcode.getText() + "&inventoried_date=true");
                 }
             }
         }
@@ -644,23 +644,23 @@ public class SearchActivity extends SenateActivity
            acNuserial.setThreshold(1);
        }     */
 
-    private class SearchByBarcode extends BaseAsyncTask<String, Void, SearchDto> {
+    private class SearchByBarcode extends BaseAsyncTask<String, Void, ItemInventoriedDetails> {
 
         @Override
-        public SearchDto handleBackgroundResult(String out, int responseCode) {
+        public ItemInventoriedDetails handleBackgroundResult(String out, int responseCode) {
             if (out == null) {
                 return null;
             }
             status = "yes";
-            return Serializer.deserialize(out, SearchDto.class).get(0);
+            return Serializer.deserialize(out, ItemInventoriedDetails.class).get(0);
         }
 
         @Override
-        protected void onPostExecute(SearchDto searchDto) {
-            if (searchDto == null) {
+        protected void onPostExecute(ItemInventoriedDetails itemInventoriedDetails) {
+            if (itemInventoriedDetails == null) {
                 noServerResponse();
             }
-            if (searchDto.getItem().getStatus() == ItemStatus.DOES_NOT_EXIST) {
+            if (itemInventoriedDetails.getItem().getStatus() == ItemStatus.DOES_NOT_EXIST) {
                 tvBarcode.setText(barcode.getText().toString() + " - !!ERROR: DOES NOT EXIST.");
                 tvBarcode.setTextColor(Integer.parseInt("bb0000", 16) + 0xFF000000);
                 tvNuserial.setText("N/A");
@@ -672,7 +672,7 @@ public class SearchActivity extends SenateActivity
                 rwNuserial.setVisibility(View.VISIBLE);
             }
             else {
-                Item item = searchDto.getItem();
+                Item item = itemInventoriedDetails.getItem();
                 tvBarcode.setTextColor(Integer.parseInt("000000", 16) + 0xFF000000);
                 String message = item.getBarcode();
                 if (item.getStatus() == ItemStatus.INACTIVE) {
@@ -692,7 +692,7 @@ public class SearchActivity extends SenateActivity
                         + " (" + item.getLocation().getCdloctype() + " )"
                         + item.getLocation().getAdstreet1());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
-                tvDateInvntry.setText(sdf.format(searchDto.getLastInventoried()));
+                tvDateInvntry.setText(sdf.format(itemInventoriedDetails.getLastInventoried()));
                 tvCommodityCd.setText(item.getCommodity().getCode());
             }
             barcode.setText("");
@@ -753,7 +753,7 @@ public class SearchActivity extends SenateActivity
                     SearchByBarcode itemSearch = new SearchByBarcode();
                     itemSearch.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                                                  AppProperties.getBaseUrl(SearchActivity.this)
-                                                 + "Search?barcode_num=" + barcode.getText());
+                                                 + "Item?barcode=" + barcode.getText() + "&inventoried_date=true");
                     break;
                 }
             }

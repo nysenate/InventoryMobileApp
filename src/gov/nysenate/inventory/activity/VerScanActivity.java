@@ -1278,7 +1278,7 @@ public class VerScanActivity extends SenateActivity implements
             // scannedItems.add(barcode);
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "ItemDetails?barcode_num=" + nusenate);
+                    .execute(URL + "Item?barcode=" + nusenate);
             try {
                 res = null;
                 res = resr1.get().trim().toString();
