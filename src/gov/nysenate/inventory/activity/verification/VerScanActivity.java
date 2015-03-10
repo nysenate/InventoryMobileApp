@@ -1,4 +1,4 @@
-package gov.nysenate.inventory.activity;
+package gov.nysenate.inventory.activity.verification;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,6 +19,9 @@ import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.MenuActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.android.*;
@@ -88,24 +91,10 @@ public class VerScanActivity extends SenateActivity implements
     String timeoutFrom = "VERIFICATIONLIST";
     InvListViewAdapter adapter;
     int count;
-    int numItems;
-    // These 3 ArrayLists will be used to transfer data to next activity and to
-    // the server
-    public static ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();// for
-                                                                                // saving
-    // items which
-    // are not
-    // allocated
-    // to
-    // that
-    // location
+    public static int numItems;
 
-    public static ArrayList<InvItem> newItems = new ArrayList<InvItem>();// for
-                                                                         // saving
-                                                                         // items
-    // which are not
-    // allocated to that
-    // location
+    public static ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();
+    public static ArrayList<InvItem> newItems = new ArrayList<InvItem>();
 
     String lastClickedTo = "";
     int lastRowFound = -1;
@@ -122,7 +111,7 @@ public class VerScanActivity extends SenateActivity implements
         setContentView(R.layout.activity_verscan);
         registerBaseActivityReceiver();
         currentActivity = this;
-        VerScanActivity.AllScannedItems = new ArrayList<InvItem>();
+        VerScanActivity.allScannedItems = new ArrayList<InvItem>();
         VerScanActivity.missingItems = new ArrayList<InvItem>();
         VerScanActivity.scannedItems = new ArrayList<InvItem>();
         VerScanActivity.newItems = new ArrayList<InvItem>();
@@ -404,7 +393,7 @@ public class VerScanActivity extends SenateActivity implements
 
                 // If the item is already scanned then display a
                 // toaster "Already Scanned"
-                if (findBarcode(barcode_num, AllScannedItems) > -1) {
+                if (findBarcode(barcode_num, allScannedItems) > -1) {
                     // display toaster
                     barcodeFound = true;
                     Context context = getApplicationContext();
@@ -895,7 +884,7 @@ public class VerScanActivity extends SenateActivity implements
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
-                AllScannedItems.add(curInvItem);// to keep track of
+                allScannedItems.add(curInvItem);// to keep track of
                                                 // (number+details)
                                                 // for summary
                 /*
@@ -962,7 +951,7 @@ public class VerScanActivity extends SenateActivity implements
         cntScanned++;
 
         scannedItems.add(newInvItem);
-        AllScannedItems.add(newInvItem);
+        allScannedItems.add(newInvItem);
         newItems.add(newInvItem); // to keep track of (number+details)
                                   // for summary
 
@@ -1098,7 +1087,7 @@ public class VerScanActivity extends SenateActivity implements
         cntScanned++;
 
         scannedItems.add(invItem);
-        AllScannedItems.add(invItem);
+        allScannedItems.add(invItem);
         newItems.add(invItem); // to keep track of (number+details)
         // for summary
         currentState = NONE;
@@ -1417,36 +1406,14 @@ public class VerScanActivity extends SenateActivity implements
                 }
             }
 
-            String summary;
-            summary = "{\"nutotitems\":\"" + numItems + "\",\"nuscanitems\":\""
-                    + AllScannedItems.size() + "\",\"numissitems\":\""
-                    + missingItems.size() + "\",\"nunewitems\":\""
-                    + newItems.size() + "\"}";
-
             Intent intent = new Intent(this, VerSummaryActivity.class);
             intent.putExtra("loc_code", loc_code);
             intent.putExtra("cdloctype", cdloctype);
-            intent.putExtra("summary", summary);
-            /*
-             * intent.putStringArrayListExtra("scannedBarcodeNumbers",
-             * getJSONArrayList(scannedItems));
-             */
-            /*
-             * intent.putStringArrayListExtra("scannedList",
-             * getJSONArrayList(AllScannedItems));// scanned
-             */
-            // items
-            // list
-            /*
-             * intent.putStringArrayListExtra("missingList",
-             * getJSONArrayList(missingItems));// missing
-             */
-            // items
-            // list
-            intent.putStringArrayListExtra("newItems",
-                    getJSONArrayList(newItems));// new
-                                                // items
-                                                // list
+            intent.putExtra("totalItemCount", numItems);
+            intent.putExtra("scannedItemCount", allScannedItems.size());
+            intent.putExtra("missingItemCount", missingItems.size());
+            intent.putExtra("newItemCount", newItems.size());
+            intent.putStringArrayListExtra("newItems", getJSONArrayList(newItems));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -1617,7 +1584,7 @@ public class VerScanActivity extends SenateActivity implements
         cntScanned++;
 
         scannedItems.add(inactiveInvItem);
-        AllScannedItems.add(inactiveInvItem);
+        allScannedItems.add(inactiveInvItem);
         newItems.add(inactiveInvItem); // to keep track of (number+details)
         // for summary
         adapter = new InvListViewAdapter(VerScanActivity.this,

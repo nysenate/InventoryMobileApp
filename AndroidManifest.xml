@@ -91,7 +91,7 @@
                 android:value="gov.nysenate.inventory.android.Pickup1" />
         </activity>
         <activity
-            android:name="gov.nysenate.inventory.activity.Verification"
+            android:name="gov.nysenate.inventory.activity.verification.Verification"
             android:label="@string/title_activity_verification"
             android:parentActivityName="gov.nysenate.inventory.activity.MenuActivity"
             android:screenOrientation="portrait" >
@@ -105,12 +105,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="gov.nysenate.inventory.activity.VerScanActivity"
+            android:name="gov.nysenate.inventory.activity.verification.VerScanActivity"
             android:label="@string/title_activity_verscan"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="gov.nysenate.inventory.activity.VerSummaryActivity"
+            android:name="gov.nysenate.inventory.activity.verification.VerSummaryActivity"
             android:label="@string/title_activity_ver_summary"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >

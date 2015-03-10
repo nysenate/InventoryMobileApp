@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+import gov.nysenate.inventory.activity.verification.Verification;
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
@@ -46,7 +47,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     public static Integer[] images;
 
-    static DBAdapter db;
+    public static DBAdapter db;
 
     ListView listView;
     List<RowItem> rowItems;
