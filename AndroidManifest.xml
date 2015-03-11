@@ -269,6 +269,11 @@
             android:parentActivityName="gov.nysenate.inventory.activity.ApproveRemovalRequestSelection"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+                android:name="gov.nysenate.inventory.activity.verification.EditVerification"
+                android:label="Edit Verification"
+                android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

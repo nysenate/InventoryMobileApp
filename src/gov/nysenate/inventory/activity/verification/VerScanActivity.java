@@ -52,7 +52,7 @@ public class VerScanActivity extends SenateActivity implements
     public TextView tv_counts_scanned;
     public TextView loc_details;
     public TextView tvCdlocat;
-    public static ArrayList<InvItem> missingItems = null;
+    public static ArrayList<InvItem> unscannedItems = null;
     public String res = null;
     boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -64,7 +64,6 @@ public class VerScanActivity extends SenateActivity implements
                                    // previous activity
     public String cdloctype = null;
     ArrayList commodityList = new ArrayList<Commodity>();
-    public static ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
     ArrayList<InvItem> invList = new ArrayList<InvItem>();
     CommentsDialog commentsDialog = null;
@@ -112,8 +111,7 @@ public class VerScanActivity extends SenateActivity implements
         registerBaseActivityReceiver();
         currentActivity = this;
         VerScanActivity.allScannedItems = new ArrayList<InvItem>();
-        VerScanActivity.missingItems = new ArrayList<InvItem>();
-        VerScanActivity.scannedItems = new ArrayList<InvItem>();
+        VerScanActivity.unscannedItems = new ArrayList<InvItem>();
         VerScanActivity.newItems = new ArrayList<InvItem>();
 
         // Get the location code from the previous activity
@@ -892,10 +890,7 @@ public class VerScanActivity extends SenateActivity implements
                  * ") INVLIST SIZE:" + invList.size() + "");
                  */
                 // invList.remove(i);
-                scannedItems.add(curInvItem);// to keep track of all
-                                             // scanned items
-                                             // numbers for
-                                             // oracle table
+
                 cntScanned++;
                 playSound(R.raw.ok);
                 // Simply contact the Web Server to keep the Session
@@ -950,7 +945,6 @@ public class VerScanActivity extends SenateActivity implements
         invList.add(newInvItem);
         cntScanned++;
 
-        scannedItems.add(newInvItem);
         allScannedItems.add(newInvItem);
         newItems.add(newInvItem); // to keep track of (number+details)
                                   // for summary
@@ -1086,7 +1080,6 @@ public class VerScanActivity extends SenateActivity implements
         invList.add(invItem);
         cntScanned++;
 
-        scannedItems.add(invItem);
         allScannedItems.add(invItem);
         newItems.add(invItem); // to keep track of (number+details)
         // for summary
@@ -1264,7 +1257,6 @@ public class VerScanActivity extends SenateActivity implements
             // fetch data
             status = "yes";
             // int barcode= Integer.parseInt(barcode_num);
-            // scannedItems.add(barcode);
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
                     .execute(URL + "Item?barcode=" + nusenate);
@@ -1384,7 +1376,7 @@ public class VerScanActivity extends SenateActivity implements
             btnVerListCont.getBackground().setAlpha(45);
 
             // create lists for summary activity
-            missingItems = new ArrayList<InvItem>();// for
+            unscannedItems = new ArrayList<InvItem>();// for
                                                     // saving
                                                     // items
                                                     // which
@@ -1396,7 +1388,7 @@ public class VerScanActivity extends SenateActivity implements
                                                     // location
             for (int i = 0; i < this.invList.size(); i++) {
                 if ((invList.get(i).getType().equalsIgnoreCase("EXISTING")) == true) {
-                    missingItems.add(invList.get(i)); // if the
+                    unscannedItems.add(invList.get(i)); // if the
                                                       // description
                                                       // of dispList
                                                       // is not new
@@ -1410,10 +1402,6 @@ public class VerScanActivity extends SenateActivity implements
             intent.putExtra("loc_code", loc_code);
             intent.putExtra("cdloctype", cdloctype);
             intent.putExtra("totalItemCount", numItems);
-            intent.putExtra("scannedItemCount", allScannedItems.size());
-            intent.putExtra("missingItemCount", missingItems.size());
-            intent.putExtra("newItemCount", newItems.size());
-            intent.putStringArrayListExtra("newItems", getJSONArrayList(newItems));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -1583,7 +1571,6 @@ public class VerScanActivity extends SenateActivity implements
         invList.add(inactiveInvItem);
         cntScanned++;
 
-        scannedItems.add(inactiveInvItem);
         allScannedItems.add(inactiveInvItem);
         newItems.add(inactiveInvItem); // to keep track of (number+details)
         // for summary

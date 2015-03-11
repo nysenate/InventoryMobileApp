@@ -157,7 +157,7 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void initializeItemListAdapter() {
-        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, removalRequest.getItems(), this);
+        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.two_column_and_checkbox_adapter, R.id.column1, removalRequest.getItems(), this);
         itemList.setAdapter(adapter);
     }
 
