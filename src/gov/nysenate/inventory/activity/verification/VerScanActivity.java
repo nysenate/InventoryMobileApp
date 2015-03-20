@@ -65,7 +65,7 @@ public class VerScanActivity extends SenateActivity implements
     public String cdloctype = null;
     ArrayList commodityList = new ArrayList<Commodity>();
     ArrayList<verList> list = new ArrayList<verList>();
-    ArrayList<InvItem> invList = new ArrayList<InvItem>();
+    public static ArrayList<InvItem> invList = new ArrayList<InvItem>();
     CommentsDialog commentsDialog = null;
 
     public final int ITEMLIST_TIMEOUT = 101, ITEMDETAILS_TIMEOUT = 102,
@@ -233,6 +233,19 @@ public class VerScanActivity extends SenateActivity implements
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        cntScanned = allScannedItems.size();
+        updateChanges();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        invList = new ArrayList<>();
     }
 
     @Override
@@ -1340,14 +1353,12 @@ public class VerScanActivity extends SenateActivity implements
         boolean barcodeFound = false;
         // Try to remove an item from the list....
         int invItemIndex = -1;
-        if (!resumeFromTimeout
-                || (currentState == NONE || currentState == REMOVEITEM_STATE)) {
+        if (!resumeFromTimeout || (currentState == NONE || currentState == REMOVEITEM_STATE)) {
             Log.i("TESTING", "Removing item " + nusenate);
             invItemIndex = removeItem(nusenate, resumeFromTimeout);
         }
 
-        if ((resumeFromTimeout && currentState == ADDITEM_STATE)
-                || invItemIndex == -1) { // Item not found, so Add Item to list
+        if ((resumeFromTimeout && currentState == ADDITEM_STATE) || invItemIndex == -1) { // Item not found, so Add Item to list
             // Log.i("TESTING", "Adding item " + nusenate);
             int addItemResults = -1;
             addItemResults = addItem(nusenate);
@@ -1376,16 +1387,8 @@ public class VerScanActivity extends SenateActivity implements
             btnVerListCont.getBackground().setAlpha(45);
 
             // create lists for summary activity
-            unscannedItems = new ArrayList<InvItem>();// for
-                                                    // saving
-                                                    // items
-                                                    // which
-                                                    // are
-                                                    // not
-                                                    // allocated
-                                                    // to
-                                                    // that
-                                                    // location
+            unscannedItems = new ArrayList<InvItem>();
+
             for (int i = 0; i < this.invList.size(); i++) {
                 if ((invList.get(i).getType().equalsIgnoreCase("EXISTING")) == true) {
                     unscannedItems.add(invList.get(i)); // if the

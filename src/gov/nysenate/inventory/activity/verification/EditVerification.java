@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import gov.nysenate.inventory.activity.SenateActivity;
@@ -19,7 +18,6 @@ import java.util.List;
 
 public class EditVerification extends SenateActivity implements CancelBtnFragment.CancelBtnOnClick {
 
-    private Button saveButton;
     private List<InvItem> scannedItems;
     private EditVerificationAdapter editListAdapter;
     private ListView scannedItemsList;
@@ -31,7 +29,6 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
         registerBaseActivityReceiver();
 
         TextView directions = (TextView) findViewById(R.id.directions);
-        saveButton = (Button) findViewById(R.id.save_button);
         scannedItemsList = (ListView) findViewById(R.id.editVerificationList);
         scannedItems = VerScanActivity.allScannedItems;
 
@@ -53,12 +50,20 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
 
     private void saveChanges() {
         for (InvItem deleteItem : editListAdapter.getSelectedItems()) {
-            scannedItems.remove(deleteItem);
-            VerScanActivity.unscannedItems.add(deleteItem);
+            if (deleteItem.getType().equalsIgnoreCase("NEW") ||
+                deleteItem.getType().equalsIgnoreCase("DIFFERENT LOCATION") ||
+                deleteItem.getType().equalsIgnoreCase("INACTIVE")) {
+                VerScanActivity.newItems.remove(deleteItem);
+                scannedItems.remove(deleteItem);
+                VerScanActivity.invList.remove(deleteItem);
+            }
+            else {
+                scannedItems.remove(deleteItem);
+                VerScanActivity.unscannedItems.add(deleteItem);
+                VerScanActivity.invList.add(deleteItem);
+            }
         }
-//        Intent intent = new Intent(this, VerSummaryActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
+
         onBackPressed();
     }
 
@@ -73,12 +78,7 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml("Are you sure you wish to remove <b>" + editListAdapter.getSelectedItems().size() +
                                           "</b> item(s) from this verification?"))
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                    saveBtn.setEnabled(true);
-                    }
-                })
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -94,12 +94,7 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml("No items are selected to be removed from this verification. <br>" +
                                           "Continuing will not make any changes."))
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                    saveBtn.setEnabled(true);
-                    }
-                })
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
