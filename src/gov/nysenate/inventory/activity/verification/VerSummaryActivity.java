@@ -64,6 +64,7 @@ public class VerSummaryActivity extends SenateActivity
     private ListView unscannedItemsListView;
     private ListView newItemsListView;
 
+    private TabHost tabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class VerSummaryActivity extends SenateActivity
 
         // Code for tab
 
-        TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
+        tabHost = (TabHost) findViewById(android.R.id.tabhost);
         tabHost.setup();
 
         TabSpec spec1 = tabHost.newTabSpec("Tab 1");
@@ -256,6 +257,7 @@ public class VerSummaryActivity extends SenateActivity
         unscannedItemsListAdapter.notifyDataSetChanged();
         newItemsListAdapter.notifyDataSetChanged();
         initializeItemCountViews();
+        tabHost.setCurrentTab(0);
     }
 
     public void backButton(View view) {
