@@ -60,7 +60,27 @@ public class EditVerificationAdapter extends ArrayAdapter<InvItem> {
             }
         });
 
+        // Color code items by new/found/inactive etc status's
+        // Keeping same colors/logic of InvListViewAdapter.java
+        if (rowItem.getType().equalsIgnoreCase("NEW") || rowItem.getType().equalsIgnoreCase("INACTIVE")) {
+            setTextViewsColor(row.getResources().getColor(R.color.red), column1, column2);
+        }
+        else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
+            setTextViewsColor(row.getResources().getColor(R.color.black), column1, column2);
+        }
+        else if (rowItem.getType().equalsIgnoreCase("AT DESTINATION")) {
+            setTextViewsColor(row.getResources().getColor(R.color.graydark), column1, column2);
+        }
+        else {
+            setTextViewsColor(row.getResources().getColor(R.color.blue), column1, column2);
+        }
         return row;
+    }
+
+    private void setTextViewsColor(int color, TextView... textViews) {
+        for (TextView view : textViews) {
+            view.setTextColor(color);
+        }
     }
 
     public List<InvItem> getSelectedItems() {
