@@ -1,8 +1,12 @@
 package gov.nysenate.inventory.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import android.util.Log;
+import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 
 public class RemovalRequest implements Comparable<RemovalRequest>
 {
@@ -34,6 +38,15 @@ public class RemovalRequest implements Comparable<RemovalRequest>
 
     public void setItems(List<Item> items) {
         this.items = items;
+        sortItems();
+    }
+
+    public void sortItems() {
+        if (this.items != null) {
+            Log.d("sortItems", "Removal Request items being sorted:"+this.items.size());
+            RemovalRequestComparer removalRequestComparer = new RemovalRequestComparer();
+            Collections.sort(this.items , removalRequestComparer);
+        }
     }
 
     public void addItem(Item item) {

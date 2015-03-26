@@ -15,6 +15,7 @@ import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
+import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.model.AdjustCode;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
@@ -26,6 +27,7 @@ import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EditRemovalRequest extends SenateActivity
@@ -158,7 +160,11 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void initializeItemListAdapter() {
-        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, removalRequest.getItems(), this);
+        removalRequest.sortItems();
+        List<Item> itemsSorted = removalRequest.getItems();
+        RemovalRequestComparer removalRequestComparer = new RemovalRequestComparer();
+        Collections.sort(itemsSorted, removalRequestComparer);
+        adapter = new RemovalRequestItemSelectionAdapter(this, R.layout.removal_request_item_select_adapter, R.id.column1, itemsSorted, this);
         itemList.setAdapter(adapter);
     }
 
