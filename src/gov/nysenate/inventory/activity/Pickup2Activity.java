@@ -22,13 +22,9 @@ import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.MsgAlert;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.LocationParser;
-import org.json.JSONException;
+import gov.nysenate.inventory.model.*;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -62,8 +58,8 @@ public class Pickup2Activity extends SenateActivity
         setContentView(R.layout.activity_pickup2);
         registerBaseActivityReceiver();
 
-        origin = LocationParser.parseLocation(getIntent().getStringExtra("origin"));
-        destination = LocationParser.parseLocation(getIntent().getStringExtra("destination"));
+        origin = Serializer.deserialize(getIntent().getStringExtra("origin"), Location.class).get(0);
+        destination = Serializer.deserialize(getIntent().getStringExtra("destination"), Location.class).get(0);
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
         senateTagTV.addTextChangedListener(senateTagTextWatcher);
@@ -156,7 +152,9 @@ public class Pickup2Activity extends SenateActivity
                 // then add it to list and append new item to its description
                 if ((flag == 0) && (barcodeFound == false)) {
                     int returnedStatus = -1;
-                    returnedStatus = getItemDetails();
+                    if (checkServerResponse(true) == OK) {
+                        returnedStatus = getItemDetails();
+                    }
                     if (returnedStatus == SERVER_SESSION_TIMED_OUT ) {
                         return;
                     }
@@ -467,7 +465,7 @@ public class Pickup2Activity extends SenateActivity
             trans.setOrigin(origin);
             trans.setDestination(destination);
             trans.setPickupItems(scannedItems);
-            intent.putExtra("pickup", trans.toJson());
+            intent.putExtra("pickup", Serializer.serialize(trans));
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -544,19 +542,10 @@ public class Pickup2Activity extends SenateActivity
                 URL += "/";
             }   
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "ItemDetails?barcode_num=" + barcode_num);
-            System.out.println("URL CALL:" + URL + "/ItemDetails?barcode_num="
-                    + barcode_num);
+                    .execute(URL + "Item?barcode=" + barcode_num);
             try {
                 res = null;
                 res = resr1.get();
-
-                if (testResNull) { // Testing Purposes Only
-                    res = null;
-                    resr1 = null;
-                    Log.i("TEST RESNULL", "RES SET TO NULL");
-                }
-                System.out.println("URL RESULT:" + res);
 
                 // add it to list and displist and scanned items
                 JSONObject object = null;
@@ -564,91 +553,72 @@ public class Pickup2Activity extends SenateActivity
                     // Log.i("TESTING", "A CALL noServerResponse");
                     noServerResponse(barcode_num);
                     return NO_SERVER_RESPONSE;
-                } else if (res.indexOf("Session timed out") > -1) {
-                    startTimeout(ITEMDETAILS_TIMEOUT);
-                    return SERVER_SESSION_TIMED_OUT;
-                } else if (res.toUpperCase().contains(
-                        "DOES NOT EXIST IN SYSTEM")) {
-                    // Log.i("TESTING",
-                    // "A CALL barcodeDidNotExist");
+                }
+
+                Item item = Serializer.deserialize(res, Item.class).get(0);
+
+                if (item.getStatus() == ItemStatus.DOES_NOT_EXIST) {
                     barcodeDidNotExist(barcode_num);
                     return SENTAG_NOT_FOUND;
+                }
+
+                vl.NUSENATE = item.getBarcode();
+                vl.CDCATEGORY = item.getCommodity().getCategory();
+                vl.DECOMMODITYF = item.getCommodity().getDescription();
+                vl.CDLOCATTO = item.getLocation().getCdlocat();
+                vl.CDLOCTYPETO = item.getLocation().getCdloctype();
+                vl.ADSTREET1 = item.getLocation().getAdstreet1();
+                vl.CDLOCAT = item.getLocation().getCdlocat();
+
+                if (item.getStatus() == ItemStatus.PENDING_REMOVAL) {
+                    errorMessage(barcode_num, "Item Pending Removal.",
+                                 "Senate Tag# " + barcode_num +
+                                 " is pending removal and cannot be moved at this time.");
+                    return 0;
+                }
+
+                if (item.getStatus() == ItemStatus.INACTIVE) {
+                    errorMessage(
+                            barcode_num,
+                            "Senate Tag#: " + barcode_num
+                            + " has been Inactivated.",
+                            "!!ERROR: Senate Tag#: <b>"
+                            + barcode_num
+                            + "</b>"
+                            + " has been Inactivated.<br><br>"
+                            + " <b>This item will not be recorded as being picked up!</b><br><br>"
+                            + " The <b>\""
+                            + vl.DECOMMODITYF
+                            + "\"</b>  must be brought back into the Senate Tracking System by management via the"
+                            + " \"Inventory Record Adjustment E/U\". If you physically MOVE the item please report "
+                            + " Tag# and new location to Inventory Control Mgnt.");
+                    return INACTIVE_SENTAG;
+                }
+
+                if (item.getStatus() == ItemStatus.IN_TRANSIT) {
+                    barcodeIntransit(vl);
+                    return SENTAG_IN_TRANSIT;
+                }
+
+                if (origin.getCdlocat().equalsIgnoreCase(vl.CDLOCAT)) {
+                    vl.CONDITION = "EXISTING";
+                    playSound(R.raw.ok);
+                } else if (destination.getCdlocat().equalsIgnoreCase(
+                        vl.CDLOCAT)) {
+                    playSound(R.raw.honk);
+                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: "
+                                      + vl.CDLOCAT;
                 } else {
-                    try {
-                        object = (JSONObject) new JSONTokener(res).nextValue();
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                    vl.NUSENATE = barcode_number;
-                    vl.CDCATEGORY = object.getString("cdcategory");
-                    vl.DECOMMODITYF = object.getString("decommodityf")
-                            .replaceAll("&#34;", "\"");
-                    vl.CDLOCATTO = object.getString("cdlocatto");
-                    vl.CDLOCTYPETO = object.getString("cdloctypeto");
-                    vl.ADSTREET1 = object.getString("adstreet1to").replaceAll(
-                            "&#34;", "\"");
-                    vl.DTISSUE = object.getString("dtissue");
-                    vl.CDLOCAT = object.getString("cdlocatto");
-                    vl.CDINTRANSIT = object.getString("cdintransit");
-                    vl.CDSTATUS = object.getString("cdstatus");
-
-
-                    if (object.getString("pending_removal").equals("Y")) {
-                        errorMessage(barcode_num, "Item Pending Removal.",
-                                "Senate Tag# " + barcode_num +
-                                " is pending removal and cannot be moved at this time.");
-                        return 0;
-                    }
-
-                    if (vl.CDSTATUS.equalsIgnoreCase("I")) {
-                        errorMessage(
-                                barcode_num,
-                                "Senate Tag#: " + barcode_num
-                                        + " has been Inactivated.",
-                                "!!ERROR: Senate Tag#: <b>"
-                                        + barcode_num
-                                        + "</b>"
-                                        + " has been Inactivated.<br><br>"
-                                        + " <b>This item will not be recorded as being picked up!</b><br><br>"
-                                        + " The <b>\""
-                                        + vl.DECOMMODITYF
-                                        + "\"</b>  must be brought back into the Senate Tracking System by management via the"
-                                        + " \"Inventory Record Adjustment E/U\". If you physically MOVE the item please report "
-                                        + " Tag# and new location to Inventory Control Mgnt.");
-                        return INACTIVE_SENTAG;
-                    }
-
-                    if (vl.CDINTRANSIT != null
-                            && vl.CDINTRANSIT.equalsIgnoreCase("Y")) {
-                        barcodeIntransit(vl);
-                        return SENTAG_IN_TRANSIT;
-                    }
-
-                    if (origin.getCdlocat().equalsIgnoreCase(vl.CDLOCAT)) {
-                        vl.CONDITION = "EXISTING";
-                        playSound(R.raw.ok);
-                    } else if (destination.getCdlocat().equalsIgnoreCase(
-                            vl.CDLOCAT)) {
-                        playSound(R.raw.honk);
-                        vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Already in: "
-                                + vl.CDLOCAT;
-                    } else {
-                        playSound(R.raw.warning);
-                        vl.CONDITION = "DIFFERENT LOCATION";
-                        vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Found in: "
-                                + vl.CDLOCAT;
-                    }
+                    playSound(R.raw.warning);
+                    vl.CONDITION = "DIFFERENT LOCATION";
+                    vl.DECOMMODITYF = vl.DECOMMODITYF + "\n**Found in: "
+                                      + vl.CDLOCAT;
                 }
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

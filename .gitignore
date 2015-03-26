@@ -24,5 +24,8 @@ build/
 proguard/
 
 # IntelliJ
-/.idea/workspace.xml
-/.idea/libraries
+.idea/**
+*.iws
+*.iml
+#**/.idea/workspace.xml
+#**/.idea/tasks.xml

@@ -38,5 +38,11 @@ public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<
         return result;
     }
 
-    public abstract Result handleBackgroundResult(String out, int responseCode);
+    /**
+     * Here is where individual implementations convert the response (usually json) into the Result type.
+     * @param response
+     * @param responseCode
+     * @return
+     */
+    public abstract Result handleBackgroundResult(String response, int responseCode);
 }

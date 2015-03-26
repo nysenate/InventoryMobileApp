@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.model;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -93,11 +91,6 @@ public class Transaction {
             return "RPK";
         }
         return "";
-    }
-
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
     }
 
     public ArrayList<String> getNotCheckedItems() {

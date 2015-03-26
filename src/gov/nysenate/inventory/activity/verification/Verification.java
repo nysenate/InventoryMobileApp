@@ -1,4 +1,4 @@
-package gov.nysenate.inventory.activity;
+package gov.nysenate.inventory.activity.verification;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,11 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.LocationParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -448,7 +450,7 @@ public class Verification extends SenateActivity
                 String jsonString = resr1.get().trim().toString();
                 JSONArray jsonArray = new JSONArray(jsonString);
 
-                locations = LocationParser.parseMultipleLocations(res);
+                locations = Serializer.deserialize(res, Location.class);
                 for (Location loc: locations) {
                               locCodeList.add(loc.getLocationSummaryString());
                      }

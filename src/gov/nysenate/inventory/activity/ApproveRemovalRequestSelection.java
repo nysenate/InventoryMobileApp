@@ -12,7 +12,7 @@ import gov.nysenate.inventory.android.RemovalRequestListFragment;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.RemovalRequestParser;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpStatus;
 
@@ -86,7 +86,7 @@ public class ApproveRemovalRequestSelection extends SenateActivity
         public List<RemovalRequest> handleBackgroundResult(String out, int responseCode) {
             List<RemovalRequest> rrs = null;
             if (responseCode == HttpStatus.SC_OK) {
-                rrs = RemovalRequestParser.parseRemovalRequests(out);
+                rrs = Serializer.deserialize(out, RemovalRequest.class);
             }
             return rrs;
         }

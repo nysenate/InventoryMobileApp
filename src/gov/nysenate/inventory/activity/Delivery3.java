@@ -26,8 +26,7 @@ import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.EmployeeParser;
-import gov.nysenate.inventory.util.TransactionParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -637,7 +636,7 @@ public class Delivery3 extends SenateActivity
 
                 HttpPost httpPost = new HttpPost(url);
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("Delivery", delivery.toJson()));
+                values.add(new BasicNameValuePair("Delivery", Serializer.serialize(delivery)));
                 try {
                     httpPost.setEntity(new UrlEncodedFormEntity(values));
                     response = httpclient.execute(httpPost);
@@ -829,7 +828,7 @@ public class Delivery3 extends SenateActivity
                 Log.i("EMPLOYEELIST","Get Employee List URL:"+res);
 
                 String jsonString = resr1.get().trim().toString();
-                delivery = TransactionParser.parseTransaction(jsonString);
+                delivery = Serializer.deserialize(jsonString, Transaction.class).get(0);
                 invList = delivery.getPickupItems();
 
                 // Display the pickup data
@@ -887,7 +886,7 @@ public class Delivery3 extends SenateActivity
         employeeHiddenList = new ArrayList<Employee>();
         employeeNameList = new ArrayList<String>();
 
-        List<Employee> currentEmployees = EmployeeParser.parseMultipleEmployees(employeeList);
+        List<Employee> currentEmployees = Serializer.deserialize(employeeList, Employee.class);
         //Log.d("Delivery3", "currentEmployees:"+currentEmployees.size());
         employeeHiddenList.addAll(currentEmployees);
         for (Employee emp: currentEmployees) {

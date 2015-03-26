@@ -16,6 +16,7 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -296,7 +297,7 @@ public class EditRemoteStatus extends SenateActivity
 
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("trans", pickup.toJson()));
+                values.add(new BasicNameValuePair("trans", Serializer.serialize(pickup)));
                 values.add(new BasicNameValuePair("user", LoginActivity.nauser));
                 post.setEntity(new UrlEncodedFormEntity(values));
                 response = httpClient.execute(post);

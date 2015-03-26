@@ -1,4 +1,4 @@
-package gov.nysenate.inventory.activity;
+package gov.nysenate.inventory.activity.verification;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,6 +19,9 @@ import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.MenuActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.android.*;
@@ -26,7 +29,9 @@ import gov.nysenate.inventory.listener.CommentsDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.InvItem;
-import gov.nysenate.inventory.util.CommodityParser;
+import gov.nysenate.inventory.model.Item;
+import gov.nysenate.inventory.model.ItemStatus;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +52,7 @@ public class VerScanActivity extends SenateActivity implements
     public TextView tv_counts_scanned;
     public TextView loc_details;
     public TextView tvCdlocat;
-    public static ArrayList<InvItem> missingItems = null;
+    public static ArrayList<InvItem> unscannedItems = null;
     public String res = null;
     boolean testResNull = false; // flag used for Testing Purposes
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -59,9 +64,8 @@ public class VerScanActivity extends SenateActivity implements
                                    // previous activity
     public String cdloctype = null;
     ArrayList commodityList = new ArrayList<Commodity>();
-    public static ArrayList<InvItem> scannedItems = new ArrayList<InvItem>();
     ArrayList<verList> list = new ArrayList<verList>();
-    ArrayList<InvItem> invList = new ArrayList<InvItem>();
+    public static ArrayList<InvItem> invList = new ArrayList<InvItem>();
     CommentsDialog commentsDialog = null;
 
     public final int ITEMLIST_TIMEOUT = 101, ITEMDETAILS_TIMEOUT = 102,
@@ -86,24 +90,10 @@ public class VerScanActivity extends SenateActivity implements
     String timeoutFrom = "VERIFICATIONLIST";
     InvListViewAdapter adapter;
     int count;
-    int numItems;
-    // These 3 ArrayLists will be used to transfer data to next activity and to
-    // the server
-    public static ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();// for
-                                                                                // saving
-    // items which
-    // are not
-    // allocated
-    // to
-    // that
-    // location
+    public static int numItems;
 
-    public static ArrayList<InvItem> newItems = new ArrayList<InvItem>();// for
-                                                                         // saving
-                                                                         // items
-    // which are not
-    // allocated to that
-    // location
+    public static ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();
+    public static ArrayList<InvItem> newItems = new ArrayList<InvItem>();
 
     String lastClickedTo = "";
     int lastRowFound = -1;
@@ -120,9 +110,8 @@ public class VerScanActivity extends SenateActivity implements
         setContentView(R.layout.activity_verscan);
         registerBaseActivityReceiver();
         currentActivity = this;
-        VerScanActivity.AllScannedItems = new ArrayList<InvItem>();
-        VerScanActivity.missingItems = new ArrayList<InvItem>();
-        VerScanActivity.scannedItems = new ArrayList<InvItem>();
+        VerScanActivity.allScannedItems = new ArrayList<InvItem>();
+        VerScanActivity.unscannedItems = new ArrayList<InvItem>();
         VerScanActivity.newItems = new ArrayList<InvItem>();
 
         // Get the location code from the previous activity
@@ -244,6 +233,19 @@ public class VerScanActivity extends SenateActivity implements
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        cntScanned = allScannedItems.size();
+        updateChanges();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        invList = new ArrayList<>();
     }
 
     @Override
@@ -402,7 +404,7 @@ public class VerScanActivity extends SenateActivity implements
 
                 // If the item is already scanned then display a
                 // toaster "Already Scanned"
-                if (findBarcode(barcode_num, AllScannedItems) > -1) {
+                if (findBarcode(barcode_num, allScannedItems) > -1) {
                     // display toaster
                     barcodeFound = true;
                     Context context = getApplicationContext();
@@ -893,7 +895,7 @@ public class VerScanActivity extends SenateActivity implements
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
-                AllScannedItems.add(curInvItem);// to keep track of
+                allScannedItems.add(curInvItem);// to keep track of
                                                 // (number+details)
                                                 // for summary
                 /*
@@ -901,10 +903,7 @@ public class VerScanActivity extends SenateActivity implements
                  * ") INVLIST SIZE:" + invList.size() + "");
                  */
                 // invList.remove(i);
-                scannedItems.add(curInvItem);// to keep track of all
-                                             // scanned items
-                                             // numbers for
-                                             // oracle table
+
                 cntScanned++;
                 playSound(R.raw.ok);
                 // Simply contact the Web Server to keep the Session
@@ -959,8 +958,7 @@ public class VerScanActivity extends SenateActivity implements
         invList.add(newInvItem);
         cntScanned++;
 
-        scannedItems.add(newInvItem);
-        AllScannedItems.add(newInvItem);
+        allScannedItems.add(newInvItem);
         newItems.add(newInvItem); // to keep track of (number+details)
                                   // for summary
 
@@ -1002,7 +1000,10 @@ public class VerScanActivity extends SenateActivity implements
         // attempts to add an item with
         // the else condition.
 
-        String serverResponse = getItemDetails(nusenate, false);
+        String serverResponse = null;
+        if (checkServerResponse(true) == OK) {
+            serverResponse = getItemDetails(nusenate, false);
+        }
 
         /*
          * Log.i("AddItem", "nusenate:" + nusenate + " Server RESPONSE:" +
@@ -1012,102 +1013,95 @@ public class VerScanActivity extends SenateActivity implements
         if (serverResponse == null) {
             noServerResponse();
             return NO_SERVER_RESPONSE;
-        } else if (res.indexOf("Session timed out") > -1) {
-            startTimeout(ITEMDETAILS_TIMEOUT);
-            return SERVER_SESSION_TIMED_OUT;
-        } else if (res.contains("Does not exist in system")) {
+        }
+
+        Item item = Serializer.deserialize(serverResponse, Item.class).get(0);
+
+        if (item.getStatus() == ItemStatus.DOES_NOT_EXIST) {
             // Log.i("TESTING", "A CALL Senate Tag# DidNotExist");
             nusenateDidNotExist(nusenate);
             return SENTAG_NOT_FOUND;
-        } else {
-            JSONObject jo;
-            try {
-                jo = new JSONObject(serverResponse);
-                verList vl = new verList();
-                vl.NUSENATE = nusenate;
-                String nusenateReturned = null;
-                vl.CDCATEGORY = jo.getString("cdcategory");
-                vl.CDLOCAT = jo.getString("cdlocatto");
-                vl.CDSTATUS = jo.getString("cdstatus");
-                try {
-                    vl.CDLOCTYPE = jo.getString("cdloctypeto");
-                }
-                catch (Exception e) {
-                    vl.CDLOCTYPE = "(N/A)";
-                }
-                nusenateReturned = jo.getString("nusenate");
-
-                if (nusenateReturned == null) {
-                    vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                    vl.CONDITION = "NEW";
-                    nusenateDidNotExist(nusenate);
-                    return SENTAG_NOT_FOUND;
-                } else if (vl.CDSTATUS.equalsIgnoreCase("I")) {
-                    vl.DECOMMODITYF = jo.getString("decommodityf");
-                    inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                            vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
-
-                    inactiveInvItem.setType("INACTIVE");
-
-                    inactiveMessage(
-                            nusenate,
-                            "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
-                                    + "</b> has been <b>INACTIVATED</b>.",
-                            "Item Description: <b>"
-                                    + vl.DECOMMODITYF
-                                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
-                    return -4;
-
-                } else {
-                    // Log.i("TESTING",
-                    // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
-                    vl.DECOMMODITYF = jo.getString("decommodityf")
-                            + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
-                    vl.CONDITION = "DIFFERENT LOCATION";
-                    playSound(R.raw.warning);
-                }
-                StringBuilder s_new = new StringBuilder();
-                // s_new.append(vl.NUSENATE); since the desc coming from
-                // server already contains barcode number we wont add it
-                // again
-                // s_new.append(" ");
-                s_new.append("ADDED: ");
-                s_new.append(vl.NUSENATE);
-                s_new.append(": ");
-                s_new.append(vl.CDCATEGORY);
-                s_new.append(" ");
-                s_new.append(vl.DECOMMODITYF);
-
-                // display toster
-                Context context = getApplicationContext();
-                CharSequence text = s_new;
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-
-                // 3/15/13 BH Coded below to use InvItem Objects to display
-                // the list.
-                InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                        vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
-                invList.add(invItem);
-                cntScanned++;
-
-                scannedItems.add(invItem);
-                AllScannedItems.add(invItem);
-                newItems.add(invItem); // to keep track of (number+details)
-                                       // for summary
-                currentState = NONE;
-
-                return OK;
-            } catch (JSONException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return EXCEPTION_IN_CODE;
-            }
         }
+        verList vl = new verList();
+        vl.NUSENATE = item.getBarcode();
+        String nusenateReturned = null;
+        vl.CDCATEGORY = item.getCommodity().getCategory();
+        vl.CDLOCAT = item.getLocation().getCdlocat();
+
+        try {
+            vl.CDLOCTYPE = item.getLocation().getCdloctype();
+        }
+        catch (Exception e) {
+            vl.CDLOCTYPE = "(N/A)";
+        }
+        nusenateReturned = item.getBarcode();
+
+        if (nusenateReturned == null) {
+            vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+            vl.CONDITION = "NEW";
+            nusenateDidNotExist(nusenate);
+            return SENTAG_NOT_FOUND;
+        } else if (item.getStatus() == ItemStatus.INACTIVE) {
+            vl.DECOMMODITYF = item.getCommodity().getDescription();
+            inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                                          vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+
+            inactiveInvItem.setType("INACTIVE");
+
+            inactiveMessage(
+                    nusenate,
+                    "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
+                    + "</b> has been <b>INACTIVATED</b>.",
+                    "Item Description: <b>"
+                    + vl.DECOMMODITYF
+                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
+            return -4;
+
+        } else {
+            // Log.i("TESTING",
+            // "nusenateReturned was not null LENGTH:"+nusenateReturned.length());
+            vl.DECOMMODITYF = item.getCommodity().getDescription()
+                              + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
+            vl.CONDITION = "DIFFERENT LOCATION";
+            playSound(R.raw.warning);
+        }
+        StringBuilder s_new = new StringBuilder();
+        // s_new.append(vl.NUSENATE); since the desc coming from
+        // server already contains barcode number we wont add it
+        // again
+        // s_new.append(" ");
+        s_new.append("ADDED: ");
+        s_new.append(vl.NUSENATE);
+        s_new.append(": ");
+        s_new.append(vl.CDCATEGORY);
+        s_new.append(" ");
+        s_new.append(vl.DECOMMODITYF);
+
+        // display toster
+        Context context = getApplicationContext();
+        CharSequence text = s_new;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+
+        // 3/15/13 BH Coded below to use InvItem Objects to display
+        // the list.
+        InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                                      vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+        invList.add(invItem);
+        cntScanned++;
+
+        allScannedItems.add(invItem);
+        newItems.add(invItem); // to keep track of (number+details)
+        // for summary
+        currentState = NONE;
+
+        return OK;
     }
+
+
 
     public void addKeyword(View view) {
         // Log.i("addKeyword", "addKeyword adding row");
@@ -1192,7 +1186,7 @@ public class VerScanActivity extends SenateActivity implements
                 }
                 String jsonString = resr1.get().trim().toString();
                 System.out.println(jsonString);
-                commodityList = (ArrayList) CommodityParser.parseCommodities(jsonString);
+                commodityList = (ArrayList) Serializer.deserialize(jsonString, Commodity.class);
 
                 // code for JSON ends
             } catch (InterruptedException e) {
@@ -1268,11 +1262,6 @@ public class VerScanActivity extends SenateActivity implements
         return keywordList;
     }
 
-    public String getItemDetails(String nusenate) {
-        return getItemDetails(nusenate, true); // By default, check for a
-                                               // timeout
-    }
-
     public String getItemDetails(String nusenate, boolean checkTimeout) {
         // check network connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1281,23 +1270,14 @@ public class VerScanActivity extends SenateActivity implements
             // fetch data
             status = "yes";
             // int barcode= Integer.parseInt(barcode_num);
-            // scannedItems.add(barcode);
 
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "ItemDetails?barcode_num=" + nusenate);
+                    .execute(URL + "Item?barcode=" + nusenate);
             try {
-                if (testResNull) { // Testing Purposes Only
-                    resr1 = null;
-                    Log.i("TEST RESNULL", "RES SET TO NULL");
-                }
                 res = null;
                 res = resr1.get().trim().toString();
                 if (res == null) {
                     noServerResponse();
-                    return res;
-                } else if (checkTimeout
-                        && res.indexOf("Session timed out") > -1) {
-                    startTimeout(ITEMDETAILS_TIMEOUT);
                     return res;
                 }
 
@@ -1373,14 +1353,12 @@ public class VerScanActivity extends SenateActivity implements
         boolean barcodeFound = false;
         // Try to remove an item from the list....
         int invItemIndex = -1;
-        if (!resumeFromTimeout
-                || (currentState == NONE || currentState == REMOVEITEM_STATE)) {
+        if (!resumeFromTimeout || (currentState == NONE || currentState == REMOVEITEM_STATE)) {
             Log.i("TESTING", "Removing item " + nusenate);
             invItemIndex = removeItem(nusenate, resumeFromTimeout);
         }
 
-        if ((resumeFromTimeout && currentState == ADDITEM_STATE)
-                || invItemIndex == -1) { // Item not found, so Add Item to list
+        if ((resumeFromTimeout && currentState == ADDITEM_STATE) || invItemIndex == -1) { // Item not found, so Add Item to list
             // Log.i("TESTING", "Adding item " + nusenate);
             int addItemResults = -1;
             addItemResults = addItem(nusenate);
@@ -1409,19 +1387,11 @@ public class VerScanActivity extends SenateActivity implements
             btnVerListCont.getBackground().setAlpha(45);
 
             // create lists for summary activity
-            missingItems = new ArrayList<InvItem>();// for
-                                                    // saving
-                                                    // items
-                                                    // which
-                                                    // are
-                                                    // not
-                                                    // allocated
-                                                    // to
-                                                    // that
-                                                    // location
+            unscannedItems = new ArrayList<InvItem>();
+
             for (int i = 0; i < this.invList.size(); i++) {
                 if ((invList.get(i).getType().equalsIgnoreCase("EXISTING")) == true) {
-                    missingItems.add(invList.get(i)); // if the
+                    unscannedItems.add(invList.get(i)); // if the
                                                       // description
                                                       // of dispList
                                                       // is not new
@@ -1431,36 +1401,10 @@ public class VerScanActivity extends SenateActivity implements
                 }
             }
 
-            String summary;
-            summary = "{\"nutotitems\":\"" + numItems + "\",\"nuscanitems\":\""
-                    + AllScannedItems.size() + "\",\"numissitems\":\""
-                    + missingItems.size() + "\",\"nunewitems\":\""
-                    + newItems.size() + "\"}";
-
             Intent intent = new Intent(this, VerSummaryActivity.class);
             intent.putExtra("loc_code", loc_code);
             intent.putExtra("cdloctype", cdloctype);
-            intent.putExtra("summary", summary);
-            /*
-             * intent.putStringArrayListExtra("scannedBarcodeNumbers",
-             * getJSONArrayList(scannedItems));
-             */
-            /*
-             * intent.putStringArrayListExtra("scannedList",
-             * getJSONArrayList(AllScannedItems));// scanned
-             */
-            // items
-            // list
-            /*
-             * intent.putStringArrayListExtra("missingList",
-             * getJSONArrayList(missingItems));// missing
-             */
-            // items
-            // list
-            intent.putStringArrayListExtra("newItems",
-                    getJSONArrayList(newItems));// new
-                                                // items
-                                                // list
+            intent.putExtra("totalItemCount", numItems);
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
@@ -1630,8 +1574,7 @@ public class VerScanActivity extends SenateActivity implements
         invList.add(inactiveInvItem);
         cntScanned++;
 
-        scannedItems.add(inactiveInvItem);
-        AllScannedItems.add(inactiveInvItem);
+        allScannedItems.add(inactiveInvItem);
         newItems.add(inactiveInvItem); // to keep track of (number+details)
         // for summary
         adapter = new InvListViewAdapter(VerScanActivity.this,

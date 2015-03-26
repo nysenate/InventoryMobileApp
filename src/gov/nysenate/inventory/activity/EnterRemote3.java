@@ -109,7 +109,7 @@ public class EnterRemote3 extends SenateActivity {
             try {
                 response = httpClient.execute(new HttpGet(url));
                 response.getEntity().writeTo(out);
-                pickup = TransactionParser.parseTransaction(out.toString());
+                pickup = Serializer.deserialize(out.toString(), Transaction.class).get(0);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -177,7 +177,7 @@ public class EnterRemote3 extends SenateActivity {
                     response.getEntity().writeTo(out);
                     out.close();
                     responseJson = out.toString();
-                    employeeNameList = EmployeeParser.parseMultipleEmployees(responseJson);
+                    employeeNameList = Serializer.deserialize(responseJson, Employee.class);
                 } else {
                     // Closes the connection.
                     response.getEntity().getContent().close();
@@ -342,7 +342,7 @@ public class EnterRemote3 extends SenateActivity {
             HttpPost httpPost = new HttpPost(url);
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("trans", pickup.toJson()));
+                values.add(new BasicNameValuePair("trans", Serializer.serialize(pickup)));
                 httpPost.setEntity(new UrlEncodedFormEntity(values));
 
                 HttpResponse response = httpClient.execute(httpPost);

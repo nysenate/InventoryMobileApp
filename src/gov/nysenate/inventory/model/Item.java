@@ -2,12 +2,16 @@ package gov.nysenate.inventory.model;
 
 public class Item
 {
+    /** The unique identifier used by the data store */
     private int id;
     private String barcode;
     private String serialNumber;
     private Commodity commodity;
     private Location location;
     private ItemStatus status;
+
+    /** The reason for an item to be inactivated. */
+    private AdjustCode adjustCode;
 
     public Item() { }
 
@@ -64,6 +68,14 @@ public class Item
         this.status = status;
     }
 
+    public AdjustCode getAdjustCode() {
+        return adjustCode;
+    }
+
+    public void setAdjustCode(AdjustCode adjustCode) {
+        this.adjustCode = adjustCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,6 +84,7 @@ public class Item
         Item item = (Item) o;
 
         if (id != item.id) return false;
+        if (adjustCode != null ? !adjustCode.equals(item.adjustCode) : item.adjustCode != null) return false;
         if (barcode != null ? !barcode.equals(item.barcode) : item.barcode != null) return false;
         if (commodity != null ? !commodity.equals(item.commodity) : item.commodity != null) return false;
         if (location != null ? !location.equals(item.location) : item.location != null) return false;
@@ -79,5 +92,17 @@ public class Item
         if (status != item.status) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (barcode != null ? barcode.hashCode() : 0);
+        result = 31 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
+        result = 31 * result + (commodity != null ? commodity.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (adjustCode != null ? adjustCode.hashCode() : 0);
+        return result;
     }
 }

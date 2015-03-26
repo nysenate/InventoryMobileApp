@@ -2,10 +2,9 @@ package gov.nysenate.inventory.android.asynctask;
 
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
-import com.google.gson.Gson;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.util.RemovalRequestParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -54,7 +53,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
     protected RemovalRequest doInBackground(String... urls) {
         HttpPost httpPost = new HttpPost(urls[0]);
         List<NameValuePair> values = new ArrayList<NameValuePair>();
-        values.add(new BasicNameValuePair("RemovalRequest", new Gson().toJson(rr)));
+        values.add(new BasicNameValuePair("RemovalRequest", Serializer.serialize(rr)));
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         CookieStore store = LoginActivity.getHttpClient().getCookieStore();
@@ -69,7 +68,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             response.getEntity().writeTo(out);
-            removalRequest = RemovalRequestParser.parseRemovalRequest(out.toString());
+            removalRequest = Serializer.deserialize(out.toString(), RemovalRequest.class).get(0);
 
             response.getEntity().consumeContent();
         } catch (UnsupportedEncodingException e) {

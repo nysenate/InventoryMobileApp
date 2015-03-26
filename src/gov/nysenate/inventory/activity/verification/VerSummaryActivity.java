@@ -1,4 +1,4 @@
-package gov.nysenate.inventory.activity;
+package gov.nysenate.inventory.activity.verification;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +16,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.*;
 import android.widget.TabHost.TabSpec;
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.MenuActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.InvListViewAdapter;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
@@ -31,21 +34,13 @@ import java.util.concurrent.ExecutionException;
 
 public class VerSummaryActivity extends SenateActivity
 {
-    ArrayList<InvItem> AllScannedItems = new ArrayList<InvItem>();
-    ArrayList<InvItem> missingItems = new ArrayList<InvItem>(); // Items in the
-                                                                // location
-                                                                // which have
-                                                                // not been
-                                                                // verified.
-    ArrayList<InvItem> newItems = new ArrayList<InvItem>(); // Items in the
-                                                            // location but
-                                                            // listed elsewhere
-                                                            // in the database.
-    ArrayList<InvItem> scannedBarcodeNumbers = new ArrayList<InvItem>();
-    TextView tvTotItemVSum;
-    TextView tvTotScanVSum;
-    TextView tvMisItems;
-    TextView tvNewItems;
+    ArrayList<InvItem> unscannedItems = new ArrayList<InvItem>();
+    ArrayList<InvItem> newItems = new ArrayList<InvItem>();
+    ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();
+    TextView totalItemCountView;
+    TextView scannedItemCountView;
+    TextView unscannedItemCountView;
+    TextView newItemCountView;
     String barcodeNum = "";
 
     public String res = null;
@@ -62,6 +57,15 @@ public class VerSummaryActivity extends SenateActivity
             CONTINUEBUTTON_TIMEOUT = 102;
     String URL = null;
 
+    private InvListViewAdapter scannedItemsListAdapter;
+    private InvListViewAdapter unscannedItemsListAdapter;
+    private InvListViewAdapter newItemsListAdapter;
+    private ListView scannedItemsListView;
+    private ListView unscannedItemsListView;
+    private ListView newItemsListView;
+
+    private TabHost tabHost;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +75,14 @@ public class VerSummaryActivity extends SenateActivity
 
         // Summary Fields
 
-        tvTotItemVSum = (TextView) findViewById(R.id.tvTotItemVSum);
-        tvTotScanVSum = (TextView) findViewById(R.id.tvTotScanVSum);
-        tvMisItems = (TextView) findViewById(R.id.tvMisItems);
-        tvNewItems = (TextView) findViewById(R.id.tvNewItems);
+        totalItemCountView = (TextView) findViewById(R.id.tvTotItemVSum);
+        scannedItemCountView = (TextView) findViewById(R.id.tvTotScanVSum);
+        unscannedItemCountView = (TextView) findViewById(R.id.tvMisItems);
+        newItemCountView = (TextView) findViewById(R.id.tvNewItems);
 
         // Code for tab
 
-        TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
+        tabHost = (TabHost) findViewById(android.R.id.tabhost);
         tabHost.setup();
 
         TabSpec spec1 = tabHost.newTabSpec("Tab 1");
@@ -104,9 +108,9 @@ public class VerSummaryActivity extends SenateActivity
         }
 
         // Find the ListView resource.
-        ListView ListViewTab1 = (ListView) findViewById(R.id.listView1);
-        ListView ListViewTab2 = (ListView) findViewById(R.id.listView2);
-        ListView ListViewTab3 = (ListView) findViewById(R.id.listView3);
+        scannedItemsListView = (ListView) findViewById(R.id.listView1);
+        unscannedItemsListView = (ListView) findViewById(R.id.listView2);
+        newItemsListView = (ListView) findViewById(R.id.listView3);
 
         // Setup Buttons and Progress Bar
         this.progressVerSum = (ProgressBar) findViewById(R.id.progressVerSum);
@@ -115,81 +119,35 @@ public class VerSummaryActivity extends SenateActivity
         VerSummaryActivity.btnVerSumCont = (Button) findViewById(R.id.btnVerSumCont);
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(255);
 
-        // get Lists from intent of previous activity
-        AllScannedItems = VerScanActivity.AllScannedItems;
-        /*
-         * AllScannedItems = this.getInvArrayListFromJSON(getIntent()
-         * .getStringArrayListExtra("scannedList"));
-         */
-        missingItems = VerScanActivity.missingItems;
-        /*
-         * missingItems = this.getInvArrayListFromJSON(getIntent()
-         * .getStringArrayListExtra("missingList"));
-         */
+        unscannedItems = VerScanActivity.unscannedItems;
         newItems = VerScanActivity.newItems;
-        /*
-         * newItems = this.getInvArrayListFromJSON(getIntent()
-         * .getStringArrayListExtra("newItems"));
-         */
-        scannedBarcodeNumbers = VerScanActivity.scannedItems;
-        /*
-         * scannedBarcodeNumbers = this.getInvArrayListFromJSON(getIntent()
-         * .getStringArrayListExtra("scannedBarcodeNumbers"));
-         */
+        allScannedItems = VerScanActivity.allScannedItems;
+
         loc_code = getIntent().getStringExtra("loc_code");
         cdloctype = getIntent().getStringExtra("cdloctype");
-        String summary = getIntent().getStringExtra("summary");
-        try {
-            JSONObject jsonObject = new JSONObject(summary);
-            try {
-                tvTotItemVSum.setText(jsonObject.getString("nutotitems"));
+        totalItemCountView.setText(String.valueOf(getIntent().getIntExtra("totalItemCount", -1)));
 
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-            try {
-                tvTotScanVSum.setText(jsonObject.getString("nuscanitems"));
-
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-            try {
-                tvMisItems.setText(jsonObject.getString("numissitems"));
-
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-            try {
-                tvNewItems.setText(jsonObject.getString("nunewitems"));
-
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        } catch (JSONException e) {
-
-        }
-
-        // summary =
-        // "{\"nutotitems\":\""+numItems+"\",\"nuscanitems\":\""+AllScannedItems.size()+"\",\"numissitems\":\""+missingItems.size()+"\",\"nunewitems\":\""+newItems.size()+"\"}";
+        initializeItemCountViews();
 
         TextView locCodeView = (TextView) findViewById(R.id.textView2);
         locCodeView.setText(Verification.autoCompleteTextView1.getText());
 
         // Create ArrayAdapter using the planet list.
-        Log.i("VerSumActivity", "onCreate before listAdapter1");
-        InvListViewAdapter listAdapter1 = new InvListViewAdapter(this,
-                R.layout.invlist_item, AllScannedItems);
-        Log.i("VerSumActivity", "onCreate before listAdapter2");
-        InvListViewAdapter listAdapter2 = new InvListViewAdapter(this,
-                R.layout.invlist_item, missingItems);
-        Log.i("VerSumActivity", "onCreate before listAdapter3");
-        InvListViewAdapter listAdapter3 = new InvListViewAdapter(this,
-                R.layout.invlist_item, newItems);
+        scannedItemsListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, allScannedItems);
+        unscannedItemsListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, unscannedItems);
+        newItemsListAdapter = new InvListViewAdapter(this, R.layout.invlist_item, newItems);
         // Set the ArrayAdapter as the ListView's adapter.
-        ListViewTab1.setAdapter(listAdapter1);
-        ListViewTab2.setAdapter(listAdapter2);
-        ListViewTab3.setAdapter(listAdapter3);
+        scannedItemsListView.setAdapter(scannedItemsListAdapter);
+        unscannedItemsListView.setAdapter(unscannedItemsListAdapter);
+        newItemsListView.setAdapter(newItemsListAdapter);
         Log.i("VerSumActivity", "onCreate done");
+
+    }
+
+    private void initializeItemCountViews() {
+        scannedItemCountView.setText(String.valueOf(allScannedItems.size()));
+        unscannedItemCountView.setText(String.valueOf(unscannedItems.size()));
+        newItemCountView.setText(String.valueOf(newItems.size()));
     }
 
     @Override
@@ -292,11 +250,29 @@ public class VerSummaryActivity extends SenateActivity
         progressVerSum.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        scannedItemsListAdapter.notifyDataSetChanged();
+        unscannedItemsListAdapter.notifyDataSetChanged();
+        newItemsListAdapter.notifyDataSetChanged();
+        initializeItemCountViews();
+        tabHost.setCurrentTab(0);
+    }
+
     public void backButton(View view) {
         if (checkServerResponse(true) == OK) {
             btnVerSumBack.getBackground().setAlpha(45);
             this.onBackPressed();
         }
+    }
+
+    public void editButtonOnClick(View view) {
+        checkServerResponse();
+
+        Intent editIntent = new Intent(this, EditVerification.class);
+        startActivity(editIntent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     public void noServerResponse() {
@@ -556,8 +532,8 @@ public class VerSummaryActivity extends SenateActivity
         progressVerSum.setVisibility(View.VISIBLE);
         Log.i("submitVerification", "2");
         barcodeNum = "";
-        for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-            barcodeNum += scannedBarcodeNumbers.get(i).getNusenate() + ",";
+        for (int i = 0; i < allScannedItems.size(); i++) {
+            barcodeNum += allScannedItems.get(i).getNusenate() + ",";
         }
         Log.i("submitVerification", "get Tag #'s done");
 
@@ -578,8 +554,8 @@ public class VerSummaryActivity extends SenateActivity
                 // Get the URL from the properties
 
                 JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i < scannedBarcodeNumbers.size(); i++) {
-                    jsonArray.put(scannedBarcodeNumbers.get(i).getJSONObject());
+                for (int i = 0; i < allScannedItems.size(); i++) {
+                    jsonArray.put(allScannedItems.get(i).getJSONObject());
                 }
                 ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
                 postParams.add(new BasicNameValuePair("cdlocat", loc_code));

@@ -22,7 +22,7 @@ import gov.nysenate.inventory.android.MsgAlert;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.LocationParser;
+import gov.nysenate.inventory.util.Serializer;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -303,8 +303,8 @@ public class Pickup1 extends SenateActivity
                 Intent intent = new Intent(this, Pickup2Activity.class);
                 origin = locations.get(allLocations.indexOf(currentFromLocation));
                 destination = locations.get(allLocations.indexOf(currentToLocation));
-                intent.putExtra("origin", origin.toJson());
-                intent.putExtra("destination", destination.toJson());
+                intent.putExtra("origin", Serializer.serialize(origin));
+                intent.putExtra("destination", Serializer.serialize(destination));
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
@@ -413,7 +413,7 @@ public class Pickup1 extends SenateActivity
                 return null;
             }
 
-            locations = LocationParser.parseMultipleLocations(res);
+            locations = Serializer.deserialize(res, Location.class);
             for (Location loc: locations) {
                 allLocations.add(loc.getLocationSummaryString());
             }
