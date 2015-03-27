@@ -270,26 +270,32 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     };
 
     private void displaySearchResultInfo() {
-        String loccode;
-        String text = searchText.getText().toString();
         if (searchTextIsValidValue()) {
             switch (currentSearchByParam()) {
 
                 case PICKUPLOC:
-                    loccode = text.split("-")[0];
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    } else {
-                        new LocationDetails(loccode).execute();
-                    }
-                    break;
-
                 case DELIVERYLOC:
-                    loccode = text.split("-")[0];
+                    String locationCode = null;
+                    String locationType = null;
+                    for (Transaction pickup : validPickups) {
+                        if (pickup.getOriginSummaryString().equals(searchText.getText().toString())) {
+                            locationCode = pickup.getOriginCdLoc();
+                            locationType = pickup.getOriginCdLocType();
+                        }
+                        else if (pickup.getDestinationSummaryString().equals(searchText.getText().toString())) {
+                            locationCode = pickup.getDestinationCdLoc();
+                            locationType = pickup.getDestinationCdLocType();
+                        }
+                    }
+                    if (locationCode == null || locationType == null) {
+                        setLabelsToNA();
+                        Toasty.displayCenteredMessage(this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
+                        return;
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        new LocationDetails(loccode).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new LocationDetails(locationCode, locationType).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
-                        new LocationDetails(loccode).execute();
+                        new LocationDetails(locationCode, locationType).execute();
                     }
                     break;
 
@@ -354,10 +360,12 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
 
     private class LocationDetails extends AsyncTask<Void, Map<TextView, String>, String> {
 
-        private String loccode;
+        private String locationCode;
+        private String locationType;
 
-        public LocationDetails(String loccode) {
-            this.loccode = loccode;
+        public LocationDetails(String locationCode, String locationType) {
+            this.locationCode = locationCode;
+            this.locationType = locationType;
         }
 
         @Override
@@ -377,8 +385,8 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
             String url = AppProperties.getBaseUrl(SelectDelivery1.this);
 
             // barcode_num is actually the cdLoc
-            url += "LocationDetails?barcode_num=" + loccode;
-            url += "&userFallback=" + LoginActivity.nauser;
+            url += "LocationDetails?location_code=" + locationCode
+                   + "&location_type=" + locationType;
 
             try {
                 response = httpClient.execute(new HttpGet(url));

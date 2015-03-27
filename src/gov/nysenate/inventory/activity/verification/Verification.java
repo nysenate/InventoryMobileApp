@@ -27,7 +27,7 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.util.Serializer;
-import org.json.JSONArray;
+import gov.nysenate.inventory.util.Toasty;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -47,7 +47,6 @@ public class Verification extends SenateActivity
     public String loc_code_str = null;
     public String cdloctype = null;
     static ClearableAutoCompleteTextView autoCompleteTextView1;
-    public ArrayList<String> locCodeList = new ArrayList<String>();
     static Button btnVerify1Cont;
     static Button btnVerify1Cancel;
     // TextView tvLocCd;
@@ -58,7 +57,7 @@ public class Verification extends SenateActivity
     String timeoutFrom = "verification";
     boolean locationBeingTyped = false;
     int lastSize = 0;
-    private List<Location> locations;
+    private Map<String, Location> summaryToLocation;
 
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
@@ -150,8 +149,7 @@ public class Verification extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -328,9 +326,14 @@ public class Verification extends SenateActivity
             // fetch data
             status = "yes";
 
+            Location selectedLocation = summaryToLocation.get(autoCompleteTextView1.getText().toString());
+            if (selectedLocation == null) {
+                Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
+                return;
+            }
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?barcode_num="
-                            + barcode_num);
+                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                             + "&location_type=" + selectedLocation.getCdloctype());
             try {
                 try {
                     res = null;
@@ -445,28 +448,17 @@ public class Verification extends SenateActivity
                     noServerResponse();
                     return;
                 }
-                // code for JSON
 
-                String jsonString = resr1.get().trim().toString();
-                JSONArray jsonArray = new JSONArray(jsonString);
-
-                locations = Serializer.deserialize(res, Location.class);
+                summaryToLocation = new HashMap<>();
+                List<Location> locations = Serializer.deserialize(res, Location.class);
                 for (Location loc: locations) {
-                              locCodeList.add(loc.getLocationSummaryString());
-                     }
-                               
-                /*                JSONArray jsonArray = new JSONArray(jsonString);
-                 
-                                 for (int i = 0; i < jsonArray.length(); i++) {
-                                     locCodeList.add(jsonArray.getString(i).toString());
-                -                }
-                +                }*/                Collections.sort(locCodeList);
-                // System.out.println("**********LOCATION CODES COUNT:"
-                // + locCodeList.size());
-                //
+                    summaryToLocation.put(loc.getLocationSummaryString(), loc);
+                }
+
+                List<String> sortedSummaries = new ArrayList<>(summaryToLocation.keySet());
+                Collections.sort(sortedSummaries);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        locCodeList);
+                        android.R.layout.simple_dropdown_item_1line, sortedSummaries);
 
                 autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
                 autoCompleteTextView1.setThreshold(1);
@@ -476,9 +468,6 @@ public class Verification extends SenateActivity
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -505,7 +494,7 @@ public class Verification extends SenateActivity
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (locCodeList.indexOf(currentLocation) == -1) {
+            } else if (summaryToLocation.containsKey(currentLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: Location Code \"" + currentLocation
                                 + "\" is invalid.", duration);

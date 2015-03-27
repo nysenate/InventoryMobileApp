@@ -35,13 +35,13 @@ import java.util.*;
 
 public class ChangePickupDestination extends SenateActivity {
 
-    Transaction pickup;
-    ProgressBar progressBar;
-    List<String> locations;
-    ClearableAutoCompleteTextView newDeliveryLocation;
-    TextView newLocRespCenterHd;
-    TextView newLocAddress;
-    Location newLocation;
+    private Transaction pickup;
+    private ProgressBar progressBar;
+    private Map<String, Location> summaryToLocationMap = new HashMap<>();
+    private ClearableAutoCompleteTextView newDeliveryLocation;
+    private TextView newLocRespCenterHd;
+    private TextView newLocAddress;
+    private Location newLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class ChangePickupDestination extends SenateActivity {
         setContentView(R.layout.activity_change_destination);
         registerBaseActivityReceiver();
 
-        locations = new ArrayList<String>();
         newLocation = new Location();
 
         TextView oldPickupLocation = (TextView) findViewById(R.id.old_pickup_location);
@@ -81,22 +80,6 @@ public class ChangePickupDestination extends SenateActivity {
         } else {
             new GetLocations().execute();
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, locations);
-        newDeliveryLocation.setThreshold(1);
-        newDeliveryLocation.setAdapter(adapter);
-        newDeliveryLocation.addTextChangedListener(destinationTextWatcher);
-        newDeliveryLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new LocationDetails().execute();
-                }
-            }
-        });
     }
 
     private class GetLocations extends AsyncTask<Void, Void, String> {
@@ -131,16 +114,33 @@ public class ChangePickupDestination extends SenateActivity {
 
             List<Location> locs = Serializer.deserialize(out.toString(), Location.class);
             for (Location loc: locs) {
-                locations.add(loc.getLocationSummaryString());
+                summaryToLocationMap.put(loc.getLocationSummaryString(), loc);
             }
 
-            Collections.sort(locations);
             return out.toString();
         }
 
         @Override
         protected void onPostExecute(String response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+            List<String> locSummaries = new ArrayList<>(summaryToLocationMap.keySet());
+            Collections.sort(locSummaries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(ChangePickupDestination.this, android.R.layout.simple_dropdown_item_1line, locSummaries);
+            newDeliveryLocation.setThreshold(1);
+            newDeliveryLocation.setAdapter(adapter);
+            newDeliveryLocation.addTextChangedListener(destinationTextWatcher);
+            newDeliveryLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        new LocationDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        new LocationDetails().execute();
+                    }
+                }
+            });
         }
     }
 
@@ -162,9 +162,13 @@ public class ChangePickupDestination extends SenateActivity {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             String url = AppProperties.getBaseUrl(ChangePickupDestination.this);
 
-            // barcode_num is actually the cdLoc
-            url += "LocationDetails?barcode_num=" + parseCdLoc(newDeliveryLocation.getText().toString());
-            url += "&userFallback=" + LoginActivity.nauser;
+            Location selectedLocation = summaryToLocationMap.get(newDeliveryLocation.getText().toString());
+            if (selectedLocation == null) {
+                Toasty.displayCenteredMessage(ChangePickupDestination.this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
+                return out.toString();
+            }
+            url += "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                             + "&location_type=" + selectedLocation.getCdloctype();
 
             try {
                 response = httpClient.execute(new HttpGet(url));
@@ -244,7 +248,7 @@ public class ChangePickupDestination extends SenateActivity {
             return;
         }
 
-        if (locations.indexOf(newDeliveryLocation.getText().toString()) == -1) {
+        if (!summaryToLocationMap.containsKey(newDeliveryLocation.getText().toString())) {
             if (newDeliveryLocation.getText().length() > 0) {
                 Toasty.displayCenteredMessage(this, "You must enter a valid Delivery Location.", Toast.LENGTH_SHORT);
             } else {
