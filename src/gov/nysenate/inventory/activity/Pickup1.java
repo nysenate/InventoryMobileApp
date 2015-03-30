@@ -23,14 +23,12 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.model.Location;
 import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class Pickup1 extends SenateActivity
@@ -42,7 +40,6 @@ public class Pickup1 extends SenateActivity
     private String destinationSummary = null;
     private Location origin;
     private Location destination;
-    private ArrayList<String> allLocations = new ArrayList<String>();
     private ClearableAutoCompleteTextView autoCompleteTextView1;
     private ClearableAutoCompleteTextView autoCompleteTextView2;
     private Button btnPickup1Cont;
@@ -61,7 +58,7 @@ public class Pickup1 extends SenateActivity
             FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
     
     private int lastSize = 0;
-    private List<Location> locations;
+    private Map<String, Location> summaryToLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,8 +141,10 @@ public class Pickup1 extends SenateActivity
             e1.printStackTrace();
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, allLocations);
+        List<String> locationSummaries = new ArrayList<>(summaryToLocation.keySet());
+        Collections.sort(locationSummaries);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, locationSummaries);
 
         setupautoCompleteTextView1(adapter);
         setupautoCompleteTextView2(adapter);
@@ -254,7 +253,7 @@ public class Pickup1 extends SenateActivity
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (allLocations.indexOf(currentFromLocation) == -1) {
+            } else if (summaryToLocation.containsKey(currentFromLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: From Location Code \"" + currentFromLocation
                                 + "\" is invalid.", duration);
@@ -273,7 +272,7 @@ public class Pickup1 extends SenateActivity
                 toast.show();
                 boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-            } else if (allLocations.indexOf(currentFromLocation) == -1) {
+            } else if (summaryToLocation.containsKey(currentFromLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: To Location Code \"" + currentToLocation
                                 + "\" is invalid.", duration);
@@ -301,8 +300,8 @@ public class Pickup1 extends SenateActivity
             } else {
                 btnPickup1Cont.getBackground().setAlpha(70);
                 Intent intent = new Intent(this, Pickup2Activity.class);
-                origin = locations.get(allLocations.indexOf(currentFromLocation));
-                destination = locations.get(allLocations.indexOf(currentToLocation));
+                origin = summaryToLocation.get(currentFromLocation);
+                destination = summaryToLocation.get(currentToLocation);
                 intent.putExtra("origin", Serializer.serialize(origin));
                 intent.putExtra("destination", Serializer.serialize(destination));
                 startActivity(intent);
@@ -386,7 +385,7 @@ public class Pickup1 extends SenateActivity
         }
     }
 
-    public ArrayList<String> getAllLocations() throws InterruptedException,
+    public Map<String, Location> getAllLocations() throws InterruptedException,
             ExecutionException, JSONException {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -413,18 +412,22 @@ public class Pickup1 extends SenateActivity
                 return null;
             }
 
-            locations = Serializer.deserialize(res, Location.class);
-            for (Location loc: locations) {
-                allLocations.add(loc.getLocationSummaryString());
+            summaryToLocation = new HashMap<>();
+            for (Location location : Serializer.deserialize(res, Location.class)) {
+                summaryToLocation.put(location.getLocationSummaryString(), location);
             }
         }
-        return allLocations;
+        return summaryToLocation;
     }
 
     public void getOriginLocationDetails() {
         originSummary = autoCompleteTextView1.getText().toString().trim();
-        String locCode = originSummary.split("-")[0];
+        Location selectedLocation = summaryToLocation.get(originSummary);
 
+        if (selectedLocation == null) {
+            Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
+            return;
+        }
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -433,7 +436,8 @@ public class Pickup1 extends SenateActivity
                 URL += "/";
             }   
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?barcode_num=" + locCode);
+                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                             + "&location_type=" + selectedLocation.getCdloctype());
             try {
                 try {
                     res = null;
@@ -483,13 +487,18 @@ public class Pickup1 extends SenateActivity
 
     public void getDestinationLocationDetails() {
         destinationSummary = autoCompleteTextView2.getText().toString().trim();
-        String locCode = destinationSummary.split("-")[0];
+        Location selectedLocation = summaryToLocation.get(destinationSummary);
 
+        if (selectedLocation == null) {
+            Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
+            return;
+        }
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?barcode_num=" + locCode);
+                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                             + "&location_type=" + selectedLocation.getCdloctype());
             try {
                 try {
                     res = null;

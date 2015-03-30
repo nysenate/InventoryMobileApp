@@ -159,7 +159,6 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void initializeItemListAdapter() {
-        removalRequest.sortItems();
         List<Item> itemsSorted = removalRequest.getItems();
         RemovalRequestComparer removalRequestComparer = new RemovalRequestComparer();
         Collections.sort(itemsSorted, removalRequestComparer);
