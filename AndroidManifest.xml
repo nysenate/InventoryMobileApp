@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="gov.nysenate.inventory.android"
-    android:versionCode="9"
-    android:versionName="1.2.1" >
+    android:versionCode="10"
+    android:versionName="1.3.0" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -52,7 +52,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.LoginActivity" />
+                android:value="gov.nysenate.inventory.activity.LoginActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.SearchActivity"
@@ -61,7 +61,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />
+                android:value="gov.nysenate.inventory.activity.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.Move"
@@ -70,7 +70,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />
+                android:value="gov.nysenate.inventory.activity.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.Pickup1"
@@ -79,7 +79,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.Move" />
+                android:value="gov.nysenate.inventory.activity.Move" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.Pickup2Activity"
@@ -88,7 +88,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.Pickup1" />
+                android:value="gov.nysenate.inventory.activity.Pickup1" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.verification.Verification"
@@ -97,12 +97,7 @@
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.MenuActivity" />
-        </activity>
-        <activity
-            android:name="gov.nysenate.inventory.activity.Verification_list"
-            android:label="@string/title_activity_verification2"
-            android:screenOrientation="portrait" >
+                android:value="gov.nysenate.inventory.activity.MenuActivity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.verification.VerScanActivity"
@@ -123,7 +118,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gov.nysenate.inventory.android.Pickup2Activity" />
+                android:value="gov.nysenate.inventory.activity.Pickup2Activity" />
         </activity>
         <activity
             android:name="gov.nysenate.inventory.activity.EditPickup1Activity"
