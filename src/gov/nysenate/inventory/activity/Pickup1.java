@@ -253,7 +253,7 @@ public class Pickup1 extends SenateActivity
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (summaryToLocation.containsKey(currentFromLocation)) {
+            } else if (!summaryToLocation.containsKey(currentFromLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: From Location Code \"" + currentFromLocation
                                 + "\" is invalid.", duration);
@@ -272,7 +272,7 @@ public class Pickup1 extends SenateActivity
                 toast.show();
                 boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-            } else if (summaryToLocation.containsKey(currentFromLocation)) {
+            } else if (!summaryToLocation.containsKey(currentFromLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: To Location Code \"" + currentToLocation
                                 + "\" is invalid.", duration);

@@ -494,7 +494,7 @@ public class Verification extends SenateActivity
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (summaryToLocation.containsKey(currentLocation)) {
+            } else if (!summaryToLocation.containsKey(currentLocation)) {
                 Toast toast = Toast.makeText(this.getApplicationContext(),
                         "!!ERROR: Location Code \"" + currentLocation
                                 + "\" is invalid.", duration);
