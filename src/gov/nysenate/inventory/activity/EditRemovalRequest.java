@@ -301,6 +301,10 @@ public class EditRemovalRequest extends SenateActivity
 
     private String getChangesMessage() {
         String s = "Are you sure you want to save the following changes? <br>";
+        return getChangeMessageBody(s);
+    }
+
+    private String getChangeMessageBody(String s) {
         if (!originalStatus.equals(removalRequest.getStatus())) {
             s += "Status: Submitted to Inventory Control.<br>";
         }
@@ -308,9 +312,8 @@ public class EditRemovalRequest extends SenateActivity
             s += "Adjust Code: " + removalRequest.getAdjustCode().getCode() + ", " + removalRequest.getAdjustCode().getDescription() + ".<br>";
         }
         if (getItemsDeleted().size() > 0) {
-            s += "Deleting " + getItemsDeleted().size() + " items.<br>";
+            s += "Delete: " + getItemsDeleted().size() + " items.<br>";
         }
-
         return s;
     }
 
@@ -322,14 +325,22 @@ public class EditRemovalRequest extends SenateActivity
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
-        if (rr != null) {
-            Toasty.displayCenteredMessage(this, "Successfully updated Removal Request.", Toast.LENGTH_SHORT);
-        } else {
-            Toasty.displayCenteredMessage(this, "Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_SHORT);
-        }
-        Intent intent = new Intent(this, InventoryRemovalMenu.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        String message = "Removal Request successfully updated. <br><br>";
+        message = getChangeMessageBody(message);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Info")
+                .setMessage(Html.fromHtml(message))
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(EditRemovalRequest.this, InventoryRemovalMenu.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                });
+        builder.show();
     }
 
     private List<Item> getItemsDeleted() {
