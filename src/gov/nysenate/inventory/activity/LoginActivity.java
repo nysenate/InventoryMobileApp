@@ -3,7 +3,6 @@ package gov.nysenate.inventory.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,15 +36,12 @@ import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
 import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.model.LoginStatus;
 import gov.nysenate.inventory.util.Toasty;
-import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -56,7 +52,6 @@ import java.util.concurrent.ExecutionException;
 public class LoginActivity extends SenateActivity implements
 ChangePasswordDialogListener
 {
-
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
     // WIFI Code Added Below
     WifiManager mainWifi;
@@ -70,7 +65,6 @@ ChangePasswordDialogListener
     String senateSSID = "";
     String senateSSIDpwd = "";
     String senateVisitorSSID = "";
-    String senateVisitorSSIDpwd = "";
     String wifiMessage = "" /* "Horrible News!!! Currently no Wifi Networks found!!! You need a Wifi network (Preferrably a NY Senate one) in order to use this app." */;
     String currentSSID = "";
     public static String defrmint = null;
@@ -79,7 +73,6 @@ ChangePasswordDialogListener
     static ClearableEditText user_name;
     static ClearableEditText password;
     String URL = "";
-    long allNumericPwdAlert = -1;
     int lastNumericErrorLength = 0;
     public static Properties properties; // Since we want to refer to this in
                                          // other activities
@@ -92,8 +85,6 @@ ChangePasswordDialogListener
     static AssetManager assetManager;
     Button buttonLogin;
     ProgressBar progressBarLogin;
-    public final static String u_name_intent = "gov.nysenate.inventory.android.u_name";
-    public final static String pwd_intent = "gov.nysenate.inventory.android.pwd";
 
     private static final String LOG_TAG = "AppUpgrade";
     // private MyWebReceiver receiver;
@@ -102,10 +93,7 @@ ChangePasswordDialogListener
     static String appURI = "";
     static String latestVersionName;
     static int latestVersion;
-    static String currentVersionName;
 
-    private DownloadManager downloadManager;
-    private long downloadReference;
     AudioManager audio;
     Activity currentActivity;
     String status = "no";
@@ -321,26 +309,6 @@ ChangePasswordDialogListener
         }
 
     };
-
-    public static boolean isNumeric(String str, int lastDigitlength) {
-
-        if (str == null || str.trim().length() == 0) {
-            return false;
-        }
-
-        try {
-            if (str.length() > lastDigitlength) {
-                str = str.substring(str.length() - lastDigitlength);
-            }
-            @SuppressWarnings("unused")
-            long l = Long.parseLong(str);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
-    // Self Explanatory
 
     public void checkInitialWifiConnection() {
         try {
@@ -720,29 +688,6 @@ ChangePasswordDialogListener
         }
     }
 
-    public void testPost(View view) {
-        BasicNameValuePair nameValuePair = new BasicNameValuePair("TESTPARAM",
-                "THIS WAS FROM ANDROID");
-        AsyncTask<String, String, String> resr1 = new RequestTask(nameValuePair)
-                .execute(URL + "TestPostServlet");
-        String res;
-        try {
-            res = null;
-            res = resr1.get().trim().toString();
-            if (res == null) {
-                return;
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -751,8 +696,6 @@ ChangePasswordDialogListener
             alertDialog = null;
         }
     }
-
-    // Self Explanatory
 
     private void checkInitialAudioLevel() {
         // Check Tablet Audio Volume. If it is too low or turned off, ask user
@@ -845,40 +788,6 @@ ChangePasswordDialogListener
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    
-    private void changePassword(String newPassword) {
-        ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
-        String userName = this.user_name.getText().toString();
-        postParams.add( new BasicNameValuePair("user", userName));
-        postParams.add( new BasicNameValuePair("newPassword", newPassword));
-        AsyncTask<String, String, String> resr1;
-        resr1 = new RequestTask(postParams).execute("ChangePassword");
-        String res = null;
-        buttonLogin.getBackground().setAlpha(255);
-        try {
-            res = resr1.get().trim().toString();
-            //System.out.println("Password Change Result:"+res);
-            login(userName, newPassword);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public void login() {
-        String user_name = LoginActivity.this.user_name.getText().toString();
-        String password = LoginActivity.this.password.getText().toString();
-        login(user_name, password, null);
-    }
-    
-    public void login(LoginStatus loginStatusParam) {
-        String user_name = LoginActivity.this.user_name.getText().toString();
-        String password = LoginActivity.this.password.getText().toString();
-        login(user_name, password, loginStatusParam);
     }
     
     public void login(String user_name, String password) {
@@ -1073,16 +982,8 @@ ChangePasswordDialogListener
         }
     }
 
-    public ChangePasswordDialog allowUserToChangePassword() {
-         return allowUserToChangePassword(null, null, null, null);
-    }
-
     public ChangePasswordDialog allowUserToChangePassword(LoginStatus loginStatus) {
         return allowUserToChangePassword(loginStatus, null, null, null);
-    }
-    
-    public ChangePasswordDialog allowUserToChangePassword(String oldPassword, String newPassword, String confirmPassword) {
-        return allowUserToChangePassword(null, oldPassword, newPassword, confirmPassword);
     }
     
     public ChangePasswordDialog allowUserToChangePassword(LoginStatus loginStatus, String oldPassword, String newPassword, String confirmPassword) {
@@ -1227,8 +1128,6 @@ ChangePasswordDialogListener
         return true;
     }
 
-    // our code begins
-
     public void validate(View view) {
         if (view.getId() == R.id.buttonLogin) {
             if (buttonLogin.getText().toString().equalsIgnoreCase("Close")) {
@@ -1288,10 +1187,6 @@ ChangePasswordDialogListener
 
     }
 
-    public void testSQLlite(View view) {
-        testSQLlite();
-    }
-
     public void testSQLlite() {
         DBAdapter db = new DBAdapter(this);
         try {
@@ -1338,65 +1233,6 @@ ChangePasswordDialogListener
         }
     }
 
-    // broadcast receiver to get notification when the web request finishes
-    /*
-     * public class MyWebReceiver extends BroadcastReceiver {
-     * 
-     * public static final String PROCESS_RESPONSE =
-     * "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
-     * 
-     * @Override public void onReceive(Context context, Intent intent) {
-     * 
-     * String reponseMessage = intent
-     * .getStringExtra(InvWebService.RESPONSE_MESSAGE); Log.v(LOG_TAG,
-     * reponseMessage);
-     * 
-     * // parse the JSON response JSONObject responseObj; try { responseObj =
-     * new JSONObject(reponseMessage); boolean success =
-     * responseObj.getBoolean("success"); // if the reponse was successful check
-     * further if (success) { // get the latest version from the JSON string
-     * latestVersion = responseObj.getInt("latestVersion"); // get the lastest
-     * application URI from the JSON string appURI =
-     * responseObj.getString("appURI"); latestVersionName = responseObj
-     * .getString("latestVersionName"); Log.i(LOG_TAG, "latestVersion:" +
-     * latestVersion + " > versionCode:" + versionCode); // check if we need to
-     * upgrade? if (latestVersion > versionCode) {
-     * user_name.setVisibility(View.INVISIBLE);
-     * password.setVisibility(View.INVISIBLE); buttonLogin.setText("Close");
-     * progressBarLogin.setVisibility(View.VISIBLE);
-     * 
-     * // oh yeah we do need an upgrade, let the user know send // an alert
-     * message AlertDialog.Builder builder = new AlertDialog.Builder(
-     * LoginActivity.this); builder.setMessage( "There is newer version (" +
-     * latestVersionName + ":" + latestVersion +
-     * ") of this application available. In order to use this app, you MUST upgrade. Click OK to upgrade now?"
-     * ) .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener() { // if
-     * the user agrees to upgrade
-     * 
-     * @Override public void onClick( DialogInterface dialog, int id) { // start
-     * downloading the file // using the download manager downloadManager =
-     * (DownloadManager) getSystemService(DOWNLOAD_SERVICE); Uri Download_Uri =
-     * Uri .parse(appURI); DownloadManager.Request request = new
-     * DownloadManager.Request( Download_Uri);
-     * request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-     * request.setAllowedOverRoaming(false); request.setTitle(Html.fromHtml(
-     * "<font color='#000055'>Inventory Andorid App Download</font>"));
-     * request.setDestinationInExternalFilesDir( LoginActivity.this,
-     * Environment.DIRECTORY_DOWNLOADS, "InventoryMobileApp.apk");
-     * downloadReference = downloadManager .enqueue(request); } })
-     * .setNegativeButton(Html.fromHtml("<b>Close App</b>"), new DialogInterface.OnClickListener() {
-     * 
-     * @Override public void onClick( DialogInterface dialog, int id) { // User
-     * cancelled the dialog // finish(); closeAllActivities(); } }); // show the
-     * alert message builder.create().show(); }
-     * 
-     * } } catch (JSONException e) { e.printStackTrace(); }
-     * 
-     * }
-     * 
-     * }
-     */
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -1409,62 +1245,12 @@ ChangePasswordDialogListener
         }
     }
 
-    /*
-     * // broadcast receiver to get notification about ongoing downloads private
-     * BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-     * 
-     * @Override public void onReceive(Context context, Intent intent) {
-     * 
-     * // check if the broadcast message is for our Enqueued download long
-     * referenceId = intent.getLongExtra( DownloadManager.EXTRA_DOWNLOAD_ID,
-     * -1); if (downloadReference == referenceId) {
-     * 
-     * Log.v(LOG_TAG, "Downloading of the new app version complete"); // start
-     * the installation of the latest version Intent installIntent = new
-     * Intent(Intent.ACTION_VIEW); installIntent.setDataAndType(downloadManager
-     * .getUriForDownloadedFile(downloadReference),
-     * "application/vnd.android.package-archive");
-     * installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-     * startActivity(installIntent); TextView t = (TextView)
-     * findViewById(R.id.textView1); t.setText("There is newer version (" +
-     * latestVersionName + ":" + latestVersion +
-     * ") of this application available. In order to use this app, you MUST upgrade!!!! Next time click OK then INSTALL!!"
-     * );
-     * 
-     * } } };
-     */
-    // our code ends
-
     public static DefaultHttpClient getHttpClient() {
         if (httpClient == null) {
             httpClient = new DefaultHttpClient();
         }
         return httpClient;
     }
-
-/*    @Override
-    public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
-            String confirmPassword) {
-        if (oldPasswordRequired && (oldPassword==null||oldPassword.trim().length()==0) ) {
-            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
-            new Toasty(this, "!!ERROR: Old password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
-        }
-        else if (newPassword.isEmpty()) {
-            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
-            new Toasty(this, "!!ERROR: New password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
-        }
-        else if (confirmPassword.isEmpty()) {
-            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
-            new Toasty(this, "!!ERROR: Confirm password must be entered.", Toast.LENGTH_SHORT).showMessage(); 
-        }
-        else if (confirmPassword.equals(newPassword)) {
-            changePassword(newPassword);
-        }
-        else {
-            this.allowUserToChangePassword(oldPassword, newPassword, confirmPassword);
-            new Toasty(this, "!!ERROR: New password and confirm password do not match.", Toast.LENGTH_SHORT).showMessage(); 
-        }
-    }*/
 
     @Override
     public void onChangePasswordCancelButtonClicked() {
