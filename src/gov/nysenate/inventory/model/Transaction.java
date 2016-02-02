@@ -51,12 +51,12 @@ public class Transaction {
         napickupby = "";
         nareleaseby = "";
         nuxrrelsign = "";
-        pickupDate = new Date();
+        pickupDate = null;
         deliveryComments = "";
         nadeliverby = "";
         naacceptby = "";
         nuxraccptsign = "";
-        deliveryDate = new Date();
+        deliveryDate = null;
         shipType = "";
         shipComments = "";
         verificationMethod = "";

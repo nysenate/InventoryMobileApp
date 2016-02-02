@@ -1,16 +1,15 @@
 package gov.nysenate.inventory.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Serializer {
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder()
+            .setDateFormat(DateFormat.MEDIUM, DateFormat.LONG).create();
 
     /**
      * Serialize an object into a json string

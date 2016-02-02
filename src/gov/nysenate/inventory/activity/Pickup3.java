@@ -614,7 +614,11 @@ public class Pickup3 extends SenateActivity
                      * responseString + "'");
                      */
 
-                } else {
+                } else if (statusLine.getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+                    response.getEntity().getContent().close();
+                    responseString = "!!ERROR: Your pickup has NOT been saved.\n Please contact STSBAC";
+                }
+                else {
                     // Closes the connection.
                     response.getEntity().getContent().close();
                     throw new IOException(statusLine.getReasonPhrase());
@@ -653,66 +657,37 @@ public class Pickup3 extends SenateActivity
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         Pickup3.this);
 
-                // set title
-                alertDialogBuilder.setTitle(Html
-                        .fromHtml("<font color='#000055'>" + res.trim()
-                                + "</font>"));
-
-                // set dialog message
                 alertDialogBuilder
-                        .setMessage(
-                                Html.fromHtml(res.trim()
-                                        + "<br/> Continue (Y/N)?"))
+                        .setTitle(Html.fromHtml("<font color='#e60000'>Error saving pickup</font>"))
+                        .setMessage(Html.fromHtml(res.trim()))
                         .setCancelable(false)
-                        .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                                new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                            int id) {
-                                        // if this button is clicked,
-                                        // just close
-                                        // the dialog box and do nothing
-                                        returnToMoveMenu();
-                                        dialog.dismiss();
-                                    }
-                                })
-                        .setPositiveButton(Html.fromHtml("<b>No</b>"),
-                                new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                            int id) {
-                                        // if this button is clicked,
-                                        // just close
-                                        // the dialog box and do nothing
-                                        dialog.dismiss();
-                                    }
-                                });
-
-                // create alert dialog
+                        .setNeutralButton(Html.fromHtml("<b>Ok</b>"),
+                                          new DialogInterface.OnClickListener()
+                                          {
+                                              @Override
+                                              public void onClick(DialogInterface dialog, int id) {
+                                                  dialog.dismiss();
+                                                  returnToMoveMenu();
+                                              }
+                                          });
                 AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
                 alertDialog.show();
+            } else {
+                // No Errors, display toast and return to main menu.
+                // Display Toster
+                Context context = getApplicationContext();
+                CharSequence text = res.trim();
+                if (res.length() == 0) {
+                    noServerResponse();
+                    return;
+                }
+
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                returnToMoveMenu();
             }
-
-            // Display Toster
-            Context context = getApplicationContext();
-            CharSequence text = res.trim();
-            if (res.length() == 0) {
-                noServerResponse();
-                return;
-            }
-
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-
-            // ===================ends
-            // Intent intent = new Intent(this, MenuActivity.class);
-            returnToMoveMenu();
         }
     }
 
