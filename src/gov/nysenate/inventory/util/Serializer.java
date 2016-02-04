@@ -9,7 +9,7 @@ import java.util.List;
 public class Serializer {
 
     private static final Gson gson = new GsonBuilder()
-            .setDateFormat(DateFormat.MEDIUM, DateFormat.LONG).create();
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
     /**
      * Serialize an object into a json string
