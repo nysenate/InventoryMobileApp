@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -122,13 +123,16 @@ public class LoginStatus
           }
           
           try {
-              @SuppressWarnings("deprecation")
-              Date date = new Date(jsonObject.getString("dtpasswdexp"));
+              SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+              Date date = simpleDateFormat.parse(jsonObject.getString("dtpasswdexp"));
               this.setDtpasswdexp(date);
           } catch (JSONException e2) {
               e2.printStackTrace();
           }
-          
+          catch (Exception e3) {
+              e3.printStackTrace();
+          }
+
           try {
               this.setCdseclevel(jsonObject.getString("cdseclevel"));
           } catch (JSONException e2) {

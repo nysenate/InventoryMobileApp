@@ -822,7 +822,16 @@ ChangePasswordDialogListener
                                 + password+"&defrmint="+defrmint);*/
                         res = resr1.get().trim().toString();
                         //System.out.println("login Result:"+res);
+
+                        /*
+                        * Serializer was used on the Server to convert LoginStatus to a JSON Object,
+                        * but currently deserializing on the client is not working (object returned
+                        * but values were set to null). Had to change the format mask for dtpasswdexpire
+                        * to match the new format mask set on the server within the LoginStatus.parseHSON method
+                        * */
+
                         loginStatus.parseJSON(res);
+
                         if (res == null) {
                             noServerResponse();
                         }
