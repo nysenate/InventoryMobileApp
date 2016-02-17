@@ -1317,11 +1317,14 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                             new Toasty(getApplicationContext(), "Password has been partially changed.", Toast.LENGTH_SHORT).showMessage();
                         }
                     };
+                    /** **WARNING message from the Server will remain a warning because the mobile app will still work
+                     *  but !!ERROR will display to the user to indicate a problem the user should call about
+                     */
                     if (res.trim().toUpperCase().contains("**WARNING:(CHANGESSOPASSWORD)")||res.trim().toUpperCase().contains("**WARNING:(UPDATESSOUSERRESOURCE)")) {
-                        msgAlert.showMessage("**WARNING: Part of Password Change failed. Please contact STSBAC.", "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                        msgAlert.showMessage("!!ERROR: Part of Password Change failed. Please contact STSBAC.", "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
                     }
                     else {
-                        msgAlert.showMessage("**WARNING: Problem during Password Change. Please contact STSBAC.",  "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                        msgAlert.showMessage("!!ERROR: Problem during Password Change. Please contact STSBAC.",  "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
                     }
                 }
             }

@@ -960,7 +960,7 @@ ChangePasswordDialogListener
             }
             else {
                 //new Toasty(this).showMessage( loginStatus.getDestatus(), Toast.LENGTH_LONG);
-                msgAlert.showMessage("ERROR: Problem with logging in. Please contact STSBAC.", loginStatus.getDestatus());
+                msgAlert.showMessage("!!ERROR: Problem with logging in. Please contact STSBAC.", loginStatus.getDestatus());
                 buttonLogin.getBackground().setAlpha(255);
                 progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.password.setText("");
