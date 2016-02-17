@@ -372,7 +372,7 @@ public class VerSummaryActivity extends SenateActivity
                 .fromHtml("<font color='#000055'>Warning</font>"));
         dialogBuilder
                 .setMessage(Html
-                        .fromHtml("<font color='RED'><b>***WARNING:</font> The "
+                        .fromHtml("<font color='RED'><b>**WARNING:</font> The "
                                 + numFoundItems()
                                 + " Item/s found in OTHER</b> locations will be moved to the current location: <b>"
                                 + loc_code
@@ -409,10 +409,10 @@ public class VerSummaryActivity extends SenateActivity
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder
                 .setTitle(Html
-                        .fromHtml("<font color='#000055'>***WARNING: New items will not be tagged to location</font>"));
+                        .fromHtml("<font color='#000055'>**WARNING: New items will not be tagged to location</font>"));
         dialogBuilder
                 .setMessage(Html
-                        .fromHtml("<font color='RED'><b>***WARNING:</font> The "
+                        .fromHtml("<font color='RED'><b>**WARNING:</font> The "
                                 + " NEW Items scanned will "
                                 + "NOT be tagged to location: "
                                 + loc_code
@@ -604,7 +604,7 @@ public class VerSummaryActivity extends SenateActivity
         } else if (res.length() == 0) {
             text = "Database not updated";
         } else if (res.trim().startsWith("!!ERROR:")
-                || res.trim().startsWith("***WARNING:")) {
+                || res.trim().startsWith("**WARNING:")) {
             text = res.trim();
         } else {
             duration = Toast.LENGTH_SHORT;
@@ -622,7 +622,7 @@ public class VerSummaryActivity extends SenateActivity
 
         if (text.equals("Database not updated")
                 || text.toString().startsWith("!!ERROR:")
-                || text.toString().startsWith("***WARNING:")) {
+                || text.toString().startsWith("**WARNING:")) {
             return;
         }
 

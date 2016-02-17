@@ -92,7 +92,7 @@ public class CommentsDialog extends DialogFragment
 
         String cancelTitle = "<font color='#000055'>Cancel</font>";
 
-        String cancelMsg = "***WARNING: You have chosen not to add this Senate Tag#. Continue?";
+        String cancelMsg = "**WARNING: You have chosen not to add this Senate Tag#. Continue?";
 
         // set title
         alertDialogBuilder.setTitle(Html.fromHtml(cancelTitle));

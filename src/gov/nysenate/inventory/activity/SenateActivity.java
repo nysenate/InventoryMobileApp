@@ -577,7 +577,6 @@ public abstract class SenateActivity extends Activity implements
                 if (! URL.endsWith("/")) {
                     URL += "/";
                 }   
-                System.out.println("parseServerDatabaseString:"+URL+ "GetDatabaseName");
                 requestServerResponse = new RequestTask().execute(URL
                         + "GetDatabaseName");
 
@@ -840,7 +839,7 @@ public abstract class SenateActivity extends Activity implements
                 } else {
                     // check if connected! (will not work in a service)
                     // wifiAlert("WIFI IS CURRENTLY TURNED OFF",
-                    // "***WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
+                    // "**WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
 
                     // so using turnwifi on directly
                     turnWifiOn();
@@ -973,7 +972,7 @@ public abstract class SenateActivity extends Activity implements
                 new MsgAlert(
                         context,
                         "WIFI could not be turned back on",
-                        "***WARNING: (Inventory App) Unable to turn Wifi on. Please turn it on manually.");
+                        "**WARNING: (Inventory App) Unable to turn Wifi on. Please turn it on manually.");
             }
 
         } catch (Exception e) {
@@ -1139,7 +1138,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                     .makeText(
                             context,
                             "!!ERROR: You must first pick an employee name for the signature.",
-                            3000);
+                            Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -1149,7 +1148,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         Context context = getApplicationContext();
         Toast toast = Toast.makeText(context,
                 "!!ERROR: Employee must also sign within the Red box.",
-                3000);
+                Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -1161,6 +1160,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
         final String newPasswordF = newPassword;
         final String confirmPasswordF = confirmPassword;
         final boolean oldPasswordRequiredF = oldPasswordRequired;
+
         DialogInterface.OnClickListener onClickListener = new  DialogInterface.OnClickListener() {
 
             @Override
@@ -1204,7 +1204,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                             
                         }
                         
-                    };                    
+                    };
                     new MsgAlert(this).showMessage("!!ERROR: Invalid Old Password",  "Invalid Old Password.", onClickListener);                        
                 }
                 else {
@@ -1303,10 +1303,26 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
             final boolean oldPasswordRequiredF = oldPasswordRequired;
             MsgAlert msgAlert = new MsgAlert(this);
             
-            if (res.trim().equalsIgnoreCase("OK")) {
-                new Toasty(this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
-                if (changePasswordOnLogin && currentLoginActivity!=null) {
-                    currentLoginActivity.login(userName, newPassword);
+            if (res.trim().equalsIgnoreCase("OK")||res.trim().toUpperCase().startsWith("**WARNING:")||res.trim().toUpperCase().startsWith("***WARNING:")) {
+                if (res.trim().equalsIgnoreCase("OK")) {
+                    new Toasty(this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
+                    if (changePasswordOnLogin && currentLoginActivity != null) {
+                        currentLoginActivity.login(userName, newPassword);
+                    }
+                }
+                else {
+                    DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener () {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            new Toasty(getApplicationContext(), "Password has been partially changed.", Toast.LENGTH_SHORT).showMessage();
+                        }
+                    };
+                    if (res.trim().toUpperCase().contains("**WARNING:(CHANGESSOPASSWORD)")||res.trim().toUpperCase().contains("**WARNING:(UPDATESSOUSERRESOURCE)")) {
+                        msgAlert.showMessage("**WARNING: Part of Password Change failed. Please contact STSBAC.", "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                    }
+                    else {
+                        msgAlert.showMessage("**WARNING: Problem during Password Change. Please contact STSBAC.",  "ERROR DETAILS:<br/>"+res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                    }
                 }
             }
             else if (res.contains("ORA-20003")||res.contains("ORA-20002")||res.contains("ORA-00988")||res.contains("ORA-28003")) {
@@ -1326,6 +1342,7 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                 //new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_LONG).showMessage();
             }
             else {
+
                 DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener () {
 
                     @Override
@@ -1334,8 +1351,8 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                             showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
                         }
                     }
-                };  
-                
+                };
+
                 if (res.contains("ORA-28007")) {
                     msgAlert.showMessage("!!ERROR: Password cannot be reused", res.trim(), onClickListener);
                 }
@@ -1349,12 +1366,23 @@ public static CountDownTimer timer = new CountDownTimer(15 *60 * 1000, 1000) {
                 //new Toasty(this, "!!ERROR: "+res.trim(), Toast.LENGTH_LONG).showMessage(); 
             }
         } catch (InterruptedException e) {
-            new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage(); 
+            MsgAlert msgAlert = new MsgAlert(this);
+            msgAlert.showMessage("!!ERROR: Interruption Exception. Please contact STSBAC.", "!!ERROR: "+e.getMessage()+". Please Contact STSBAC.");
+//            new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage();
             e.printStackTrace();
         } catch (ExecutionException e) {
-            new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage(); 
+            MsgAlert msgAlert = new MsgAlert(this);
+            msgAlert.showMessage("!!ERROR: Execution Exception. Please contact STSBAC.", "!!ERROR: "+e.getMessage()+". Please Contact STSBAC.");
+            //new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage();
+            e.printStackTrace();
+        } catch (Exception e) {
+            MsgAlert msgAlert = new MsgAlert(this);
+            msgAlert.showMessage("!!ERROR: Generic Exception. Please contact STSBAC.", "!!ERROR: "+e.getMessage()+". Please Contact STSBAC.");
+            //new Toasty(this, "!!ERROR: "+e.getMessage(), Toast.LENGTH_LONG).showMessage();
             e.printStackTrace();
         }
+
+
     }    
     public void noServerResponse() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);

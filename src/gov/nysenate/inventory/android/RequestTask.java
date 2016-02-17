@@ -160,9 +160,9 @@ public class RequestTask extends AsyncTask<String, String, String>
             // TODO Handle problems..
             Log.w("HTTP2:", e);
         } catch (ConnectTimeoutException e) {
-            return "***WARNING: Server Connection timeout";
+            return "**WARNING: Server Connection timeout";
         } catch (SocketTimeoutException e) {
-            return "***WARNING: Server Socket timeout";
+            return "**WARNING: Server Socket timeout";
         } catch (IOException e) {
             // TODO Handle problems..
             Log.w("HTTP3:", e);

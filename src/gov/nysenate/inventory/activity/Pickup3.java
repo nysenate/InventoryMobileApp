@@ -434,12 +434,12 @@ public class Pickup3 extends SenateActivity
                         throw new IOException(statusLine.getReasonPhrase());
                     }
                 } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
+                    return "**WARNING: Server Connection timeout";
                     // Toast.makeText(getApplicationContext(),
                     // "Server Connection timeout", Toast.LENGTH_LONG).show();
                     // Log.e("CONN TIMEOUT", e.toString());
                 } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
+                    return "**WARNING: Server Socket timeout";
                     // Toast.makeText(getApplicationContext(), "Server timeout",
                     // Toast.LENGTH_LONG).show();
                     // Log.e("SOCK TIMEOUT", e.toString());
@@ -626,12 +626,12 @@ public class Pickup3 extends SenateActivity
             } catch (ClientProtocolException e) {
                 // TODO Handle problems..
             } catch (ConnectTimeoutException e) {
-                return "***WARNING: Server Connection timeout";
+                return "**WARNING: Server Connection timeout";
                 // Toast.makeText(getApplicationContext(),
                 // "Server Connection timeout", Toast.LENGTH_LONG).show();
                 // Log.e("CONN TIMEOUT", e.toString());
             } catch (SocketTimeoutException e) {
-                return "***WARNING: Server Socket timeout";
+                return "**WARNING: Server Socket timeout";
                 // Toast.makeText(getApplicationContext(), "Server timeout",
                 // Toast.LENGTH_LONG).show();
                 // Log.e("SOCK TIMEOUT", e.toString());
@@ -652,7 +652,7 @@ public class Pickup3 extends SenateActivity
             } else if (res.indexOf("Session timed out") > -1) {
                 startTimeout(POSITIVEDIALOG_TIMEOUT);
                 return;
-            } else if (res.startsWith("***WARNING:")
+            } else if (res.startsWith("***WARNING:")||res.startsWith("**WARNING:")
                     || res.startsWith("!!ERROR:")) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         Pickup3.this);
@@ -724,9 +724,9 @@ public class Pickup3 extends SenateActivity
             } catch (ClientProtocolException e) {
                 // TODO Handle problems..
             } catch (ConnectTimeoutException e) {
-                return "***WARNING: Server Connection timeout";
+                return "**WARNING: Server Connection timeout";
             } catch (SocketTimeoutException e) {
-                return "***WARNING: Server Socket timeout";
+                return "**WARNING: Server Socket timeout";
             } catch (IOException e) {
                 // TODO Handle problems..
             }

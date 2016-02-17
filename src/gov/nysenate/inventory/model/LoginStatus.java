@@ -121,11 +121,18 @@ public class LoginStatus
           } catch (JSONException e2) {
               e2.printStackTrace();
           }
-          
+
           try {
-              SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-              Date date = simpleDateFormat.parse(jsonObject.getString("dtpasswdexp"));
-              this.setDtpasswdexp(date);
+              String dtpasswdexpString = null;
+              dtpasswdexpString = jsonObject.getString("dtpasswdexp");
+              if (dtpasswdexpString!=null && dtpasswdexpString.length()>0) {
+                  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                  Date date = simpleDateFormat.parse(dtpasswdexpString);
+                  this.setDtpasswdexp(date);
+              }
+              else {
+                  this.setDtpasswdexp(null);
+              }
           } catch (JSONException e2) {
               e2.printStackTrace();
           }
@@ -153,8 +160,6 @@ public class LoginStatus
               e2.printStackTrace();
           }
 
-          
-          
       } catch (JSONException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();

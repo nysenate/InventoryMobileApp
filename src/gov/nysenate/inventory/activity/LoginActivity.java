@@ -711,10 +711,10 @@ ChangePasswordDialogListener
             boolean showAudioMsg = false;
 
             if (currentVolume == 0) {
-                msg = "***WARNING: The volume is currently <font color='RED'><b>OFF</b></font>. You will not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
+                msg = "**WARNING: The volume is currently <font color='RED'><b>OFF</b></font>. You will not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
                 showAudioMsg = true;
             } else if (currentVolume < .4 * maxVolume) {
-                msg = "***WARNING: The volume is currently is <font color='RED'><b>LOW</b></font>. You might not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
+                msg = "**WARNING: The volume is currently is <font color='RED'><b>LOW</b></font>. You might not hear any <b>WARNING</b> or <b>ERROR</b> sounds. Would you like to turn up the volume so you can hear these sounds?";
                 showAudioMsg = true;
             }
 
@@ -728,11 +728,11 @@ ChangePasswordDialogListener
                 if (currentVolume == 0) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<b><font color='#000055'>***WARNING: NO SOUND</font></b>"));
+                                    .fromHtml("<b><font color='#000055'>**WARNING: NO SOUND</font></b>"));
                 } else if (currentVolume < .4 * maxVolume) {
                     alertDialogBuilder
                             .setTitle(Html
-                                    .fromHtml("<b><font color='#000055'>***WARNING: LOW SOUND</font></b>"));
+                                    .fromHtml("<b><font color='#000055'>**WARNING: LOW SOUND</font></b>"));
                 }
 
                 // set dialog message
@@ -796,6 +796,7 @@ ChangePasswordDialogListener
 
     public void login(String user_name, String password, LoginStatus loginStatusParam) {
         loginStatus = new LoginStatus();
+        MsgAlert msgAlert = new MsgAlert(this);
         try {
             // check network connection
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -873,7 +874,7 @@ ChangePasswordDialogListener
                 proceedPastLoginScreen(loginStatus);
             }
             else if (loginStatus.getNustatus() == loginStatus.ACCOUNT_LOCKED ) {
-                MsgAlert msgAlert = new MsgAlert(
+                msgAlert = new MsgAlert(
                         getApplicationContext(),
                         "Account Locked",
                         "!!ERROR: Your account is locked. Please contact STS/BAC.");
@@ -958,19 +959,22 @@ ChangePasswordDialogListener
 
             }
             else {
-                new Toasty(this).showMessage( loginStatus.getDestatus(), Toast.LENGTH_LONG);
+                //new Toasty(this).showMessage( loginStatus.getDestatus(), Toast.LENGTH_LONG);
+                msgAlert.showMessage("ERROR: Problem with logging in. Please contact STSBAC.", loginStatus.getDestatus());
                 buttonLogin.getBackground().setAlpha(255);
                 progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.password.setText("");
             }
           }
         } catch (Exception e) {
-            int duration = Toast.LENGTH_LONG;
+
+            msgAlert.showMessage("!!Error: Problem connecting to Mobile App Server.", e.getMessage()+". Please contact STSBAC.");
+/*            int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(this,
                     "Problem connecting to Mobile App Server. Please contact STSBAC.("
                             + e.getMessage() + ")", duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            toast.show();*/
         }
     }
     

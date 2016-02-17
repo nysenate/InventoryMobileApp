@@ -607,7 +607,7 @@ public class VerScanActivity extends SenateActivity implements
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
-        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'><b>***WARNING: Senate Tag#: "+nusenate+" DOES NOT EXIST</b> in the SFMS Tracking System. </font>"));
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#000055'><b>**WARNING: Senate Tag#: "+nusenate+" DOES NOT EXIST</b> in the SFMS Tracking System. </font>"));
 
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml("The item <b>cannot</b> be tagged to current location at this time. You may Save the Tag# and item information as a Verification Exception.<br /><br /><b>Save New Tag# and item Information?</b>"))
@@ -1050,7 +1050,7 @@ public class VerScanActivity extends SenateActivity implements
 
             inactiveMessage(
                     nusenate,
-                    "<b>***WARNING</b>: Senate Tag#:<b>" + nusenate
+                    "<b>**WARNING</b>: Senate Tag#:<b>" + nusenate
                     + "</b> has been <b>INACTIVATED</b>.",
                     "Item Description: <b>"
                     + vl.DECOMMODITYF

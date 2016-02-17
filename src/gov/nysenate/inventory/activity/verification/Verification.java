@@ -309,12 +309,12 @@ public class Verification extends SenateActivity
                 cdloctype = nextSplit[0];
             else {
                 Log.w("Verification",
-                        "***WARNING: Could not extract cdloctype from chosen location (a1).");
+                        "**WARNING: Could not extract cdloctype from chosen location (a1).");
                 cdloctype = null;
             }
         } else {
             Log.w("Verification",
-                    "***WARNING: Could not extract cdloctype from chosen location (a1b).");
+                    "**WARNING: Could not extract cdloctype from chosen location (a1b).");
             cdloctype = null;
 
         }
