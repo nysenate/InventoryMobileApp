@@ -857,7 +857,6 @@ ChangePasswordDialogListener
                 buttonLogin.getBackground().setAlpha(255);
                 progressBarLogin.setVisibility(View.INVISIBLE);
                 LoginActivity.nauser = null;
-                System.out.println("NAUSER NULL!!");
             }
 
             // Create the text view

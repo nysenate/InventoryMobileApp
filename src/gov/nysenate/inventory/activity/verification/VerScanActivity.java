@@ -1185,7 +1185,6 @@ public class VerScanActivity extends SenateActivity implements
                     return;
                 }
                 String jsonString = resr1.get().trim().toString();
-                System.out.println(jsonString);
                 commodityList = (ArrayList) Serializer.deserialize(jsonString, Commodity.class);
 
                 // code for JSON ends

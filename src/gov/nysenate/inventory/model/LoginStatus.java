@@ -102,7 +102,6 @@ public class LoginStatus
        */
 
       try {
-          System.out.println("Parsing JSON:"+JSONString);
           JSONObject jsonObject = new JSONObject(JSONString);
           try {
               this.setNauser(jsonObject.getString("nauser")) ;

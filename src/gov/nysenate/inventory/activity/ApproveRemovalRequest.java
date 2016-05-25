@@ -227,7 +227,7 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     private void saveChanges() {
-        UpdateRemovalRequest task = new UpdateRemovalRequest(removalRequest, this);
+        UpdateRemovalRequest task = new UpdateRemovalRequest(ApproveRemovalRequest.this, removalRequest, this);
         task.setProgressBar(progressBar);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "RemovalRequest");
         returnToInventoryRemovalMenu();
@@ -241,10 +241,31 @@ public class ApproveRemovalRequest extends SenateActivity
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
-        if (rr != null) {
+        if (rr != null && rr.getStatusCode() == HttpStatus.SC_OK) {
             Toasty.displayCenteredMessage(this,"Removal Request successfully updated.", Toast.LENGTH_SHORT);
         } else {
-            Toasty.displayCenteredMessage(this,"Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_SHORT);
+            String message;
+
+            if (rr != null) {
+                switch (rr.getStatusCode()) {
+                    case HttpStatus.SC_OK:
+                        message = "Removal Request successfully saved. <br><br>" +
+                                "Request# " + rr.getTransactionNum() + ".<br>" +
+                                "Date: " + ((InvApplication) getApplication()).getDateTimeFormat().format(rr.getDate()) + ". <br>" +
+                                "Removal Reason: " + rr.getAdjustCode().getDescription() + ".";
+                        break;
+                    case HttpStatus.SC_BAD_REQUEST:
+                        Toasty.displayCenteredMessage(this,"!!ERROR: Invalid parameter, your update may not have been saved.. Please contact STS/BAC", Toast.LENGTH_LONG);
+                        break;
+                    case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+                        Toasty.displayCenteredMessage(this,"!!ERROR: Database Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_LONG);
+                        break;
+                    default:
+                        Toasty.displayCenteredMessage(this,"!!ERROR: Error updating Removal Request. Please contact STS/BAC", Toast.LENGTH_LONG);
+                }
+            } else {
+                 Toasty.displayCenteredMessage(this,"!!ERROR: Problem with saving Removal Reqeust. Please contact STS/BAC", Toast.LENGTH_LONG);
+            }
         }
     }
 

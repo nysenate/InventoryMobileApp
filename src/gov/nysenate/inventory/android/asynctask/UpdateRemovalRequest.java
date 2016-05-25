@@ -1,11 +1,20 @@
 package gov.nysenate.inventory.android.asynctask;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.widget.ProgressBar;
+
+import gov.nysenate.inventory.activity.InventoryRemovalMenu;
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.model.RemovalRequest;
+import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -32,14 +41,40 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
     private RemovalRequest rr;
     private UpdateRemovalRequestI handler;
     private ProgressBar bar;
+    private Context mContext;
+    private HttpResponse response = null;
+    private boolean showOKMsg = false;
+    private int statusCode = HttpStatus.SC_GONE;
 
-    public UpdateRemovalRequest(RemovalRequest rr, UpdateRemovalRequestI handler) {
+    public UpdateRemovalRequest(Context mContext, RemovalRequest rr, UpdateRemovalRequestI handler) {
         this.rr = rr;
+        this.rr.setStatusCode(statusCode);
         this.handler = handler;
+        this.mContext = mContext;
+    }
+
+    public UpdateRemovalRequest(Context mContext, RemovalRequest rr, UpdateRemovalRequestI handler, boolean showOKMsg) {
+        this.rr = rr;
+        this.rr.setStatusCode(statusCode);
+        this.handler = handler;
+        this.mContext = mContext;
+        this.showOKMsg = showOKMsg;
     }
 
     public void setProgressBar(ProgressBar bar) {
         this.bar = bar;
+    }
+
+    public void setShowOKMsg(boolean showOKMsg) {
+        this.showOKMsg = showOKMsg;
+    }
+
+    public boolean getShowOKMsg() {
+        return showOKMsg;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
     }
 
     @Override
@@ -61,7 +96,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
         context.setAttribute(ClientContext.COOKIE_STORE, store);
 
         RemovalRequest removalRequest = null;
-        HttpResponse response = null;
+
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(values));
             response = httpClient.execute(httpPost, context);
@@ -71,6 +106,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
             removalRequest = Serializer.deserialize(out.toString(), RemovalRequest.class).get(0);
 
             response.getEntity().consumeContent();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -78,6 +114,10 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+       /* if (response.getStatusLine().getStatusCode()!= HttpStatus.SC_OK) {
+            removalRequest = null;
+        }*/
 
         return removalRequest;
     }
@@ -87,6 +127,12 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
         if (bar != null) {
             bar.setVisibility(ProgressBar.GONE);
         }
+
+        statusCode = response.getStatusLine().getStatusCode();
+        rr.setStatusCode(statusCode);
+
         handler.onRemovalRequestUpdated(rr);
     }
+
+
 }

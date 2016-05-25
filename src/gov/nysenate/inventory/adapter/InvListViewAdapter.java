@@ -27,7 +27,6 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
-        System.out.println("INV LIST ITEMS SIZE:" + items.size());
     }
 
     /* private view holder class */

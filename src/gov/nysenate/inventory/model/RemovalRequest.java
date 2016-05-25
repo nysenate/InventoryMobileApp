@@ -1,5 +1,8 @@
 package gov.nysenate.inventory.model;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +16,7 @@ public class RemovalRequest implements Comparable<RemovalRequest>
     private Date date;
     private String status;
     private String inventoryControlComments;
+    private int statusCode = HttpStatus.SC_GONE;
 
     public RemovalRequest(String employee, Date date) {
         this.employee = employee;
@@ -66,6 +70,14 @@ public class RemovalRequest implements Comparable<RemovalRequest>
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getStatusCode() {
+       return this.statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getInventoryControlComments() {

@@ -470,8 +470,10 @@ public class Pickup3 extends SenateActivity
         if (!URL.endsWith("/")) {
             URL += "/";
         }
+        ProcessPickupTask processPickupTask = new ProcessPickupTask();
+        processPickupTask.setSignatureImage(sign.getImage());
 
-        new ProcessPickupTask().execute(URL + "ImgUpload?nauser="
+        processPickupTask.execute(URL + "ImgUpload?nauser="
                 + LoginActivity.nauser + "&nuxrefem=" + nuxrefem, URL
                 + "/Pickup");
     }
@@ -496,9 +498,19 @@ public class Pickup3 extends SenateActivity
     private class ProcessPickupTask extends AsyncTask<String, Void, String>
     {
 
+        private Bitmap bitmap;
+
         @Override
         protected void onPreExecute() {
             progBarPickup3.setVisibility(View.VISIBLE);
+        }
+
+        public void setSignatureImage(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
+
+        public Bitmap getSignatureImage() {
+            return this.bitmap;
         }
 
         @Override
@@ -508,7 +520,7 @@ public class Pickup3 extends SenateActivity
 
             if (!pickup.isRemotePickup()) {
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                Bitmap bitmap = sign.getImage();
+                //Bitmap bitmap = sign.getImage();
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200,
                         40, true);
 

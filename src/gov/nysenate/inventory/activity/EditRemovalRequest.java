@@ -318,19 +318,39 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void updateRemovalRequest() {
-        UpdateRemovalRequest task = new UpdateRemovalRequest(removalRequest, this);
+        UpdateRemovalRequest task = new UpdateRemovalRequest(EditRemovalRequest.this, removalRequest, this);
         task.setProgressBar(progressBar);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "RemovalRequest");
     }
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
+        String title;
         String message = "Removal Request successfully updated. <br><br>";
-        message = getChangeMessageBody(message);
+
+        if (rr != null && rr.getStatusCode() == HttpStatus.SC_OK) {
+            title = "Info";
+            message = "Removal Request successfully updated. <br><br>";
+            message = getChangeMessageBody(message);
+        }
+        else {
+            title = "Error";
+            switch (rr.getStatusCode()) {
+                case HttpStatus.SC_BAD_REQUEST:
+                    message = "!!ERROR: Invalid parameter, your update may not have been saved. Please contact STS/BAC.";
+                    break;
+                case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+                    message = "!!ERROR: Database Error, your update may not have been saved. Please contact STS/BAC.";
+                    break;
+                default:
+                    title = "Error";
+                    message = "!!ERROR: Unknown Error, your update may not have been saved. Please contact STS/BAC.";
+            }
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(false)
-                .setTitle("Info")
+                .setTitle(title)
                 .setMessage(Html.fromHtml(message))
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
@@ -341,6 +361,7 @@ public class EditRemovalRequest extends SenateActivity
                     }
                 });
         builder.show();
+
     }
 
     private List<Item> getItemsDeleted() {

@@ -314,7 +314,11 @@ public class Delivery3 extends SenateActivity
                 String deliveryURL = URL
                         + "DeliveryConfirmation?";
 
-                resr1 = new DeliveryRequestTask().execute(URL
+                DeliveryRequestTask deliveryRequestTask = new DeliveryRequestTask();
+
+                deliveryRequestTask.setSignatureImage(sign.getImage());
+
+                resr1 = deliveryRequestTask.execute(URL
                         + "ImgUpload?nauser=" + LoginActivity.nauser
                         + "&nuxrefem=" + nuxrefem, deliveryURL);
 
@@ -520,6 +524,16 @@ public class Delivery3 extends SenateActivity
     class DeliveryRequestTask extends AsyncTask<String, String, String>
     {
 
+        Bitmap bitmap;
+
+        public void setSignatureImage(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
+
+        public Bitmap getSignatureImage() {
+            return this.bitmap;
+        }
+
         @Override
         protected String doInBackground(String... uri) {
             HttpClient httpclient = LoginActivity.httpClient;
@@ -534,7 +548,6 @@ public class Delivery3 extends SenateActivity
                         String NUXRRELSIGN = "";
 
                         ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                        Bitmap bitmap = sign.getImage();
                         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
                                 200, 40, true);
                         // System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
@@ -803,8 +816,11 @@ public class Delivery3 extends SenateActivity
             }            
             this.deliveryRequestTaskType = "EmployeeDeliveryList";
 
+            DeliveryRequestTask deliveryRequestTask = new DeliveryRequestTask();
 
-            AsyncTask<String, String, String> resr1 = new DeliveryRequestTask()
+            deliveryRequestTask.setSignatureImage(sign.getImage());
+
+            AsyncTask<String, String, String> resr1 = deliveryRequestTask
                     .execute(URL + "EmployeeList", URL
                             + "GetPickup?nuxrpd=" + nuxrpd);
             Log.i("EMPLOYEELIST", "Get Employee List URL:"+URL + "EmployeeList");

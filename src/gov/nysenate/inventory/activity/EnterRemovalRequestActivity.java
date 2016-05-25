@@ -215,7 +215,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                UpdateRemovalRequest task = new UpdateRemovalRequest(removalRequest, EnterRemovalRequestActivity.this);
+                UpdateRemovalRequest task = new UpdateRemovalRequest(EnterRemovalRequestActivity.this, removalRequest, EnterRemovalRequestActivity.this);
                 task.setProgressBar(progressBar);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "RemovalRequest");
             }
@@ -225,19 +225,36 @@ public class EnterRemovalRequestActivity extends SenateActivity
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
-        String message = "";
-        if (rr != null) {
-            message = "Removal Request successfully saved. <br><br>" +
-                    "Request# " + rr.getTransactionNum() + ".<br>" +
-                    "Date: " + ((InvApplication) getApplication()).getDateTimeFormat().format(rr.getDate()) + ". <br>" +
-                    "Removal Reason: " + rr.getAdjustCode().getDescription() + ".";
+        String title = "Info";
+        String message;
 
+        if (rr != null) {
+            switch (rr.getStatusCode()) {
+                case HttpStatus.SC_OK:
+                    message = "Removal Request successfully saved. <br><br>" +
+                            "Request# " + rr.getTransactionNum() + ".<br>" +
+                            "Date: " + ((InvApplication) getApplication()).getDateTimeFormat().format(rr.getDate()) + ". <br>" +
+                            "Removal Reason: " + rr.getAdjustCode().getDescription() + ".";
+                    break;
+                case HttpStatus.SC_BAD_REQUEST:
+                    title = "Error";
+                    message = "!!ERROR: Invalid parameter, your update may not have been saved. Please contact STS/BAC.";
+                    break;
+                case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+                    title = "Error";
+                    message = "!!ERROR: Database Error, your update may not have been saved. Please contact STS/BAC.";
+                    break;
+                default:
+                    title = "Error";
+                    message = "!!ERROR: Unknown Error, your update may not have been saved. Please contact STS/BAC.";
+                 }
         } else {
-            message = "Error saving Removal Reqeust. Please contact STS/BAC";
+            title = "Error";
+            message = "!!Error: Problem with saving Removal Reqeust. Please contact STS/BAC.";
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(false)
-                .setTitle("Info")
+                .setTitle(title)
                 .setMessage(Html.fromHtml(message))
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override

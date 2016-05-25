@@ -207,7 +207,6 @@ public class Verification extends SenateActivity
     };
 
     public void locationDetailTimeout() {
-        System.out.println("TIME OUT SCREEN");
         Intent intentTimeout = new Intent(this, LoginActivity.class);
         intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
         startActivityForResult(intentTimeout, LOCATIONDETAILS_TIMEOUT);
@@ -413,7 +412,6 @@ public class Verification extends SenateActivity
             // display error
             status = "no";
         }
-        System.out.println("RESPONSE FROM URL:" + res);
     }
 
     public void getLocCodeList() {

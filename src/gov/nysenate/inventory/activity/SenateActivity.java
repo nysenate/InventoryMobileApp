@@ -270,7 +270,6 @@ public abstract class SenateActivity extends Activity implements
                 boolean ipAddressFound = matcher.find();
                 if (ipAddressFound) {
                     server =  matcher.group();
-                    System.out.println("ipAddressFound:"+server);
                     URL = URL.replaceAll(server,"");
                     int colon = URL.indexOf(":");
                     port = URL.substring(colon+1);
@@ -280,7 +279,6 @@ public abstract class SenateActivity extends Activity implements
                 else {
                     int period = URL.indexOf(".");
                     int colon = URL.indexOf(":");
-                    System.out.println("ipAddressNOTFound:"+server);
                     if (period>-1) {
                         server = URL.substring(0, period);
                     }
