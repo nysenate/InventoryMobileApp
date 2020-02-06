@@ -1,15 +1,20 @@
 package gov.nysenate.inventory.dto;
 
-import gov.nysenate.inventory.model.Item;
+import android.util.Log;
+
+import org.json.JSONObject;
 
 import java.util.Date;
+
+import gov.nysenate.inventory.model.Item;
 
 public class ItemInventoriedDetails {
 
     private Item item;
     private Date lastInventoried;
 
-    public ItemInventoriedDetails() {}
+    public ItemInventoriedDetails() {
+    }
 
     public ItemInventoriedDetails(Item item, Date lastInventoried) {
         this.item = item;
@@ -21,14 +26,19 @@ public class ItemInventoriedDetails {
     }
 
     public void setItem(Item item) {
+        Log.i(this.getClass().getName(), "setItem("+item.getBarcode()+":"+item.getSerialNumber()+")");
         this.item = item;
     }
 
     public void setLastInventoried(Date lastInventoried) {
         this.lastInventoried = lastInventoried;
+        Log.i(this.getClass().getName(), "setLastInventoried("+lastInventoried+")");
     }
 
     public Date getLastInventoried() {
         return lastInventoried;
     }
+
+
+
 }

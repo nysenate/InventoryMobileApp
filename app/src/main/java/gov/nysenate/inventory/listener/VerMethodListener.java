@@ -3,6 +3,7 @@ package gov.nysenate.inventory.listener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
 
