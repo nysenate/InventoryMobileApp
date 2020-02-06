@@ -3,33 +3,31 @@ package gov.nysenate.inventory.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
+import org.apache.http.HttpStatus;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RemovePickupItems extends SenateActivity {
 
@@ -37,6 +35,33 @@ public class RemovePickupItems extends SenateActivity {
     ListView itemList;
     InvSelListViewAdapter adapter;
     ProgressBar progressBar;
+
+    Response.Listener<String> cancelPickupResponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            Intent intent = new Intent(RemovePickupItems.this, Move.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+            HttpUtils.displayResponseResults(RemovePickupItems.this, HttpStatus.SC_OK);
+        }
+    };
+
+    Response.Listener<String> removeItemResponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            Intent intent = new Intent(RemovePickupItems.this, EditPickupMenu.class);
+            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+            HttpUtils.displayResponseResults(RemovePickupItems.this, HttpStatus.SC_OK);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +88,7 @@ public class RemovePickupItems extends SenateActivity {
         }
         oldPickupBy.setText(pickup.getNapickupby());
         oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getDateTimeFormat();
+        SimpleDateFormat sdf = ((InvApplication) getApplicationContext()).getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
         adapter = new InvSelListViewAdapter(this, R.layout.invlist_sel_item, pickup.getPickupItems());
@@ -74,15 +99,15 @@ public class RemovePickupItems extends SenateActivity {
     }
 
     public void backButton(View view) {
-        if (checkServerResponse(true) == OK) {
+        //if (checkServerResponse(true) == OK) {
             super.onBackPressed();
-        }
+        //}
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) != OK) {
+        /*if (checkServerResponse(true) != OK) {
             return;
-        }
+        }*/
 
         if (adapter.getSelectedItems(true).size() < 1) {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
@@ -97,7 +122,7 @@ public class RemovePickupItems extends SenateActivity {
                 }
             });
             confirmDialog.show();
-            
+
         } else if (allItemsSelected()) {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
             confirmDialog.setCancelable(false);
@@ -117,7 +142,8 @@ public class RemovePickupItems extends SenateActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    new CancelPickupTask().execute();
+                    cancelPickup();
+//                    new CancelPickupTask().execute();
                 }
             });
             confirmDialog.show();
@@ -141,7 +167,8 @@ public class RemovePickupItems extends SenateActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    new RemoveItemsTask().execute();
+                    removeItems();
+                    //new RemoveItemsTask().execute();
                 }
             });
             confirmDialog.show();
@@ -155,7 +182,52 @@ public class RemovePickupItems extends SenateActivity {
         return false;
     }
 
-    private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
+    private void cancelPickup() {
+        String url = AppProperties.getBaseUrl();
+        url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
+        url += "&userFallback=" + LoginActivity.nauser;
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, cancelPickupResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    private void removeItems() {
+        String url = AppProperties.getBaseUrl();
+        url += "RemovePickupItems";
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        params.put("nuxrpd", Integer.toString(pickup.getNuxrpd()));
+        try {
+            StringBuilder values = new StringBuilder();
+
+            boolean valueAdded = false;
+
+            for (InvItem aValue : adapter.getSelectedItems(true)) {
+                if (valueAdded) {
+                    values.append(",");
+                }
+
+                values.append(aValue.getNusenate());
+                valueAdded = true;
+            }
+
+            params.put("items", values.toString());
+
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                    url, params, removeItemResponseListener);
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
         protected void onPreExecute() {
@@ -189,10 +261,11 @@ public class RemovePickupItems extends SenateActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
             HttpUtils.displayResponseResults(RemovePickupItems.this, response);
+            LoginActivity.activeAsyncTask = null;
         }
-    }
+    }*/
 
-    private class RemoveItemsTask extends AsyncTask<Void, Void, Integer> {
+    /*private class RemoveItemsTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
         protected void onPreExecute() {
@@ -201,6 +274,10 @@ public class RemovePickupItems extends SenateActivity {
 
         @Override
         protected Integer doInBackground(Void... arg0) {
+            //LoginActivity.activeAsyncTask = this;
+           // if (checkServerResponse(true) != OK) {
+            //    return RemovePickupItems.this.NO_SERVER_RESPONSE;
+            //}
             String url = AppProperties.getBaseUrl(RemovePickupItems.this);
             url += "RemovePickupItems";
 
@@ -237,6 +314,7 @@ public class RemovePickupItems extends SenateActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
             HttpUtils.displayResponseResults(RemovePickupItems.this, response);
+            LoginActivity.activeAsyncTask = null;
         }
-    }
+    }*/
 }

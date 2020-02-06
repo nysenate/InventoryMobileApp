@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import gov.nysenate.inventory.adapter.CustomListViewAdapter;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.RowItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import gov.nysenate.inventory.adapter.CustomListViewAdapter;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.RowItem;
 
 public class Move extends SenateActivity implements OnItemClickListener {
     private static final String[] titles = new String[]{"New Pickup", "Edit Existing Pickup", "Delivery", "Enter Remote Info",
@@ -45,7 +46,6 @@ public class Move extends SenateActivity implements OnItemClickListener {
         if (Pickup3.progBarPickup3 != null) {
             Pickup3.progBarPickup3.setVisibility(View.INVISIBLE);
         }
-
     }
 
     @Override

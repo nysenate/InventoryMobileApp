@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,19 +17,20 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.nysenate.inventory.activity.verification.Verification;
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.model.RowItem;
+import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Toasty;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MenuActivity extends SenateActivity implements OnItemClickListener
-{
+public class MenuActivity extends SenateActivity implements OnItemClickListener {
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     private ListView mList;
@@ -40,10 +42,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     public static String[] titles;
 
-    public static String[] descriptions = new String[] {
+    public static String[] descriptions = new String[]{
             "Scan an item and show information",
             "Perform Inventory Verification for a Senate Location",
-            "Move Items from one location to another", "Logout of this UserID" };
+            "Move Items from one location to another", "Logout of this UserID"};
 
     public static Integer[] images;
 
@@ -59,14 +61,14 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         registerBaseActivityReceiver();
 
         // Does user have access to Verification
-        InvApplication app = ((InvApplication)getApplicationContext());
+        InvApplication app = ((InvApplication) getApplicationContext());
         int cdseclevel = app.getCdseclevel();
         if (cdseclevel == 1) {
-            titles = new String[]{ "Search", "Verification", "Move Items", "Inventory Removal", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout };
+            titles = new String[]{"Search", "Verification", "Move Items", "Inventory Removal", "Logout"};
+            images = new Integer[]{R.drawable.ssearch, R.drawable.sverify, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout};
         } else {
-            titles = new String[]{ "Search", "Move Items", "Inventory Removal", "Logout" };
-            images = new Integer[]{ R.drawable.ssearch, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout };
+            titles = new String[]{"Search", "Move Items", "Inventory Removal", "Logout"};
+            images = new Integer[]{R.drawable.ssearch, R.drawable.smove, R.drawable.removalrequest, R.drawable.slogout};
         }
 
         rowItems = new ArrayList<RowItem>();
@@ -87,10 +89,10 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
-        if (checkServerResponse(true) != OK) {
+                            long id) {
+        /*if (checkServerResponse(true) != OK) {
             return;
-        }
+        }*/
 
         String selection = rowItems.get(position).getTitle();
         if (selection.equalsIgnoreCase("Search")) {
@@ -117,40 +119,38 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        case android.R.id.home:
-            // 1. Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            case android.R.id.home:
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            // 2. Chain together various setter methods to set the dialog
-            // characteristics
-            builder.setTitle(Html
-                    .fromHtml("<font color='#000055'>Log Out</font>"));
-            builder.setMessage("Do you really want to log out?");
-            // Add the buttons
-            builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            backToParent();
-                        }
-                    });
-            builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
+                // 2. Chain together various setter methods to set the dialog
+                // characteristics
+                builder.setTitle(Html
+                        .fromHtml("<font color='#000055'>Log Out</font>"));
+                builder.setMessage("Do you really want to log out?");
+                // Add the buttons
+                builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                backToParent();
+                            }
+                        });
+                builder.setNegativeButton(Html.fromHtml("<b>No</b>"),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
 
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.show();
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -168,7 +168,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     }
 
     public void search(View view) {
-
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
@@ -200,6 +199,8 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     }
 
     public void noServerResponse(final String barcode_num) {
+        Log.i(this.getClass().getName(), "NOSERVERRESPONSE (MENUACTIVITY)");
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         StringBuilder title = new StringBuilder();
@@ -227,8 +228,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(msg.toString()))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -245,10 +245,20 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                                     duration);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                        };
+                        }
+                        ;
                         dialog.dismiss();
                     }
                 });
+
+        try {
+            new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
+        }
+        catch (Exception e) {
+            Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
+        }
+
+        new HttpUtils().playSound(R.raw.noconnect);
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -262,7 +272,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
     }
 
     /*
-     * 
+     *
      * Testing Code above
      */
 
@@ -278,8 +288,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setMessage("Do you really want to log out?");
 
         // Add the buttons
-        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -292,8 +301,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
                 toast.show();
             }
         });
-        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
@@ -302,7 +310,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
 
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
-        
+
         dialog.show();
     }
 
@@ -316,15 +324,13 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener
         builder.setTitle(Html.fromHtml("<font color='#000055'>Log Out</font>"));
         builder.setMessage("Do you really want to log out?");
         // Add the buttons
-        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 backToParent();
             }
         });
-        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog

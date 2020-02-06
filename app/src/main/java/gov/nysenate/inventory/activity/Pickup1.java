@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -16,23 +15,41 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
-import gov.nysenate.inventory.android.MsgAlert;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.Serializer;
-import gov.nysenate.inventory.util.Toasty;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Pickup1 extends SenateActivity
-{
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.MsgAlert;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
+
+public class Pickup1 extends SenateActivity {
     public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
     private String res = null;
     private String URL = "";
@@ -44,27 +61,141 @@ public class Pickup1 extends SenateActivity
     private ClearableAutoCompleteTextView autoCompleteTextView2;
     private Button btnPickup1Cont;
     private Button btnPickup1Cancel;
-    private TextView tvOffice1;
-    private TextView tvDescript1;
-    private TextView tvCount1;
-    private TextView tvOffice2;
-    private TextView tvDescript2;
-    private TextView tvCount2;
+    protected TextView tvOffice1;
+    protected TextView tvDescript1;
+    protected TextView tvCount1;
+    protected TextView tvOffice2;
+    protected TextView tvDescript2;
+    protected TextView tvCount2;
     private boolean fromLocationBeingTyped = false;
     private boolean toLocationBeingTyped = false;
     public static ProgressBar progBarPickup1;
     String timeoutFrom = "pickup1";
     public final int LOCCODELIST_TIMEOUT = 101,
             FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
-    
+
     private int lastSize = 0;
     private Map<String, Location> summaryToLocation;
+
+    Response.Listener originLocresponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                try {
+                    if (response == null) {
+                        return;
+                    } else if (response.indexOf("Session timed out") > -1) {
+                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    return;
+                }
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(response)
+                            .nextValue();
+                    Pickup1.this.tvOffice1.setText(object.getString("cdrespctrhd"));
+                    Pickup1.this.tvDescript1.setText(object.getString("adstreet1")
+                            .replaceAll("&#34;", "\"")
+                            + " ,"
+                            + object.getString("adcity").replaceAll("&#34;",
+                            "\"")
+                            + ", "
+                            + object.getString("adstate").replaceAll("&#34;",
+                            "\"")
+                            + " "
+                            + object.getString("adzipcode").replaceAll("&#34;",
+                            "\""));
+                    Pickup1.this.tvCount1.setText(object.getString("nucount"));
+
+                } catch (JSONException e) {
+                    Pickup1.this.tvOffice1.setText("!!ERROR: " + e.getMessage());
+                    Pickup1.this.tvDescript1.setText("Please contact STS/BAC.");
+                    Pickup1.this.tvCount1.setText("N/A");
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Response.Listener destLocresponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                try {
+                    if (response == null) {
+                        return;
+                    } else if (response.indexOf("Session timed out") > -1) {
+                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+//                    noServerResponse();
+                    return;
+                }
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(response)
+                            .nextValue();
+                    Pickup1.this.tvOffice2.setText(object.getString("cdrespctrhd"));
+                    Pickup1.this.tvDescript2.setText(object.getString("adstreet1")
+                            .replaceAll("&#34;", "\"")
+                            + " ,"
+                            + object.getString("adcity").replaceAll("&#34;",
+                            "\"")
+                            + ", "
+                            + object.getString("adstate").replaceAll("&#34;",
+                            "\"")
+                            + " "
+                            + object.getString("adzipcode").replaceAll("&#34;",
+                            "\""));
+                    Pickup1.this.tvCount2.setText(object.getString("nucount"));
+
+                } catch (JSONException e) {
+                    Pickup1.this.tvOffice2.setText("!!ERROR: " + e.getMessage());
+                    Pickup1.this.tvDescript2.setText("Please contact STS/BAC.");
+                    Pickup1.this.tvCount2.setText("N/A");
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Response.Listener locCodeListResponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            if (response.indexOf("Session timed out") > -1) {
+                startTimeout(LOCCODELIST_TIMEOUT);
+                return;
+            }
+
+            summaryToLocation = new HashMap<>();
+            for (Location location : Serializer.deserialize(response, Location.class)) {
+                summaryToLocation.put(location.getLocationSummaryString(), location);
+            }
+            List<String> locationSummaries = new ArrayList<>(summaryToLocation.keySet());
+            Collections.sort(locationSummaries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(Pickup1.this,
+                    android.R.layout.simple_dropdown_item_1line, locationSummaries);
+
+            setupautoCompleteTextView1(adapter);
+            setupautoCompleteTextView2(adapter);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup1);
         registerBaseActivityReceiver();
+        AppSingleton.getInstance(this).timeoutFrom = "pickup1";
 
         tvOffice1 = (TextView) this.findViewById(R.id.tvOffice1);
         tvDescript1 = (TextView) this.findViewById(R.id.tvDescript1);
@@ -78,76 +209,61 @@ public class Pickup1 extends SenateActivity
         btnPickup1Cont = (Button) findViewById(R.id.btnPickup1Cont);
         btnPickup1Cancel = (Button) findViewById(R.id.btnPickup1Cancel);
 
-        autoCompleteTextView1.addTextChangedListener(new TextWatcher(){
+        autoCompleteTextView1.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                int currentSize = autoCompleteTextView1.getText().toString().length();
-                if (currentSize==0||currentSize<lastSize) {
-                    tvOffice1.setText("N/A");
-                    tvDescript1.setText("N/A");
-                    tvCount1.setText("N/A");
-                }
-            }
+                                                         @Override
+                                                         public void afterTextChanged(Editable arg0) {
+                                                             int currentSize = autoCompleteTextView1.getText().toString().length();
+                                                             if (currentSize == 0 || currentSize < lastSize) {
+                                                                 tvOffice1.setText("N/A");
+                                                                 tvDescript1.setText("N/A");
+                                                                 tvCount1.setText("N/A");
+                                                             }
+                                                         }
 
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                    int arg2, int arg3) {
-                lastSize = autoCompleteTextView1.getText().toString().length();
-            }
+                                                         @Override
+                                                         public void beforeTextChanged(CharSequence arg0, int arg1,
+                                                                                       int arg2, int arg3) {
+                                                             lastSize = autoCompleteTextView1.getText().toString().length();
+                                                         }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
-                // TODO Auto-generated method stub
-                
-            } }
+                                                         @Override
+                                                         public void onTextChanged(CharSequence s, int start, int before,
+                                                                                   int count) {
+                                                             // TODO Auto-generated method stub
+
+                                                         }
+                                                     }
         );
-        autoCompleteTextView2.addTextChangedListener(new TextWatcher(){
+        autoCompleteTextView2.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                int currentSize = autoCompleteTextView2.getText().toString().length();
-                
-                if (currentSize==0||currentSize<lastSize) {
-                    tvOffice2.setText("N/A");
-                    tvDescript2.setText("N/A");
-                    tvCount2.setText("N/A");
-                }
-            }
+                                                         @Override
+                                                         public void afterTextChanged(Editable arg0) {
+                                                             int currentSize = autoCompleteTextView2.getText().toString().length();
 
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                    int arg2, int arg3) {
-                lastSize = autoCompleteTextView2.getText().toString().length();                
-            }
+                                                             if (currentSize == 0 || currentSize < lastSize) {
+                                                                 tvOffice2.setText("N/A");
+                                                                 tvDescript2.setText("N/A");
+                                                                 tvCount2.setText("N/A");
+                                                             }
+                                                         }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
-                // TODO Auto-generated method stub
-                
-            } }
-        );        
-        
-        try {
-            // TODO: RequestDispatcher.getInstance() as parameter for tests DI.
+                                                         @Override
+                                                         public void beforeTextChanged(CharSequence arg0, int arg1,
+                                                                                       int arg2, int arg3) {
+                                                             lastSize = autoCompleteTextView2.getText().toString().length();
+                                                         }
+
+                                                         @Override
+                                                         public void onTextChanged(CharSequence s, int start, int before,
+                                                                                   int count) {
+                                                             // TODO Auto-generated method stub
+
+                                                         }
+                                                     }
+        );
             getAllLocations();
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        } catch (ExecutionException e1) {
-            e1.printStackTrace();
-        } catch (JSONException e1) {
-            e1.printStackTrace();
-        }
 
-        List<String> locationSummaries = new ArrayList<>(summaryToLocation.keySet());
-        Collections.sort(locationSummaries);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, locationSummaries);
-
-        setupautoCompleteTextView1(adapter);
-        setupautoCompleteTextView2(adapter);
     }
 
     public void noServerResponse() {
@@ -158,8 +274,7 @@ public class Pickup1 extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -173,6 +288,8 @@ public class Pickup1 extends SenateActivity
                         dialog.dismiss();
                     }
                 });
+        new HttpUtils().playSound(R.raw.noconnect);
+
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
@@ -191,122 +308,102 @@ public class Pickup1 extends SenateActivity
         progBarPickup1.setVisibility(View.INVISIBLE);
     }
 
-    private TextWatcher originTextWatcher = new TextWatcher()
-    {
+    private TextWatcher originTextWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
+                                  int count) {
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
+                                      int after) {
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             fromLocationBeingTyped = true;
-            /*if (autoCompleteTextView1.getText().toString().length() >= 3) {
-                getOriginLocationDetails();
-            }*/
         }
     };
 
-    private TextWatcher destinationTextWatcher = new TextWatcher()
-    {
+    private TextWatcher destinationTextWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
+                                  int count) {
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
+                                      int after) {
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             toLocationBeingTyped = true;
-            /*if (autoCompleteTextView2.getText().toString().length() >= 3) {
-                getDestinationLocationDetails();
-            }*/
         }
     };
 
     public void continueButton(View view) {
-        // For testing...
-        // SessionManager.getSessionManager().checkServerResponse(true) == OK
-        if (checkServerResponse(true) == OK) {
-            int duration = Toast.LENGTH_SHORT;
-            String currentFromLocation = this.autoCompleteTextView1.getText()
-                    .toString();
-            String currentToLocation = this.autoCompleteTextView2.getText()
-                    .toString();
+        int duration = Toast.LENGTH_SHORT;
+        String currentFromLocation = this.autoCompleteTextView1.getText()
+                .toString();
+        String currentToLocation = this.autoCompleteTextView2.getText()
+                .toString();
 
-            if (currentFromLocation.trim().length() == 0) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: You must first pick a from location.",
-                        duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                boolean focusRequested = autoCompleteTextView1.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+        if (currentFromLocation == null || currentFromLocation.trim().length() == 0) {
+            Toast toast = Toast.makeText(this.getApplicationContext(),
+                    "!!ERROR: You must first pick a from location.",
+                    duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (!summaryToLocation.containsKey(currentFromLocation)) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: From Location Code \"" + currentFromLocation
-                                + "\" is invalid.", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                boolean focusRequested = autoCompleteTextView1.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+        } else if (summaryToLocation == null || !summaryToLocation.containsKey(currentFromLocation)) {
+            Toast toast = Toast.makeText(this.getApplicationContext(),
+                    "!!ERROR: From Location Code \"" + currentFromLocation
+                            + "\" is invalid.", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (currentToLocation.trim().length() == 0) {
-                Toast toast = Toast
-                        .makeText(this.getApplicationContext(),
-                                "!!ERROR: You must first pick a to location.",
-                                duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                boolean focusRequested = autoCompleteTextView2.requestFocus();
+        } else if (currentToLocation == null || currentToLocation.trim().length() == 0) {
+            Toast toast = Toast
+                    .makeText(this.getApplicationContext(),
+                            "!!ERROR: You must first pick a to location.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-            } else if (!summaryToLocation.containsKey(currentFromLocation)) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: To Location Code \"" + currentToLocation
-                                + "\" is invalid.", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                boolean focusRequested = autoCompleteTextView2.requestFocus();
+        } else if (currentToLocation.equalsIgnoreCase(currentFromLocation)) {
+            Toast toast = Toast
+                    .makeText(
+                            this.getApplicationContext(),
+                            "!!ERROR: The Pickup Location \""
+                                    + currentToLocation
+                                    + "\" cannot be the same as the Delivery Location.",
+                            duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            boolean focusRequested = autoCompleteTextView2.requestFocus();
 
-            } else if (currentToLocation.equalsIgnoreCase(currentFromLocation)) {
-                Toast toast = Toast
-                        .makeText(
-                                this.getApplicationContext(),
-                                "!!ERROR: The Pickup Location \""
-                                        + currentToLocation
-                                        + "\" cannot be the same as the Delivery Location.",
-                                duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                boolean focusRequested = autoCompleteTextView2.requestFocus();
+        } else if (tvCount1.getText().equals("N/A") || Integer.valueOf(tvCount1.getText().toString()) < 1) {
+            Toast toast = Toast.makeText(this, "!!ERROR: Origin Location must have at least one item", duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
 
-            } else if (Integer.valueOf(tvCount1.getText().toString()) < 1) {
-                Toast toast = Toast.makeText(this, "!!ERROR: Origin Location must have at least one item", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-
-            } else {
-                btnPickup1Cont.getBackground().setAlpha(70);
-                Intent intent = new Intent(this, Pickup2Activity.class);
-                origin = summaryToLocation.get(currentFromLocation);
-                destination = summaryToLocation.get(currentToLocation);
-                intent.putExtra("origin", Serializer.serialize(origin));
-                intent.putExtra("destination", Serializer.serialize(destination));
-                startActivity(intent);
-                overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            }
+        } else {
+            btnPickup1Cont.getBackground().setAlpha(70);
+            Intent intent = new Intent(this, Pickup2.class);
+            origin = summaryToLocation.get(currentFromLocation);
+            destination = summaryToLocation.get(currentToLocation);
+            intent.putExtra("origin", Serializer.serialize(origin));
+            intent.putExtra("destination", Serializer.serialize(destination));
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
         }
     }
 
@@ -333,91 +430,70 @@ public class Pickup1 extends SenateActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case LOCCODELIST_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                try {
-                    // TODO: RequestDispatcher.getInstance() as parameter for
-                    // testing.
+            case LOCCODELIST_TIMEOUT:
+                if (resultCode == RESULT_OK) {
                     getAllLocations();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    break;
                 }
-                break;
-            }
-        case FROMLOCATIONDETAILS_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                if (fromLocationBeingTyped) {
-                    autoCompleteTextView1.setText(autoCompleteTextView1.getText());
-                    autoCompleteTextView1.setSelection(autoCompleteTextView1.getText()
-                            .length());
-                } else {
-                    getOriginLocationDetails();
-                    autoCompleteTextView2.requestFocus();
+            case FROMLOCATIONDETAILS_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    if (fromLocationBeingTyped) {
+                        autoCompleteTextView1.setText(autoCompleteTextView1.getText());
+                        autoCompleteTextView1.setSelection(autoCompleteTextView1.getText()
+                                .length());
+                    } else {
+                        getOriginLocationDetails();
+                        autoCompleteTextView2.requestFocus();
+                    }
+                    break;
                 }
-                break;
-            }
-        case TOLOCATIONDETAILS_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                if (toLocationBeingTyped) {
-                    autoCompleteTextView2.setText(autoCompleteTextView2
-                            .getText());
-                    autoCompleteTextView2.setSelection(autoCompleteTextView2
-                            .getText().length());
-                } else {
-                    getDestinationLocationDetails();
-                    new Timer().schedule(new TimerTask()
-                    {
-                        @Override
-                        public void run() {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(
-                                    autoCompleteTextView2.getWindowToken(), 0);
-                        }
-                    }, 50);
+            case TOLOCATIONDETAILS_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    if (toLocationBeingTyped) {
+                        autoCompleteTextView2.setText(autoCompleteTextView2
+                                .getText());
+                        autoCompleteTextView2.setSelection(autoCompleteTextView2
+                                .getText().length());
+                    } else {
+                        getDestinationLocationDetails();
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(
+                                        autoCompleteTextView2.getWindowToken(), 0);
+                            }
+                        }, 50);
+                    }
+                    break;
                 }
-                break;
-            }
 
         }
     }
 
-    public Map<String, Location> getAllLocations() throws InterruptedException,
-            ExecutionException, JSONException {
+    public void getAllLocations()  {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
         if (networkInfo != null && networkInfo.isConnected()) {
             if (LoginActivity.properties != null) {
-                URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                if (! URL.endsWith("/")) {
-                    URL += "/";
-                }                   
+                URL = AppProperties.getBaseUrl();
             } else {
                 MsgAlert msgAlert = new MsgAlert(
                         this,
                         "Properties cannot be loaded.",
                         "!!ERROR: Cannot load properties information. The app is no longer reliable. Please close the app and start again.");
             }
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocCodeList");
-            res = resr1.get();
-            if (res == null) {
-                noServerResponse();
-            } else if (res.indexOf("Session timed out") > -1) {
-                startTimeout(LOCCODELIST_TIMEOUT);
-                return null;
-            }
 
-            summaryToLocation = new HashMap<>();
-            for (Location location : Serializer.deserialize(res, Location.class)) {
-                summaryToLocation.put(location.getLocationSummaryString(), location);
-            }
+            InvApplication.timeoutType = LOCCODELIST_TIMEOUT;
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                    URL + "LocCodeList", null, locCodeListResponseListener);
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+
         }
-        return summaryToLocation;
     }
 
     public void getOriginLocationDetails() {
@@ -431,57 +507,20 @@ public class Pickup1 extends SenateActivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            if (! URL.endsWith("/")) {
-                URL += "/";
-            }   
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
-                             + "&location_type=" + selectedLocation.getCdloctype());
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                try {
-                    JSONObject object = (JSONObject) new JSONTokener(res)
-                            .nextValue();
-                    tvOffice1.setText(object.getString("cdrespctrhd"));
-                    // tvLocCd1.setText( object.getString("cdlocat"));
-                    tvDescript1.setText(object.getString("adstreet1")
-                            .replaceAll("&#34;", "\"")
-                            + " ,"
-                            + object.getString("adcity").replaceAll("&#34;",
-                                    "\"")
-                            + ", "
-                            + object.getString("adstate").replaceAll("&#34;",
-                                    "\"")
-                            + " "
-                            + object.getString("adzipcode").replaceAll("&#34;",
-                                    "\""));
-                    tvCount1.setText(object.getString("nucount"));
 
-                } catch (JSONException e) {
-                    tvOffice1.setText("!!ERROR: " + e.getMessage());
-                    tvDescript1.setText("Please contact STS/BAC.");
-                    tvCount1.setText("N/A");
-                    e.printStackTrace();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+            if (!URL.endsWith("/")) {
+                URL += "/";
             }
+
+            InvApplication.timeoutType = FROMLOCATIONDETAILS_TIMEOUT;
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                    URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                            + "&location_type=" + selectedLocation.getCdloctype(), null, originLocresponseListener);
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
         }
     }
 
@@ -496,54 +535,16 @@ public class Pickup1 extends SenateActivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
-                             + "&location_type=" + selectedLocation.getCdloctype());
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(TOLOCATIONDETAILS_TIMEOUT);
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                try {
-                    JSONObject object = (JSONObject) new JSONTokener(res)
-                            .nextValue();
-                    tvOffice2.setText(object
-                            .getString("cdrespctrhd"));
-                    // tvLocCd2.setText( object.getString("cdlocat"));
-                    tvDescript2.setText(object.getString("adstreet1")
-                            .replaceAll("&#34;", "\"")
-                            + " ,"
-                            + object.getString("adcity").replaceAll("&#34;",
-                                    "\"")
-                            + ", "
-                            + object.getString("adstate").replaceAll("&#34;",
-                                    "\"")
-                            + " "
-                            + object.getString("adzipcode").replaceAll("&#34;",
-                                    "\""));
-                    tvCount2.setText(object.getString("nucount"));
+            URL = AppProperties.getBaseUrl();
 
-                } catch (JSONException e) {
-                    tvDescript2.setText("!!ERROR: " + e.getMessage());
-                    tvOffice2.setText("Please contact STS/BAC.");
-                    tvCount2.setText("N/A");
-                    e.printStackTrace();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+            InvApplication.timeoutType = FROMLOCATIONDETAILS_TIMEOUT;
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                    URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                            + "&location_type=" + selectedLocation.getCdloctype(), null, destLocresponseListener);
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
         }
     }
 
@@ -551,14 +552,12 @@ public class Pickup1 extends SenateActivity
         autoCompleteTextView1.setThreshold(1);
         autoCompleteTextView1.setAdapter(adapter);
         autoCompleteTextView1
-                .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
-                            int position, long id) {
-                        Log.i("ItemClicked", "ITEM CLICKED");
+                                            int position, long id) {
                         if (autoCompleteTextView1.getText().toString().trim()
-                                .length()>0) {
+                                .length() > 0) {
                             getOriginLocationDetails();
                         }
                         if (autoCompleteTextView2.getText().toString().trim()
@@ -581,16 +580,15 @@ public class Pickup1 extends SenateActivity
         autoCompleteTextView2.setThreshold(1);
         autoCompleteTextView2.setAdapter(adapter);
         autoCompleteTextView2
-                .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
-                            int position, long id) {
+                                            int position, long id) {
                         if (autoCompleteTextView2.getText().toString().trim()
-                                .length()>0) {
+                                .length() > 0) {
                             getDestinationLocationDetails();
                         }
-                        
+
                         int duration = Toast.LENGTH_SHORT;
                         toLocationBeingTyped = false;
                         if (autoCompleteTextView1.getText().toString().trim()
