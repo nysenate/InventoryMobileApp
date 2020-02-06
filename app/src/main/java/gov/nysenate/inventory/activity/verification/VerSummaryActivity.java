@@ -7,33 +7,44 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.activity.MenuActivity;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.adapter.InvListViewAdapter;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.model.InvItem;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class VerSummaryActivity extends SenateActivity
-{
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.MenuActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.InvListViewAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Toasty;
+
+public class VerSummaryActivity extends SenateActivity {
     ArrayList<InvItem> unscannedItems = new ArrayList<InvItem>();
     ArrayList<InvItem> newItems = new ArrayList<InvItem>();
     ArrayList<InvItem> allScannedItems = new ArrayList<InvItem>();
@@ -66,11 +77,56 @@ public class VerSummaryActivity extends SenateActivity
 
     private TabHost tabHost;
 
+    Response.Listener submitItemsRespListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+
+            // Display Toaster
+            Context context = getApplicationContext();
+            String text = response;
+            int duration = Toast.LENGTH_LONG;
+            if (response == null) {
+                text = "!!ERROR: NO RESPONSE FROM SERVER";
+            } else if (response.length() == 0) {
+                text = "Database not updated";
+            } else if (response.trim().startsWith("!!ERROR:")
+                    || response.trim().startsWith("**WARNING:")) {
+                text = response.trim();
+            } else {
+                duration = Toast.LENGTH_SHORT;
+            }
+
+            new Toasty(context).showMessage(text, duration);
+
+            /*
+             * If there was some kind of error, don't leave the Activity. User will
+             * have to then call or cancel the verification. At least the user will
+             * be aware that some problem occured instead of ignoring the message.
+             */
+
+            if (text.equals("Database not updated")
+                    || text.toString().startsWith("!!ERROR:")
+                    || text.toString().startsWith("**WARNING:")) {
+                return;
+            }
+
+            // ===================ends
+            Intent intent = new Intent(VerSummaryActivity.this, MenuActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_summary);
         registerBaseActivityReceiver();
+        AppSingleton.getInstance(this).timeoutFrom = "VERIFICATIONSUMMARY";
+
         currentActivity = this;
 
         // Summary Fields
@@ -140,7 +196,6 @@ public class VerSummaryActivity extends SenateActivity
         scannedItemsListView.setAdapter(scannedItemsListAdapter);
         unscannedItemsListView.setAdapter(unscannedItemsListAdapter);
         newItemsListView.setAdapter(newItemsListAdapter);
-        Log.i("VerSumActivity", "onCreate done");
 
     }
 
@@ -152,16 +207,14 @@ public class VerSummaryActivity extends SenateActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Log.i("onActivityResult", "requestCode:" + requestCode
-        // + ", resultCode:" + resultCode + " = " + RESULT_OK);
         switch (requestCode) {
-        case VERIFICATIONREPORTS_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                submitVerification();
+            case VERIFICATIONREPORTS_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    submitVerification();
+                    break;
+                }
+            case CONTINUEBUTTON_TIMEOUT:
                 break;
-            }
-        case CONTINUEBUTTON_TIMEOUT:
-            break;
         }
     }
 
@@ -261,14 +314,15 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void backButton(View view) {
-        if (checkServerResponse(true) == OK) {
-            btnVerSumBack.getBackground().setAlpha(45);
-            this.onBackPressed();
-        }
+        //if (checkServerResponse(true) == OK) {
+        btnVerSumBack.getBackground().setAlpha(45);
+        this.onBackPressed();
+        // }
+        // }
     }
 
     public void editButtonOnClick(View view) {
-        checkServerResponse();
+        //checkServerResponse();
 
         Intent editIntent = new Intent(this, EditVerification.class);
         startActivity(editIntent);
@@ -287,8 +341,7 @@ public class VerSummaryActivity extends SenateActivity
                 .setMessage(
                         Html.fromHtml("!!ERROR: There was <font color='RED'><b>NO SERVER RESPONSE</b></font>. <br/> Please contact STS/BAC."))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -306,6 +359,8 @@ public class VerSummaryActivity extends SenateActivity
                     }
                 });
 
+        new HttpUtils().playSound(R.raw.noconnect);
+
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -314,48 +369,23 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) == OK) {
-            /*
-             * Log.i("continueButton",
-             * "Check for Session by using KeepSessionAlive");
-             */
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            if (! URL.endsWith("/")) {
-                URL += "/";
-            }               
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "KeepSessionAlive");
-            String response = null;
-            try {
-                response = resr1.get().toString();
-                // Log.i("continueButton", "KeepSessionAlive RESPONSE:" +
-                // response);
-                if (resr1 == null || response == null
-                        ) { //|| response.trim().length() == 0
-                    this.noServerResponse();
-                    return;
-                } else if (response.indexOf("Session timed out") > -1) {
-                    continueButtonTimeout();
-                    return;
-                }
-            } catch (Exception e) {
-                if (resr1 == null || response == null
-                        ) { //|| response.trim().length() == 0
-                    this.noServerResponse();
-                    return;
-                }
-            }
+        /*
+         * "Check for Session by using KeepSessionAlive");
+         */
+        URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
+        if (!URL.endsWith("/")) {
+            URL += "/";
+        }
 
-            // Since AlertDialogs are asynchronous, need logic to display one at
-            // a
-            // time.
-            if (foundItemsScanned()) {
-                displayFoundItemsDialog();
-            } else if (newItemsScanned()) {
-                displayNewItemsDialog();
-            } else {
-                displayVerificationDialog();
-            }
+        // Since AlertDialogs are asynchronous, need logic to display one at
+        // a
+        // time.
+        if (foundItemsScanned()) {
+            displayFoundItemsDialog();
+        } else if (newItemsScanned()) {
+            displayNewItemsDialog();
+        } else {
+            displayVerificationDialog();
         }
     }
 
@@ -379,8 +409,7 @@ public class VerSummaryActivity extends SenateActivity
                                 + "</b>. <br><br>"
                                 + "Continue with Verification Submission (Y/N)?"));
         dialogBuilder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -393,8 +422,7 @@ public class VerSummaryActivity extends SenateActivity
                 });
 
         dialogBuilder.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -420,8 +448,7 @@ public class VerSummaryActivity extends SenateActivity
                                 + "Issue information for these items must be completed via the Inventory Issue Record E/U.<br><br>"
                                 + "Continue with Verification Submission (Y/N)?"));
         dialogBuilder.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -430,8 +457,7 @@ public class VerSummaryActivity extends SenateActivity
                 });
 
         dialogBuilder.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -450,8 +476,7 @@ public class VerSummaryActivity extends SenateActivity
         confirmDialog
                 .setMessage("Are you sure you want to submit this verification?");
         confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -460,7 +485,7 @@ public class VerSummaryActivity extends SenateActivity
                             /*
                              * Context context = getApplicationContext(); int
                              * duration = Toast.LENGTH_SHORT;
-                             * 
+                             *
                              * Toast toast = Toast.makeText(context,
                              * "Button was already been pressed.",
                              * Toast.LENGTH_SHORT);
@@ -475,8 +500,7 @@ public class VerSummaryActivity extends SenateActivity
                 });
 
         confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -526,112 +550,50 @@ public class VerSummaryActivity extends SenateActivity
     }
 
     private void submitVerification() {
-        Log.i("submitVerification", "start");
-
         VerSummaryActivity.btnVerSumCont.getBackground().setAlpha(45);
         progressVerSum.setVisibility(View.VISIBLE);
-        Log.i("submitVerification", "2");
         barcodeNum = "";
         for (int i = 0; i < allScannedItems.size(); i++) {
             barcodeNum += allScannedItems.get(i).getNusenate() + ",";
         }
-        Log.i("submitVerification", "get Tag #'s done");
 
         // Create a JSON string from the arraylist
 
         // Send it to the server
 
         // check network connection
-        // Log.i("submitVerification", "connection");
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        Log.i("submitVerification", "network");
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            Log.i("submitVerification", "network connection available");
+            final JSONArray jsonArray = new JSONArray();
 
-            AsyncTask<String, String, String> resr1;
-            try {
-                // Get the URL from the properties
-
-                JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i < allScannedItems.size(); i++) {
-                    jsonArray.put(allScannedItems.get(i).getJSONObject());
-                }
-                ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
-                postParams.add(new BasicNameValuePair("cdlocat", loc_code));
-                postParams.add(new BasicNameValuePair("cdloctype", cdloctype));
-                postParams.add(new BasicNameValuePair("scannedItems", jsonArray
-                        .toString()));
-                resr1 = new RequestTask(postParams)
-                        .execute("VerificationReports");
-
-                Log.i("submitVerification", "SUBMIT TO URL");
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    Log.i("submitVerification", "RESULTS:" + res);
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(VERIFICATIONREPORTS_TIMEOUT);
-                        return;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            Log.i(this.getClass().getName(), "All Scanned Items: " + allScannedItems.size());
+            for (int i = 0; i < allScannedItems.size(); i++) {
+                jsonArray.put(allScannedItems.get(i).getJSONObject());
             }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("cdlocat", loc_code);
+            params.put("cdloctype", cdloctype);
+            params.put("scannedItems", jsonArray
+                    .toString());
+
+            Log.i(this.getClass().getName(), "All Scanned Items JSON: " + jsonArray
+                    .toString());
+
+            if (!URL.endsWith("/")) {
+                URL = URL + "/";
+            }
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                    URL + "VerificationReports", params, submitItemsRespListener);
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+
         } else {
         }
 
-        // Display Toaster
-        Context context = getApplicationContext();
-        CharSequence text = res;
-        int duration = Toast.LENGTH_LONG;
-        Log.i("SubmitVerification", "Server Response:" + res);
-        if (res == null) {
-            text = "!!ERROR: NO RESPONSE FROM SERVER";
-        } else if (res.length() == 0) {
-            text = "Database not updated";
-        } else if (res.trim().startsWith("!!ERROR:")
-                || res.trim().startsWith("**WARNING:")) {
-            text = res.trim();
-        } else {
-            duration = Toast.LENGTH_SHORT;
-        }
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-
-        /*
-         * If there was some kind of error, don't leave the Activity. User will
-         * have to then call or cancel the verification. At least the user will
-         * be aware that some problem occured instead of ignoring the message.
-         */
-
-        if (text.equals("Database not updated")
-                || text.toString().startsWith("!!ERROR:")
-                || text.toString().startsWith("**WARNING:")) {
-            return;
-        }
-
-        // ===================ends
-        Log.i("submitVerification", "go to menu");
-        Intent intent = new Intent(this, MenuActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
 
     @Override

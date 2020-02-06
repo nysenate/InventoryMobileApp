@@ -7,13 +7,14 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.List;
+
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.verification.EditVerificationAdapter;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.InvItem;
-
-import java.util.List;
 
 
 public class EditVerification extends SenateActivity implements CancelBtnFragment.CancelBtnOnClick {
@@ -35,15 +36,14 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
         directions.setText(Html.fromHtml("Check the items you wish to <b>remove</b> from the verification."));
 
         editListAdapter = new EditVerificationAdapter(this, R.layout.two_column_and_checkbox_adapter,
-                                                      R.id.column1, scannedItems);
+                R.id.column1, scannedItems);
         scannedItemsList.setAdapter(editListAdapter);
     }
 
     public void onSaveBtnClick(View view) {
         if (editListAdapter.getSelectedItems().size() > 0) {
             confirmEditsDialog();
-        }
-        else {
+        } else {
             noEditsMadeDialog();
         }
     }
@@ -51,13 +51,12 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
     private void saveChanges() {
         for (InvItem deleteItem : editListAdapter.getSelectedItems()) {
             if (deleteItem.getType().equalsIgnoreCase("NEW") ||
-                deleteItem.getType().equalsIgnoreCase("DIFFERENT LOCATION") ||
-                deleteItem.getType().equalsIgnoreCase("INACTIVE")) {
+                    deleteItem.getType().equalsIgnoreCase("DIFFERENT LOCATION") ||
+                    deleteItem.getType().equalsIgnoreCase("INACTIVE")) {
                 VerScanActivity.newItems.remove(deleteItem);
                 scannedItems.remove(deleteItem);
                 VerScanActivity.invList.remove(deleteItem);
-            }
-            else {
+            } else {
                 scannedItems.remove(deleteItem);
                 VerScanActivity.unscannedItems.add(deleteItem);
                 VerScanActivity.invList.add(deleteItem);
@@ -77,7 +76,7 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
                 .setCancelable(false)
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml("Are you sure you wish to remove <b>" + editListAdapter.getSelectedItems().size() +
-                                          "</b> item(s) from this verification?"))
+                        "</b> item(s) from this verification?"))
                 .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override
@@ -93,7 +92,7 @@ public class EditVerification extends SenateActivity implements CancelBtnFragmen
                 .setCancelable(false)
                 .setTitle("Confirmation")
                 .setMessage(Html.fromHtml("No items are selected to be removed from this verification. <br>" +
-                                          "Continuing will not make any changes."))
+                        "Continuing will not make any changes."))
                 .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), null)
                 .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
                     @Override

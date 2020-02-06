@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
@@ -19,24 +18,43 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RequestTask;
-import gov.nysenate.inventory.model.Location;
-import gov.nysenate.inventory.util.Serializer;
-import gov.nysenate.inventory.util.Toasty;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Verification extends SenateActivity
-{
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.JsonInvObjectRequest;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.Location;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
+
+public class Verification extends SenateActivity {
     public final static String loc_code_intent = "gov.nysenate.inventory.android.loc_code_str";
     public final static String cdloctype_intent = "gov.nysenate.inventory.android.cdloctype";
     public final static String timeout_intent = "gov.nysenate.inventory.android.timeoutFrom";
@@ -59,11 +77,133 @@ public class Verification extends SenateActivity
     int lastSize = 0;
     private Map<String, Location> summaryToLocation;
 
+    Response.Listener responseListener = new Response.Listener<JSONObject>() {
+
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                InvApplication.timeoutType = -1;
+
+                String cdrespcrthd = response.getString("cdrespctrhd");
+                if (cdrespcrthd == null || cdrespcrthd.trim().length() == 0
+                        || cdrespcrthd.equals("~")) {
+                    tvOffice.setText("N/A");
+                } else {
+                    tvOffice.setText(response.getString("cdrespctrhd"));
+                }
+                String descript = response.getString("adstreet1").replaceAll(
+                        "&#34;", "\"")
+                        + " ,"
+                        + response.getString("adcity").replaceAll("&#34;",
+                        "\"")
+                        + ", "
+                        + response.getString("adstate").replaceAll("&#34;",
+                        "\"")
+                        + " "
+                        + response.getString("adzipcode").replaceAll("&#34;",
+                        "\"");
+                if (descript == null || descript.trim().length() == 0
+                        || descript.equals("~")
+                        || descript.trim().equals(",,")) {
+                    tvDescript.setText("N/A");
+                } else {
+                    tvDescript.setText(descript);
+                }
+                String nucount = response.getString("nucount");
+                if (nucount == null || nucount.trim().length() == 0
+                        || nucount.equals("~")) {
+                    tvCount.setText("N/A");
+                } else {
+                    tvCount.setText(nucount);
+                }
+
+            } catch (JSONException e) {
+                tvOffice.setText("!!ERROR: " + e.getMessage());
+                tvDescript.setText("Please contact STS/BAC.");
+                tvCount.setText("N/A");
+
+                e.printStackTrace();
+            } catch (
+                    Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            status = "yes1";
+        }
+    };
+
+    Response.Listener locListRespListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                try {
+                    if (response == null) {
+                        noServerResponse();
+                        return;
+                    } else if (response.indexOf("Session timed out") > -1) {
+                        startTimeout(LOCCODELIST_TIMEOUT);
+                        return;
+                    }
+
+                } catch (NullPointerException e) {
+                    noServerResponse();
+                    return;
+                }
+
+                InvApplication.timeoutType =  -1;
+
+                summaryToLocation = new HashMap<>();
+                List<Location> locations = Serializer.deserialize(response, Location.class);
+                for (Location loc : locations) {
+                    summaryToLocation.put(loc.getLocationSummaryString(), loc);
+                }
+
+                List<String> sortedSummaries = new ArrayList<>(summaryToLocation.keySet());
+                Collections.sort(sortedSummaries);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Verification.this,
+                        android.R.layout.simple_dropdown_item_1line, sortedSummaries);
+
+                autoCompleteTextView1.setThreshold(1);
+                autoCompleteTextView1.setAdapter(adapter);
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    };
+
     public final int LOCCODELIST_TIMEOUT = 101, LOCATIONDETAILS_TIMEOUT = 102;
 
     String URL = "";
 
     public static ProgressBar progBarVerify;
+
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+            lastSize = autoCompleteTextView1.getText().toString().trim().length();
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            locationBeingTyped = true;
+            int currentSize = autoCompleteTextView1.getText().toString().trim().length();
+
+            if (currentSize == 0 || currentSize < lastSize) {
+                clearLocationDetails();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +211,9 @@ public class Verification extends SenateActivity
         setContentView(R.layout.activity_verification);
         registerBaseActivityReceiver();
         currentActivity = this;
+        AppSingleton.getInstance(this).timeoutFrom = "verification";
+
+        autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 
         loc_code = (EditText) findViewById(R.id.preferencePWD);
         // code for the autocomplete arraylist of location
@@ -94,27 +237,27 @@ public class Verification extends SenateActivity
         // code for textwatcher
 
         loc_code = (EditText) findViewById(R.id.preferencePWD);
-        // loc_code.addTextChangedListener(filterTextWatcher);
-        autoCompleteTextView1.addTextChangedListener(filterTextWatcher);
+
+        if (filterTextWatcher==null) {
+            Log.i(this.getClass().getName(), "filterTextWatcher IS NULL");
+        }
+        else {
+            autoCompleteTextView1.addTextChangedListener(filterTextWatcher);
+        }
         autoCompleteTextView1
-                .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
-                            int position, long id) {
+                                            int position, long id) {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
                                 autoCompleteTextView1.getWindowToken(), 0);
-                        //Log.i("autocomplete clicked", "Before selection");
-                        //autoCompleteTextView1.setSelection(0);
                         Log.i("autocomplete clicked",
                                 "Before getLocationDetails");
                         if (autoCompleteTextView1.getText().toString().trim()
                                 .length() > 0) {
                             getLocationDetails();
                         }
-                        /*Log.i("autocomplete clicked",
-                                "After getLocationDetails");*/
                         locationBeingTyped = false;
                     }
                 });
@@ -138,6 +281,7 @@ public class Verification extends SenateActivity
     }
 
     public void noServerResponse() {
+        Log.i(this.getClass().getName(), "NOSERVERRESPONSE (VERIFICATION)");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
@@ -166,6 +310,7 @@ public class Verification extends SenateActivity
                         dialog.dismiss();
                     }
                 });
+        new HttpUtils().playSound(R.raw.noconnect);
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -173,38 +318,6 @@ public class Verification extends SenateActivity
         // show it
         alertDialog.show();
     }
-
-    private TextWatcher filterTextWatcher = new TextWatcher()
-    {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
-            lastSize = autoCompleteTextView1.getText().toString().trim().length();
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            locationBeingTyped = true;
-            int currentSize =  autoCompleteTextView1.getText().toString().trim().length();
-            /* Log.i("autocomplete", "autocomplete list count:"
-                    + autoCompleteTextView1.getAdapter().getCount());
-           if (autoCompleteTextView1.getAdapter().getCount() == 1) {
-                autoCompleteTextView1.setSelection(0);
-                if (autoCompleteTextView1.getText().toString().trim().length() > 0) {
-                    getLocationDetails();
-                }
-            }*/
-            if (currentSize == 0 || currentSize < lastSize) {
-                clearLocationDetails();
-            }
-        }
-    };
 
     public void locationDetailTimeout() {
         Intent intentTimeout = new Intent(this, LoginActivity.class);
@@ -222,35 +335,33 @@ public class Verification extends SenateActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case LOCCODELIST_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                getLocCodeList();
-                break;
-            }
-        case LOCATIONDETAILS_TIMEOUT:
-            if (resultCode == RESULT_OK) {
-                if (locationBeingTyped) {
-                    autoCompleteTextView1.setText(autoCompleteTextView1
-                            .getText());
-                    autoCompleteTextView1.setSelection(autoCompleteTextView1
-                            .getText().length());
-                } else {
-                    getLocationDetails();
-                    // autoCompleteTextView1.setSelection(autoCompleteTextView1.getText().length());
-                    autoCompleteTextView1.requestFocus();
-                    new Timer().schedule(new TimerTask()
-                    {
-                        @Override
-                        public void run() {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(
-                                    autoCompleteTextView1.getWindowToken(), 0);
-                        }
-                    }, 50);
-
+            case LOCCODELIST_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    getLocCodeList();
+                    break;
                 }
-            }
-            break;
+            case LOCATIONDETAILS_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    if (locationBeingTyped) {
+                        autoCompleteTextView1.setText(autoCompleteTextView1
+                                .getText());
+                        autoCompleteTextView1.setSelection(autoCompleteTextView1
+                                .getText().length());
+                    } else {
+                        getLocationDetails();
+                        autoCompleteTextView1.requestFocus();
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(
+                                        autoCompleteTextView1.getWindowToken(), 0);
+                            }
+                        }, 50);
+
+                    }
+                }
+                break;
         }
     }
 
@@ -265,17 +376,17 @@ public class Verification extends SenateActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        case android.R.id.home:
-            Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            NavUtils.navigateUpFromSameTask(this);
+            case android.R.id.home:
+                Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
+                        Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                NavUtils.navigateUpFromSameTask(this);
 
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+                overridePendingTransition(R.anim.in_left, R.anim.out_right);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -287,20 +398,17 @@ public class Verification extends SenateActivity
     }
 
     public void getLocationDetails() {
-        Log.i("getLocationDetails", "(" + autoCompleteTextView1.getText()
-                + ") autocomplete list count:"
-                + autoCompleteTextView1.getAdapter().getCount());
         if (autoCompleteTextView1.getAdapter().getCount() == 0) {
             return;
         }
         String barcodeNumberDetails[] = autoCompleteTextView1.getText()
                 .toString().trim().split("-");
         String barcode_num = barcodeNumberDetails[0];// this will be
-                                                     // passed to the
-                                                     // server
+        // passed to the
+        // server
         loc_code_str = barcodeNumberDetails[0];// this will be passed to
-                                               // next activity with
-                                               // intent
+        // next activity with
+        // intent
         String[] nextSplit = null;
         if (barcodeNumberDetails.length > 1) {
             nextSplit = barcodeNumberDetails[1].split(":");
@@ -325,88 +433,21 @@ public class Verification extends SenateActivity
             // fetch data
             status = "yes";
 
-            Location selectedLocation = summaryToLocation.get(autoCompleteTextView1.getText().toString());
-            if (selectedLocation == null) {
-                Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
-                return;
-            }
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
-                             + "&location_type=" + selectedLocation.getCdloctype());
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    System.out.println("FOUND:"
-                            + res.indexOf("Session timed out")
-                            + " Verification RES1:" + res);
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(LOCATIONDETAILS_TIMEOUT);
-                        return;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
+                Location selectedLocation = summaryToLocation.get(autoCompleteTextView1.getText().toString());
+                if (selectedLocation == null) {
+                    Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
                     return;
-                }
-
-                System.out.println("SEN TAG#:" + barcode_num
-                        + " SERVER RESPONSE:" + res);
-                try {
-                    JSONObject object = (JSONObject) new JSONTokener(res)
-                            .nextValue();
-                    // tvLocCd.setText( object.getString("cdlocat"));
-                    String cdrespcrthd = object.getString("cdrespctrhd");
-                    if (cdrespcrthd == null || cdrespcrthd.trim().length() == 0
-                            || cdrespcrthd.equals("~")) {
-                        tvOffice.setText("N/A");
-                    } else {
-                        tvOffice.setText(object.getString("cdrespctrhd"));
-                    }
-                    String descript = object.getString("adstreet1").replaceAll(
-                            "&#34;", "\"")
-                            + " ,"
-                            + object.getString("adcity").replaceAll("&#34;",
-                                    "\"")
-                            + ", "
-                            + object.getString("adstate").replaceAll("&#34;",
-                                    "\"")
-                            + " "
-                            + object.getString("adzipcode").replaceAll("&#34;",
-                                    "\"");
-                    if (descript == null || descript.trim().length() == 0
-                            || descript.equals("~")
-                            || descript.trim().equals(",,")) {
-                        tvDescript.setText("N/A");
-                    } else {
-                        tvDescript.setText(descript);
-                    }
-                    String nucount = object.getString("nucount");
-                    if (nucount == null || nucount.trim().length() == 0
-                            || nucount.equals("~")) {
-                        tvCount.setText("N/A");
-                    } else {
-                        tvCount.setText(nucount);
-                    }
-
-                } catch (JSONException e) {
-                    tvOffice.setText("!!ERROR: " + e.getMessage());
-                    tvDescript.setText("Please contact STS/BAC.");
-                    tvCount.setText("N/A");
-
-                    e.printStackTrace();
-                }
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
+
+            JsonInvObjectRequest jsonInvObjectRequest= new JsonInvObjectRequest(Request.Method.GET,
+                    URL +"LocationDetails?location_code=" + selectedLocation.getCdlocat()
+                            + "&location_type=" + selectedLocation.getCdloctype(), null, responseListener);
+
+            InvApplication.timeoutType = this.LOCATIONDETAILS_TIMEOUT;
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(jsonInvObjectRequest);
+
             status = "yes1";
         } else {
             // display error
@@ -423,87 +464,41 @@ public class Verification extends SenateActivity
             status = "yes";
             // Get the URL from the properties
 
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            if (! URL.endsWith("/")) {
-                URL += "/";
-            }               
+            URL = AppProperties.getBaseUrl();
 
-            AsyncTask<String, String, String> resr1 = new RequestTask()
-                    .execute(URL + "LocCodeList");
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(LOCCODELIST_TIMEOUT);
-                        return;
-                    }
+            StringInvRequest stringInvRequest= new StringInvRequest(Request.Method.GET,
+                    URL +"LocCodeList", null, locListRespListener);
 
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
+            InvApplication.timeoutType = LOCCODELIST_TIMEOUT;
 
-                summaryToLocation = new HashMap<>();
-                List<Location> locations = Serializer.deserialize(res, Location.class);
-                for (Location loc: locations) {
-                    summaryToLocation.put(loc.getLocationSummaryString(), loc);
-                }
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
 
-                List<String> sortedSummaries = new ArrayList<>(summaryToLocation.keySet());
-                Collections.sort(sortedSummaries);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_dropdown_item_1line, sortedSummaries);
-
-                autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-                autoCompleteTextView1.setThreshold(1);
-                autoCompleteTextView1.setAdapter(adapter);
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             status = "yes1";
         } else {
             // display error
             status = "no";
         }
-
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) == OK) {
-
             String currentLocation = Verification.autoCompleteTextView1
                     .getText().toString();
             int duration = Toast.LENGTH_SHORT;
-            if (currentLocation.trim().length() == 0) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: You must first pick a location.", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+        if (currentLocation == null || currentLocation.trim().length() == 0) {
+                new Toasty(this).showMessage("!!ERROR: You must first pick a location.", duration);
                 boolean focusRequested = autoCompleteTextView1.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
             } else if (!summaryToLocation.containsKey(currentLocation)) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "!!ERROR: Location Code \"" + currentLocation
-                                + "\" is invalid.", duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+            new Toasty(this).showMessage("!!ERROR: Location Code \"" + currentLocation
+                        + "\" is invalid.", duration);
                 boolean focusRequested = autoCompleteTextView1.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
             } else {
-
                 progBarVerify.setVisibility(View.VISIBLE);
                 btnVerify1Cont.getBackground().setAlpha(45);
                 Intent intent = new Intent(this, VerScanActivity.class);
@@ -512,7 +507,6 @@ public class Verification extends SenateActivity
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_right, R.anim.out_left);
             }
-        }
 
     }
 
