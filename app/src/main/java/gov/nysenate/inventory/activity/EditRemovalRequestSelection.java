@@ -6,24 +6,31 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import gov.nysenate.inventory.android.CancelBtnFragment;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.RRListStatusFragment;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
-import gov.nysenate.inventory.comparator.RemovalRequestComparer;
-import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.Serializer;
-import gov.nysenate.inventory.util.Toasty;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.CancelBtnFragment;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RRListStatusFragment;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.comparator.RemovalRequestComparer;
+import gov.nysenate.inventory.model.RemovalRequest;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
+
 public class EditRemovalRequestSelection extends SenateActivity
-        implements RRListStatusFragment.RRListStatusFragmentI, CancelBtnFragment.CancelBtnOnClick
-{
+        implements RRListStatusFragment.RRListStatusFragmentI, CancelBtnFragment.CancelBtnOnClick {
     private List<RemovalRequest> rrs = new ArrayList<RemovalRequest>();
     private RRListStatusFragment rrList;
     private ProgressBar bar;
@@ -40,17 +47,12 @@ public class EditRemovalRequestSelection extends SenateActivity
 
         bar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        if (checkServerResponse(true) == OK) {
-            GetRemovalRequests task = new GetRemovalRequests();
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                    AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE&status=RJ");
-        }
+        getRemovalRequests();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        checkServerResponse(true);
     }
 
     @Override
@@ -65,10 +67,6 @@ public class EditRemovalRequestSelection extends SenateActivity
 
     @Override
     public void nextActivity(int position) {
-        if (checkServerResponse() != OK) {
-            return;
-        }
-
         RemovalRequest rr = rrs.get(position);
         String transactionNum = String.valueOf(rr.getTransactionNum());
         Intent intent = new Intent(this, EditRemovalRequest.class);
@@ -76,6 +74,33 @@ public class EditRemovalRequestSelection extends SenateActivity
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
     }
+
+    public void getRemovalRequests() {
+        if (bar!=null) {
+            bar.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                AppProperties.getBaseUrl(EditRemovalRequestSelection.this) + "RemovalRequest?status=PE&status=RJ", null, removalRequestResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    Response.Listener removalRequestResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            List<RemovalRequest> rrs = null;
+            rrs = Serializer.deserialize(response, RemovalRequest.class);
+            bar.setVisibility(ProgressBar.INVISIBLE);
+            if (rrs != null) {
+                updateAdapter(rrs);
+            } else {
+                Toasty.displayCenteredMessage(EditRemovalRequestSelection.this,
+                        "Error getting Removal Requests from server. Please try again.", Toast.LENGTH_SHORT);
+            }
+        }
+    };
 
     private class GetRemovalRequests extends BaseAsyncTask<String, Void, List<RemovalRequest>> {
         @Override
@@ -105,7 +130,8 @@ public class EditRemovalRequestSelection extends SenateActivity
     }
 
     private void updateAdapter(List<RemovalRequest> rrs) {
-        Collections.sort(rrs, Collections.reverseOrder());;
+        Collections.sort(rrs, Collections.reverseOrder());
+        ;
         this.rrs.clear();
         this.rrs.addAll(rrs);
         rrList.refreshDisplay();

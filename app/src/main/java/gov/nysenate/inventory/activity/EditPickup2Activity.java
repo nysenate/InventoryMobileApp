@@ -6,7 +6,7 @@ public class EditPickup2Activity extends SelectDelivery2 {
 
     @Override
     protected String getPickupsUrl() {
-        String url = AppProperties.getBaseUrl(this);
+        String url = AppProperties.getBaseUrl();
         url += "GetAllPickups?";
         url += "userFallback=" + LoginActivity.nauser;
         return url;

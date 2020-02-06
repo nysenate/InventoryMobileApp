@@ -3,17 +3,41 @@ package gov.nysenate.inventory.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.adapter.RemovalRequestItemSelectionAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.model.AdjustCode;
@@ -21,18 +45,13 @@ import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
-import org.apache.http.HttpStatus;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class EditRemovalRequest extends SenateActivity
         implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick,
-        RemovalRequestItemSelectionAdapter.RemovalRequestItemSelectionAdapterI
-{
+        RemovalRequestItemSelectionAdapter.RemovalRequestItemSelectionAdapterI {
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
     private RemovalRequestItemSelectionAdapter adapter;
@@ -75,76 +94,73 @@ public class EditRemovalRequest extends SenateActivity
 
         initializeViewObjects();
 
-        if (checkServerResponse(true) == OK) {
-            initializeAdjustCodes();
-        }
+        initializeAdjustCodes();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        checkServerResponse(true);
     }
 
     private void initializeAdjustCodes() {
-        QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
-        queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
+        queryAdjustCodes();
     }
 
-    public class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
-        @Override
-        protected void onPreExecute() {
+    public void queryAdjustCodes() {
         progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
 
-        @Override
-        public List<AdjustCode> handleBackgroundResult(String out, int responseCode) {
-            List<AdjustCode> codes = null;
-            if (responseCode == HttpStatus.SC_OK) {
-                codes = Serializer.deserialize(out.toString(), AdjustCode.class);
-            }
-            return codes;
-        }
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                AppProperties.getBaseUrl(this) + "AdjustCodeServlet", null, adjustCodeListResponseListener);
 
-        @Override
-        protected void onPostExecute(List<AdjustCode> codes) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-
-            adjustCodes = codes;
-            if (adjustCodes != null) {
-                initializeAdjustCodeSpinner();
-                initializeRemovalRequest();
-            } else {
-                Toasty.displayCenteredMessage(EditRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
-            }
-        }
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
+
+    Response.Listener adjustCodeListResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+                adjustCodes = Serializer.deserialize(response, AdjustCode.class);
+
+                if (adjustCodes != null) {
+                    initializeAdjustCodeSpinner();
+                    initializeRemovalRequest();
+                } else {
+                    Toasty.displayCenteredMessage(EditRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Toasty(EditRemovalRequest.this).showMessage("!!ERROR: Problem with getting Pickup informatiom. " + e.getMessage() + " Please contact STSBAC.");
+            }
+        }
+    };
 
     private void initializeRemovalRequest() {
-        GetRemovalRequest rrTask = new GetRemovalRequest();
-        rrTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                AppProperties.getBaseUrl(this) + "RemovalRequest?id=" + Integer.valueOf(getIntent().getStringExtra("transactionNum")));
+        getRemovalRequests();
     }
 
-    private class GetRemovalRequest extends BaseAsyncTask<String, Void, RemovalRequest> {
+    public void getRemovalRequests() {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
 
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id="+ Integer.valueOf(getIntent().getStringExtra("transactionNum")), null, removalRequestResponseListener);
 
+        Log.i(this.getClass().getName(), AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id="+ Integer.valueOf(getIntent().getStringExtra("transactionNum")));
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    Response.Listener removalRequestResponseListener = new Response.Listener<String>() {
         @Override
-        public RemovalRequest handleBackgroundResult(String out, int responseCode) {
+        public void onResponse(String response) {
             RemovalRequest rr = null;
-            if (responseCode == HttpStatus.SC_OK) {
-                rr = Serializer.deserialize(out, RemovalRequest.class).get(0);
-            }
-            return rr;
-        }
-
-        @Override
-        protected void onPostExecute(RemovalRequest rr) {
+            rr = Serializer.deserialize(response, RemovalRequest.class).get(0);
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+
             if (rr != null) {
                 originalAdjustCode = rr.getAdjustCode();
                 originalStatus = rr.getStatus();
@@ -155,8 +171,9 @@ public class EditRemovalRequest extends SenateActivity
             } else {
                 Toasty.displayCenteredMessage(EditRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
             }
+
         }
-    }
+    };
 
     private void initializeItemListAdapter() {
         List<Item> itemsSorted = removalRequest.getItems();
@@ -170,7 +187,6 @@ public class EditRemovalRequest extends SenateActivity
         transactionNumView.setText(String.valueOf(removalRequest.getTransactionNum()));
         requestedBy.setText(removalRequest.getEmployee());
         populateStatus();
-//        itemCount.setText(String.valueOf(removalRequest.getItems().size()));
         itemCheckBoxPressed();
         date.setText(((InvApplication) getApplication()).getDateTimeFormat().format(removalRequest.getDate()));
         adjustCodeView.setSelection(removalRequestAdjustCodePosition());
@@ -187,7 +203,7 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private void setupRejectCommentsBtn() {
-        
+
         if (rejectCommentsExist()) {
             rejectComments.setVisibility(View.VISIBLE);
             rejectComments.setOnClickListener(new View.OnClickListener() {
@@ -231,10 +247,6 @@ public class EditRemovalRequest extends SenateActivity
     public void onSaveBtnClick(View view) {
         saveBtn.setEnabled(false);
 
-        if (checkServerResponse(true) != OK) {
-            saveBtn.setEnabled(true);
-            return;
-        }
         if (noChangesMade()) {
             Toasty.displayCenteredMessage(this, "You have not made any changes", Toast.LENGTH_SHORT);
             saveBtn.setEnabled(true);
@@ -287,7 +299,7 @@ public class EditRemovalRequest extends SenateActivity
     }
 
     private boolean allItemsDeleted() {
-        for (Item i: removalRequest.getItems()) {
+        for (Item i : removalRequest.getItems()) {
             if (i.getStatus() != ItemStatus.INACTIVE) {
                 return false;
             }
@@ -317,11 +329,82 @@ public class EditRemovalRequest extends SenateActivity
         return s;
     }
 
-    private void updateRemovalRequest() {
-        UpdateRemovalRequest task = new UpdateRemovalRequest(EditRemovalRequest.this, removalRequest, this);
-        task.setProgressBar(progressBar);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "RemovalRequest");
+    public void updateRemovalRequest() {
+        Map<String, String> params = new HashMap<>();
+        Log.i(this.getClass().getName(), "removalRequest: "+Serializer.serialize(removalRequest));
+        params.put("RemovalRequest", Serializer.serialize(removalRequest));
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest", params, updateRemovalResponseListener) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";  // ; charset=UTF-8
+            }
+        };
+
+        Log.i(this.getClass().getName(), "updateRemovalRequest " + AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest");
+
+/*        try {
+            Log.i(this.getClass().getName(), "updateRemovalRequest " + new String(stringInvRequest.getBody()));
+        } catch (AuthFailureError authFailureError) {
+            authFailureError.printStackTrace();
+        }*/
+
+//  Old code for testing purposes
+        List<NameValuePair> values = new ArrayList<NameValuePair>();
+        values.add(new BasicNameValuePair("RemovalRequest", Serializer.serialize(removalRequest)));
+        UrlEncodedFormEntity urlEncodedFormEntity = null;
+
+        try {
+            urlEncodedFormEntity = new UrlEncodedFormEntity(values);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+//  Old code for testing purposes  END
+        String oldRequest = null;
+        try {
+            String newRequest = new String(stringInvRequest.getBody());
+            oldRequest = HttpUtils.ConvertStreamToString(urlEncodedFormEntity.getContent());
+
+//            new MsgAlert(this).showMessage("NEW REQUEST", newRequest);
+//            new MsgAlert(this).showMessage("OLD REQUEST", oldRequest);
+
+            Log.i(this.getClass().getName(), "OLD HEADER: "+urlEncodedFormEntity.getContentType().getValue());
+            Log.i(this.getClass().getName(), "NEW HEADER: "+stringInvRequest.getBodyContentType());
+
+            Log.i(this.getClass().getName(), "OLD: "+oldRequest);
+            Log.i(this.getClass().getName(), "   ");
+            Log.i(this.getClass().getName(), "NEW: "+newRequest);
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+       // params.put("RemovalRequest", oldRequest);   //  test using old request values
+
+        if (1==1) {  // testing purposes only
+//            new MsgAlert(this).showMessage("TEST", "Testing, need to comment this out");
+//            return;
+        }
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
+
+    Response.Listener updateRemovalResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+
+            removalRequest = Serializer.deserialize(response, RemovalRequest.class).get(0);
+
+            removalRequest.setStatusCode(HttpStatus.SC_OK);
+
+            EditRemovalRequest.this.onRemovalRequestUpdated(removalRequest);
+        }
+    };
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
@@ -332,8 +415,7 @@ public class EditRemovalRequest extends SenateActivity
             title = "Info";
             message = "Removal Request successfully updated. <br><br>";
             message = getChangeMessageBody(message);
-        }
-        else {
+        } else {
             title = "Error";
             switch (rr.getStatusCode()) {
                 case HttpStatus.SC_BAD_REQUEST:
@@ -361,7 +443,6 @@ public class EditRemovalRequest extends SenateActivity
                     }
                 });
         builder.show();
-
     }
 
     private List<Item> getItemsDeleted() {
@@ -401,7 +482,8 @@ public class EditRemovalRequest extends SenateActivity
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) {  }
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     }
 
     private AdjustCode getAdjustCode(String codeAndDescription) {
@@ -413,8 +495,9 @@ public class EditRemovalRequest extends SenateActivity
         return null;
     }
 
-
-    /** Indicates a checkbox in the list view has been pressed */
+    /**
+     * Indicates a checkbox in the list view has been pressed
+     */
     @Override
     public void itemCheckBoxPressed() {
         itemCount.setText(String.valueOf(numberOfActiveItems()));
@@ -429,6 +512,5 @@ public class EditRemovalRequest extends SenateActivity
         }
         return count;
     }
-
 
 }

@@ -1,14 +1,31 @@
 package gov.nysenate.inventory.activity;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import gov.nysenate.inventory.util.AppProperties;
 
 public class EditPickup1Activity extends SelectDelivery1 {
 
-    @Override
-    protected String getPickupsUrl() {
+    protected String getPickupsAPIUrl() {
         String url = AppProperties.getBaseUrl(this);
         url += "GetAllPickups?";
-        url += "userFallback=" + LoginActivity.nauser;
+        return url;
+    }
+
+    protected String getPickupsParams() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("userFallback=");
+        stringBuilder.append(LoginActivity.nauser);
+        return stringBuilder.toString();
+    }
+
+    @Override
+    protected String getPickupsUrl() {
+        String url = getPickupsAPIUrl();
+        url += getPickupsParams();
         return url;
     }
 

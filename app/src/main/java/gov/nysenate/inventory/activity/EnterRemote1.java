@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.activity;
 
+import org.json.JSONObject;
+
 import gov.nysenate.inventory.util.AppProperties;
 
 public class EnterRemote1 extends SelectDelivery1 {
@@ -11,6 +13,16 @@ public class EnterRemote1 extends SelectDelivery1 {
         url += "userFallback=" + LoginActivity.nauser;
         url += "&incompleteRemote=true";
         return url;
+    }
+
+    @Override
+    protected String getPickupsAPIUrl() {
+        return getPickupsUrl();
+    }
+
+    @Override
+    protected String getPickupsParams() {
+        return null;
     }
 
     @Override

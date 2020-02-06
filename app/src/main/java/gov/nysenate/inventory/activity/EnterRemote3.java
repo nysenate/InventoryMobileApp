@@ -5,38 +5,53 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
 import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.OrigRemoteTask;
+import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.listener.VerMethodListener;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.*;
-import org.apache.http.*;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 
 public class EnterRemote3 extends SenateActivity {
 
@@ -48,12 +63,78 @@ public class EnterRemote3 extends SenateActivity {
     private ClearableEditText remoteComment;
     private ClearableEditText remoteHelpReferenceNum;
 
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
 
     private TextView pickupLocation;
     private TextView deliveryLocation;
     private TextView pickupBy;
     private TextView itemCount;
+
+    private Transaction original;
+
+    //enterRemoteInfoResponseListener
+
+    Response.Listener employeeListResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            employeeNameList = Serializer.deserialize(response, Employee.class);
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            initializeRemoteSignerTextBox();
+        }
+    };
+
+    Response.Listener enterRemoteInfoResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            EnterRemote3.this.progressBar.setVisibility(ProgressBar.INVISIBLE);
+            HttpUtils.displayResponseResults(EnterRemote3.this, HttpStatus.SC_OK);
+            returnToMainMenu();
+        }
+    };
+
+
+    Response.Listener getOriginRemoteResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            if (response != null && response.trim().length() > 0) {
+                original = Serializer.deserialize(response, Transaction.class).get(0);
+            }
+
+            if (original != null) {
+                setOriginalVerMethod();
+                setOriginalSigner();
+                setOriginalComments();
+                setOriginalHelpNum();
+            }
+            LoginActivity.activeAsyncTask = null;
+        }
+    };
+
+    Response.Listener getPickupResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                pickup = Serializer.deserialize(response, Transaction.class).get(0);
+
+                if (pickup.isRemote()) {
+                    pickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
+                    deliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
+                } else {
+                    pickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
+                    deliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
+                }
+                pickupBy.setText(pickup.getNapickupby());
+                itemCount.setText(Integer.toString(pickup.getPickupItems().size()));
+                checkForPreviousEntry();
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Toasty(EnterRemote3.this).showMessage("!!ERROR: Problem with getting Pickup informatiom. " + e.getMessage() + " Please contact STSBAC.");
+            }
+            ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(EnterRemote3.this, R.array.remote_ver_method, android.R.layout.simple_spinner_item);
+            spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            verMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, EnterRemote3.this));
+        }
+    };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,25 +151,71 @@ public class EnterRemote3 extends SenateActivity {
         remoteHelpReferenceNum = (ClearableEditText) findViewById(R.id.remote_helprefnum);
         remoteHelpReferenceNum.setVisibility(ClearableEditText.INVISIBLE);
         verMethod.setOnItemSelectedListener(new VerMethodListener(verMethod, remoteHelpReferenceNum, remoteSigner));
+        progressBar = (ProgressBar) findViewById(R.id.enter_remote_3_progress_bar);
 
-        if (checkServerResponse() != OK) {
+/*        if (checkServerResponse() != OK) {
             noServerResponse();
-        }
+        }*/
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             new GetPickup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new GetEmployeeList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             new GetPickup().execute();
             new GetEmployeeList().execute();
-        }
+        }*/
 
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.remote_ver_method, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        verMethod.setAdapter(new NothingSelectedSpinnerAdapter(spinAdapter, R.layout.spinner_nothing_selected, this));
+        getPickup();
+        getEmployeeList();
     }
 
-    private class GetPickup extends AsyncTask<Void, Void, Integer> {
+    private void setOriginalVerMethod() {
+        Adapter adapter = verMethod.getAdapter();
+        for (int i = 1; i < adapter.getCount(); i++) {
+            // Start at 1 since 0 is always null in this adapter.
+            if (transVerMethodEqualsAdapterItem(adapter, i)) {
+                verMethod.setSelection(i);
+                return;
+            }
+        }
+    }
+
+    private boolean transVerMethodEqualsAdapterItem(Adapter adapter, int i) {
+        return original.getVerificationMethod().equalsIgnoreCase(adapter.getItem(i).toString());
+    }
+
+    private void setOriginalSigner() {
+        if (pickup.isRemotePickup()) {
+            remoteSigner.setText(original.getNareleaseby());
+        }
+        if (pickup.isRemoteDelivery()) {
+            remoteSigner.setText(original.getNaacceptby());
+        }
+    }
+
+    private void setOriginalComments() {
+        remoteComment.setText(original.getVerificationComments());
+    }
+
+    private void setOriginalHelpNum() {
+        remoteHelpReferenceNum.setText(original.getHelpReferenceNum());
+    }
+
+    public void getPickup() {
+
+        String url = AppProperties.getBaseUrl();
+        url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
+        url += "&userFallback=" + LoginActivity.nauser;
+
+        Log.i(this.getClass().getName(), url);
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, getPickupResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    /*private class GetPickup extends AsyncTask<Void, Void, Integer> {
 
         @Override
         protected void onPreExecute() {
@@ -96,15 +223,14 @@ public class EnterRemote3 extends SenateActivity {
 
         @Override
         protected Integer doInBackground(Void... arg0) {
-            if (checkServerResponse(true) != OK) {
-                return 0;
-            }
+            //LoginActivity.activeAsyncTask = this;
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             String url = AppProperties.getBaseUrl(EnterRemote3.this);
             url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
             url += "&userFallback=" + LoginActivity.nauser;
+
 
             try {
                 response = httpClient.execute(new HttpGet(url));
@@ -134,18 +260,48 @@ public class EnterRemote3 extends SenateActivity {
                 checkForPreviousEntry();
             }
         }
+    }*/
+
+
+    public void getOriginalRemote() {
+
+        String url = AppProperties.getBaseUrl();
+        url += "PreviousRemoteInfo?nuxrpd=" + pickup.getNuxrpd();
+
+        Log.i(this.getClass().getName(), url);
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, getOriginRemoteResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
 
     private void checkForPreviousEntry() {
-        OrigRemoteTask task = new OrigRemoteTask(this, pickup, verMethod, remoteSigner, remoteComment, remoteHelpReferenceNum);
+/*        OrigRemoteTask task = new OrigRemoteTask(this, pickup, verMethod, remoteSigner, remoteComment, remoteHelpReferenceNum);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             task.execute();
-        }
+        }*/
+
+        getOriginalRemote();
     }
 
-    private class GetEmployeeList extends AsyncTask<Void, Void, String> {
+    public void getEmployeeList() {
+
+        String url = AppProperties.getBaseUrl(EnterRemote3.this);
+        url += "EmployeeList?";
+        url += "userFallback=" + LoginActivity.nauser;
+
+        Log.i(this.getClass().getName(), url);
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, employeeListResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+/*    private class GetEmployeeList extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -161,6 +317,7 @@ public class EnterRemote3 extends SenateActivity {
                 String url = AppProperties.getBaseUrl(EnterRemote3.this);
                 url += "EmployeeList?";
                 url += "userFallback=" + LoginActivity.nauser;
+
 
                 // We cant use the same HttpClient (LoginActivity.httpClient) in 2 requests at the same time.
                 // Therefore we copy the cookies into a new HttpClient.
@@ -196,9 +353,10 @@ public class EnterRemote3 extends SenateActivity {
         protected void onPostExecute(String response) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             initializeRemoteSignerTextBox();
+            LoginActivity.activeAsyncTask = null;
         }
 
-    }
+    }*/
 
     private void initializeRemoteSignerTextBox() {
         remoteSigner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAllEmployeeNames()));
@@ -215,22 +373,22 @@ public class EnterRemote3 extends SenateActivity {
 
     public List<String> getAllEmployeeNames() {
         List<String> allEmployeeNames = new ArrayList<String>();
-        for (Employee emp: employeeNameList) {
+        for (Employee emp : employeeNameList) {
             allEmployeeNames.add(emp.getFullName());
         }
         return allEmployeeNames;
     }
 
     public void cancelButton(View view) {
-        if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-        }
+        // if (checkServerResponse(true) == OK) {
+        super.onBackPressed();
+        // }
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) != OK) {
+        /*if (checkServerResponse(true) != OK) {
             return;
-        }
+        }*/
 
         if (!completelyFilledOut()) {
             return;
@@ -249,12 +407,13 @@ public class EnterRemote3 extends SenateActivity {
             public void onClick(DialogInterface dialog, int which) {
                 updateDeliveryInfo();
                 updateDeliveryUsers(pickup, remoteSigner.getText().toString());
+                enterRemoteInfo();
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     new EnterRemoteInfoTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     new EnterRemoteInfoTask().execute();
-                }
+                }*/
             }
         });
         builder.show();
@@ -306,7 +465,7 @@ public class EnterRemote3 extends SenateActivity {
     }
 
     public int getEmployeeId(String name) {
-        for (Employee emp: employeeNameList) {
+        for (Employee emp : employeeNameList) {
             if (emp.getFullName().equalsIgnoreCase(name)) {
                 return emp.getNuxrefem();
             }
@@ -320,6 +479,28 @@ public class EnterRemote3 extends SenateActivity {
         } else {
             trans.setNareleaseby(remoteUser);
         }
+    }
+
+    public void enterRemoteInfo() {
+
+        progressBar = (ProgressBar) findViewById(R.id.enter_remote_3_progress_bar);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+
+        String url = AppProperties.getBaseUrl();
+        url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
+        url += "&userFallback=" + LoginActivity.nauser;
+
+        Log.i(this.getClass().getName(), url);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("trans", Serializer.serialize(pickup));
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST, url, params, enterRemoteInfoResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+
     }
 
     private class EnterRemoteInfoTask extends AsyncTask<Void, Void, Integer> {
@@ -365,7 +546,7 @@ public class EnterRemote3 extends SenateActivity {
         }
     }
 
-    private void returnToMainMenu() {
+    public void returnToMainMenu() {
         Intent intent = new Intent(this, MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

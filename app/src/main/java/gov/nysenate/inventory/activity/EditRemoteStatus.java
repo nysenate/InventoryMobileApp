@@ -4,21 +4,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.*;
-import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
-import gov.nysenate.inventory.android.ClearableEditText;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.Serializer;
-import gov.nysenate.inventory.util.Toasty;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -29,21 +29,52 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class EditRemoteStatus extends SenateActivity
-{
+import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
+
+public class EditRemoteStatus extends SenateActivity {
 
     private Transaction pickup;
     private CheckBox remoteCheckBox;
     private Spinner remoteShipMethod;
     private ClearableEditText remoteComments;
+    ProgressBar progressBar;
+
+    Response.Listener<String> editRemoteStatusResponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            progressBar.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(EditRemoteStatus.this,
+                    EditPickupMenu.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+            HttpUtils.displayResponseResults(EditRemoteStatus.this, HttpStatus.SC_OK);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_remote_status);
         registerBaseActivityReceiver();
+        progressBar = (ProgressBar) findViewById(R.id.edit_remote_progress_bar);
 
         TextView oldPickupLocation = (TextView) findViewById(R.id.old_pickup_location);
         TextView oldDeliveryLocation = (TextView) findViewById(R.id.old_delivery_location);
@@ -151,9 +182,7 @@ public class EditRemoteStatus extends SenateActivity
     }
 
     public void backButton(View view) {
-        if (checkServerResponse(true) == OK) {
             super.onBackPressed();
-        }
     }
 
     private boolean anythingWasEdited() {
@@ -164,9 +193,9 @@ public class EditRemoteStatus extends SenateActivity
         }
         if (remoteCheckBox.isChecked() != pickup.isRemote()
                 || !remoteShipMethod.getSelectedItem().toString()
-                        .equals(pickup.getShipType())
+                .equals(pickup.getShipType())
                 || !remoteComments.getText().toString()
-                        .equals(pickup.getShipComments())) {
+                .equals(pickup.getShipComments())) {
             return true;
         }
         return false;
@@ -187,30 +216,23 @@ public class EditRemoteStatus extends SenateActivity
                 .setTitle("Update Remote Status")
                 .setMessage(Html.fromHtml(changesMadeMessage()))
                 .setNegativeButton(Html.fromHtml("<b>No</b>"),
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog,
-                                    int which) {
+                                                int which) {
                             }
                         })
 
                 .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog,
-                                    int which) {
+                                                int which) {
                                 dialog.dismiss();
                                 setNewValuesInPickup();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                    new EditRemoteStatusTask()
-                                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                                } else {
-                                    new EditRemoteStatusTask().execute();
-                                }
+                                editRemoteStatus();
                             }
 
                             private void setNewValuesInPickup() {
@@ -242,7 +264,7 @@ public class EditRemoteStatus extends SenateActivity
         }
         if (remoteShipMethod.getSelectedItem() != null
                 && !remoteShipMethod.getSelectedItem().toString()
-                        .equals(pickup.getShipType())) {
+                .equals(pickup.getShipType())) {
             changes += "<br/>";
             changes += "Ship method = " + "<b>"
                     + remoteShipMethod.getSelectedItem().toString() + "</b>";
@@ -275,8 +297,24 @@ public class EditRemoteStatus extends SenateActivity
         return 0;
     }
 
-    private class EditRemoteStatusTask extends AsyncTask<Void, Void, Integer>
-    {
+    private void editRemoteStatus() {
+
+        progressBar.setVisibility(View.VISIBLE);
+        String url = AppProperties.getBaseUrl();
+        url += "ChangeRemoteStatus";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("trans", Serializer.serialize(pickup));
+        params.put("user", LoginActivity.nauser);
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST, url, params, editRemoteStatusResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+
+    private class EditRemoteStatusTask extends AsyncTask<Void, Void, Integer> {
 
         ProgressBar progressBar;
 
@@ -288,6 +326,7 @@ public class EditRemoteStatus extends SenateActivity
 
         @Override
         protected Integer doInBackground(Void... params) {
+            //LoginActivity.activeAsyncTask = this;
             String url = AppProperties.getBaseUrl(EditRemoteStatus.this);
             url += "ChangeRemoteStatus";
 
@@ -321,6 +360,7 @@ public class EditRemoteStatus extends SenateActivity
             startActivity(intent);
             overridePendingTransition(R.anim.in_right, R.anim.out_left);
             HttpUtils.displayResponseResults(EditRemoteStatus.this, response);
+            LoginActivity.activeAsyncTask = null;
         }
     }
 }
