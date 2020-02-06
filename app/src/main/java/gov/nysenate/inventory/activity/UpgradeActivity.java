@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -19,13 +23,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.InvWebService;
-import gov.nysenate.inventory.android.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UpgradeActivity extends SenateActivity
-{
+import gov.nysenate.inventory.android.InvWebService;
+import gov.nysenate.inventory.android.R;
+
+public class UpgradeActivity extends SenateActivity {
     private static final String LOG_TAG = "AppUpgrade";
     private MyWebReceiver receiver;
     private int versionCode = 0;
@@ -58,9 +63,9 @@ public class UpgradeActivity extends SenateActivity
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // get the app version Name for display
+        // getInstance the app version Name for display
         String version = pInfo.versionName;
-        // get the app version Code for checking
+        // getInstance the app version Code for checking
         versionCode = pInfo.versionCode;
         // display the current version in a TextView
         currentVersion = (TextView) findViewById(R.id.currentVersion);
@@ -80,13 +85,13 @@ public class UpgradeActivity extends SenateActivity
 
         // First check to see if the Login activity has the latest version info
         // of this App
-        // If it does, we don't need to connect to the web service simply to get
+        // If it does, we don't need to connect to the web service simply to getInstance
         // the
         // version info, instead, we can simply compare..
         // if login activity does not have
         // the latest version info of this App, check of internet is available
         // before
-        // making a web service request to get the latest version info from the
+        // making a web service request to getInstance the latest version info from the
         // web service
 
         if (LoginActivity.latestVersionName != null) {
@@ -99,9 +104,9 @@ public class UpgradeActivity extends SenateActivity
             Intent msgIntent = new Intent(this, InvWebService.class);
             String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                     .toString();
-            if (! URL.endsWith("/")) {
+            if (!URL.endsWith("/")) {
                 URL += "/";
-            }               
+            }
 
             msgIntent.putExtra(InvWebService.REQUEST_STRING, URL
                     + "CheckAppVersion?appName=InventoryMobileApp.apk");
@@ -144,9 +149,8 @@ public class UpgradeActivity extends SenateActivity
         return false;
     }
 
-    // broadcast receiver to get notification when the web request finishes
-    public class MyWebReceiver extends BroadcastReceiver
-    {
+    // broadcast receiver to getInstance notification when the web request finishes
+    public class MyWebReceiver extends BroadcastReceiver {
 
         public static final String PROCESS_RESPONSE = "gov.nysenate.inventory.android.intent.action.PROCESS_RESPONSE";
 
@@ -164,18 +168,13 @@ public class UpgradeActivity extends SenateActivity
                 boolean success = responseObj.getBoolean("success");
                 // if the reponse was successful check further
                 if (success) {
-                    // get the latest version from the JSON string
+                    // getInstance the latest version from the JSON string
                     latestVersion = responseObj.getInt("latestVersion");
 
-                    // get the lastest application URI from the JSON string
+                    // getInstance the lastest application URI from the JSON string
                     appURI = responseObj.getString("appURI");
                     latestVersionName = responseObj
                             .getString("latestVersionName");
-                    /*
-                     * Log.i(LOG_TAG, "latestVersion:" + latestVersion +
-                     * " > versionCode:" + versionCode);
-                     */
-                    // check if we need to upgrade?
 
                     compareVersions(success);
                 }
@@ -189,12 +188,20 @@ public class UpgradeActivity extends SenateActivity
 
     public void compareVersions(boolean success) {
         if (success) {
-            if (latestVersion > versionCode) {
+            if (latestVersion != versionCode) {
                 newVersion = (TextView) findViewById(R.id.newVersion);
-                newVersion.setText("Updating to Version: " + latestVersionName
-                        + " (" + latestVersion + ")");
-                // buttonLogin.setText("Close");
-                // progressBarLogin.setVisibility(View.VISIBLE);
+
+                String updateType = "UPDATE";
+
+                if (latestVersion < versionCode) {
+                    newVersion.setText("Downgrading to Version: " + latestVersionName
+                            + " (" + latestVersion + ")");
+                    updateType = "DOWNGRADE";
+                }
+                else {
+                    newVersion.setText("Updating to Version: " + latestVersionName
+                            + " (" + latestVersion + ")");
+                }
 
                 // oh yeah we do need an upgrade, let the user know send
                 // an alert message
@@ -204,17 +211,16 @@ public class UpgradeActivity extends SenateActivity
                         Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
                                 + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
                         .setTitle(
-                                Html.fromHtml("<font color='#000055'>UPDATE TO INVENTORY MOBILE APP FOUND. &nbsp;["
+                                Html.fromHtml("<font color='#000055'>"+updateType+" TO INVENTORY MOBILE APP FOUND. &nbsp;["
                                         + latestVersionName
                                         + "."
                                         + latestVersion + "] </font>"))
                         .setPositiveButton(Html.fromHtml("<b>OK</b>"),
-                                new DialogInterface.OnClickListener()
-                                {
+                                new DialogInterface.OnClickListener() {
                                     // if the user agrees to upgrade
                                     @Override
                                     public void onClick(DialogInterface dialog,
-                                            int id) {
+                                                        int id) {
                                         // start downloading the file
                                         // using the download manager
                                         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -245,11 +251,10 @@ public class UpgradeActivity extends SenateActivity
                                     }
                                 })
                         .setNegativeButton(Html.fromHtml("<b>Close App</b>"),
-                                new DialogInterface.OnClickListener()
-                                {
+                                new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
-                                            int id) {
+                                                        int id) {
                                         // User cancelled the dialog
                                         // finish();
                                         closeAllActivities();
@@ -280,15 +285,13 @@ public class UpgradeActivity extends SenateActivity
                 .setTitle(
                         Html.fromHtml("<font color='#000055'>CLOSE APP</font>"));
         // Add the buttons
-        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 closeAllActivities();
             }
         });
-        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-        {
+        builder.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
@@ -321,24 +324,24 @@ public class UpgradeActivity extends SenateActivity
      * i.addCategory(Intent.CATEGORY_LAUNCHER); List<ResolveInfo> res =
      * p.queryIntentActivities(i, 0); System.out.println("the res size is: " +
      * res.size());
-     * 
+     *
      * for (int k = 0; k < res.size(); k++) {
      * System.out.println("the application name is: " +
-     * res.get(k).activityInfo.loadLabel(p)); if
-     * (res.get(k).activityInfo.loadLabel(p).toString().equals(appName)) { flag
+     * res.getInstance(k).activityInfo.loadLabel(p)); if
+     * (res.getInstance(k).activityInfo.loadLabel(p).toString().equals(appName)) { flag
      * = true; app_id = k; break; } }
-     * 
-     * if (flag) { ActivityInfo ai = res.get(app_id).activityInfo;
-     * 
+     *
+     * if (flag) { ActivityInfo ai = res.getInstance(app_id).activityInfo;
+     *
      * Intent shortcutIntent = new Intent();
      * shortcutIntent.setClassName(ai.packageName, ai.name);
      * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
      * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); Intent intent =
      * new Intent(); intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
      * shortcutIntent);
-     * 
+     *
      * intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, appName);
-     * 
+     *
      * intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
      * Intent.ShortcutIconResource.fromContext(context, R.drawable.invapplogo));
      * // intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -348,9 +351,8 @@ public class UpgradeActivity extends SenateActivity
      * else System.out.println("appllicaton not found"); return true; }
      */
 
-    // broadcast receiver to get notification about ongoing downloads
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver()
-    {
+    // broadcast receiver to getInstance notification about ongoing downloads
+    private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -371,7 +373,7 @@ public class UpgradeActivity extends SenateActivity
                 }
                 Intent installIntent = new Intent(Intent.ACTION_VIEW);
                 installIntent.setDataAndType(downloadManager
-                        .getUriForDownloadedFile(downloadReference),
+                                .getUriForDownloadedFile(downloadReference),
                         "application/vnd.android.package-archive");
                 installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(installIntent, INSTALL_INTENT);
@@ -383,24 +385,23 @@ public class UpgradeActivity extends SenateActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case INSTALL_INTENT:
-            /*
-             * Does not work because the setShorcut is fired prior to the new
-             * version of the App being installed so it appears to do nothing.
-             * (Brian H)
-             */
-            // setShortCut(this, "Inventory App");
-            closeAllActivities();
-            break;
+            case INSTALL_INTENT:
+                /*
+                 * Does not work because the setShorcut is fired prior to the new
+                 * version of the App being installed so it appears to do nothing.
+                 * (Brian H)
+                 */
+                // setShortCut(this, "Inventory App");
+                closeAllActivities();
+                break;
         }
     }
 
     void checkDownloadStatus(final DownloadManager downloadManager,
-            DownloadManager.Request request) {
+                             DownloadManager.Request request) {
         final ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.pbDownloadProgress);
 
-        downloadStatusThread = new Thread(new Runnable()
-        {
+        downloadStatusThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -431,8 +432,7 @@ public class UpgradeActivity extends SenateActivity
 
                     final double dl_progress = (bytes_downloaded / bytes_total) * 100.0;
 
-                    runOnUiThread(new Runnable()
-                    {
+                    runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {

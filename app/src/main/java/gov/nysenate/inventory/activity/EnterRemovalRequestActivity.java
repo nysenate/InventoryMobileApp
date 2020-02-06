@@ -11,12 +11,37 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
+import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemovalRequestItemsList;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.model.AdjustCode;
@@ -26,16 +51,9 @@ import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
-import org.apache.http.HttpStatus;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class EnterRemovalRequestActivity extends SenateActivity
-        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick
-{
+        implements UpdateRemovalRequest.UpdateRemovalRequestI, CancelBtnFragment.CancelBtnOnClick {
     private TextView date;
     private Spinner removalReasonCode;
     private EditText barcode;
@@ -43,7 +61,6 @@ public class EnterRemovalRequestActivity extends SenateActivity
     private TextView count;
     private ProgressBar progressBar;
     private Button saveBtn;
-
 
     private RemovalRequest removalRequest;
     private List<AdjustCode> adjustCodes;
@@ -73,40 +90,127 @@ public class EnterRemovalRequestActivity extends SenateActivity
         SimpleDateFormat sdf = ((InvApplication) getApplication()).getDateTimeFormat();
         date.setText(sdf.format(removalRequest.getDate()));
 
-        if (checkServerResponse(true) == OK) {
-            QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
-            queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");
-        }
+        //if (checkServerResponse(true) == OK) {
+/*        QueryAdjustCodes queryAdjustCodes = new QueryAdjustCodes();
+        queryAdjustCodes.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "AdjustCodeServlet");*/
+        //}
+        getAdjustCodes();
     }
+
+    public void getAdjustCodes() {
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                AppProperties.getBaseUrl(this) + "AdjustCodeServlet", null, adjustCodeListResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    Response.Listener adjustCodeListResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+
+                adjustCodes = Serializer.deserialize(response, AdjustCode.class);
+
+                if (adjustCodes != null) {
+                    initializeAdjustCodeSpinner();
+                } else {
+                    Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Toasty(EnterRemovalRequestActivity.this).showMessage("!!ERROR: Problem with getting Pickup informatiom. " + e.getMessage() + " Please contact STSBAC.");
+            }
+        }
+    };
 
     @Override
     protected void onResume() {
         super.onResume();
-        checkServerResponse(true);
+        //checkServerResponse(true);
     }
 
     private TextWatcher barcodeWatcher = new TextWatcher() {
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable text) {
             if (text.length() == 6) {
-                if (checkServerResponse(true) == OK) {
-                    GetItem task = new GetItem();
-                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                            AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());
-                }
+                //  if (checkServerResponse(true) == OK) {
+/*                GetItem task = new GetItem();
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());*/
+                // }
+                getItem(text);
             }
         }
     };
 
-    public class GetItem extends BaseAsyncTask<String, Void, Item>
-    {
+    public void getItem(Editable text) {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString(), null, getItemResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    Response.Listener getItemResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            Item item = null;
+            item = Serializer.deserialize(response, Item.class).get(0);
+            progressBar.setVisibility(ProgressBar.GONE);
+            if (item != null) {
+                checkItemStatus(item);
+            } else {
+                playSound(R.raw.error);
+                Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
+                barcode.setText("");
+            }
+
+        }
+    };
+
+    private void checkItemStatus(Item item) {
+        if (removalRequest.getItems().contains(item)) {
+            Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "You have already scanned that item.", Toast.LENGTH_SHORT);
+            clearBarcode();
+            playSound(R.raw.warning);
+            return;
+        }
+        if (item.getStatus() == ItemStatus.ACTIVE) {
+            add(item);
+            playSound(R.raw.ok);
+        } else {
+            switch (item.getStatus()) {
+                case IN_TRANSIT:
+                    Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is In Transit, It cannot be removed right now.", Toast.LENGTH_SHORT);
+                    break;
+                case INACTIVE:
+                    Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item is Inactive.", Toast.LENGTH_SHORT);
+                    break;
+                case PENDING_REMOVAL:
+                    Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Item has already been added to the Inventory Removal Requests", Toast.LENGTH_SHORT);
+                    break;
+                case DOES_NOT_EXIST:
+                    Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "Invalid Barcode", Toast.LENGTH_SHORT);
+            }
+            playSound(R.raw.warning);
+            clearBarcode();
+        }
+    }
+
+   /* public class GetItem extends BaseAsyncTask<String, Void, Item> {
         @Override
         protected void onPreExecute() {
             progressBar.setVisibility(ProgressBar.VISIBLE);
@@ -123,7 +227,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         protected void onPostExecute(Item item) {
             progressBar.setVisibility(ProgressBar.GONE);
             if (item != null) {
-                    checkItemStatus(item);
+                checkItemStatus(item);
             } else {
                 playSound(R.raw.error);
                 Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
@@ -159,7 +263,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
                 clearBarcode();
             }
         }
-    }
+    }*/
 
     public void add(Item item) {
         removalRequest.addItem(item);
@@ -180,10 +284,10 @@ public class EnterRemovalRequestActivity extends SenateActivity
     public void onSaveBtnClick(View view) {
         saveBtn.setEnabled(false);
 
-        if (checkServerResponse(true) != OK) {
+        /*if (checkServerResponse(true) != OK) {
             saveBtn.setEnabled(true);
             return;
-        }
+        }*/
 
         if (removalRequest.getItems().isEmpty()) {
             Toasty.displayCenteredMessage(this, "You have not scanned any items to remove from inventory.", Toast.LENGTH_SHORT);
@@ -195,33 +299,57 @@ public class EnterRemovalRequestActivity extends SenateActivity
     }
 
     private void setItemsAsPendingRemoval() {
-        for (Item i: removalRequest.getItems()) {
+        for (Item i : removalRequest.getItems()) {
             i.setStatus(ItemStatus.PENDING_REMOVAL);
         }
     }
 
     private void displayConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-        .setCancelable(false)
-        .setTitle("Confirmation")
-        .setMessage("Are you sure you want to save this Removal Request of " + count.getText().toString() + " items?")
-        .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                saveBtn.setEnabled(true);
-            }
-        })
+                .setCancelable(false)
+                .setTitle("Confirmation")
+                .setMessage("Are you sure you want to save this Removal Request of " + count.getText().toString() + " items?")
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveBtn.setEnabled(true);
+                    }
+                })
 
-        .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                UpdateRemovalRequest task = new UpdateRemovalRequest(EnterRemovalRequestActivity.this, removalRequest, EnterRemovalRequestActivity.this);
-                task.setProgressBar(progressBar);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "RemovalRequest");
-            }
-        });
+                .setPositiveButton(Html.fromHtml("<b>Ok</b>"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*UpdateRemovalRequest task = new UpdateRemovalRequest(EnterRemovalRequestActivity.this, removalRequest, EnterRemovalRequestActivity.this);
+                        task.setProgressBar(progressBar);
+                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "RemovalRequest");*/
+                        updateRemovalRequest(AppProperties.getBaseUrl() + "RemovalRequest");
+                    }
+                });
         builder.show();
     }
+
+    public void updateRemovalRequest(String url) {
+        Map<String, String> params = new HashMap<>();
+        params.put("RemovalRequest", Serializer.serialize(removalRequest));
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "RemovalRequest", params, updateRemovalResponseListener);
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
+
+    Response.Listener updateRemovalResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+
+            removalRequest = Serializer.deserialize(response, RemovalRequest.class).get(0);
+
+            removalRequest.setStatusCode(HttpStatus.SC_OK);
+
+            EnterRemovalRequestActivity.this.onRemovalRequestUpdated(removalRequest);
+        }
+    };
 
     @Override
     public void onRemovalRequestUpdated(RemovalRequest rr) {
@@ -247,7 +375,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
                 default:
                     title = "Error";
                     message = "!!ERROR: Unknown Error, your update may not have been saved. Please contact STS/BAC.";
-                 }
+            }
         } else {
             title = "Error";
             message = "!!Error: Problem with saving Removal Reqeust. Please contact STS/BAC.";
@@ -267,7 +395,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
         builder.show();
     }
 
-    private class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
+/*    private class QueryAdjustCodes extends BaseAsyncTask<String, Void, List<AdjustCode>> {
         @Override
         protected void onPreExecute() {
         }
@@ -288,7 +416,7 @@ public class EnterRemovalRequestActivity extends SenateActivity
                 Toasty.displayCenteredMessage(EnterRemovalRequestActivity.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
             }
         }
-    }
+    }*/
 
     private void initializeAdjustCodeSpinner() {
         ArrayList<String> codeAndDescriptions = new ArrayList<String>();
@@ -315,7 +443,8 @@ public class EnterRemovalRequestActivity extends SenateActivity
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) {  }
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     }
 
     private AdjustCode getAdjustCode(String codeAndDescription) {

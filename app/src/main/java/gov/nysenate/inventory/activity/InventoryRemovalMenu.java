@@ -6,31 +6,31 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.nysenate.inventory.adapter.CustomListViewAdapter;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.RowItem;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class InventoryRemovalMenu extends SenateActivity implements
-        OnItemClickListener
-{
+        OnItemClickListener {
 
     private List<RowItem> menuItems = new ArrayList<RowItem>();
 
     // TODO: more effective implemetation of security features
-    private static final String[] TITLES_SEC_STATUS_0 = new String[] {
-            "New Request", "Edit/Submit Request", "Main Menu" };
-    private static final String[] TITLES_SEC_STATUS_1 = new String[] {
-            "Approve/Reject Request", "Main Menu" };
+    private static final String[] TITLES_SEC_STATUS_0 = new String[]{
+            "New Request", "Edit/Submit Request", "Main Menu"};
+    private static final String[] TITLES_SEC_STATUS_1 = new String[]{
+            "Approve/Reject Request", "Main Menu"};
 
     private static final Integer[] IMAGES_SEC_STATUS_0 = {
             R.drawable.removalrequest, R.drawable.editremovalrequest,
-            R.drawable.mainmenu };
-    private static final Integer[] IMAGES_SEC_STATUS_1 = { R.drawable.arrow,
-            R.drawable.mainmenu };
+            R.drawable.mainmenu};
+    private static final Integer[] IMAGES_SEC_STATUS_1 = {R.drawable.arrow,
+            R.drawable.mainmenu};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class InventoryRemovalMenu extends SenateActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        checkServerResponse(true);
+        //checkServerResponse(true);
     }
 
     private List<RowItem> populateMenuBySecurityStatus(int securityLevel) {
@@ -79,10 +79,10 @@ public class InventoryRemovalMenu extends SenateActivity implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
-        if (checkServerResponse() != OK) {
+                            long id) {
+        /*if (checkServerResponse() != OK) {
             return;
-        }
+        }*/
         Intent intent;
         String title = menuItems.get(position).getTitle();
         if (title.equalsIgnoreCase("New Request")) {
@@ -98,5 +98,6 @@ public class InventoryRemovalMenu extends SenateActivity implements
 
         startActivity(intent);
         overridePendingTransition(R.anim.in_right, R.anim.out_left);
+
     }
 }
