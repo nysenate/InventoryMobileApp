@@ -5,15 +5,20 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.util.Toasty;
 
-import java.util.ArrayList;
-
-public class InvSerialAdapter extends ArrayAdapter
-{
+public class InvSerialAdapter extends ArrayAdapter {
     private final String MY_DEBUG_TAG = "CustomerAdapter";
     private ArrayList<InvSerialNumber> items;
     private ArrayList<InvSerialNumber> itemsAll;
@@ -21,28 +26,27 @@ public class InvSerialAdapter extends ArrayAdapter
     public AutoCompleteTextView acView;
     private boolean setTextColor = false;
     private int viewResourceId;
-    Context context;     
+    Context context;
 
-    public InvSerialAdapter(Context context, AutoCompleteTextView acView,  int viewResourceId, ArrayList<InvSerialNumber> items) {
+    public InvSerialAdapter(Context context, AutoCompleteTextView acView, int viewResourceId, ArrayList<InvSerialNumber> items) {
         super(context, viewResourceId, items);
         this.context = context;
         this.acView = acView;
-        
+
         this.items = items;
         this.itemsAll = (ArrayList<InvSerialNumber>) items.clone();
         this.suggestions = new ArrayList<InvSerialNumber>();
         this.viewResourceId = viewResourceId;
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         RelativeLayout rlSerialRow;
         // TextView commodityListNucnt;
         TextView tvNuserial;
         TextView tvNusenate;
         TextView tvDecommodityf;
-    }         
-    
+    }
+
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         ViewHolder holder = null;
@@ -69,26 +73,27 @@ public class InvSerialAdapter extends ArrayAdapter
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        
-        
+
+
         if (position > -1 && items != null && position < items.size()) {
             rowItem = items.get(position);
             // holder.commodityListNucnt.setText(rowItem.getNucnt());
-            holder.tvNusenate.setText(Html.fromHtml("<b>T: "+rowItem.getNusenate()+"</b>"));
+            holder.tvNusenate.setText(Html.fromHtml("<b>T: " + rowItem.getNusenate() + "</b>"));
             holder.tvDecommodityf.setText(Html.fromHtml(rowItem.getDecommodityf()));
-            holder.tvNuserial.setText(Html.fromHtml("<b>S: "+rowItem.getNuserial()+"</b>"));
+            holder.tvNuserial.setText(Html.fromHtml("<b>S: " + rowItem.getNuserial() + "</b>"));
             holder.tvNusenate.setTextColor(context.getResources()
                     .getColor(R.color.black));
             holder.tvDecommodityf.setTextColor(context.getResources()
                     .getColor(R.color.black));
             holder.tvNuserial.setTextColor(context.getResources()
                     .getColor(R.color.black));
-            
+
         } else {
             // holder.commodityListNucnt.setText("");
             holder.tvNuserial.setText("");
             holder.tvNusenate.setText("");
-            holder.tvDecommodityf.setText("");                }
+            holder.tvDecommodityf.setText("");
+        }
 
         if (position % 2 > 0) {
             holder.rlSerialRow.setBackgroundColor(context.getResources()
@@ -100,27 +105,26 @@ public class InvSerialAdapter extends ArrayAdapter
 
         return convertView;
     }
-    
-    
+
+
     public void setTextColor(boolean setTextColor) {
         this.setTextColor = setTextColor;
     }
-    
+
     public boolean getTextColor() {
         return setTextColor;
     }
-        
+
     public int getFilteredCount(String s) {
         int cnt = 0;
         String st = s.toUpperCase();
-        if (suggestions!=null) {
-            for (int x=0;x<suggestions.size();x++) {
+        if (suggestions != null) {
+            for (int x = 0; x < suggestions.size(); x++) {
                 try {
-                if (suggestions.get(x).getNuserial().startsWith(st)) {
-                    cnt++;
-                }
-                }
-                catch (IndexOutOfBoundsException iobe) {
+                    if (suggestions.get(x).getNuserial().startsWith(st)) {
+                        cnt++;
+                    }
+                } catch (IndexOutOfBoundsException iobe) {
                     break;
                 }
             }
@@ -136,28 +140,27 @@ public class InvSerialAdapter extends ArrayAdapter
 
     Filter nameFilter = new Filter() {
         public String convertResultToString(Object resultValue) {
-            String str = ((InvSerialNumber)(resultValue)).toString(); 
+            String str = ((InvSerialNumber) (resultValue)).toString();
             return str;
         }
-        
+
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            if(constraint != null) {
+            if (constraint != null) {
                 suggestions.clear();
                 for (InvSerialNumber invSerialNumber : itemsAll) {
-                    if(invSerialNumber.toString().toLowerCase().startsWith(constraint.toString().toLowerCase())){
+                    if (invSerialNumber.toString().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         suggestions.add(invSerialNumber);
                     }
                 }
                 FilterResults filterResults = new FilterResults();
-                synchronized(this) {
+                synchronized (this) {
                     filterResults.values = suggestions;
                     filterResults.count = suggestions.size();
-                    if (acView!=null && setTextColor) {
-                        if (filterResults.count==0) {
+                    if (acView != null && setTextColor) {
+                        if (filterResults.count == 0) {
                             acView.setTextColor(context.getResources().getColor(R.color.redlight));
-                        }
-                        else {
+                        } else {
                             acView.setTextColor(context.getResources().getColor(R.color.black));
                         }
                     }
@@ -167,43 +170,41 @@ public class InvSerialAdapter extends ArrayAdapter
                 return new FilterResults();
             }
         }
-        
-     public int getCount(CharSequence constraint) {
-         return performFiltering(constraint).count;
-     }
-        
-   @Override
+
+        public int getCount(CharSequence constraint) {
+            return performFiltering(constraint).count;
+        }
+
+        @Override
         protected synchronized void publishResults(CharSequence constraint, FilterResults results) {
-       try {
-            ArrayList<InvSerialNumber> filteredList = ((ArrayList<InvSerialNumber>) results.values);
-            //filteredList = (ArrayList<InvSerialNumber>)Collections.synchronizedList(filteredList);
-            
-            //int listSize = filteredList.size();
-            if(results != null && results.count > 0) {
-                clear();
+            try {
+                ArrayList<InvSerialNumber> filteredList = ((ArrayList<InvSerialNumber>) results.values);
+                //filteredList = (ArrayList<InvSerialNumber>)Collections.synchronizedList(filteredList);
+
+                //int listSize = filteredList.size();
+                if (results != null && results.count > 0) {
+                    clear();
                     //InvSerialNumber invSerialNumber;
 //                    for (int x=0;x<listSize;x++) {
-                      for (InvSerialNumber invSerialNumber: filteredList) {
+                    for (InvSerialNumber invSerialNumber : filteredList) {
                         try {
-                            //invSerialNumber = filteredList.get(x);
+                            //invSerialNumber = filteredList.getInstance(x);
                             add(invSerialNumber);
-                        }
-                        catch (Exception e) {
-                                
+                        } catch (Exception e) {
+
                         }
                     }
 
-                notifyDataSetChanged();
+                    notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                Toasty toasty = new Toasty(context, "An unexpected occured on publishing Serial# results:" + e.getMessage() + ": " + e.getStackTrace()[0].toString() + " PLEASE CONTACT STSBAC", Toast.LENGTH_LONG);
+                toasty.showMessage();
+                e.printStackTrace();
+
             }
-       }
-       catch (Exception e) {
-           Toasty toasty = new Toasty(context, "An unexpected occured on publishing Serial# results:"+e.getMessage()+": "+e.getStackTrace()[0].toString()+" PLEASE CONTACT STSBAC", Toast.LENGTH_LONG);
-           toasty.showMessage();
-           e.printStackTrace();
-           
-       }
         }
 
     };
-    
+
 }

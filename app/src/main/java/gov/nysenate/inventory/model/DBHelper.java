@@ -11,8 +11,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DBHelper extends SQLiteOpenHelper
-{
+import gov.nysenate.inventory.android.InvApplication;
+
+public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "invApp.db";
     private static final int DATABASE_VERSION = 1;
@@ -32,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper
             " dttxnorigin TEXT NOT NULL, natxnorguser TEXT NOT NULL, "
             + " dttxnupdate TEXT NOT NULL, natxnupduser TEXT NOT NULL" + " );";
 
-    
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -40,10 +41,10 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase database) {
         Log.w(DBHelper.class.getName(), "Creating database");
-        // this.executeSQLScript(database, "create.sql");
-        database.execSQL(TABLE_VERIFYINV_CREATE);
-        Log.w(DBHelper.class.getName(), TABLE_SERIALINV_CREATE);
-        database.execSQL(TABLE_SERIALINV_CREATE);
+        this.executeSQLScript(database, "invApp_db_create.sql");
+//        database.execSQL(TABLE_VERIFYINV_CREATE);
+        //       Log.w(DBHelper.class.getName(), TABLE_SERIALINV_CREATE);
+        //       database.execSQL(TABLE_SERIALINV_CREATE);
     }
 
     @Override
@@ -52,12 +53,18 @@ public class DBHelper extends SQLiteOpenHelper
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS ad12verinv");
+        db.execSQL("DROP TABLE IF EXISTS ad12serial");
         onCreate(db);
     }
 
     public void resetDatabase(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS ad12verinv");
+        db.execSQL("DROP TABLE IF EXISTS ad12serial");
         onCreate(db);
+    }
+
+    public void createDBFromScript(SQLiteDatabase database) {
+        executeSQLScript(database, "invApp_db_create.sql");
     }
 
     private void executeSQLScript(SQLiteDatabase database, String dbname) {
@@ -65,7 +72,7 @@ public class DBHelper extends SQLiteOpenHelper
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte buf[] = new byte[1024];
         int len;
-        Context context = null;
+        Context context = InvApplication.getAppContext();
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = null;
 

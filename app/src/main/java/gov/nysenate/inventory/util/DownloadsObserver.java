@@ -8,8 +8,7 @@ import android.util.Log;
 
 import java.io.File;
 
-public class DownloadsObserver extends FileObserver
-{
+public class DownloadsObserver extends FileObserver {
 
     public static final String LOG_TAG = DownloadsObserver.class
             .getSimpleName();
@@ -32,7 +31,7 @@ public class DownloadsObserver extends FileObserver
     // null)
 
     public DownloadsObserver(String path, DownloadManager downloadManager,
-            DownloadManager.Request request, long downloadId) {
+                             DownloadManager.Request request, long downloadId) {
         super(path, flags);
         this.path = path;
         this.downloadManager = downloadManager;
@@ -48,7 +47,7 @@ public class DownloadsObserver extends FileObserver
                         + event
                         + ", "
                         + Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         + "/" + path + ")");
 
         if (path == null) {
@@ -66,26 +65,26 @@ public class DownloadsObserver extends FileObserver
                 + " out of " + bytes_total + ") " + dl_progress + "%");
 
         switch (event) {
-        case FileObserver.CLOSE_WRITE:
-            // Download complete, or paused when wifi is disconnected. Possibly
-            // reported more than once in a row.
-            // Useful for noticing when a download has been paused. For
-            // completions, register a receiver for
-            // DownloadManager.ACTION_DOWNLOAD_COMPLETE.
-            break;
-        case FileObserver.OPEN:
-            // Called for both read and write modes.
-            // Useful for noticing a download has been started or resumed.
-            break;
-        case FileObserver.DELETE:
-        case FileObserver.MOVED_FROM:
-            // These might come in handy for obvious reasons.
-            break;
-        case FileObserver.MODIFY:
-            // Called very frequently while a download is ongoing (~1 per ms).
-            // This could be used to trigger a progress update, but that should
-            // probably be done less often than this.
-            break;
+            case FileObserver.CLOSE_WRITE:
+                // Download complete, or paused when wifi is disconnected. Possibly
+                // reported more than once in a row.
+                // Useful for noticing when a download has been paused. For
+                // completions, register a receiver for
+                // DownloadManager.ACTION_DOWNLOAD_COMPLETE.
+                break;
+            case FileObserver.OPEN:
+                // Called for both read and write modes.
+                // Useful for noticing a download has been started or resumed.
+                break;
+            case FileObserver.DELETE:
+            case FileObserver.MOVED_FROM:
+                // These might come in handy for obvious reasons.
+                break;
+            case FileObserver.MODIFY:
+                // Called very frequently while a download is ongoing (~1 per ms).
+                // This could be used to trigger a progress update, but that should
+                // probably be done less often than this.
+                break;
         }
     }
 }

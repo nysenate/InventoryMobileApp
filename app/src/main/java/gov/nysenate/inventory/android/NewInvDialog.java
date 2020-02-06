@@ -11,8 +11,17 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.CommodityListViewAdapter;
 import gov.nysenate.inventory.listener.ClearButtonListener;
@@ -20,14 +29,10 @@ import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //...G
 @SuppressLint("ValidFragment")
 public class NewInvDialog extends DialogFragment implements
-        OnKeywordChangeListener, ClearButtonListener
-{
+        OnKeywordChangeListener, ClearButtonListener {
 
     public static ClearableTextView tvKeywordsToBlock;
     public static ClearableEditText etNewItemComments;
@@ -65,8 +70,8 @@ public class NewInvDialog extends DialogFragment implements
         this.msg = msg;
         this.msgGravity = msgGravity;
     }
-    
-    
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -75,12 +80,11 @@ public class NewInvDialog extends DialogFragment implements
         tvKeywordsToBlock = (ClearableTextView) dialogView
                 .findViewById(R.id.tvKeywordsToBlock);
         commodityList = (ListView) dialogView.findViewById(R.id.searchResults);
-        commodityList.setOnItemClickListener(new OnItemClickListener()
-        {
+        commodityList.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
+                                    int position, long id) {
                 if (position < 0) {
                     return;
                 }
@@ -124,8 +128,7 @@ public class NewInvDialog extends DialogFragment implements
                         Html.fromHtml("<font color='#000055'>" + title
                                 + "</font>"))
                 .setCancelable(false)
-                .setPositiveButton( Html.fromHtml("<b>Save Tag# Info</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Save Tag# Info</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // Don't write any code here.. but coded here for now
@@ -155,8 +158,7 @@ public class NewInvDialog extends DialogFragment implements
 
                     }
                 })
-                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(Html.fromHtml("<b>Cancel</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // cancelMsg();
@@ -168,15 +170,15 @@ public class NewInvDialog extends DialogFragment implements
          * gestureDectector = new GestureDetector(senateActivity, new
          * GestureListener()); commodityList.setOnTouchListener(new
          * OnTouchListener() {
-         * 
+         *
          * @Override public boolean onTouch(View v, MotionEvent event) {
          * if(position<0) { return false; }
-         * 
+         *
          * adapter = (CommodityListViewAdapter)commodityList.getAdapter();
-         * 
+         *
          * currentCommodity = adapter.getCommodityAt(position);
          * adapter.setRowSelected(position); flipMode(); return false; }
-         * 
+         *
          * });
          */
 
@@ -185,8 +187,8 @@ public class NewInvDialog extends DialogFragment implements
 
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
-        
-        if (msgGravity!=-1) {
+
+        if (msgGravity != -1) {
             tvMsg.setGravity(msgGravity);
         }
 
@@ -257,8 +259,7 @@ public class NewInvDialog extends DialogFragment implements
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(cancelMsg))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -266,8 +267,7 @@ public class NewInvDialog extends DialogFragment implements
                         dismiss();
                     }
                 })
-                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, we need to reopen the
@@ -299,18 +299,18 @@ public class NewInvDialog extends DialogFragment implements
     /*
      * public class GestureListener extends
      * GestureDetector.SimpleOnGestureListener {
-     * 
+     *
      * public boolean onDown(MotionEvent e) { return true; } public boolean
      * onSingeTap(MotionEvent e) { // Notify everybody that may be interested.
      * return true; }
-     * 
+     *
      * public boolean onDoubleTap(MotionEvent e) { position =
      * commodityList.pointToPosition((int)e.getX(), (int)e.getY());
-     * 
+     *
      * if(position<0) { return false; }
-     * 
+     *
      * adapter = (CommodityListViewAdapter)commodityList.getAdapter();
-     * 
+     *
      * currentCommodity = adapter.getCommodityAt(position);
      * adapter.setRowSelected(position); flipMode(); return true; } }
      */
@@ -356,10 +356,7 @@ public class NewInvDialog extends DialogFragment implements
 
     @Override
     public void OnKeywordChange(KeywordDialog keywordDialog,
-            ListView lvKeywords, String keywords) {
-        // Log.i("OnKeywordChange",
-        // "keywords:"+keywords+"    senateActivity.dialogKeywords:"+senateActivity.dialogKeywords
-        // );
+                                ListView lvKeywords, String keywords) {
         tvKeywordsToBlock.setText(senateActivity.dialogKeywords);
         senateActivity.getDialogDataFromServer();
         checkKeywordsFound();
@@ -374,8 +371,7 @@ public class NewInvDialog extends DialogFragment implements
         }
     }
 
-    class OKButtonListener implements View.OnClickListener
-    {
+    class OKButtonListener implements View.OnClickListener {
         private final Dialog dialog;
 
         public OKButtonListener(Dialog dialog) {

@@ -14,29 +14,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.adapter.KeywordListViewAdapter;
-import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.adapter.KeywordListViewAdapter;
+import gov.nysenate.inventory.listener.OnKeywordChangeListener;
+
 //...
 @SuppressLint("ValidFragment")
-public class KeywordDialog extends DialogFragment
-{
+public class KeywordDialog extends DialogFragment {
 
     SenateActivity senateActivity;
     public static ListView lvKeywords = null;
     public static Button btnAddKeyword = null;
     public static EditText etDummy = null; /*
-                                            * Dummy Edit Text because Dialog
-                                            * Fragment needs at least one
-                                            * Navigable Edit Text on the main
-                                            * Fragment (ListView Edit Texts
-                                            * don't count) so the soft keyboard
-                                            * will display in the foreground.
-                                            */
+     * Dummy Edit Text because Dialog
+     * Fragment needs at least one
+     * Navigable Edit Text on the main
+     * Fragment (ListView Edit Texts
+     * don't count) so the soft keyboard
+     * will display in the foreground.
+     */
     public String title = null;
     public String msg = null;
     public String keywordList = null;
@@ -48,8 +48,8 @@ public class KeywordDialog extends DialogFragment
     int position = -1;
 
     public KeywordDialog(SenateActivity senateActivity,
-            NewInvDialog newInvDialog, String title, String msg,
-            String keywordList) {
+                         NewInvDialog newInvDialog, String title, String msg,
+                         String keywordList) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -57,13 +57,11 @@ public class KeywordDialog extends DialogFragment
         this.keywordListOrig = keywordList;
         this.originalKeywordList = keywordList.split(",");
         this.newInvDialog = newInvDialog;
-        // Log.i("KeywordDialog", "START KEYWORDLIST:"+keywordList);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        // Log.i("onCreateDialog", "START KEYWORDLIST:"+keywordList);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_keyword, null);
         btnAddKeyword = (Button) dialogView.findViewById(R.id.btnAddKeyword);
@@ -73,10 +71,8 @@ public class KeywordDialog extends DialogFragment
                 senateActivity.getApplicationContext(), newInvDialog,
                 R.layout.row_keyword, arrayListFromString(this.keywordList));
         lvKeywords.setAdapter(adapter);
-        // adapter.unselectRow();
 
-        etDummy.setOnFocusChangeListener(new OnFocusChangeListener()
-        {
+        etDummy.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -98,19 +94,14 @@ public class KeywordDialog extends DialogFragment
                         Html.fromHtml("<font color='#000055'>" + title
                                 + "</font>"))
                 .setMessage(Html.fromHtml(msg))
-                .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>OK</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         adapter.notifyDataSetChanged();
                         senateActivity.dialogKeywords = adapter.toString();
-                        // Log.i("OK Button",
-                        // "KeywordsSet:"+senateActivity.dialogKeywords);
                         if (!senateActivity.dialogKeywords
                                 .equalsIgnoreCase(keywordListOrig)) {
                             for (OnKeywordChangeListener onKeywordChangeListener : listeners) {
-                                // Log.i("OK Button",
-                                // "onKeywordChangeListener.OnKeywordChange:"+senateActivity.dialogKeywords);
                                 onKeywordChangeListener.OnKeywordChange(
                                         KeywordDialog.this, lvKeywords,
                                         senateActivity.dialogKeywords);
@@ -121,8 +112,7 @@ public class KeywordDialog extends DialogFragment
                     }
                 })
                 .setNegativeButton(Html.fromHtml("<b>Cancel</b>"),
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 dismiss();
@@ -153,7 +143,6 @@ public class KeywordDialog extends DialogFragment
     }
 
     public void addListener(OnKeywordChangeListener addListener) {
-        // Log.i("addListener", "Adding a listener");
         listeners.add(addListener);
     }
 

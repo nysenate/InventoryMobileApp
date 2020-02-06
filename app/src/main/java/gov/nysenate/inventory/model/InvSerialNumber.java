@@ -5,20 +5,29 @@ package gov.nysenate.inventory.model;
  * This has been created for Search Activity on the mobile client.
  */
 
-public class InvSerialNumber
-{
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import gov.nysenate.inventory.util.Serializer;
+
+public class InvSerialNumber {
     String nuserial = "";
     String nusenate = "";
     String nuxrefsn = "";
     String cdcommodity = "";
-    String decommodityf = "";    
-   
+    String decommodityf = "";
+
     final int NUSERIAL = -101;
     final int NUSENATE = -103;
     final int NUXERFSN = -104;
     final int CDCOMMODITY = -105;
     final int DECOMMODITYF = -106;
-    
+
+    private List<Location> locations;
+
     public InvSerialNumber() {
     }
 
@@ -45,22 +54,38 @@ public class InvSerialNumber
     public void setNuxrefsn(String nuxrefsn) {
         this.nuxrefsn = nuxrefsn;
     }
-    
+
     public String getCdcommodty() {
         return cdcommodity;
     }
 
     public void setCdcommodity(String cdcommodity) {
         this.cdcommodity = cdcommodity;
-    }    
-    
+    }
+
     public String getDecommodityf() {
         return decommodityf;
     }
 
     public void setDecommodityf(String decommodityf) {
         this.decommodityf = decommodityf;
-    }        
+    }
+
+    public void setLocations(JSONArray jsonArray) {
+       setLocations((ArrayList<Location>) Serializer.deserialize(jsonArray.toString(), Location.class));
+    }
+
+    public void setLocations(List <Location> locations) {
+        if (locations == null) {
+            this.locations = new ArrayList<>();
+        }
+        else {
+            this.locations = locations;
+        }
+    }
+    public List<Location> getLocations() {
+        return locations;
+    }
 
     @Override
     public String toString() {

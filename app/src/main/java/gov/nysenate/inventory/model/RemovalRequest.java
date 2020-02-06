@@ -1,14 +1,12 @@
 package gov.nysenate.inventory.model;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RemovalRequest implements Comparable<RemovalRequest>
-{
+public class RemovalRequest implements Comparable<RemovalRequest> {
     private int transactionNum;
     private List<Item> items;
     private AdjustCode adjustCode;
@@ -73,7 +71,7 @@ public class RemovalRequest implements Comparable<RemovalRequest>
     }
 
     public int getStatusCode() {
-       return this.statusCode;
+        return this.statusCode;
     }
 
     public void setStatusCode(int statusCode) {
@@ -101,9 +99,11 @@ public class RemovalRequest implements Comparable<RemovalRequest>
         RemovalRequest that = (RemovalRequest) o;
 
         if (transactionNum != that.transactionNum) return false;
-        if (adjustCode != null ? !adjustCode.equals(that.adjustCode) : that.adjustCode != null) return false;
+        if (adjustCode != null ? !adjustCode.equals(that.adjustCode) : that.adjustCode != null)
+            return false;
         if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        if (employee != null ? !employee.equals(that.employee) : that.employee != null) return false;
+        if (employee != null ? !employee.equals(that.employee) : that.employee != null)
+            return false;
         if (inventoryControlComments != null ? !inventoryControlComments.equals(that.inventoryControlComments) : that.inventoryControlComments != null)
             return false;
         if (items != null ? !items.equals(that.items) : that.items != null) return false;

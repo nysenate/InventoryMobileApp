@@ -1,5 +1,7 @@
 package gov.nysenate.inventory.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,6 +72,15 @@ public class Transaction {
     }
 
     public boolean isRemoteDelivery() {
+       /*
+           12/11/19       Based on the existing code below, it is assuming that if  Remote is checked,
+                        either it is a remote pickup or remote delivery (and cannot be both). Remote meaning in
+                        this case (ship to address - remotely send or received via shipment).  The remote office
+                        is either receiving a shipment from Albany (Remote Delivery) or sending a shipment to Albany
+                        (Remote Pickup). If there is a need to ship from and to Albany, this code will need to be
+                        rewritten.
+         */
+
         if (this.isRemote()) {
             return origin.getAdcity().equalsIgnoreCase("Albany");
         }
@@ -77,6 +88,15 @@ public class Transaction {
     }
 
     public boolean isRemotePickup() {
+        /*
+           12/11/19       Based on the existing code below, it is assuming that if  Remote is checked,
+                        either it is a remote pickup or remote delivery (and cannot be both). Remote meaning in
+                        this case (ship to address - remotely send or received via shipment).  The remote office
+                        is either receiving a shipment from Albany (Remote Delivery) or sending a shipment to Albany
+                        (Remote Pickup). If there is a need to ship from and to Albany, this code will need to be
+                        rewritten.
+         */
+
         if (this.isRemote()) {
             return destination.getAdcity().equalsIgnoreCase("Albany");
         }
@@ -85,6 +105,14 @@ public class Transaction {
 
     public String getRemoteType() {
         if (this.isRemote()) {
+       /*
+           12/11/19       Based on the existing code below, it is assuming that if  Remote is checked,
+                        either it is a remote pickup or remote delivery (and cannot be both). Remote meaning in
+                        this case (ship to address - remotely send or received via shipment).  The remote office
+                        is either receiving a shipment from Albany (Remote Delivery) or sending a shipment to Albany
+                        (Remote Pickup). If there is a need to ship from and to Albany, this code will need to be
+                        rewritten.
+         */
             if (origin.getAdcity().equalsIgnoreCase("Albany"))
                 return "RDL";
 
@@ -95,7 +123,7 @@ public class Transaction {
 
     public ArrayList<String> getNotCheckedItems() {
         ArrayList<String> notCheckedItems = new ArrayList<String>();
-        for (InvItem item: pickupItems) {
+        for (InvItem item : pickupItems) {
             if (!checkedItems.contains(item.getNusenate())) {
                 notCheckedItems.add(item.getNusenate());
             }
@@ -345,7 +373,7 @@ public class Transaction {
 
     public void setCheckedItems(ArrayList<InvItem> checkedItems) {
         this.checkedItems.clear();
-        for (InvItem item: checkedItems) {
+        for (InvItem item : checkedItems) {
             this.checkedItems.add(item.getNusenate());
         }
     }

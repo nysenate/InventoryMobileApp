@@ -3,8 +3,7 @@ package gov.nysenate.inventory.model;
 /**
  * An Adjustment Code is the reason for an inventory item to be removed from our database.
  */
-public class AdjustCode
-{
+public class AdjustCode {
     private String code;
     private String description;
 
@@ -34,7 +33,8 @@ public class AdjustCode
         AdjustCode that = (AdjustCode) o;
 
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
 
         return true;
     }

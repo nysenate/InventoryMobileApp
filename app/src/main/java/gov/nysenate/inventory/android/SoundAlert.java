@@ -5,19 +5,20 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
 
-public class SoundAlert extends AsyncTask<Object, Integer, String>
-{
+import gov.nysenate.inventory.activity.LoginActivity;
+
+public class SoundAlert extends AsyncTask<Object, Integer, String> {
     MediaPlayer mp;
 
     @Override
     protected String doInBackground(Object... soundParams) {
+        //LoginActivity.activeAsyncTask = this;
         Context context = (Context) soundParams[0];
         int soundCnt = soundParams.length;
         for (int x = 1; x < soundCnt; x++) {
             mp = MediaPlayer.create(context,
                     ((Integer) soundParams[x]).intValue());
-            mp.setOnCompletionListener(new OnCompletionListener()
-            {
+            mp.setOnCompletionListener(new OnCompletionListener() {
 
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -30,6 +31,11 @@ public class SoundAlert extends AsyncTask<Object, Integer, String>
             mp.start();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(String response) {
+        LoginActivity.activeAsyncTask = null;
     }
 
 }

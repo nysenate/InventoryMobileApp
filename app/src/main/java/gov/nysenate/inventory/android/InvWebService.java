@@ -3,7 +3,7 @@ package gov.nysenate.inventory.android;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import gov.nysenate.inventory.activity.UpgradeActivity.MyWebReceiver;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -18,8 +18,10 @@ import org.apache.http.params.HttpParams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class InvWebService extends IntentService
-{
+import gov.nysenate.inventory.activity.UpgradeActivity.MyWebReceiver;
+import gov.nysenate.inventory.util.HttpUtils;
+
+public class InvWebService extends IntentService {
 
     private static final String LOG_TAG = "InvWebService";
     public static final String REQUEST_STRING = "myRequest";
@@ -53,6 +55,7 @@ public class InvWebService extends IntentService
                     REGISTRATION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(params, WAIT_TIMEOUT);
             ConnManagerParams.setTimeout(params, WAIT_TIMEOUT);
+            new HttpUtils().updateOffline(URL);  // testing only
 
             HttpGet httpGet = new HttpGet(URL);
             HttpResponse response = httpclient.execute(httpGet);
@@ -63,9 +66,7 @@ public class InvWebService extends IntentService
                 response.getEntity().writeTo(out);
                 out.close();
                 responseMessage = out.toString();
-            }
-
-            else {
+            } else {
                 Log.w("HTTP1:", statusLine.getReasonPhrase());
                 response.getEntity().getContent().close();
                 throw new IOException(statusLine.getReasonPhrase());

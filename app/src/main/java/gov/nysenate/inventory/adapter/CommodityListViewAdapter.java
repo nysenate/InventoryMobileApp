@@ -9,16 +9,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.listener.OnItemDoubleTapListener;
-import gov.nysenate.inventory.model.Commodity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.listener.OnItemDoubleTapListener;
+import gov.nysenate.inventory.model.Commodity;
+
 public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
-        OnItemDoubleTapListener
-{
+        OnItemDoubleTapListener {
 
     Context context;
     List<Commodity> items;
@@ -26,19 +26,16 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
     int rowSelected = -1;
 
     public CommodityListViewAdapter(Context context, int resourceId,
-            List<Commodity> items, String[] keywords) {
+                                    List<Commodity> items, String[] keywords) {
         super(context, resourceId, items);
         this.context = context;
         this.keywords = keywords;
         this.items = formatCommodityList((ArrayList<Commodity>) items);
-        // System.out.println("COMMODITY LIST ITEMS SIZE:" + items.size());
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         RelativeLayout rlcomlist;
-        // TextView commodityListNucnt;
         TextView commodityListCdcommodity;
         TextView commodityListDecommodityf;
     }
@@ -81,12 +78,10 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
         if (position > -1 && items != null && position < items.size()) {
             rowItem = items.get(position);
 
-            // holder.commodityListNucnt.setText(rowItem.getNucnt());
             holder.commodityListCdcommodity.setText(rowItem.getCode());
             holder.commodityListDecommodityf.setText(Html.fromHtml(rowItem
                     .getDescription()));
         } else {
-            // holder.commodityListNucnt.setText("");
             holder.commodityListCdcommodity.setText("");
             holder.commodityListDecommodityf.setText("");
         }

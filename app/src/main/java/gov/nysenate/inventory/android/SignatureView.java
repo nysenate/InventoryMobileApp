@@ -1,7 +1,12 @@
 package gov.nysenate.inventory.android;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -13,14 +18,12 @@ import android.view.View;
 /**
  * A simple view to capture a path traced onto the screen. Initially intended to
  * be used to captures signatures.
- * 
- * 
+ *
  * @author Andrew Crichton
  * @version 0.1
  * @modifications made by Brian Heitner
  */
-public class SignatureView extends View
-{
+public class SignatureView extends View {
     @SuppressWarnings("unused")
     private Path mPath;
     private Paint mPaint;
@@ -61,7 +64,7 @@ public class SignatureView extends View
         if (initialBitmap == null || initialBitmap.getWidth() < 1
                 || initialBitmap.getHeight() < 1) {
             initialBitmap = BitmapFactory.decodeResource(currentContext
-                    .getApplicationContext().getResources(),
+                            .getApplicationContext().getResources(),
                     R.drawable.simplethinborder);
             if (initialBitmap == null) {
                 Log.i("Initial", "Initial Bitmap not created");
@@ -156,7 +159,6 @@ public class SignatureView extends View
     @Override
     public Parcelable onSaveInstanceState() {
         // begin boilerplate code that allows parent classes to save state
-        Log.i("SavedState", "Saving the state");
         Parcelable superState = super.onSaveInstanceState();
 
         SavedState ss = new SavedState(superState);
@@ -176,7 +178,6 @@ public class SignatureView extends View
         }
 
         SavedState ss = (SavedState) state;
-        Log.i("RestoreState", "Restoring the state");
 
         super.onRestoreInstanceState(ss.getSuperState());
         // end
@@ -230,7 +231,7 @@ public class SignatureView extends View
 
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth,
-            int oldHeight) {
+                                 int oldHeight) {
         int bitmapWidth = mBitmap != null ? mBitmap.getWidth() : 0;
         int bitmapHeight = mBitmap != null ? mBitmap.getWidth() : 0;
 
@@ -317,15 +318,15 @@ public class SignatureView extends View
         float y = event.getY();
 
         switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            touchDown(x, y);
-            break;
-        case MotionEvent.ACTION_MOVE:
-            touchMove(x, y);
-            break;
-        case MotionEvent.ACTION_UP:
-            touchUp();
-            break;
+            case MotionEvent.ACTION_DOWN:
+                touchDown(x, y);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                touchMove(x, y);
+                break;
+            case MotionEvent.ACTION_UP:
+                touchUp();
+                break;
         }
         invalidate();
         return true;
@@ -357,7 +358,6 @@ public class SignatureView extends View
 
     private void touchUp() {
         if (curX == origCurX && curY == origCurY) {
-            Log.i("SignatureView", "Draw a dot 2 pixels wide");
             mPath.addCircle(curX, curY, 2, Path.Direction.CW);
         } else {
             mPath.lineTo(curX, curY);
@@ -371,8 +371,7 @@ public class SignatureView extends View
         mPath.reset();
     }
 
-    static class SavedState extends BaseSavedState
-    {
+    static class SavedState extends BaseSavedState {
         int stateToSave;
 
         SavedState(Parcelable superState) {
@@ -391,8 +390,7 @@ public class SignatureView extends View
         }
 
         // required field that makes Parcelables from a Parcel
-        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>()
-        {
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);

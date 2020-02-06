@@ -8,16 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import gov.nysenate.inventory.adapter.RRListStatusAdapter;
-import gov.nysenate.inventory.model.RemovalRequest;
 
 import java.util.List;
 
-public class RRListStatusFragment extends Fragment
-{
+import gov.nysenate.inventory.adapter.RRListStatusAdapter;
+import gov.nysenate.inventory.model.RemovalRequest;
+
+public class RRListStatusFragment extends Fragment {
 
     public interface RRListStatusFragmentI {
         public List<RemovalRequest> getListReference();
+
         public void nextActivity(int position);
     }
 
@@ -27,7 +28,7 @@ public class RRListStatusFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof  RRListStatusFragmentI) {
+        if (activity instanceof RRListStatusFragmentI) {
             handler = (RRListStatusFragmentI) activity;
         } else {
             throw new ClassCastException(activity.toString() + " must implement "

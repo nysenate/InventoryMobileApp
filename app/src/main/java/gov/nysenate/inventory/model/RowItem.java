@@ -1,7 +1,6 @@
 package gov.nysenate.inventory.model;
 
-public class RowItem
-{
+public class RowItem {
     private int imageId;
     private String title;
 

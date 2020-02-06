@@ -6,11 +6,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.util.HttpUtils;
 
 public class EditVerificationAdapter extends ArrayAdapter<InvItem> {
 
@@ -43,18 +45,17 @@ public class EditVerificationAdapter extends ArrayAdapter<InvItem> {
 
         if (selectedItems.contains(rowItem)) {
             checkbox.setChecked(true);
-        }
-        else {
+        } else {
             checkbox.setChecked(false);
         }
 
         checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HttpUtils.keepAlive();
                 if (checkbox.isChecked()) {
                     selectedItems.add(rowItem);
-                }
-                else {
+                } else {
                     selectedItems.remove(rowItem);
                 }
             }
@@ -64,14 +65,11 @@ public class EditVerificationAdapter extends ArrayAdapter<InvItem> {
         // Keeping same colors/logic of InvListViewAdapter.java
         if (rowItem.getType().equalsIgnoreCase("NEW") || rowItem.getType().equalsIgnoreCase("INACTIVE")) {
             setTextViewsColor(row.getResources().getColor(R.color.red), column1, column2);
-        }
-        else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
+        } else if (rowItem.getType().equalsIgnoreCase("EXISTING")) {
             setTextViewsColor(row.getResources().getColor(R.color.black), column1, column2);
-        }
-        else if (rowItem.getType().equalsIgnoreCase("AT DESTINATION")) {
+        } else if (rowItem.getType().equalsIgnoreCase("AT DESTINATION")) {
             setTextViewsColor(row.getResources().getColor(R.color.graydark), column1, column2);
-        }
-        else {
+        } else {
             setTextViewsColor(row.getResources().getColor(R.color.blue), column1, column2);
         }
         return row;

@@ -1,7 +1,6 @@
 package gov.nysenate.inventory.model;
 
 /**
- *
  * @author HEITNER
  */
 public class Employee {
@@ -12,10 +11,10 @@ public class Employee {
     private String nasuffix = null;
     private String naemail = null;
 
-    public Employee () {
+    public Employee() {
     }
 
-    public Employee (int nuxrefem, String nafirst, String nalast, String namidinit, String nasuffix) {
+    public Employee(int nuxrefem, String nafirst, String nalast, String namidinit, String nasuffix) {
         this.nuxrefem = nuxrefem;
         this.nafirst = nafirst;
         this.nalast = nalast;

@@ -6,16 +6,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RRApprovalListAdapter extends ArrayAdapter<Item>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.Item;
+
+public class RRApprovalListAdapter extends ArrayAdapter<Item> {
     List<Item> items;
     HashMap<Item, Boolean> itemsSelectionStatus = new HashMap<Item, Boolean>();
 

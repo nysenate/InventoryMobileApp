@@ -2,12 +2,10 @@ package gov.nysenate.inventory.android;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Adapter;
 import android.widget.Spinner;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.Serializer;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -15,7 +13,15 @@ import org.apache.http.client.methods.HttpGet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class OrigRemoteTask extends AsyncTask<Void, Void, Integer>{
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
+
+public class OrigRemoteTask extends AsyncTask<Void, Void, Integer> {
 
     private Transaction original;
     private final Transaction trans;
@@ -41,6 +47,23 @@ public class OrigRemoteTask extends AsyncTask<Void, Void, Integer>{
 
     @Override
     protected Integer doInBackground(Void... params) {
+        //LoginActivity.activeAsyncTask = this;
+        HttpUtils httpUtils = new HttpUtils();
+        if (!httpUtils.isOnline()) {
+            Log.i("RequestTask", "App is offline for:" + LoginActivity.WEBAPP_BASE_URL);
+
+            try {
+                new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
+            }
+            catch (Exception e) {
+                Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
+            }
+
+            httpUtils.playSound(R.raw.noconnect);
+
+            return HttpUtils.SC_SESSION_TIMEOUT;
+        }
+
         String url = AppProperties.getBaseUrl(context);
         url += "PreviousRemoteInfo?nuxrpd=" + trans.getNuxrpd();
 
@@ -68,6 +91,7 @@ public class OrigRemoteTask extends AsyncTask<Void, Void, Integer>{
             setOriginalComments();
             setOriginalHelpNum();
         }
+        LoginActivity.activeAsyncTask = null;
     }
 
     private void setOriginalVerMethod() {

@@ -8,8 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class CancelBtnFragment extends Fragment implements View.OnClickListener
-{
+public class CancelBtnFragment extends Fragment implements View.OnClickListener {
     private CancelBtnOnClick clickHandler;
 
     public interface CancelBtnOnClick {

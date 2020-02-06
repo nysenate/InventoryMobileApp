@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import gov.nysenate.inventory.activity.SelectDelivery1.SearchByParam;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.model.Transaction;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 public class PickupSearchList extends ArrayAdapter<Transaction> {
 
@@ -29,13 +30,13 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SimpleDateFormat sdf = ((InvApplication)getContext().getApplicationContext()).getDateTimeFormat();
+        SimpleDateFormat sdf = ((InvApplication) getContext().getApplicationContext()).getDateTimeFormat();
         View view = convertView;
 
         if (view == null) {
             LayoutInflater inflator;
             inflator = LayoutInflater.from(getContext());
-            view = inflator.inflate(R.layout.pickup_search_list , null);
+            view = inflator.inflate(R.layout.pickup_search_list, null);
         }
 
         Transaction tran = transactions.get(position);
@@ -63,32 +64,32 @@ public class PickupSearchList extends ArrayAdapter<Transaction> {
                 origin = tran.getOrigin().getLocationSummaryString();
                 destination = tran.getDestination().getLocationSummaryString();
             }
-            switch(searchParam) {
+            switch (searchParam) {
 
-            case PICKUPLOC:
-                column1.setText(sdf.format(tran.getPickupDate()));
-                column2.setText(tran.getNapickupby());
-                column3.setText(Html.fromHtml(destination));
-                column4.setText(Integer.toString(tran.getCount()));
-                break;
-            case DELIVERYLOC:
-                column1.setText(sdf.format(tran.getPickupDate()));
-                column2.setText(tran.getNapickupby());
-                column3.setText(Html.fromHtml(origin));
-                column4.setText(Integer.toString(tran.getCount()));
-                break;
-            case NAPICKUPBY:
-                column1.setText(sdf.format(tran.getPickupDate()));
-                column2.setText(tran.getOriginSummaryString());
-                column3.setText(Html.fromHtml(destination));
-                column4.setText(Integer.toString(tran.getCount()));
-                break;
-            case DATE:
-                column1.setText(tran.getNapickupby());
-                column2.setText(tran.getOriginSummaryString());
-                column3.setText(Html.fromHtml(destination));
-                column4.setText(Integer.toString(tran.getCount()));
-                break;
+                case PICKUPLOC:
+                    column1.setText(sdf.format(tran.getPickupDate()));
+                    column2.setText(tran.getNapickupby());
+                    column3.setText(Html.fromHtml(destination));
+                    column4.setText(Integer.toString(tran.getCount()));
+                    break;
+                case DELIVERYLOC:
+                    column1.setText(sdf.format(tran.getPickupDate()));
+                    column2.setText(tran.getNapickupby());
+                    column3.setText(Html.fromHtml(origin));
+                    column4.setText(Integer.toString(tran.getCount()));
+                    break;
+                case NAPICKUPBY:
+                    column1.setText(sdf.format(tran.getPickupDate()));
+                    column2.setText(tran.getOriginSummaryString());
+                    column3.setText(Html.fromHtml(destination));
+                    column4.setText(Integer.toString(tran.getCount()));
+                    break;
+                case DATE:
+                    column1.setText(tran.getNapickupby());
+                    column2.setText(tran.getOriginSummaryString());
+                    column3.setText(Html.fromHtml(destination));
+                    column4.setText(Integer.toString(tran.getCount()));
+                    break;
             }
         }
 

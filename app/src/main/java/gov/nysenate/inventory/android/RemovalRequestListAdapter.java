@@ -5,14 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import gov.nysenate.inventory.model.RemovalRequest;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest>
-{
+import gov.nysenate.inventory.model.RemovalRequest;
+
+public class RemovalRequestListAdapter extends ArrayAdapter<RemovalRequest> {
     private List<RemovalRequest> rrs;
     private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ssa", Locale.US);
 

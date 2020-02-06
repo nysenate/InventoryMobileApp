@@ -11,16 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
+
 //...G
 @SuppressLint("ValidFragment")
-public class ChangePasswordDialog extends DialogFragment
-{
+public class ChangePasswordDialog extends DialogFragment {
 
     public static ClearableEditText oldPassword;
     public static ClearableEditText newPassword;
@@ -42,7 +42,7 @@ public class ChangePasswordDialog extends DialogFragment
     private int initialFocus = DEFAULTFOCUS;
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg) {
+                                String msg) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -53,7 +53,7 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, int initialFocus) {
+                                String msg, int initialFocus) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -65,8 +65,8 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, String oldPasswordSet, String newPasswordSet,
-            String confirmPasswordSet) {
+                                String msg, String oldPasswordSet, String newPasswordSet,
+                                String confirmPasswordSet) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -77,8 +77,8 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, String oldPasswordSet, String newPasswordSet,
-            String confirmPasswordSet, int initialFocus) {
+                                String msg, String oldPasswordSet, String newPasswordSet,
+                                String confirmPasswordSet, int initialFocus) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -90,7 +90,7 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, boolean oldPasswordRequired) {
+                                String msg, boolean oldPasswordRequired) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -101,7 +101,7 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, boolean oldPasswordRequired, int initialFocus) {
+                                String msg, boolean oldPasswordRequired, int initialFocus) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -113,8 +113,8 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, boolean oldPasswordRequired, String oldPasswordSet,
-            String newPasswordSet, String confirmPasswordSet) {
+                                String msg, boolean oldPasswordRequired, String oldPasswordSet,
+                                String newPasswordSet, String confirmPasswordSet) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -125,8 +125,8 @@ public class ChangePasswordDialog extends DialogFragment
     }
 
     public ChangePasswordDialog(SenateActivity senateActivity, String title,
-            String msg, boolean oldPasswordRequired, String oldPasswordSet,
-            String newPasswordSet, String confirmPasswordSet, int initialFocus) {
+                                String msg, boolean oldPasswordRequired, String oldPasswordSet,
+                                String newPasswordSet, String confirmPasswordSet, int initialFocus) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -143,11 +143,7 @@ public class ChangePasswordDialog extends DialogFragment
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater
                 .inflate(R.layout.dialog_change_passord, null);
-        /*
-         * oldPassword = (ClearableEditText) dialogView
-         * .findViewById(R.id.oldPassword);
-         */
-        
+
         oldPassword = (ClearableEditText) dialogView
                 .findViewById(R.id.oldPassword);
         newPassword = (ClearableEditText) dialogView
@@ -166,57 +162,57 @@ public class ChangePasswordDialog extends DialogFragment
         if (this.confirmPasswordSet != null) {
             confirmPassword.setText(this.confirmPasswordSet);
         }
-        
+
         switch (this.initialFocus) {
-        case DEFAULTFOCUS:
-            if (this.oldPasswordRequired) {
-                if (oldPassword.getText().toString().trim().length() == 0) {
+            case DEFAULTFOCUS:
+                if (this.oldPasswordRequired) {
+                    if (oldPassword.getText().toString().trim().length() == 0) {
+                        oldPassword.requestFocus();
+                        oldPassword.setSelection(oldPassword.getText().length());
+                    } else if (oldPassword.getText().toString().trim().length() > 0
+                            && newPassword.getText().toString().trim().length() == 0) {
+                        newPassword.requestFocus();
+                        newPassword.setSelection(newPassword.getText().length());
+                    } else if (oldPassword.getText().toString().trim().length() > 0
+                            && newPassword.getText().toString().trim().length() > 0
+                            && confirmPassword.getText().toString().trim().length() == 0) {
+                        confirmPassword.requestFocus();
+                        confirmPassword.setSelection(confirmPassword.getText().length());
+                    }
+                } else {
+                    oldPassword.setVisibility(View.GONE);
+                    if (newPassword.getText().toString().trim().length() > 0
+                            && confirmPassword.getText().toString().trim().length() == 0) {
+                        confirmPassword.requestFocus();
+                        confirmPassword.setSelection(confirmPassword.getText().length());
+                    }
+                }
+                break;
+            case OLDPASSWORDFOCUS:
+                if (this.oldPasswordRequired) {
                     oldPassword.requestFocus();
                     oldPassword.setSelection(oldPassword.getText().length());
-                } else if (oldPassword.getText().toString().trim().length() > 0
-                        && newPassword.getText().toString().trim().length() == 0) {
+                } else {
                     newPassword.requestFocus();
                     newPassword.setSelection(newPassword.getText().length());
-                } else if (oldPassword.getText().toString().trim().length() > 0
-                        && newPassword.getText().toString().trim().length() > 0
-                        && confirmPassword.getText().toString().trim().length() == 0) {
-                    confirmPassword.requestFocus();
-                    confirmPassword.setSelection(confirmPassword.getText().length());
                 }
-            } else {
-                oldPassword.setVisibility(View.GONE);
-                if (newPassword.getText().toString().trim().length() > 0
-                        && confirmPassword.getText().toString().trim().length() == 0) {
-                    confirmPassword.requestFocus();
-                    confirmPassword.setSelection(confirmPassword.getText().length());
-                }
-            }
-            break;
-        case OLDPASSWORDFOCUS:
-            if (this.oldPasswordRequired) {
-                oldPassword.requestFocus();
-                oldPassword.setSelection(oldPassword.getText().length());
-            } else {
+                break;
+            case NEWPASSWORDFOCUS:
                 newPassword.requestFocus();
                 newPassword.setSelection(newPassword.getText().length());
-            }
-            break;
-        case NEWPASSWORDFOCUS:
-            newPassword.requestFocus();
-            newPassword.setSelection(newPassword.getText().length());
-            break;
-        case CONFIRMPASSWORDFOCUS:
-            confirmPassword.requestFocus();
-            confirmPassword.setSelection(confirmPassword.getText().length());
-            break;
-        default:
-            System.out
-                    .println("Invalid Focus Value in ChangePassword Dialog. Any coding needed to handle this scenario should be coded here.");
+                break;
+            case CONFIRMPASSWORDFOCUS:
+                confirmPassword.requestFocus();
+                confirmPassword.setSelection(confirmPassword.getText().length());
+                break;
+            default:
+                System.out
+                        .println("Invalid Focus Value in ChangePassword Dialog. Any coding needed to handle this scenario should be coded here.");
         }
         if (!this.oldPasswordRequired) {
             oldPassword.setVisibility(View.GONE);
         }
-        
+
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(dialogView)
@@ -226,8 +222,7 @@ public class ChangePasswordDialog extends DialogFragment
                 .setMessage(Html.fromHtml(msg))
                 .setCancelable(false)
                 .setPositiveButton(Html.fromHtml("<b>Continue</b>"),
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 for (ChangePasswordDialogListener ChangePasswordDialogListener : listeners)
@@ -244,8 +239,7 @@ public class ChangePasswordDialog extends DialogFragment
                             }
                         })
                 .setNegativeButton(Html.fromHtml("<b>Cancel</b>"),
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 // cancelMsg();

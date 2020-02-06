@@ -8,11 +8,11 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
+
 import gov.nysenate.inventory.activity.LoginActivity;
 import gov.nysenate.inventory.util.Toasty;
 
-public class CheckInternet extends BroadcastReceiver
-{
+public class CheckInternet extends BroadcastReceiver {
     private static boolean appConnected = true;
 
     @Override
@@ -66,8 +66,7 @@ public class CheckInternet extends BroadcastReceiver
             LoginActivity.chkintWifiLostCount++;
             Toasty.displayCenteredMessage(context, "Wifi connection lost.", Toast.LENGTH_SHORT);
             appConnected = false;
-        }
-        else {
+        } else {
             Log.i("CheckInternet", "Wifi App disconnected ignored since it already had been disconnected");
         }
     }
@@ -81,8 +80,7 @@ public class CheckInternet extends BroadcastReceiver
     private void appConnectionFound(Context context) {
         if (appConnected) {
             Log.i("CheckInternet", "Wifi App connected ignored since it already had been connected");
-        }
-        else {
+        } else {
             LoginActivity.chkintWifiFoundCount++;
             appConnected = true;
             Toasty.displayCenteredMessage(context, "Wifi connection found.", Toast.LENGTH_SHORT);

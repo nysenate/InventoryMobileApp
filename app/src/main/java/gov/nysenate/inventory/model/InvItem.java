@@ -2,11 +2,11 @@ package gov.nysenate.inventory.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class InvItem implements Parcelable
-{
+public class InvItem implements Parcelable {
     String decommodityf = "";
     String type = ""; // set to NEW if entered/saved from inside app.
     String nusenate = "";
@@ -28,7 +28,7 @@ public class InvItem implements Parcelable
     final transient int DECOMMENTS = -108;
 
     public InvItem(String nusenate, String cdcategory, String type,
-            String decommodityf, String cdlocat) {
+                   String decommodityf, String cdlocat) {
         this.nusenate = nusenate;
         this.cdcategory = cdcategory;
         this.type = type;
@@ -148,8 +148,6 @@ public class InvItem implements Parcelable
             jsonObject.put("decomments", getDecomments());
             jsonObject.put("selected", getSelected());
 
-            // Log.i("InvItem ToJSON", jsonObject.toString());
-
             return jsonObject;
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -204,14 +202,14 @@ public class InvItem implements Parcelable
                 this.setCdcommodity(jsonObject.getString("cdcommodity"));
             } catch (JSONException e2) {
                 this.setCdcommodity(""); // No Error msgs since cdcommodity may
-                                         // or may not be included
+                // or may not be included
             }
 
             try {
                 this.setDecomments(jsonObject.getString("decomments"));
             } catch (JSONException e2) {
                 this.setDecomments(""); // No Error msgs since decomments may or
-                                        // may not be included
+                // may not be included
             }
 
             try {
@@ -268,8 +266,7 @@ public class InvItem implements Parcelable
         return 0;
     }
 
-    public static final Parcelable.Creator<InvItem> CREATOR = new Parcelable.Creator<InvItem>()
-    {
+    public static final Parcelable.Creator<InvItem> CREATOR = new Parcelable.Creator<InvItem>() {
 
         @Override
         public InvItem createFromParcel(Parcel in) {

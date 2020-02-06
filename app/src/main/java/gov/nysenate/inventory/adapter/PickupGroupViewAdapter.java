@@ -8,27 +8,26 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.PickupGroup;
 
 import java.util.List;
 
-public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.PickupGroup;
+
+public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
 
     Context context;
     List<PickupGroup> pickupGroups;
 
     public PickupGroupViewAdapter(Context context, int resourceId,
-            List<PickupGroup> pickupGroups) {
+                                  List<PickupGroup> pickupGroups) {
         super(context, resourceId, pickupGroups);
         this.context = context;
         this.pickupGroups = pickupGroups;
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         RelativeLayout rlPickupGrpRow;
         TextView pickupDateTime;
         TextView pickupLocat;
@@ -116,14 +115,14 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup>
 
         /*
          * OnClickListener l = new OnClickListener() {
-         * 
+         *
          * @Override public void onClick(View v) { if
          * (v.getId()==R.id.invListSpeech){
-         * 
+         *
          * }
-         * 
+         *
          * } };
-         * 
+         *
          * holder.speech2Txt.setOnClickListener(l);
          */
         return convertView;

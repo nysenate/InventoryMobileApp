@@ -12,14 +12,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.ClearButtonListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClearableTextView extends TextView
-{
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
+public class ClearableTextView extends TextView {
 
     public String defaultValue = "";
     final Drawable imgX = getResources().getDrawable(
@@ -64,8 +64,7 @@ public class ClearableTextView extends TextView
         // button
         manageClearButton();
 
-        this.setOnTouchListener(new OnTouchListener()
-        {
+        this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -86,14 +85,13 @@ public class ClearableTextView extends TextView
                     clearField = true;
                     if (showClearMsg) {
                         clearField = false;
-                        // super.getContext()
+                        // super.getAppContext()
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
                                 .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
-                                        new DialogInterface.OnClickListener()
-                                        {
+                                        new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(
                                                     DialogInterface dialog,
@@ -106,8 +104,7 @@ public class ClearableTextView extends TextView
                                             }
                                         })
                                 .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
-                                        new DialogInterface.OnClickListener()
-                                        {
+                                        new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(
                                                     DialogInterface dialog,
@@ -124,10 +121,10 @@ public class ClearableTextView extends TextView
                     if (clearField) {
                         tv.setText("");
                         ClearableTextView.this.removeClearButton();
-                        Log.d("ClearableTextView", "clearButtonListener  View:"+v.getClass().getName()+", Parent:"+v.getParent().getClass().getName()); 
+                        Log.d("ClearableTextView", "clearButtonListener  View:" + v.getClass().getName() + ", Parent:" + v.getParent().getClass().getName());
                         for (ClearButtonListener clearButtonListener : listeners)
                             clearButtonListener.onClearButtonPressed((ClearableTextView) v, v);
- 
+
                     }
 
                 } else {
@@ -137,16 +134,15 @@ public class ClearableTextView extends TextView
             }
         });
 
-        this.addTextChangedListener(new TextWatcher()
-        {
+        this.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
+                                      int count) {
 
                 ClearableTextView.this.manageClearButton();
                 SenateActivity.timer.cancel();
-                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
-                SenateActivity.timer.start();
+                if (!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                    SenateActivity.timer.start();
             }
 
             @Override
@@ -155,7 +151,7 @@ public class ClearableTextView extends TextView
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+                                          int after) {
             }
         });
     }

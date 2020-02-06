@@ -9,13 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
 
 import java.util.List;
 
-public class PickupInvAdapter extends ArrayAdapter<InvItem>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+public class PickupInvAdapter extends ArrayAdapter<InvItem> {
 
     Context context;
     List<InvItem> items;
@@ -27,8 +27,7 @@ public class PickupInvAdapter extends ArrayAdapter<InvItem>
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         RelativeLayout rlList;
         ImageView speech2Txt;
         TextView invListBarcode;
@@ -96,8 +95,7 @@ public class PickupInvAdapter extends ArrayAdapter<InvItem>
                     R.color.black)); // black
 
         }
-        OnClickListener l = new OnClickListener()
-        {
+        OnClickListener l = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.invListSpeech) {

@@ -16,8 +16,8 @@
         android:id="@+id/pickupCommentsSpeechButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="103dp"
         android:src="@drawable/nysenatelogo" />
 
@@ -90,5 +90,24 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/red"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvLAppVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#D4D4D4"
+        android:backgroundTintMode="add"
+        android:editable="false"
+        android:fontFamily="sans-serif"
+        android:shadowColor="@color/gray"
+        android:shadowDx="20"
+        android:shadowDy="20"
+        android:text="MOBILE APP"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
 </RelativeLayout>

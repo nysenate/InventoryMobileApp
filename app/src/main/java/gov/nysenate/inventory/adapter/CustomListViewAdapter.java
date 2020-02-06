@@ -7,27 +7,26 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.RowItem;
 
 import java.util.List;
 
-public class CustomListViewAdapter extends ArrayAdapter<RowItem>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.RowItem;
+
+public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
 
     Context context;
     int resource;
 
     public CustomListViewAdapter(Context context, int resourceId,
-            List<RowItem> items) {
+                                 List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
         this.resource = resourceId;
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         ImageView imageView;
         TextView txtTitle;
         // TextView txtDesc;

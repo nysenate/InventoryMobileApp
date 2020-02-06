@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rwlochist"
+    android:layout_width="550dp"
+    android:layout_height="fill_parent"
+    android:choiceMode="multipleChoice">
+
+    <TextView
+        android:id="@+id/tvLHEntryDate"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="31dp"
+        android:text="EntryDate"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+    <TextView
+        android:id="@+id/tvLHLocCode"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvLHEntryDate"
+        android:layout_alignBottom="@+id/tvLHEntryDate"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/tvLHEntryDate"
+        android:text="Loc Code"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+    <TextView
+        android:id="@+id/tvLHDepartment"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvLHLocCode"
+        android:layout_alignBottom="@+id/tvLHLocCode"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/tvLHLocCode"
+        android:text="Resp Center Hd"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_alignTop="@+id/tvLHLocCode"
+        android:layout_toRightOf="@+id/tvLHDepartment"
+        android:orientation="vertical" >
+    <TextView
+        android:id="@+id/tvLHLocAddr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location Address"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    <TextView
+        android:id="@+id/tvLHLocCityZip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="City State Zip"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    </LinearLayout>
+</RelativeLayout>

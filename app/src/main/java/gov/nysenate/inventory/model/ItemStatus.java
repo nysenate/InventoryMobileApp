@@ -1,7 +1,6 @@
 package gov.nysenate.inventory.model;
 
-public enum ItemStatus
-{
+public enum ItemStatus {
     ACTIVE,
     INACTIVE,
     NEW,

@@ -6,16 +6,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import java.util.Collections;
+import java.util.List;
+
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.model.Item;
 import gov.nysenate.inventory.model.ItemStatus;
 
-import java.util.Collections;
-import java.util.List;
-
-public class RemovalRequestItemSelectionAdapter extends ArrayAdapter<Item>
-{
+public class RemovalRequestItemSelectionAdapter extends ArrayAdapter<Item> {
     public interface RemovalRequestItemSelectionAdapterI {
         public void itemCheckBoxPressed();
     }

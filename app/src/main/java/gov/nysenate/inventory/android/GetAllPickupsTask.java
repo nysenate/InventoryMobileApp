@@ -2,9 +2,7 @@ package gov.nysenate.inventory.android;
 
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.Serializer;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -17,6 +15,11 @@ import org.apache.http.protocol.HttpContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
 
 public class GetAllPickupsTask extends AsyncTask<Void, Void, Integer> {
 
@@ -44,16 +47,21 @@ public class GetAllPickupsTask extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected Integer doInBackground(Void... arg0) {
+        LoginActivity.activeAsyncTask = this;
+        HttpUtils httpUtils = new HttpUtils();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         // We cant use the same HttpClient (LoginActivity.httpClient) in 2 requests at the same time.
         // Therefore we copy the cookies into a new HttpClient.
+
         DefaultHttpClient httpClient = LoginActivity.getHttpClient();
+
         CookieStore store = httpClient.getCookieStore();
         HttpContext context = new BasicHttpContext();
         context.setAttribute(ClientContext.COOKIE_STORE, store);
         HttpResponse response = null;
         try {
+            httpUtils.updateOffline(url);  // testing only
             response = new DefaultHttpClient().execute(new HttpGet(url), context);
             response.getEntity().writeTo(out);
             List<Transaction> pickups = Serializer.deserialize(out.toString(), Transaction.class);
@@ -73,5 +81,7 @@ public class GetAllPickupsTask extends AsyncTask<Void, Void, Integer> {
             bar.setVisibility(ProgressBar.INVISIBLE);
         }
         listener.onResponseExecute(response);
+
+        LoginActivity.activeAsyncTask = null;
     }
 }

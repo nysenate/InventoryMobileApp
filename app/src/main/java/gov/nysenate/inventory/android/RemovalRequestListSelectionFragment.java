@@ -7,10 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import gov.nysenate.inventory.adapter.RRApprovalListAdapter;
-import gov.nysenate.inventory.model.Item;
 
 import java.util.List;
+
+import gov.nysenate.inventory.adapter.RRApprovalListAdapter;
+import gov.nysenate.inventory.model.Item;
 
 /**
  * Contains a List view with Removal Request information along with a check box.

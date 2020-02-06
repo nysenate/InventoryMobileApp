@@ -11,16 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.CommentsDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.CommentsDialogListener;
+
 //...G
 @SuppressLint("ValidFragment")
-public class CommentsDialog extends DialogFragment
-{
+public class CommentsDialog extends DialogFragment {
 
     public static ClearableEditText etComments;
     public static ProgressBar progBarNewInvItem;
@@ -31,7 +31,7 @@ public class CommentsDialog extends DialogFragment
     List<CommentsDialogListener> listeners = new ArrayList<CommentsDialogListener>();
 
     public CommentsDialog(SenateActivity senateActivity, String title,
-            String msg) {
+                          String msg) {
         this.senateActivity = senateActivity;
         this.title = title;
         this.msg = msg;
@@ -53,8 +53,7 @@ public class CommentsDialog extends DialogFragment
                                 + "</font>"))
                 .setMessage(Html.fromHtml(msg))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         for (CommentsDialogListener commentsDialogListener : listeners)
@@ -64,8 +63,7 @@ public class CommentsDialog extends DialogFragment
                         dismiss();
                     }
                 })
-                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // cancelMsg();
@@ -100,8 +98,7 @@ public class CommentsDialog extends DialogFragment
         // set dialog message
         alertDialogBuilder.setMessage(Html.fromHtml(cancelMsg))
                 .setCancelable(false)
-                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
@@ -109,8 +106,7 @@ public class CommentsDialog extends DialogFragment
                         dismiss();
                     }
                 })
-                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, we need to reopen the

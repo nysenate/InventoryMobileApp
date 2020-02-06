@@ -8,21 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+public class InvSelListViewAdapter extends ArrayAdapter<InvItem> {
 
     Context context;
     List<InvItem> items;
 
     public InvSelListViewAdapter(Context context, int resourceId,
-            List<InvItem> items) {
+                                 List<InvItem> items) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
@@ -30,8 +34,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         RelativeLayout rslList;
         ImageView speech2Txt;
         TextView invSelListBarcode;
@@ -111,8 +114,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         int id = Resources.getSystem().getIdentifier("btn_check_holo_light",
                 "drawable", "android");
         holder.invSelListSelected.setButtonDrawable(id);
-        holder.invSelListSelected.setOnClickListener(new OnClickListener()
-        {
+        holder.invSelListSelected.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -125,8 +127,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
 
         });
 
-        OnClickListener l = new OnClickListener()
-        {
+        OnClickListener l = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.invListSpeech) {
@@ -202,7 +203,7 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
 
     // TODO: only used for NUSENATE, do we need?
     public String getSelectedItemsAsString(boolean selected, int field,
-            String delimeter) {
+                                           String delimeter) {
 
         StringBuffer returnItems = new StringBuffer();
         InvItem curInvItem = null;
@@ -216,38 +217,38 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
             curInvItem = items.get(x);
             if (curInvItem.getSelected() == selected) {
                 switch (field) {
-                case DECOMMODITYF:
-                    if (x > 0) {
-                        returnItems.append(delimeter);
-                    }
-                    returnItems.append(curInvItem.getDecommodityf());
-                    break;
-                case TYPE:
-                    if (x > 0) {
-                        returnItems.append(delimeter);
-                    }
-                    returnItems.append(curInvItem.getType());
-                    break;
-                case NUSENATE:
-                    if (x > 0) {
-                        returnItems.append(delimeter);
-                    }
-                    returnItems.append(curInvItem.getNusenate());
-                    break;
-                case CDCATEGORY:
-                    if (x > 0) {
-                        returnItems.append(delimeter);
-                    }
-                    returnItems.append(curInvItem.getCdcategory());
-                    break;
-                case SELECTED:
-                    if (x > 0) {
-                        returnItems.append(delimeter);
-                    }
-                    returnItems.append(curInvItem.getSelected());
-                    break;
-                default:
-                    return "!!ERROR: InvItem Field Name not found.";
+                    case DECOMMODITYF:
+                        if (x > 0) {
+                            returnItems.append(delimeter);
+                        }
+                        returnItems.append(curInvItem.getDecommodityf());
+                        break;
+                    case TYPE:
+                        if (x > 0) {
+                            returnItems.append(delimeter);
+                        }
+                        returnItems.append(curInvItem.getType());
+                        break;
+                    case NUSENATE:
+                        if (x > 0) {
+                            returnItems.append(delimeter);
+                        }
+                        returnItems.append(curInvItem.getNusenate());
+                        break;
+                    case CDCATEGORY:
+                        if (x > 0) {
+                            returnItems.append(delimeter);
+                        }
+                        returnItems.append(curInvItem.getCdcategory());
+                        break;
+                    case SELECTED:
+                        if (x > 0) {
+                            returnItems.append(delimeter);
+                        }
+                        returnItems.append(curInvItem.getSelected());
+                        break;
+                    default:
+                        return "!!ERROR: InvItem Field Name not found.";
                 }
 
             }
@@ -284,38 +285,38 @@ public class InvSelListViewAdapter extends ArrayAdapter<InvItem>
         for (int x = 0; x < items.size(); x++) {
             curInvItem = items.get(x);
             switch (field) {
-            case DECOMMODITYF:
-                if (x > 0) {
-                    returnItems.append(delimeter);
-                }
-                returnItems.append(curInvItem.getDecommodityf());
-                break;
-            case TYPE:
-                if (x > 0) {
-                    returnItems.append(delimeter);
-                }
-                returnItems.append(curInvItem.getType());
-                break;
-            case NUSENATE:
-                if (x > 0) {
-                    returnItems.append(delimeter);
-                }
-                returnItems.append(curInvItem.getNusenate());
-                break;
-            case CDCATEGORY:
-                if (x > 0) {
-                    returnItems.append(delimeter);
-                }
-                returnItems.append(curInvItem.getCdcategory());
-                break;
-            case SELECTED:
-                if (x > 0) {
-                    returnItems.append(delimeter);
-                }
-                returnItems.append(curInvItem.getSelected());
-                break;
-            default:
-                return "!!ERROR: InvItem Field Name not found.";
+                case DECOMMODITYF:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getDecommodityf());
+                    break;
+                case TYPE:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getType());
+                    break;
+                case NUSENATE:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getNusenate());
+                    break;
+                case CDCATEGORY:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getCdcategory());
+                    break;
+                case SELECTED:
+                    if (x > 0) {
+                        returnItems.append(delimeter);
+                    }
+                    returnItems.append(curInvItem.getSelected());
+                    break;
+                default:
+                    return "!!ERROR: InvItem Field Name not found.";
             }
 
         }

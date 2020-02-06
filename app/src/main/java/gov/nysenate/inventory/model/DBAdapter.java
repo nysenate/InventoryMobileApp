@@ -5,15 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBAdapter
-{
+public class DBAdapter {
 
     private DBHelper dbHelper;
 
     private SQLiteDatabase database;
 
     /**
-     * 
      * @param context
      */
     public DBAdapter(Context context) {
@@ -22,12 +20,12 @@ public class DBAdapter
     }
 
     public Long insert(String table, String columnFieldList,
-            String columnValueList) throws Exception {
+                       String columnValueList) throws Exception {
         return insert(table, columnFieldList, columnValueList, "\\|");
     }
 
     public Long insert(String table, String columnFieldList,
-            String columnValueList, String delimeter) throws Exception {
+                       String columnValueList, String delimeter) throws Exception {
         long result = 0;
         String[] columnFields = columnFieldList.split(delimeter);
         String[] columnValues = columnValueList.split(delimeter);
@@ -45,13 +43,13 @@ public class DBAdapter
     }
 
     public Long update(String table, String columnFieldList,
-            String columnValueList, String whereClause) throws Exception {
+                       String columnValueList, String whereClause) throws Exception {
         return update(table, columnFieldList, whereClause, columnValueList,
                 "\\|");
     }
 
     public Long update(String table, String columnFieldList,
-            String columnValueList, String whereClause, String delimeter)
+                       String columnValueList, String whereClause, String delimeter)
             throws Exception {
         long result = 0;
         String[] columnFields = columnFieldList.split(delimeter);
@@ -72,7 +70,7 @@ public class DBAdapter
             mCursor.moveToFirst();
 
         }
-        return mCursor; // iterate to get each value.
+        return mCursor; // iterate to getInstance each value.
     }
 
     public void truncateTable(String table) {

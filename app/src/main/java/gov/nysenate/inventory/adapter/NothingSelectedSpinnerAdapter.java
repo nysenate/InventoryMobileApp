@@ -2,6 +2,7 @@ package gov.nysenate.inventory.adapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,13 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
     protected LayoutInflater layoutInflater;
 
     public NothingSelectedSpinnerAdapter(SpinnerAdapter spinnerAdapter,
-            int nothingSelectedLayout, Context context) {
+                                         int nothingSelectedLayout, Context context) {
 
         this(spinnerAdapter, nothingSelectedLayout, -1, context);
     }
 
     public NothingSelectedSpinnerAdapter(SpinnerAdapter spinnerAdapter,
-            int nothingSelectedLayout, int nothingSelectedDropdownLayout, Context context) {
+                                         int nothingSelectedLayout, int nothingSelectedDropdownLayout, Context context) {
         this.adapter = spinnerAdapter;
         this.context = context;
         this.nothingSelectedLayout = nothingSelectedLayout;
@@ -48,8 +49,8 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         if (position == 0) {
             return nothingSelectedDropdownLayout == -1 ?
-              new View(context) :
-              getNothingSelectedDropdownView(parent);
+                    new View(context) :
+                    getNothingSelectedDropdownView(parent);
         }
         return adapter.getDropDownView(position - EXTRA, null, parent);
     }
@@ -74,14 +75,15 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
         // This method determines what is the convertView, this should
         // return 1 for pos 0 or return 0 otherwise.
         return position == 0 ?
-               getViewTypeCount() - EXTRA :
-               adapter.getItemViewType(position - EXTRA);
+                getViewTypeCount() - EXTRA :
+                adapter.getItemViewType(position - EXTRA);
     }
 
     @Override
     public int getViewTypeCount() {
-        return adapter.getViewTypeCount() + EXTRA;
+        return 1;
     }
+
 
     @Override
     public long getItemId(int position) {

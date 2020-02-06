@@ -3,6 +3,7 @@ package gov.nysenate.inventory.util;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.widget.Toast;
+import gov.nysenate.inventory.android.InvApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,10 +13,19 @@ public class AppProperties {
 
     private static Properties props;
 
+    public static Properties getProperties() {
+        return getProperties(InvApplication.getAppContext());
+    }
+
     public static Properties getProperties(Context context) {
         if (props == null) {
             props = new Properties();
-            AssetManager assetMgr = context.getApplicationContext().getAssets();
+
+            if (context == null) {
+                context = InvApplication.getAppContext();
+            }
+
+            AssetManager assetMgr = InvApplication.getAppContext().getAssets();
             InputStream is;
             try {
                 is = assetMgr.open("invApp.properties");
@@ -27,12 +37,20 @@ public class AppProperties {
         return props;
     }
 
+    public static String getBaseUrl() {
+        return getBaseUrl(InvApplication.getAppContext());
+    }
+
     public static String getBaseUrl(Context context) {
         String url = getProperties(context).get("WEBAPP_BASE_URL").toString();
         if (!url.endsWith("/")) {
             url += "/";
         }
         return url;
+    }
+
+    public static String getDefrmint() {
+        return getDefrmint(InvApplication.getAppContext());
     }
 
     public static String getDefrmint(Context context) {

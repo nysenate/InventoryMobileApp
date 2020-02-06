@@ -5,13 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Item;
 
 import java.util.List;
 
-public class RemovalRequestItemListAdapter extends ArrayAdapter<Item>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.Item;
+
+public class RemovalRequestItemListAdapter extends ArrayAdapter<Item> {
 
     private List<Item> items;
     private int resource;

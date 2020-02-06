@@ -12,15 +12,20 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import gov.nysenate.inventory.activity.Delivery3;
 import gov.nysenate.inventory.activity.SenateActivity;
 import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.listener.VerMethodListener;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.Toasty;
-
-import java.util.ArrayList;
 
 public class RemoteConfirmationDialog extends DialogFragment {
 
@@ -96,7 +101,7 @@ public class RemoteConfirmationDialog extends DialogFragment {
         remoteSigner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
+                                    int position, long id) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(
                         remoteSigner.getWindowToken(), 0);
@@ -143,8 +148,8 @@ public class RemoteConfirmationDialog extends DialogFragment {
     private boolean completelyFilledOut() {
         if (verMethod.getSelectedItem() != null) {
             String methodSelected = verMethod.getSelectedItem().toString();
-            boolean isEmployeeEntered = ((SenateActivity)getActivity())
-                    .findEmployee(remoteSigner.getText().toString(), ((Delivery3)getActivity()).employeeHiddenList) > -1;
+            boolean isEmployeeEntered = ((SenateActivity) getActivity())
+                    .findEmployee(remoteSigner.getText().toString(), ((Delivery3) getActivity()).employeeHiddenList) > -1;
             boolean isOsrNumEntered = !remoteHelpReferenceNum.getText().toString().isEmpty();
 
             if (methodSelected.equals("Paperwork")) {

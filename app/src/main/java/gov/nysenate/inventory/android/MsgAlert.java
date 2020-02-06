@@ -6,8 +6,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.text.Html;
 
-public class MsgAlert
-{
+public class MsgAlert {
     Context context;
     AlertDialog dialog;
 
@@ -16,7 +15,7 @@ public class MsgAlert
     }
 
     public MsgAlert(Context context, final String title, final String message,
-            OnClickListener onClickListener) {
+                    OnClickListener onClickListener) {
         this.context = context;
         showMessage(title, message, onClickListener);
     }
@@ -27,8 +26,7 @@ public class MsgAlert
     }
 
     public void showMessage(String title, String message) {
-        showMessage(title, message, new DialogInterface.OnClickListener()
-        {
+        showMessage(title, message, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 // if this button is clicked, just close
@@ -39,7 +37,7 @@ public class MsgAlert
     }
 
     public void showMessage(String title, String message,
-            OnClickListener onClickListener) {
+                            OnClickListener onClickListener) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
@@ -56,7 +54,7 @@ public class MsgAlert
         // show it
         dialog.show();
     }
-    
+
     public AlertDialog getDialog() {
         return dialog;
     }

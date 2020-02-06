@@ -2,8 +2,7 @@ package gov.nysenate.inventory.model;
 
 import gov.nysenate.inventory.android.Nvl;
 
-public class PickupGroup
-{
+public class PickupGroup {
     String pickupDateTime = "";
     String pickupFrom = "";
     String pickupLocat = "";
@@ -17,9 +16,9 @@ public class PickupGroup
     int shipId;
 
     public PickupGroup(int nuxrpd, String pickupDateTime, String pickupFrom,
-            String pickupRelBy, String pickupLocat, String pickupAdstreet1,
-            String pickupAdcity, String pickupAdstate, String pickupAdzipcode,
-            int pickupItemCount, int shipId) {
+                       String pickupRelBy, String pickupLocat, String pickupAdstreet1,
+                       String pickupAdcity, String pickupAdstate, String pickupAdzipcode,
+                       int pickupItemCount, int shipId) {
         Nvl nvl = new Nvl();
         this.nuxrpd = nuxrpd;
         this.pickupDateTime = nvl.value(pickupDateTime, "N/A");

@@ -6,14 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import gov.nysenate.inventory.adapter.RemovalRequestItemListAdapter;
-import gov.nysenate.inventory.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemovalRequestItemsList extends Fragment
-{
+import gov.nysenate.inventory.adapter.RemovalRequestItemListAdapter;
+import gov.nysenate.inventory.model.Item;
+
+public class RemovalRequestItemsList extends Fragment {
     private ListView removalList;
     private RemovalRequestItemListAdapter removalListAdapter;
     private List<Item> items = new ArrayList<Item>();

@@ -1,14 +1,14 @@
 package gov.nysenate.inventory.model;
 
-public class Commodity
-{
+public class Commodity {
     private int id;
     private String type = "";
     private String category = "";
     private String code = "";
     private String description = "";
 
-    public Commodity() {}
+    public Commodity() {
+    }
 
     public Commodity(int id, String type, String category, String code) {
         this.id = id;
@@ -49,7 +49,8 @@ public class Commodity
         Commodity commodity = (Commodity) o;
 
         if (id != commodity.id) return false;
-        if (category != null ? !category.equals(commodity.category) : commodity.category != null) return false;
+        if (category != null ? !category.equals(commodity.category) : commodity.category != null)
+            return false;
         if (code != null ? !code.equals(commodity.code) : commodity.code != null) return false;
         if (description != null ? !description.equals(commodity.description) : commodity.description != null)
             return false;

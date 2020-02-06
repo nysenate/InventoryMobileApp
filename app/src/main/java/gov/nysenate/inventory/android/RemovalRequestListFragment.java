@@ -8,14 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import gov.nysenate.inventory.model.RemovalRequest;
 
 import java.util.List;
+
+import gov.nysenate.inventory.model.RemovalRequest;
 
 public class RemovalRequestListFragment extends Fragment {
 
     public interface RemovalRequestListFragmentI {
         public List<RemovalRequest> getListReference();
+
         public void nextActivity(int position);
     }
 
@@ -25,7 +27,7 @@ public class RemovalRequestListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof  RemovalRequestListFragmentI) {
+        if (activity instanceof RemovalRequestListFragmentI) {
             handler = (RemovalRequestListFragmentI) activity;
         } else {
             throw new ClassCastException(activity.toString() + " must implement RemovalRequestListFragment.RemovalRequestListFragmentI");

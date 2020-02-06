@@ -1,18 +1,9 @@
 package gov.nysenate.inventory.android.asynctask;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.text.Html;
 import android.widget.ProgressBar;
 
-import gov.nysenate.inventory.activity.InventoryRemovalMenu;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.util.HttpUtils;
-import gov.nysenate.inventory.util.Serializer;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -32,11 +23,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest>
-{
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.model.RemovalRequest;
+import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
+
+public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest> {
     public interface UpdateRemovalRequestI {
         public void onRemovalRequestUpdated(RemovalRequest rr);
     }
+
+    public final int OK = 100, SERVER_SESSION_TIMED_OUT = 1000,
+            NO_SERVER_RESPONSE = 1001, EXCEPTION_IN_CODE = 1002;
 
     private RemovalRequest rr;
     private UpdateRemovalRequestI handler;
@@ -86,6 +84,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
 
     @Override
     protected RemovalRequest doInBackground(String... urls) {
+        //LoginActivity.activeAsyncTask = this;
         HttpPost httpPost = new HttpPost(urls[0]);
         List<NameValuePair> values = new ArrayList<NameValuePair>();
         values.add(new BasicNameValuePair("RemovalRequest", Serializer.serialize(rr)));
@@ -96,6 +95,11 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
         context.setAttribute(ClientContext.COOKIE_STORE, store);
 
         RemovalRequest removalRequest = null;
+        HttpUtils httpUtils = new HttpUtils();
+
+        if (!httpUtils.isOnline()) {
+            return null;
+        }
 
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(values));
@@ -115,10 +119,6 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
             e.printStackTrace();
         }
 
-       /* if (response.getStatusLine().getStatusCode()!= HttpStatus.SC_OK) {
-            removalRequest = null;
-        }*/
-
         return removalRequest;
     }
 
@@ -132,7 +132,7 @@ public class UpdateRemovalRequest extends AsyncTask<String, Void, RemovalRequest
         rr.setStatusCode(statusCode);
 
         handler.onRemovalRequestUpdated(rr);
+        LoginActivity.activeAsyncTask = null;
     }
-
 
 }

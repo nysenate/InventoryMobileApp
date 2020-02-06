@@ -6,27 +6,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
 
 import java.util.List;
 
-public class PrefListViewAdapter extends ArrayAdapter<InvItem>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+public class PrefListViewAdapter extends ArrayAdapter<InvItem> {
 
     Context context;
     List<InvItem> items;
 
     public PrefListViewAdapter(Context context, int resourceId,
-            List<InvItem> items) {
+                               List<InvItem> items) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         TextView decommodityf;
     }
 

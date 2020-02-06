@@ -16,15 +16,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.activity.SenateActivity;
-import gov.nysenate.inventory.listener.ClearButtonListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClearableEditText extends EditText
-{
+import gov.nysenate.inventory.activity.LoginActivity;
+import gov.nysenate.inventory.activity.SenateActivity;
+import gov.nysenate.inventory.listener.ClearButtonListener;
+
+public class ClearableEditText extends EditText {
 
     public String defaultValue = "";
     final Drawable imgX = getResources().getDrawable(
@@ -32,52 +32,51 @@ public class ClearableEditText extends EditText
     private boolean showClearMsg = false;
     Context context = null;
     public boolean clearField = true;
-    private boolean suppressEnter = false;    
+    private boolean suppressEnter = false;
     private String clearMsg = "Do you want to clear this field?";
-    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();    
-    CountDownTimer timer = new CountDownTimer(1 *60 * 1000, 1000) {
-		
-		@Override
-		public void onTick(long millisUntilFinished) {
-			// TODO Auto-generated method stub
-			System.out.println(this.getClass().getSimpleName());
-			System.out.println(millisUntilFinished/1000);
-		}
-		
-		@Override
-		public void onFinish() {
-			// TODO Auto-generated method stub
-			if(!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
-			{
-				Intent intentTimeout = new Intent(context, LoginActivity.class);
-				intentTimeout.addFlags(200);
-				context.startActivity(intentTimeout);
-			}
-	        
-			
-		}
-		
-	};
-	
+    List<ClearButtonListener> listeners = new ArrayList<ClearButtonListener>();
+    CountDownTimer timer = new CountDownTimer(1 * 60 * 1000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            // TODO Auto-generated method stub
+            System.out.println(this.getClass().getSimpleName());
+            System.out.println(millisUntilFinished / 1000);
+        }
+
+        @Override
+        public void onFinish() {
+            // TODO Auto-generated method stub
+            if (!this.getClass().getSimpleName().equalsIgnoreCase("LoginActivity")) {
+                Intent intentTimeout = new Intent(context, LoginActivity.class);
+                intentTimeout.addFlags(200);
+                context.startActivity(intentTimeout);
+            }
+
+
+        }
+
+    };
+
     OnKeyListener suppressEnterTab = new OnKeyListener() {
 
         @Override
-        public boolean onKey (View v, int keyCode, KeyEvent event) {
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
             // TODO Auto-generated method stub
             if (event.getAction() == KeyEvent.ACTION_DOWN
-                    && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB) ) {
+                    && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                        Log.i("event", "ENTER captured");
+                    Log.i("event", "ENTER captured");
                 }
                 if (event.getKeyCode() == KeyEvent.KEYCODE_TAB) {
                     Log.i("event", "TAB captured");
-            }
+                }
 
                 return false;
-            } 
+            }
             return false;
         }
-    };    
+    };
 
     public ClearableEditText(Context context) {
         super(context);
@@ -114,8 +113,7 @@ public class ClearableEditText extends EditText
         // button
         manageClearButton();
 
-        this.setOnTouchListener(new OnTouchListener()
-        {
+        this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -135,14 +133,13 @@ public class ClearableEditText extends EditText
                     clearField = true;
                     if (showClearMsg) {
                         clearField = false;
-                        // super.getContext()
+                        // super.getAppContext()
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 context);
                         // Add the buttons
                         builder.setMessage(clearMsg)
                                 .setPositiveButton(Html.fromHtml(getResources().getString(R.string.ok_button)),
-                                        new DialogInterface.OnClickListener()
-                                        {
+                                        new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(
                                                     DialogInterface dialog,
@@ -155,8 +152,7 @@ public class ClearableEditText extends EditText
                                             }
                                         })
                                 .setNegativeButton(Html.fromHtml(getResources().getString(R.string.cancel_button)),
-                                        new DialogInterface.OnClickListener()
-                                        {
+                                        new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(
                                                     DialogInterface dialog,
@@ -185,18 +181,17 @@ public class ClearableEditText extends EditText
                 return false;
             }
         });
-        
 
-        this.addTextChangedListener(new TextWatcher()
-        {
+
+        this.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
+                                      int count) {
 
                 ClearableEditText.this.manageClearButton();
                 SenateActivity.timer.cancel();
-                if(!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
-                SenateActivity.timer.start();
+                if (!SenateActivity.getCurrentActivity().equalsIgnoreCase("LoginActivity"))
+                    SenateActivity.timer.start();
             }
 
             @Override
@@ -205,7 +200,7 @@ public class ClearableEditText extends EditText
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+                                          int after) {
             }
         });
     }
@@ -252,16 +247,16 @@ public class ClearableEditText extends EditText
 
     public boolean isEnterTabSuppressed() {
         return suppressEnter;
-        
+
     }
-    
+
     public void suppressEnterTabKey() {
         this.setOnKeyListener(suppressEnterTab);
         suppressEnter = true;
     }
-    
+
     public void allowEnterTabKey() {
         this.setOnKeyListener(null);
         suppressEnter = false;
-    }      
+    }
 }

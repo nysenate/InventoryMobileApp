@@ -11,27 +11,26 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.InvItem;
 
 import java.util.List;
 
-public class InvListViewAdapter extends ArrayAdapter<InvItem>
-{
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.model.InvItem;
+
+public class InvListViewAdapter extends ArrayAdapter<InvItem> {
 
     Context context;
     List<InvItem> items;
 
     public InvListViewAdapter(Context context, int resourceId,
-            List<InvItem> items) {
+                              List<InvItem> items) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         RelativeLayout rlList;
         ImageView speech2Txt;
         TextView invListBarcode;
@@ -42,7 +41,6 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         InvItem rowItem = items.get(position);
-
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
@@ -133,8 +131,7 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem>
                     R.color.blue)); // blue
 
         }
-        OnClickListener l = new OnClickListener()
-        {
+        OnClickListener l = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.invListSpeech) {

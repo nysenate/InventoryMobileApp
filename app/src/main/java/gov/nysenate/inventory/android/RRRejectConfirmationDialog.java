@@ -11,13 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import gov.nysenate.inventory.model.RemovalRequest;
 import gov.nysenate.inventory.util.Toasty;
 
-public class RRRejectConfirmationDialog extends DialogFragment
-{
+public class RRRejectConfirmationDialog extends DialogFragment {
     public interface RRRejectConfirmationDialogI {
         public void onRejectBtnPositiveClick();
+
         public void onRejectBtnNegativeClick();
     }
 

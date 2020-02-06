@@ -1,24 +1,34 @@
 package gov.nysenate.inventory.adapter;
 
 import android.content.Context;
-import android.text.*;
+import android.text.Editable;
+import android.text.Html;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.nysenate.inventory.android.ClearableEditText;
 import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.listener.OnItemDoubleTapListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class KeywordListViewAdapter extends ArrayAdapter<String> implements
-        OnItemDoubleTapListener
-{
+        OnItemDoubleTapListener {
 
     Context context;
     List<String> items;
@@ -28,27 +38,26 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
     NewInvDialog newInvDialog = null;
     int rowSelected = -1;
     boolean replaceSpace = false;
-    InputFilter keywordFilter = new InputFilter() {   
-        @Override  
-        public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5)  
-            {  
-                 for (int k = arg1; k < arg2; k++) {
-                     if (k>0  && arg0.charAt(k) == ',' && etKeywordCurrent.getText().toString().endsWith(",") ) {
-                         return "";   
-                     }
+    InputFilter keywordFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5) {
+            for (int k = arg1; k < arg2; k++) {
+                if (k > 0 && arg0.charAt(k) == ',' && etKeywordCurrent.getText().toString().endsWith(",")) {
+                    return "";
+                }
                     /* else if (Character.isSpaceChar(arg0.charAt(k))) {
                          return ",";   
                      }*/
-                     else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {   
-                         return "";   
-                     }   
-                 }   
-             return null;   
-            }   
-    };       
+                else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
 
     public KeywordListViewAdapter(Context context, NewInvDialog newInvDialog,
-            int resourceId, List<String> items) {
+                                  int resourceId, List<String> items) {
         super(context, resourceId, items);
         this.context = context;
         this.items = items;
@@ -61,16 +70,14 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
     }
 
     /* private view holder class */
-    private class ViewHolder
-    {
+    private class ViewHolder {
         LinearLayout rlkeywordlistrow;
         ClearableEditText etKeyword;
         TextView tvKeywordCnt;
         Button btnDeleteKeyword;
     }
 
-  
-    
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
@@ -115,8 +122,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
         final TextView currentTvKeywordCnt = holder.tvKeywordCnt;
         final int currentPosition = position;
 
-        OnClickListener l = new OnClickListener()
-        {
+        OnClickListener l = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Log.i("DELETEKEYWORD", rowItem);
@@ -125,17 +131,16 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             }
         };
 
-        TextWatcher filterTextWatcher = new TextWatcher()
-        {
+        TextWatcher filterTextWatcher = new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
+                                      int count) {
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+                                          int after) {
             }
 
             @Override
@@ -165,7 +170,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             holder.btnDeleteKeyword.setOnClickListener(l);
         }
 
-        holder.etKeyword.setFilters(new InputFilter[]{ keywordFilter});
+        holder.etKeyword.setFilters(new InputFilter[]{keywordFilter});
         etKeywordCurrent = holder.etKeyword;
 
         if (etKeywordFields.size() - 1 < position) {
@@ -173,7 +178,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
         } else {
             etKeywordFields.set(position, holder.etKeyword);
         }
-      
+
 
         return convertView;
     }
@@ -264,7 +269,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             return blankRow;
         }
     }
-   
+
     public ArrayList<String> arrayListFromString(String values) {
         String[] valuesList = values.split(",");
         ArrayList<String> items = new ArrayList<String>();
@@ -275,24 +280,24 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             }
         }
         return items;
-    }    
+    }
 
     public String stringFromArrayList(ArrayList<String> values) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> items = new ArrayList<String>();
         for (int x = 0; x < values.size(); x++) {
             String currentValue = values.get(x).trim();
-            if (currentValue!=null && currentValue.length()>0) {
-                if (x>0) {
+            if (currentValue != null && currentValue.length() > 0) {
+                if (x > 0) {
                     sb.append(",");
                 }
                 sb.append(currentValue);
             }
         }
         return sb.toString();
-    }    
-    
-    
+    }
+
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
