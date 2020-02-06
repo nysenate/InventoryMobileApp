@@ -2,32 +2,48 @@ package gov.nysenate.inventory.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import gov.nysenate.inventory.android.*;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.AppProperties;
-import gov.nysenate.inventory.util.Toasty;
-import org.apache.http.HttpResponse;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.GetAllPickupsListener;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.AppProperties;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 
 public abstract class SelectDelivery1 extends SenateActivity implements GetAllPickupsListener {
 
@@ -38,7 +54,7 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
 
     protected Spinner searchParam;
     protected static ClearableAutoCompleteTextView searchText;
-    protected List<Transaction> validPickups;
+    final protected List<Transaction> validPickups = new ArrayList<Transaction>();
     protected static Button continueButton;
     protected static Button cancelButton;
     protected TextView tableTitle;
@@ -48,9 +64,55 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     protected TextView label2Value;
     protected static ProgressBar progressBar;
     protected ArrayAdapter<String> adapter;
+    public final int LOCCODELIST_TIMEOUT = 101,
+            FROMLOCATIONDETAILS_TIMEOUT = 102, TOLOCATIONDETAILS_TIMEOUT = 103;
 
+    Response.Listener locationResponseListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            if (response.indexOf("Session timed out") != -1) {
+                startTimeout(LOCCODELIST_TIMEOUT);
+                return;
+            }
+            InvApplication.timeoutType = -1;
+
+            try {
+                String respctrhd = "";
+                String adstreet1 = "";
+                String city = "";
+                String zip = "";
+                try {
+                    JSONObject json = (JSONObject) new JSONTokener(response).nextValue();
+                    respctrhd = json.getString("cdrespctrhd");
+                    adstreet1 = json.getString("adstreet1");
+                    city = json.getString("adcity");
+                    zip = json.getString("adzipcode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Map<TextView, String> textViews = new HashMap<TextView, String>();
+                textViews.put(label1Value, respctrhd);
+                textViews.put(label2Value, adstreet1 + " " + city + " " + zip);
+
+                for (TextView key : textViews.keySet()) {
+                    key.setText(textViews.get(key));
+                }
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    };
 
     protected abstract String getPickupsUrl();
+
+    protected abstract String getPickupsAPIUrl();
+
+    protected abstract String getPickupsParams();
 
     protected abstract int getInitialSearchByParam();
 
@@ -111,17 +173,61 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     protected void onResume() {
         super.onResume();
         continueButton.setEnabled(true);
-        validPickups = new ArrayList<Transaction>();
+        this.getAllPickupsTask();
 
-        GetAllPickupsTask task = new GetAllPickupsTask(this, getPickupsUrl(), validPickups);
-        task.setProgressBar(progressBar);
-        if (checkServerResponse(true) == OK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                task.execute();
+    }
+
+    protected void populatePickups(ArrayList<Transaction> allPickups) {
+        this.validPickups.addAll(allPickups);
+    }
+
+    public void getAllPickupsTask() {
+        // Pass second argument as "null" for GET requests
+
+        /*
+                            } else if (response.indexOf("Session timed out") > -1) {
+                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
+                        return;
+                    }
+                } catch (NullPointerException e) {
+                    return;
+                }
+
+
+         */
+
+        StringInvRequest req = new StringInvRequest(Request.Method.GET, getPickupsAPIUrl(), null,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            if (response.indexOf("Session timed out") > -1) {
+                                startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
+                                return;
+                            }
+                        } catch (NullPointerException e) {
+                            return;
+                        }
+
+                        InvApplication.timeoutType = -1;
+                        SelectDelivery1.this.populatePickups((ArrayList<Transaction>) Serializer.deserialize(response, Transaction.class));
+                        progressBar.setVisibility(ProgressBar.INVISIBLE);
+                        updateGUI(currentSearchByParam());
+                    }
+                });
+/*
+, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.getMessage());
+                Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to getInstance pickup info.", Toast.LENGTH_SHORT);
             }
         }
+ */
+        InvApplication.timeoutType = this.LOCCODELIST_TIMEOUT;
+
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
     }
 
     @Override
@@ -132,7 +238,7 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
         if (res == HttpStatus.SC_OK) {
             return;
         } else if (res == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
+            Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to getInstance pickup info.", Toast.LENGTH_SHORT);
         } else {
             Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
         }
@@ -271,9 +377,13 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
 
     private void displaySearchResultInfo() {
         if (searchTextIsValidValue()) {
+
+            InvApplication.timeoutType = -1;
+
             switch (currentSearchByParam()) {
 
                 case PICKUPLOC:
+                    InvApplication.timeoutType = this.FROMLOCATIONDETAILS_TIMEOUT;
                 case DELIVERYLOC:
                     String locationCode = null;
                     String locationType = null;
@@ -281,30 +391,34 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
                         if (pickup.getOriginSummaryString().equals(searchText.getText().toString())) {
                             locationCode = pickup.getOriginCdLoc();
                             locationType = pickup.getOriginCdLocType();
-                        }
-                        else if (pickup.getDestinationSummaryString().equals(searchText.getText().toString())) {
+                        } else if (pickup.getDestinationSummaryString().equals(searchText.getText().toString())) {
                             locationCode = pickup.getDestinationCdLoc();
                             locationType = pickup.getDestinationCdLocType();
                         }
                     }
+
                     if (locationCode == null || locationType == null) {
                         setLabelsToNA();
                         Toasty.displayCenteredMessage(this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
                         return;
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        new LocationDetails(locationCode, locationType).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    } else {
-                        new LocationDetails(locationCode, locationType).execute();
+
+                    StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                            AppProperties.getBaseUrl() + "LocationDetails?location_code=" + locationCode
+                                    + "&location_type=" + locationType, null, locationResponseListener);
+
+                    /* Add your Requests to the RequestQueue to execute */
+
+                    if (InvApplication.timeoutType == -1) {
+                        InvApplication.timeoutType = this.TOLOCATIONDETAILS_TIMEOUT;
                     }
+
+                    AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+
                     break;
 
                 case NAPICKUPBY:
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        new EmployeeDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    } else {
-                        new EmployeeDetails().execute();
-                    }
+                    getEmployeeDetails();
                     break;
 
                 case DATE:
@@ -328,10 +442,6 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     }
 
     public void continueButton(View view) {
-        if (checkServerResponse(true) != OK) {
-            return;
-        }
-        
         if (!searchTextIsValidValue()) {
             Toasty.displayCenteredMessage(this, "Entered Text is invalid.", Toast.LENGTH_SHORT);
             return;
@@ -358,141 +468,51 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
         return true;
     }
 
-    private class LocationDetails extends AsyncTask<Void, Map<TextView, String>, String> {
+    public void getEmployeeDetails() {
+        // Pass second argument as "null" for GET requests
 
-        private String locationCode;
-        private String locationType;
+        String url = AppProperties.getBaseUrl(SelectDelivery1.this);
 
-        public LocationDetails(String locationCode, String locationType) {
-            this.locationCode = locationCode;
-            this.locationType = locationType;
-        }
+        url += "GetEmployee?nalast=" + searchText.getText();
+        url += "&userFallback=" + LoginActivity.nauser;
 
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
+        StringInvRequest req = new StringInvRequest(Request.Method.GET, url, null,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        InvApplication.timeoutType = -1;
 
-        @Override
-        protected String doInBackground(Void... params) {
-            if (checkServerResponse(true) != OK) {
-                return "";
-            }
+                        String nafirst = "";
+                        String nalast = "";
+                        String respctrhd = "";
 
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = AppProperties.getBaseUrl(SelectDelivery1.this);
+                        try {
+                            JSONObject json = (JSONObject) new JSONTokener(response).nextValue();
+                            nafirst = json.getString("nafirst");
+                            nalast = json.getString("nalast");
+                            respctrhd = json.getString("cdrespctrhd");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-            // barcode_num is actually the cdLoc
-            url += "LocationDetails?location_code=" + locationCode
-                   + "&location_type=" + locationType;
+                        Map<TextView, String> textViews = new HashMap<TextView, String>();
+                        textViews.put(label1Value, nafirst + " " + nalast);
+                        textViews.put(label2Value, respctrhd);
 
-            try {
-                response = httpClient.execute(new HttpGet(url));
-                response.getEntity().writeTo(out);
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                        for (TextView key : textViews.keySet()) {
+                            key.setText(textViews.get(key));
+                        }
 
-            String respctrhd = "";
-            String adstreet1 = "";
-            String city = "";
-            String zip = "";
-            try {
-                JSONObject json = (JSONObject) new JSONTokener(out.toString()).nextValue();
-                // newLocation.setCdlocat(json.getString("cdlocat"));
-                respctrhd = json.getString("cdrespctrhd");
-                adstreet1 = json.getString("adstreet1");
-                city = json.getString("adcity");
-                zip = json.getString("adzipcode");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                        progressBar.setVisibility(ProgressBar.INVISIBLE);
 
-            Map<TextView, String> textViews = new HashMap<TextView, String>();
-            textViews.put(label1Value, respctrhd);
-            textViews.put(label2Value, adstreet1 + " " + city + " " + zip);
-            publishProgress(textViews);
+                    }
+                });
 
-            return out.toString();
-        }
+        InvApplication.timeoutType = -1;
 
-        @Override
-        protected void onProgressUpdate(Map<TextView, String>... map) {
-            for (TextView key : map[0].keySet()) {
-                key.setText(map[0].get(key));
-            }
-        }
 
-        @Override
-        protected void onPostExecute(String response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-        }
-    }
-
-    private class EmployeeDetails extends AsyncTask<Void, Map<TextView, String>, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            if (checkServerResponse(true) != OK) {
-                return 0;
-            }
-
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = AppProperties.getBaseUrl(SelectDelivery1.this);
-
-            url += "GetEmployee?nalast=" + searchText.getText();
-            url += "&userFallback=" + LoginActivity.nauser;
-
-            try {
-                response = httpClient.execute(new HttpGet(url));
-                response.getEntity().writeTo(out);
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String nafirst = "";
-            String nalast = "";
-            String respctrhd = "";
-            try {
-                JSONObject json = (JSONObject) new JSONTokener(out.toString()).nextValue();
-                nafirst = json.getString("nafirst");
-                nalast = json.getString("nalast");
-                respctrhd = json.getString("cdrespctrhd");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            Map<TextView, String> textViews = new HashMap<TextView, String>();
-            textViews.put(label1Value, nafirst + " " + nalast);
-            textViews.put(label2Value, respctrhd);
-            publishProgress(textViews);
-
-            return response.getStatusLine().getStatusCode();
-        }
-
-        @Override
-        protected void onProgressUpdate(Map<TextView, String>... map) {
-            for (TextView key : map[0].keySet()) {
-                key.setText(map[0].get(key));
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-        }
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
     }
 
     private int getCountForDate(String date) {
@@ -507,9 +527,8 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     }
 
     private SimpleDateFormat getSimpleDateFormat() {
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getLongDayFormat();
+        SimpleDateFormat sdf = ((InvApplication) getApplicationContext()).getLongDayFormat();
         return sdf;
     }
-
 
 }

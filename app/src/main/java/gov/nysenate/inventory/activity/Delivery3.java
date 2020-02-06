@@ -9,54 +9,61 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.*;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import gov.nysenate.inventory.adapter.InvSelListViewAdapter;
-import gov.nysenate.inventory.android.*;
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.ClearableAutoCompleteTextView;
+import gov.nysenate.inventory.android.ClearableEditText;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.RemoteConfirmationDialog;
+import gov.nysenate.inventory.android.SignatureView;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.model.Employee;
 import gov.nysenate.inventory.model.InvItem;
 import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Serializer;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import gov.nysenate.inventory.util.Toasty;
 
-import java.io.*;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-
-public class Delivery3 extends SenateActivity
-{
+public class Delivery3 extends SenateActivity {
     public TextView loc_details;
     String location = "";
     String nuxrpd = "";
-    String status = "";
     String URL = "";
     String res = "";
     ListView listview;
@@ -73,12 +80,10 @@ public class Delivery3 extends SenateActivity
     TextView tvItemCount;
     ClearableAutoCompleteTextView naemployeeView;
     String deliveryRequestTaskType = "";
-    String employeeList = "";
     private String deliveryComments = null;
     Button btnDeliv3ClrSig;
     Button btnDelivery3Back;
     Button btnDelivery3Cont;
-    InvItem invItem;
     InvSelListViewAdapter invAdapter;
     public static ProgressBar progBarDelivery3;
     Activity currentActivity;
@@ -89,12 +94,131 @@ public class Delivery3 extends SenateActivity
     public ArrayList<InvItem> invList = new ArrayList<InvItem>();
     private Transaction delivery;
 
+    Response.Listener employeeListResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+
+            naemployeeView.setThreshold(1);
+
+            nuxrAcceptSign = "1111";
+            naDeliverby = "XX";
+
+            naAcceptby = "Abc,xyz";// note : we need to have comma in name (query is
+            // formated that way)
+
+            // Get the results for the Employee List and now do the actual setting
+            // of the Signing Employee
+            // Dropdown.
+
+            employeeHiddenList = new ArrayList<Employee>();
+            employeeNameList = new ArrayList<String>();
+
+            List<Employee> currentEmployees = Serializer.deserialize(response, Employee.class);
+            employeeHiddenList.addAll(currentEmployees);
+            for (Employee emp: currentEmployees) {
+                employeeNameList.add(emp.getFullName());
+            }
+
+            Collections.sort(employeeNameList);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Delivery3.this,
+                    android.R.layout.simple_dropdown_item_1line, employeeNameList);
+
+            naemployeeView.setAdapter(adapter);
+        }
+    };
+
+    Response.Listener deliveryListResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            delivery = Serializer.deserialize(response, Transaction.class).get(0);
+            invList = delivery.getPickupItems();
+
+            // Display the pickup data
+            listview = (ListView) findViewById(R.id.listView1);
+            listview.setItemsCanFocus(false);
+            invAdapter = new InvSelListViewAdapter(getApplicationContext(),
+                    R.layout.invlist_sel_item, invList);
+            listview.setAdapter(invAdapter);
+            // set everything as checked
+            invAdapter.setAllSelected(true);
+            invAdapter.setNotifyOnChange(true);
+            try {
+                tvItemCount.setText("Item Count:  " + invList.size());
+            } catch (Exception e) {
+                try {
+                    tvItemCount.setText("Item Count:   N/A");
+                } catch (Exception e2) {
+                    e.printStackTrace();
+                }
+            }
+
+            location = delivery.getDestinationSummaryString();
+            // Append [R] to location if remote.
+            if (delivery.isRemote()) {
+                location += " [" + "<font color='#ff0000'>R</font>" + "]";
+            }
+            loc_details.setText(Html.fromHtml(location));
+
+            if (delivery.isRemoteDelivery()) {
+                naemployeeView.setVisibility(TextView.INVISIBLE);
+                sign.setVisibility(SignatureView.INVISIBLE);
+                btnDeliv3ClrSig.setVisibility(Button.INVISIBLE);
+
+                ViewGroup.LayoutParams params = listview.getLayoutParams();
+                params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 460, getResources().getDisplayMetrics());
+                listview.setLayoutParams(params);
+                listview.requestLayout();
+            }
+
+        }
+    };
+
+
+    Response.Listener imageUploadResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                delivery.setNuxrrelsign(jsonObject.getString("nuxrrelsign"));
+
+                if (jsonObject.has("Error")) {
+                    new Toasty(Delivery3.this).showMessage((String) jsonObject.get("Error"), Toast.LENGTH_LONG);
+                }
+
+                processDeliveryPart2();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Response.Listener deliveryResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            // No Errors, display toast and return to main menu.
+            // Display Toster
+            if (response.length() == 0) {
+                noServerResponse("");
+                return;
+            }
+
+            int duration = Toast.LENGTH_SHORT;
+            new Toasty(InvApplication.getAppContext()).showMessage(response, duration);
+            returnToMoveMenu();
+        }
+
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery3);
         registerBaseActivityReceiver();
         currentActivity = this;
+        // leaving as delivery1 for now but probably should be delivery3
+        AppSingleton.getInstance(this).timeoutFrom = "delivery1";
 
         // Get the data from previous activity
         Intent intent = getIntent();
@@ -127,38 +251,18 @@ public class Delivery3 extends SenateActivity
                 .setClearMsg("Do you want to clear the name of the signer?");
         naemployeeView.showClearMsg(true);
         naemployeeView
-                .setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
-                            int position, long id) {
+                                            int position, long id) {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(
                                 naemployeeView.getWindowToken(), 0);
                     }
                 });
         delivery = new Transaction();
+        getEmployeeList();
         getDeliveryDetails();
-
-        location = delivery.getDestinationSummaryString();
-        // Append [R] to location if remote.
-        if (delivery.isRemote()) {
-            location += " [" + "<font color='#ff0000'>R</font>" + "]";
-        }
-        loc_details.setText(Html.fromHtml(location));
-
-        naemployeeView.setThreshold(1);
-
-        if (delivery.isRemoteDelivery()) {
-            naemployeeView.setVisibility(TextView.INVISIBLE);
-            sign.setVisibility(SignatureView.INVISIBLE);
-            btnDeliv3ClrSig.setVisibility(Button.INVISIBLE);
-
-            ViewGroup.LayoutParams params = listview.getLayoutParams();
-            params.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 460, getResources().getDisplayMetrics());
-            listview.setLayoutParams(params);
-            listview.requestLayout();
-        }
     }
 
     @Override
@@ -171,6 +275,10 @@ public class Delivery3 extends SenateActivity
     @Override
     protected void onResume() {
         super.onResume();
+        setNotBusy();
+    }
+
+    private void setNotBusy(){
         if (this.btnDeliv3ClrSig == null) {
             this.btnDeliv3ClrSig = (Button) this
                     .findViewById(R.id.btnDeliv3ClrSig);
@@ -194,7 +302,7 @@ public class Delivery3 extends SenateActivity
     }
 
     public int getEmployeeId(String name) {
-        for (Employee emp: employeeHiddenList) {
+        for (Employee emp : employeeHiddenList) {
             if (emp.getFullName().equalsIgnoreCase(name)) {
                 return emp.getNuxrefem();
             }
@@ -202,18 +310,26 @@ public class Delivery3 extends SenateActivity
         return 0;
     }
 
-    public void continueButton(View view) {
-        if (checkServerResponse(true) != OK) {
-            return;
-        }
+    @Override
+    public void onVolleyInvError () {
+       new Toasty(this).showMessage("On Volley Error DELIVERY Activity");
+       setNotBusy();
+    }
 
-        if (invAdapter.getSelectedItems(true).size() < 1) {
+    public void continueButton(View view) {
+
+        if (invAdapter == null || invAdapter.getSelectedItems(true) == null || invAdapter.getSelectedItems(true).size() < 1) {
             displayNoItemsSelectedMessage();
             return;
         }
 
+        if (employeeHiddenList == null || employeeHiddenList.size() == 0) {
+            new Toasty(this).showMessage("!!ERROR: Employee list is empty. This could be caused by a loss of connection. Please contact STSBAC.", Toast.LENGTH_LONG);
+            return;
+        }
+
         String emp = "";
-        if (!delivery.isRemoteDelivery()) {
+        if (delivery==null||!delivery.isRemoteDelivery()) {
             emp = naemployeeView.getEditableText().toString().trim();
             if (!selectedEmployeeValid(emp, employeeHiddenList)) {
                 displayInvalidEmployeeMessage(naemployeeView.getEditableText().toString().trim());
@@ -238,8 +354,7 @@ public class Delivery3 extends SenateActivity
                 + invAdapter.getSelectedItems(true).size() + " items?");
         confirmDialog.setCancelable(false);
         confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                new DialogInterface.OnClickListener()
-                {
+                new DialogInterface.OnClickListener() {
                     boolean positiveButtonPressed = false;
 
                     @Override
@@ -248,7 +363,7 @@ public class Delivery3 extends SenateActivity
                             positiveButtonPressed = true;
 
                             if (delivery.isRemote()) {
-                                // Show fragment to get Remote info, calls positiveDialog() on completion.
+                                // Show fragment to getInstance Remote info, calls positiveDialog() on completion.
                                 DialogFragment newFragment = RemoteConfirmationDialog.newInstance(employeeNameList, delivery);
                                 newFragment.setCancelable(false);
                                 newFragment.show(getFragmentManager(), "dialog");
@@ -284,136 +399,27 @@ public class Delivery3 extends SenateActivity
             this.invAdapter = (InvSelListViewAdapter) this.listview
                     .getAdapter();
         }
+        String URL = AppProperties.getBaseUrl();
 
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
+        this.deliveryRequestTaskType = "Delivery";
+        String deliveryURL = URL
+                + "DeliveryConfirmation?";
 
-            if (!delivery.isRemoteDelivery()) {
-                // When remote delivery, name set in RemoteConfirmationDialog.
-                delivery.setNaacceptby(naAcceptby);
-            }
-            delivery.setNadeliverby(LoginActivity.nauser);
-            delivery.setNuxrpd(Integer.valueOf(nuxrpd));
-            delivery.setDeliveryComments(deliveryComments);
-            delivery.setPickupItems(invList);
-            delivery.setCheckedItems(this.invAdapter.getSelectedItems(true));
 
-            AsyncTask<String, String, String> resr1;
-            try {
-                // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                if (! URL.endsWith("/")) {
-                    URL += "/";
-                }
-                this.deliveryRequestTaskType = "Delivery";
-                String deliveryURL = URL
-                        + "DeliveryConfirmation?";
-
-                DeliveryRequestTask deliveryRequestTask = new DeliveryRequestTask();
-
-                deliveryRequestTask.setSignatureImage(sign.getImage());
-
-                resr1 = deliveryRequestTask.execute(URL
-                        + "ImgUpload?nauser=" + LoginActivity.nauser
-                        + "&nuxrefem=" + nuxrefem, deliveryURL);
-
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.POSITIVEDIALOG_TIMEOUT);
-                        return;
-                    } else if (res.startsWith("***WARNING:")
-                            || res.startsWith("!!ERROR:")) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                this);
-
-                        // set title
-                        alertDialogBuilder.setTitle(Html
-                                .fromHtml("<font color='#000055'>" + res.trim()
-                                        + "</font>"));
-
-                        // set dialog message
-                        alertDialogBuilder
-                                .setMessage(
-                                        Html.fromHtml(res.trim()
-                                                + "<br/> Continue (Y/N)?"))
-                                .setCancelable(false)
-                                .setPositiveButton(Html.fromHtml("<b>Yes</b>"),
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // if this button is clicked,
-                                                // just close
-                                                // the dialog box and do nothing
-                                                returnToMoveMenu();
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                .setPositiveButton(Html.fromHtml("<b>No</b>"),
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int id) {
-                                                // if this button is clicked,
-                                                // just close
-                                                // the dialog box and do nothing
-                                                dialog.dismiss();
-                                            }
-                                        });
-
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-
-                        // show it
-                        alertDialog.show();
-                        return;
-                    }
-
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    return;
-                }
-                Log.i("Confirm Response", "res:" + res);
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
+        if (!delivery.isRemoteDelivery()) {
+            // When remote delivery, name set in RemoteConfirmationDialog.
+            delivery.setNaacceptby(naAcceptby);
         }
 
-        // Display Toster
-        Context context = getApplicationContext();
-        CharSequence text = res;
-        if (res.length() == 0) {
-            text = "Database not updated";
-        }
+        delivery.setNadeliverby(LoginActivity.nauser);
+        delivery.setNuxrpd(Integer.valueOf(nuxrpd));
+        delivery.setDeliveryComments(deliveryComments);
+        delivery.setPickupItems(invList);
+        delivery.setCheckedItems(this.invAdapter.getSelectedItems(true));
 
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-        returnToMoveMenu();
+        this.processDelivery(URL
+                + "ImgUpload?nauser=" + LoginActivity.nauser
+                + "&nuxrefem=" + nuxrefem, deliveryURL);
     }
 
     public void returnToMoveMenu() {
@@ -427,15 +433,15 @@ public class Delivery3 extends SenateActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        case android.R.id.home:
-            Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            this.onBackPressed();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case android.R.id.home:
+                Toast toast = Toast.makeText(getApplicationContext(), "Going Back",
+                        Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                this.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -477,40 +483,34 @@ public class Delivery3 extends SenateActivity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("onActivityResult", "requestCode:" + requestCode + " resultCode:"
-                + resultCode);
         switch (requestCode) {
-        case DELIVERYDETAILS_TIMEOUT:
-            Log.i("onActivityResult", "DELIVERYDETAILS_TIMEOUT");
-            if (resultCode == RESULT_OK) {
-                getDeliveryDetails();
-                break;
-            }
-        case POSITIVEDIALOG_TIMEOUT:
-            Log.i("onActivityResult", "POSITIVEDIALOG_TIMEOUT");
-            // positiveDialog();
-            break;
-        case KEEPALIVE_TIMEOUT:
-            Log.i("onActivityResult", "KEEPALIVE_TIMEOUT");
-            new Timer().schedule(new TimerTask()
-            {
-                @Override
-                public void run() {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(
-                            naemployeeView.getWindowToken(), 0);
+            case DELIVERYDETAILS_TIMEOUT:
+                if (resultCode == RESULT_OK) {
+                    getDeliveryDetails();
+                    break;
                 }
-            }, 50);
+            case POSITIVEDIALOG_TIMEOUT:
+                // positiveDialog();
+                break;
+            case KEEPALIVE_TIMEOUT:
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(
+                                naemployeeView.getWindowToken(), 0);
+                    }
+                }, 50);
 
-            break;
-        case VOICE_RECOGNITION_REQUEST_CODE:
-            if (resultCode == RESULT_OK) {
-                // Fill the list view with the strings the recognizer thought it
-                // could have heard
-                ArrayList<String> matches = data
-                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                commentsEditText.setText(matches.get(0));
-            }
+                break;
+            case VOICE_RECOGNITION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    // Fill the list view with the strings the recognizer thought it
+                    // could have heard
+                    ArrayList<String> matches = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    commentsEditText.setText(matches.get(0));
+                }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -520,409 +520,141 @@ public class Delivery3 extends SenateActivity
         super.onBackPressed();
     }
 
-    // class for connecting to internet and sending HTTP request to server
-    class DeliveryRequestTask extends AsyncTask<String, String, String>
-    {
+    public byte[] getByteArray(Bitmap bitmap) {
+        return getByteArray(bitmap, 0, 0);
+    }
 
-        Bitmap bitmap;
+    public byte[] getByteArray(Bitmap bitmap, int width, int height) {
+        byte[] byteArray = null;
 
-        public void setSignatureImage(Bitmap bitmap) {
-            this.bitmap = bitmap;
-        }
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
 
-        public Bitmap getSignatureImage() {
-            return this.bitmap;
-        }
-
-        @Override
-        protected String doInBackground(String... uri) {
-            HttpClient httpclient = LoginActivity.httpClient;
-            HttpResponse response;
-            String responseString = null;
-            Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
-                    + deliveryRequestTaskType);
-            if (deliveryRequestTaskType.equalsIgnoreCase("Delivery")) {
-
-                if (!delivery.isRemoteDelivery()) {
-                    try {
-                        String NUXRRELSIGN = "";
-
-                        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
-                                200, 40, true);
-                        // System.out.println("SCALED SIZE:"+bitmap.getByteCount()+" -> "+scaledBitmap.getByteCount());
-                        for (int x = 0; x < scaledBitmap.getWidth(); x++) {
-                            for (int y = 0; y < scaledBitmap.getHeight(); y++) {
-                                String strColor = String.format("#%06X",
-                                        0xFFFFFF & scaledBitmap.getPixel(x, y));
-                                if (strColor.equals("#000000")
-                                        || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
-                                    // System.out.println("********"+x+" x "+y+" SETTING COLOR TO WHITE");
-                                    scaledBitmap.setPixel(x, y, Color.WHITE);
-                                }
-                            }
-                        }
-                        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
-                        imageInByte = bs.toByteArray();
-
-                        // Post the Image to the Web Server
-
-                        StringBuilder urls = new StringBuilder();
-                        urls.append(uri[0].trim());
-                        if (uri[0].indexOf("?") > -1) {
-                            if (!uri[0].trim().endsWith("?")) {
-                                urls.append("&");
-                            }
-                        } else {
-                            urls.append("?");
-                        }
-                        urls.append("userFallback=");
-                        urls.append(LoginActivity.nauser);
-
-                        URL url = new URL(urls.toString());
-
-                        HttpClient httpClient = LoginActivity.httpClient; // TODO: httpclient(at start of method) and httpClient...
-
-                        if (httpClient == null) {
-                            Log.i(DeliveryRequestTask.class.getName(),
-                                    "MainActivity.httpClient was null so it is being reset");
-                            LoginActivity.httpClient = new DefaultHttpClient();
-                            httpclient = LoginActivity.httpClient; // TODO: ^^^^^
-                        }
-
-                        HttpContext localContext = new BasicHttpContext();
-                        MultipartEntity entity = new MultipartEntity(
-                                HttpMultipartMode.BROWSER_COMPATIBLE);
-
-                        HttpPost httpPost = new HttpPost(urls.toString());
-                        entity.addPart("Signature", new ByteArrayBody(imageInByte,
-                                "temp.jpg"));
-                        httpPost.setEntity(entity);
-
-                        /*
-                         * HttpURLConnection conn = (HttpURLConnection) url
-                         * .openConnection(); // Set connection parameters.
-                         * conn.setDoInput(true); conn.setDoOutput(true);
-                         * conn.setUseCaches(false);
-                         * 
-                         * // Set content type to PNG
-                         * conn.setRequestProperty("Content-Type", "image/jpg");
-                         * OutputStream outputStream = conn.getOutputStream();
-                         * OutputStream out = outputStream; // Write out the bytes
-                         * of the content string to the stream.
-                         * out.write(imageInByte); out.flush(); out.close(); // Read
-                         * response from the input stream. BufferedReader in = new
-                         * BufferedReader( new
-                         * InputStreamReader(conn.getInputStream())); String temp;
-                         * while ((temp = in.readLine()) != null) { responseString
-                         * += temp + "\n"; } temp = null; in.close();
-                         */
-                        // System.out.println("Server response:\n'" + responseString
-                        // + "'");
-
-                        // Get Server Response to the posted Image
-
-                        response = httpClient.execute(httpPost, localContext);
-                        BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(response.getEntity()
-                                        .getContent(), "UTF-8"));
-                        responseString = reader.readLine();
-                        int nuxrsignLoc = responseString.indexOf("NUXRSIGN:");
-                        if (nuxrsignLoc > -1) {
-                            nuxrAcceptSign = responseString
-                                    .substring(nuxrsignLoc + 9)
-                                    .replaceAll("\r", "").replaceAll("\n", "");
-                        } else {
-                            nuxrAcceptSign = responseString.replaceAll("\r", "")
-                                    .replaceAll("\n", "");
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    delivery.setNuxrsccptsign(nuxrAcceptSign);
-                }
-
-                String url = AppProperties.getBaseUrl(Delivery3.this);
-                url += "DeliveryConfirmation";
-
-                HttpPost httpPost = new HttpPost(url);
-                List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("Delivery", Serializer.serialize(delivery)));
-                try {
-                    httpPost.setEntity(new UrlEncodedFormEntity(values));
-                    response = httpclient.execute(httpPost);
-
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
-                    // Toast.makeText(getApplicationContext(),
-                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    // Log.e("CONN TIMEOUT", e.toString());
-                } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
-                    // Toast.makeText(getApplicationContext(), "Server timeout",
-                    // Toast.LENGTH_LONG).show();
-                    // Log.e("SOCK TIMEOUT", e.toString());
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                }
-
-                res = responseString;
-                Log.i("WEBRECEIVE", "deliveryRequestTaskType:"
-                        + deliveryRequestTaskType + " response:" + res);
-
-                return responseString;
-            } else if (deliveryRequestTaskType
-                    .equalsIgnoreCase("EmployeeDeliveryList")) {
-
-                // Get List of Employees for the Signing Employee Dropdown
-
-                try {
-                    StringBuilder urls = new StringBuilder();
-                    urls.append(uri[0].trim());
-                    if (uri[0].indexOf("?") > -1) {
-                        if (!uri[0].trim().endsWith("?")) {
-                            urls.append("&");
-                        }
-                    } else {
-                        urls.append("?");
-                    }
-                    urls.append("userFallback=");
-                    urls.append(LoginActivity.nauser);
-                    response = httpclient.execute(new HttpGet(urls.toString()));
-                    StatusLine statusLine = response.getStatusLine();
-
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        employeeList = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                    employeeList = "";
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                    employeeList = "";
-                }
-
-                try {
-                    response = httpclient.execute(new HttpGet(uri[1]
-                            + "&userFallback=" + LoginActivity.nauser));
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                    e.printStackTrace();
-                } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
-                    // Toast.makeText(getApplicationContext(),
-                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    // Log.e("CONN TIMEOUT", e.toString());
-                } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
-                    // Toast.makeText(getApplicationContext(), "Server timeout",
-                    // Toast.LENGTH_LONG).show();
-                    // Log.e("SOCK TIMEOUT", e.toString());
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                    e.printStackTrace();
-                }
-
-                return responseString;
-            } else if (deliveryRequestTaskType.equalsIgnoreCase("KeepAlive")) {
-
-                // Get List of Employees for the Signing Employee Dropdown
-
-                try {
-                    response = httpclient.execute(new HttpGet(uri[0]));
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        out.close();
-                        responseString = out.toString();
-                    } else {
-                        // Closes the connection.
-                        response.getEntity().getContent().close();
-                        throw new IOException(statusLine.getReasonPhrase());
-                    }
-                } catch (ClientProtocolException e) {
-                    // TODO Handle problems..
-                    e.printStackTrace();
-                } catch (ConnectTimeoutException e) {
-                    return "***WARNING: Server Connection timeout";
-                    // Toast.makeText(getApplicationContext(),
-                    // "Server Connection timeout", Toast.LENGTH_LONG).show();
-                    // Log.e("CONN TIMEOUT", e.toString());
-                } catch (SocketTimeoutException e) {
-                    return "***WARNING: Server Socket timeout";
-                    // Toast.makeText(getApplicationContext(), "Server timeout",
-                    // Toast.LENGTH_LONG).show();
-                    // Log.e("SOCK TIMEOUT", e.toString());
-                } catch (IOException e) {
-                    // TODO Handle problems..
-                    e.printStackTrace();
-                }
-                return responseString;
+        if (width <= 0) {
+            if (bitmap != null) {
+                width = bitmap.getWidth();
+            } else {
+                width = 200; // default value if all else fails
             }
-            return responseString;
+        }
 
+        if (height <= 0) {
+            if (bitmap != null) {
+                height = bitmap.getHeight();
+            } else {
+                height = 40; // default value if all else fails
+            }
+        }
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width,
+                height, true);
+
+        for (int x = 0; x < scaledBitmap.getWidth(); x++) {
+            for (int y = 0; y < scaledBitmap.getHeight(); y++) {
+                String strColor = String.format("#%06X",
+                        0xFFFFFF & scaledBitmap.getPixel(x, y));
+                if (strColor.equals("#000000")
+                        || scaledBitmap.getPixel(x, y) == Color.TRANSPARENT) {
+                    scaledBitmap.setPixel(x, y, Color.WHITE);
+                }
+            }
+        }
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bs);
+
+        byteArray = bs.toByteArray();
+
+        return byteArray;
+    }
+
+    public void processDelivery(String imageUploadURL, String deliveryURL) {
+
+        if (delivery.isRemoteDelivery()) {
+            Log.i(this.getClass().getName(), "Remote Delivery: Process without a signature");
+            processDeliveryPart2();
+        }
+        else {
+            Log.i(this.getClass().getName(), "Not a Remote Delivery: Process signature");
+
+            String imageString = Arrays.toString(getByteArray(sign.getImage(), 200, 40));
+
+            Map<String, String> params = new HashMap<String, String>();
+
+            if (LoginActivity.nauser != null) {
+                params.put("userFallback",
+                        LoginActivity.nauser);
+            }
+
+            params.put("nuxrefem", String.valueOf(nuxrefem));
+            params.put("signature", imageString);
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                    imageUploadURL, params, imageUploadResponseListener);
+
+            InvApplication.timeoutType = DELIVERYDETAILS_TIMEOUT;
+
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+        }
+    }
+
+    public void processDeliveryPart2() {
+        try {
+            delivery.setDeliveryDate(new Date());
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Delivery", Serializer.serialize(delivery));
+            params.put("userFallback", LoginActivity.nauser);
+
+            String pickupURL = AppProperties.getBaseUrl()
+                    + "DeliveryConfirmation";
+
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
+                    pickupURL, params, deliveryResponseListener);
+
+            InvApplication.timeoutType = DELIVERYDETAILS_TIMEOUT;
+            /* Add your Requests to the RequestQueue to execute */
+            AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void getDeliveryDetails() {
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            status = "yes";
 
-            // Get the URL from the properties
-            URL = LoginActivity.properties.get("WEBAPP_BASE_URL").toString();
-            if (! URL.endsWith("/")) {
-                URL += "/";
-            }            
-            this.deliveryRequestTaskType = "EmployeeDeliveryList";
+        String url = AppProperties.getBaseUrl();
+        url +=  URL + "GetPickup?nuxrpd=" + nuxrpd;
 
-            DeliveryRequestTask deliveryRequestTask = new DeliveryRequestTask();
+        Log.i(this.getClass().getName(), url);
 
-            deliveryRequestTask.setSignatureImage(sign.getImage());
+        InvApplication.timeoutType =  DELIVERYDETAILS_TIMEOUT;
 
-            AsyncTask<String, String, String> resr1 = deliveryRequestTask
-                    .execute(URL + "EmployeeList", URL
-                            + "GetPickup?nuxrpd=" + nuxrpd);
-            Log.i("EMPLOYEELIST", "Get Employee List URL:"+URL + "EmployeeList");
-            try {
-                try {
-                    res = null;
-                    res = resr1.get().trim().toString();
-                    if (res == null) {
-                        noServerResponse();
-                        return;
-                    } else if (res.indexOf("Session timed out") > -1) {
-                        startTimeout(this.DELIVERYDETAILS_TIMEOUT);
-                        return;
-                    }
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, deliveryListResponseListener);
 
-                } catch (NullPointerException e) {
-                    noServerResponse();
-                    e.printStackTrace();
-                    return;
-                }
-                Log.i("EMPLOYEELIST","Get Employee List URL:"+res);
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+    }
 
-                String jsonString = resr1.get().trim().toString();
-                delivery = Serializer.deserialize(jsonString, Transaction.class).get(0);
-                invList = delivery.getPickupItems();
 
-                // Display the pickup data
-                listview = (ListView) findViewById(R.id.listView1);
-                listview.setItemsCanFocus(false);
-                // listview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+    public void getEmployeeList() {
+        String url = AppProperties.getBaseUrl();
+        url += "EmployeeList";
+        //     url += "userFallback=" + LoginActivity.nauser;
 
-                // listview.setAdapter(adapter2);
-                invAdapter = new InvSelListViewAdapter(getApplicationContext(),
-                        R.layout.invlist_sel_item, invList);
-                listview.setAdapter(invAdapter);
-                // set everything as checked
-                invAdapter.setAllSelected(true);
-                invAdapter.setNotifyOnChange(true);
-                try {
-                    tvItemCount.setText("Item Count:  " + invList.size());
-                } catch (Exception e) {
-                    try {
-                        tvItemCount.setText("Item Count:   N/A");
-                    } catch (Exception e2) {
-                        e.printStackTrace();
-                    }
-                }
+        Log.i(this.getClass().getName(), url);
 
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                Log.i("InterruptedException", e.getMessage());
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                Log.i("ExecutionException", e.getMessage());
-                e.printStackTrace();
-            }
-            status = "yes1";
-        } else {
-            // display error
-            status = "no";
-        }
-        // Signature from 'Accepted By'
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, employeeListResponseListener);
 
-        // Save the signature on server (Received By), comments, Name
-        // currently hardcoding
-        // Brian : Please assign values to following variables after saving the
-        // signature and name
-        nuxrAcceptSign = "1111";
-        naDeliverby = "BH";
-
-        naAcceptby = "Abc,xyz";// note : we need to have comma in name (query is
-                               // formated that way)
-
-        // Get the results for the Employee List and now do the actual setting
-        // of the Signing Employee
-        // Dropdown.
-
-        employeeHiddenList = new ArrayList<Employee>();
-        employeeNameList = new ArrayList<String>();
-
-        List<Employee> currentEmployees = Serializer.deserialize(employeeList, Employee.class);
-        //Log.d("Delivery3", "currentEmployees:"+currentEmployees.size());
-        employeeHiddenList.addAll(currentEmployees);
-        for (Employee emp: currentEmployees) {
-            //Log.d("Delivery3", "addingetFullName:"+emp.getFullName());
-            employeeNameList.add(emp.getFullName());
-        }
-        //Log.d("Delivery3","employeeNameList:"+employeeNameList.size());
-
-        Collections.sort(employeeNameList);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, employeeNameList);
-
-        //Log.d("Delivery3","Employee Adapter Count:"+adapter.getCount());
-
-        naemployeeView.setAdapter(adapter);
-
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
 
     public Transaction getDelivery() {
         return delivery;
     }
+
+    protected void onPostExecute(Boolean result) {
+        LoginActivity.activeAsyncTask = null;
+        // execution of result of Long time consuming operation
+    }
+
 }

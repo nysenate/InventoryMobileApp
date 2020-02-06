@@ -1,20 +1,20 @@
 package gov.nysenate.inventory.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.View;
-import android.widget.*;
-import gov.nysenate.inventory.adapter.PickupSearchList;
-import gov.nysenate.inventory.android.GetAllPickupsListener;
-import gov.nysenate.inventory.android.GetAllPickupsTask;
-import gov.nysenate.inventory.android.InvApplication;
-import gov.nysenate.inventory.android.R;
-import gov.nysenate.inventory.model.Transaction;
-import gov.nysenate.inventory.util.Toasty;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+
 import org.apache.http.HttpStatus;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +22,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import gov.nysenate.inventory.adapter.PickupSearchList;
+import gov.nysenate.inventory.android.AppSingleton;
+import gov.nysenate.inventory.android.GetAllPickupsListener;
+import gov.nysenate.inventory.android.InvApplication;
+import gov.nysenate.inventory.android.R;
+import gov.nysenate.inventory.android.StringInvRequest;
+import gov.nysenate.inventory.model.Transaction;
+import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 
 public abstract class SelectDelivery2 extends SenateActivity implements GetAllPickupsListener {
 
@@ -65,15 +75,36 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
         avaliablePickups = new ArrayList<Transaction>();
         filteredPickups = new ArrayList<Transaction>();
 
-        GetAllPickupsTask task = new GetAllPickupsTask(this, getPickupsUrl(), avaliablePickups);
-        task.setProgressBar(progressBar);
-        if (checkServerResponse(true) == OK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                task.execute();
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                List<Transaction> pickups = Serializer.deserialize(response, Transaction.class);
+
+                avaliablePickups.addAll(pickups);
+                SelectDelivery1.SearchByParam searchParameter = setSearchParam(getIntent().getStringExtra("searchParam"));
+                String searchText = getIntent().getStringExtra("searchText");
+
+                setStaticText(searchParameter, searchText, pageTitle, column1label, column2label, column3label, column4label, filteredPickups);
+                putInDecendingOrder(filteredPickups);
+
+                PickupSearchList adapter = new PickupSearchList(SelectDelivery2.this, R.layout.pickup_group_row, filteredPickups, searchParameter);
+                searchResults.setAdapter(adapter);
+                searchResults.setTextFilterEnabled(true);
+                searchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        continueToNextActivity(position);
+                    }
+
+                });
+
             }
-        }
+        };
+
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, getPickupsUrl(), null, responseListener, InvApplication.getInstance().errorListener);
+
+        AppSingleton.getInstance(InvApplication.getInstance()).addToRequestQueue(stringInvRequest);
     }
 
     @Override
@@ -91,9 +122,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (checkServerResponse(true) == OK) {
-                    continueToNextActivity(position);
-                }
+                continueToNextActivity(position);
             }
 
         });
@@ -101,7 +130,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
         if (res == HttpStatus.SC_OK) {
             return;
         } else if (res == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            Toasty.displayCenteredMessage(SelectDelivery2.this, "!!ERROR: Database Error while trying to get pickup info.", Toast.LENGTH_SHORT);
+            Toasty.displayCenteredMessage(SelectDelivery2.this, "!!ERROR: Database Error while trying to getInstance pickup info.", Toast.LENGTH_SHORT);
         } else {
             Toasty.displayCenteredMessage(SelectDelivery2.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
         }
@@ -134,11 +163,9 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
     }
 
     public void cancelButton(View view) {
-        if (checkServerResponse(true) == OK) {
-            cancelButton.getBackground().setAlpha(45);
-            finish();
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
-        }
+        cancelButton.getBackground().setAlpha(45);
+        finish();
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
     }
 
     @Override
@@ -165,7 +192,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
     private void setStaticText(SelectDelivery1.SearchByParam searchParam, String searchText, TextView title,
                                TextView row1label, TextView row2label, TextView row3label, TextView row4label, List<Transaction> filteredPickups) {
         String titleBuffer = getPageTitle();
-        switch(searchParam) {
+        switch (searchParam) {
             case PICKUPLOC:
                 titleBuffer += Html.fromHtml("<br>Pickup Location: <b>" + searchText + "</b>");
                 row1label.setText("Date");
@@ -206,7 +233,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
     private List<Transaction> pickupsWithPickupLoc(String loc) {
         List<Transaction> pickups = new ArrayList<Transaction>();
         String locCode = loc.split("-")[0];
-        for(Transaction pickup: avaliablePickups) {
+        for (Transaction pickup : avaliablePickups) {
             if (pickup.getOriginCdLoc().equalsIgnoreCase(locCode)) {
                 pickups.add(pickup);
             }
@@ -217,7 +244,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
     private List<Transaction> pickupsWithDestLoc(String loc) {
         List<Transaction> pickups = new ArrayList<Transaction>();
         String locCode = loc.split("-")[0];
-        for(Transaction pickup: avaliablePickups) {
+        for (Transaction pickup : avaliablePickups) {
             if (pickup.getDestinationCdLoc().equalsIgnoreCase(locCode)) {
                 pickups.add(pickup);
             }
@@ -227,7 +254,7 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
 
     private List<Transaction> pickupsWithNaPickupBy(String name) {
         List<Transaction> pickups = new ArrayList<Transaction>();
-        for(Transaction pickup: avaliablePickups) {
+        for (Transaction pickup : avaliablePickups) {
             if (pickup.getNapickupby().equalsIgnoreCase(name)) {
                 pickups.add(pickup);
             }
@@ -236,9 +263,9 @@ public abstract class SelectDelivery2 extends SenateActivity implements GetAllPi
     }
 
     private List<Transaction> pickupsOnDate(String date) {
-        SimpleDateFormat sdf = ((InvApplication)getApplicationContext()).getLongDayFormat();
+        SimpleDateFormat sdf = ((InvApplication) getApplicationContext()).getLongDayFormat();
         List<Transaction> pickups = new ArrayList<Transaction>();
-        for(Transaction pickup: avaliablePickups) {
+        for (Transaction pickup : avaliablePickups) {
             if (sdf.format(pickup.getPickupDate()).equalsIgnoreCase(date)) {
                 pickups.add(pickup);
             }

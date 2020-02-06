@@ -1,15 +1,27 @@
 package gov.nysenate.inventory.activity;
 
+import org.json.JSONObject;
+
 import gov.nysenate.inventory.util.AppProperties;
 
 public class Delivery1 extends SelectDelivery1 {
 
     @Override
     protected String getPickupsUrl() {
-        String url = AppProperties.getBaseUrl(this);
+        String url = AppProperties.getBaseUrl();
         url += "GetAllPickups?";
         url += "userFallback=" + LoginActivity.nauser;
         return url;
+    }
+
+    @Override
+    protected String getPickupsAPIUrl() {
+        return getPickupsUrl();
+    }
+
+    @Override
+    protected String getPickupsParams() {
+        return null;
     }
 
     @Override
