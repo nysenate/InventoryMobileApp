@@ -6,10 +6,8 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,30 +20,19 @@ public class JsonInvArrayRequest extends JsonArrayRequest {
 
 
     public JsonInvArrayRequest(int method, String url, JSONArray jsonRequest,
-                                Response.Listener listener, Response.ErrorListener errorListener) {
+                               Response.Listener listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
     }
 
     public JsonInvArrayRequest(int method, String url, JSONArray jsonRequest,
-                                Response.Listener listener) {
+                               Response.Listener listener) {
         super(method, url, jsonRequest, listener, InvApplication.getInstance().errorListener);
     }
-
-/*    public JsonInvArrayRequest(String url, JSONArray jsonRequest, Response.Listener<JSONArray> listener) {
-        super( url, jsonRequest, listener, InvApplication.getInstance().errorListener);
-    }
-
-    public JsonInvArrayRequest(String url, JSONArray jsonRequest, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
-        super( url, jsonRequest, listener, errorListener);
-    }*/
-
 
     @Override
     protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
         // since we don't know which of the two underlying network vehicles
         // will Volley use, we have to handle and store session cookies manually
-
-//        Log.i (this.getClass().getName(),"parseNetworkResponse Status Code: " +response.statusCode);
 
         InvApplication.getInstance().checkSessionCookie(response.headers);
 
@@ -57,7 +44,6 @@ public class JsonInvArrayRequest extends JsonArrayRequest {
      */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-
 
         Map<String, String> headers = super.getHeaders();
 
@@ -71,8 +57,6 @@ public class JsonInvArrayRequest extends JsonArrayRequest {
             headers.put("Content-Type", "application/json; charset=UTF-8");
             headers.put("Authorization", "Basic " + auth_token_string);
         }
-
-//        Log.i(this.getClass().getName(), "getHeaders: headers: "+headers.size()) ;
 
         InvApplication.getInstance().addSessionCookie(headers);
 

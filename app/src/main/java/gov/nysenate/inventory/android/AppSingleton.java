@@ -178,10 +178,5 @@ public class AppSingleton {
             }
         }
     }
-
-    public void checkForServerTimedOut(Context context) {
-
-    }
-
 }
 

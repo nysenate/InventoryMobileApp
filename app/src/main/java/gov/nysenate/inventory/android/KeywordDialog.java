@@ -29,7 +29,8 @@ public class KeywordDialog extends DialogFragment {
     SenateActivity senateActivity;
     public static ListView lvKeywords = null;
     public static Button btnAddKeyword = null;
-    public static EditText etDummy = null; /*
+    public static EditText etDummy = null;
+    /*
      * Dummy Edit Text because Dialog
      * Fragment needs at least one
      * Navigable Edit Text on the main

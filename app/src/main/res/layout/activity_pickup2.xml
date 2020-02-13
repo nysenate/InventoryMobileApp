@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/pad20dp"
-    tools:context=".Pickup2Activity" >
+    tools:context=".Pickup2Activity">
 
     <ListView
         android:id="@+id/listView1"
@@ -13,8 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tablelayout_header1_pickup2"
         android:layout_marginBottom="18dp"
-        android:layout_marginTop="76dp" >
-    </ListView>
+        android:layout_marginTop="76dp"></ListView>
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/etNusenate"
@@ -86,7 +85,7 @@
         android:layout_below="@+id/tvInstructions"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="7dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 

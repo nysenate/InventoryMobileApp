@@ -18,8 +18,6 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -184,18 +182,6 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
     public void getAllPickupsTask() {
         // Pass second argument as "null" for GET requests
 
-        /*
-                            } else if (response.indexOf("Session timed out") > -1) {
-                        startTimeout(FROMLOCATIONDETAILS_TIMEOUT);
-                        return;
-                    }
-                } catch (NullPointerException e) {
-                    return;
-                }
-
-
-         */
-
         StringInvRequest req = new StringInvRequest(Request.Method.GET, getPickupsAPIUrl(), null,
                 new Response.Listener<String>() {
                     @Override
@@ -215,15 +201,7 @@ public abstract class SelectDelivery1 extends SenateActivity implements GetAllPi
                         updateGUI(currentSearchByParam());
                     }
                 });
-/*
-, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.e("Error: ", error.getMessage());
-                Toasty.displayCenteredMessage(SelectDelivery1.this, "!!ERROR: Database Error while trying to getInstance pickup info.", Toast.LENGTH_SHORT);
-            }
-        }
- */
+
         InvApplication.timeoutType = this.LOCCODELIST_TIMEOUT;
 
         /* Add your Requests to the RequestQueue to execute */

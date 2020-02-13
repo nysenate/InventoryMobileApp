@@ -18,7 +18,7 @@ public class LocHistAdapter extends ArrayAdapter<Location> {
 
     Context context;
     List<Location> locations;
-    SimpleDateFormat simpleDateFormat  = new SimpleDateFormat("MM/dd/yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public LocHistAdapter(Context context, int resourceId,
                           List<Location> locations) {
@@ -46,7 +46,7 @@ public class LocHistAdapter extends ArrayAdapter<Location> {
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.row_location_history, null);
-            holder =  new ViewHolder();
+            holder = new ViewHolder();
             holder.entryDate = (TextView) convertView
                     .findViewById(R.id.tvLHEntryDate);
             holder.locCode = (TextView) convertView
@@ -91,7 +91,7 @@ public class LocHistAdapter extends ArrayAdapter<Location> {
         holder.entryDate.setBackgroundColor(currentBaground);
 
         holder.locCode.setBackgroundColor(currentBaground);
-        holder.locCode.setText(rowLocation.getCdlocat()+(rowLocation.getCdloctype()==null ? "" :"-")+rowLocation.getCdloctype());
+        holder.locCode.setText(rowLocation.getCdlocat() + (rowLocation.getCdloctype() == null ? "" : "-") + rowLocation.getCdloctype());
 
         holder.department.setText(Nvl.staticValue(rowLocation.getDepartment(), ""));
         holder.department.setBackgroundColor(currentBaground);
@@ -102,9 +102,9 @@ public class LocHistAdapter extends ArrayAdapter<Location> {
 
         StringBuilder cityStateZip = new StringBuilder();
 
-        cityStateZip.append(rowLocation.getAdcity()==null ? "" : rowLocation.getAdcity());
-        cityStateZip.append(rowLocation.getAdcity()!=null && (rowLocation.getAdstate() != null || rowLocation.getAdzipcode() == null) ? ", " : "");
-        cityStateZip.append(Nvl.staticValue(rowLocation.getAdstate(), "") + " "+ Nvl.staticValue(rowLocation.getAdzipcode(), ""));
+        cityStateZip.append(rowLocation.getAdcity() == null ? "" : rowLocation.getAdcity());
+        cityStateZip.append(rowLocation.getAdcity() != null && (rowLocation.getAdstate() != null || rowLocation.getAdzipcode() == null) ? ", " : "");
+        cityStateZip.append(Nvl.staticValue(rowLocation.getAdstate(), "") + " " + Nvl.staticValue(rowLocation.getAdzipcode(), ""));
 
         holder.locCityZip.setText(cityStateZip.toString());
 

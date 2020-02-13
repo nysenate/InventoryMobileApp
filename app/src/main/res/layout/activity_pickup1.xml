@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="20dp"
-    tools:context=".Pickup1" >
+    tools:context=".Pickup1">
 
     <TextView
         android:id="@+id/textView1"
@@ -23,14 +23,14 @@
         android:layout_alignLeft="@+id/autoCompleteTextView1"
         android:layout_alignRight="@+id/btnPickup1Cont"
         android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp">
 
         <TableLayout
             android:id="@+id/pickup_info1a"
             android:layout_width="550dp"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
-            android:background="@drawable/customshape" >
+            android:background="@drawable/customshape">
 
             <TableRow>
 
@@ -113,13 +113,13 @@
         android:layout_alignLeft="@+id/autoCompleteTextView2"
         android:layout_alignRight="@+id/autoCompleteTextView2"
         android:layout_below="@+id/autoCompleteTextView2"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp">
 
         <TableLayout
             android:id="@+id/pickup_info2A"
             android:layout_width="550dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/customshape" >
+            android:background="@drawable/customshape">
 
             <TableRow>
 
@@ -206,8 +206,7 @@
         android:hint="@string/select_dest_loc"
         android:nextFocusDown="@+id/autoCompleteTextView1"
         android:singleLine="true"
-        android:textStyle="bold" >
-    </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+        android:textStyle="bold"></gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
 
     <Button
         android:id="@+id/btnPickup1Cancel"
@@ -266,7 +265,7 @@
         android:hint="@string/select_origin_loc"
         android:nextFocusDown="@+id/autoCompleteTextView2"
         android:singleLine="true"
-        android:textStyle="bold" >
+        android:textStyle="bold">
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>

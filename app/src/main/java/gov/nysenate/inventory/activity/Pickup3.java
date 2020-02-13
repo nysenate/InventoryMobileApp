@@ -351,7 +351,7 @@ public class Pickup3 extends SenateActivity {
                     }
                 }, 50);
 
-                if (progBarPickup3!= null) {
+                if (progBarPickup3 != null) {
                     progBarPickup3.setVisibility(View.INVISIBLE);
                 }
                 break;
@@ -365,7 +365,7 @@ public class Pickup3 extends SenateActivity {
                                 employeeNamesView.getWindowToken(), 0);
                     }
                 }, 50);
-                if (progBarPickup3!= null) {
+                if (progBarPickup3 != null) {
                     progBarPickup3.setVisibility(View.INVISIBLE);
                 }
                 break;
@@ -620,8 +620,7 @@ public class Pickup3 extends SenateActivity {
 
         if (pickup.isRemotePickup()) {
             processPickupPart2();
-        }
-        else {
+        } else {
 
             String imageString = Arrays.toString(getByteArray(sign.getImage(), 200, 40));
 
@@ -637,7 +636,7 @@ public class Pickup3 extends SenateActivity {
 
             setProgBarVisibility(View.VISIBLE);
 
-            InvApplication.timeoutType =  -1;
+            InvApplication.timeoutType = -1;
 
             StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
                     imageUploadURL, params, imageUploadResponseListener);
@@ -661,7 +660,7 @@ public class Pickup3 extends SenateActivity {
 
             setProgBarVisibility(View.VISIBLE);
 
-            InvApplication.timeoutType =  this.POSITIVEDIALOG_TIMEOUT;
+            InvApplication.timeoutType = this.POSITIVEDIALOG_TIMEOUT;
 
             StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
                     pickupURL, params, pickupResponseListener);

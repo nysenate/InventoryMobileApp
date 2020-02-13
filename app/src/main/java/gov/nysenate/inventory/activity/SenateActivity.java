@@ -147,9 +147,9 @@ public abstract class SenateActivity extends Activity implements
     @Override
     public void onBackPressed() {
 //        if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.in_left, R.anim.out_right);
- //   }
+        super.onBackPressed();
+        overridePendingTransition(R.anim.in_left, R.anim.out_right);
+        //   }
     }
 
     @Override
@@ -241,9 +241,9 @@ public abstract class SenateActivity extends Activity implements
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // getInstance the app version Name for display
+        // Get the app version Name for display
         String version = pInfo.versionName;
-        // getInstance the app version Code for checking
+        // Get the app version Code for checking
         int versionCode = pInfo.versionCode;
         Resources resources;
         resources = this.getResources();
@@ -520,11 +520,11 @@ public abstract class SenateActivity extends Activity implements
         // newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
 
-    public void onVolleyInvError () {
+    public void onVolleyInvError() {
         new Toasty(this).showMessage("On Volley Error GENERIC SENATE Activity");
     }
 
-    public void afterVolleyInvError () {
+    public void afterVolleyInvError() {
 
     }
 
@@ -653,7 +653,7 @@ public abstract class SenateActivity extends Activity implements
                     }
 
                 } catch (NullPointerException e) {
-                    noServerResponse("Senate Activity:1:"+e.getMessage());
+                    noServerResponse("Senate Activity:1:" + e.getMessage());
                     return "";
                 }
 
@@ -698,133 +698,6 @@ public abstract class SenateActivity extends Activity implements
         timer.cancel();
     }
 
-/*    public int checkServerResponse() {
-        return checkServerResponse(true);
-    }
-
-    public int checkServerResponse(boolean handleServerResponse) {
-        Log.i("internet check", "checkServerResponse");
-        String serverResponse = null;
-        AsyncTask<String, String, String> requestServerResponse = null;
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        Log.i("internet check", "checkServerResponse 5");
-
-        HttpUtils httpUtils = new HttpUtils();
-
-        Log.i("internet check", "checkServerResponse 8");
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
-            Log.i("internet check", "checkServerResponse CONNECTED");
-
-            try {
-
-                if (LoginActivity.properties==null) {
-                    LoginActivity.loadProperties(this.getAssets());
-                }
-
-                // Get the URL from the properties
-                String URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
-                        .toString();
-                if (!URL.endsWith("/")) {
-                    URL += "/";
-                }
-                Log.i("internet check", "checkServerResponse RequestTask");
-
-                RequestFuture<String> future = RequestFuture.newFuture();
-
-                String string = new String();
-
-                StringInvRequest req = new StringInvRequest(Request.Method.GET, URL , null, future, future);
-
-                try {
-
-                    Log.i(this.getClass().getName(), "!!Before Response:" + URL );
-                    AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-// add it to the RequestQueue
-
-
-
-                Log.i("internet check", "checkServerResponse :"+URL
-                );
-
-                try {
-                    serverResponse = null;
-                    Log.i("internet check", "checkServerResponse serverResponse before getInstance");
-                    serverResponse = future.get();
-
-                    Log.i("internet check", "checkServerResponse serverResponse:"+serverResponse);
-
-                    if (serverResponse == null) {
-                        if (handleServerResponse) {
-                            Log.i("internet check", "checkServerResponse serverResponse handle server response");
-                            noServerResponse();
-                        }
-                        try {
-                            Log.i("internet check", "checkServerResponse serverResponse don't handle server response");
-                            new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-                        }
-                        catch (Exception e) {
-                            Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
-                        }
-
-                        Log.i("internet check", "checkServerResponse before noconnect sound");
-                        httpUtils.playSound(R.raw.noconnect);
-                        Log.i("internet check", "checkServerResponse after noconnect sound");
-
-                        return NO_SERVER_RESPONSE;
-                    } else if (serverResponse.toString().indexOf("Session timed out") > -1) {  // it is wrong to do a toString... only done for testing..
-                        if (handleServerResponse) {
-                            startTimeout(this.CHECK_SERVER_RESPONSE);
-                        }
-                        return SERVER_SESSION_TIMED_OUT;
-                    }
-
-                } catch (NullPointerException e) {
-                    if (handleServerResponse) {
-                        Log.i("internet check", "checkServerResponse noServerResponse with NULL Pointer Exception");
-                        noServerResponse();
-                        Log.i("internet check", "checkServerResponse noServerResponse with NULL Pointer Exception DONE");
-                    }
-
-                    Log.i("internet check", "checkServerResponse noconnect play sound");
-                    httpUtils.playSound(R.raw.noconnect);
-                    Log.i("internet check", "checkServerResponse noconnect after play sound");
-                    return EXCEPTION_IN_CODE;
-                }
-
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } else {
-            Log.i("internet check", "checkServerResponse ELSE");
-            try {
-                new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-            }
-            catch (Exception e) {
-                Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
-            }
-            Log.i("internet check", "checkServerResponse ELSE 2");
-
-            httpUtils.playSound(R.raw.noconnect);
-            Log.i("internet check", "checkServerResponse ELSE 3");
-            return NO_SERVER_RESPONSE;
-        }
-        Log.i("internet check", "checkServerResponse OK (DONE)");
-        return OK;
-    }*/
-
     WifiManager mainWifi;
     // WifiReceiver receiverWifi;
     List<ScanResult> wifiList;
@@ -840,20 +713,12 @@ public abstract class SenateActivity extends Activity implements
      */
 
     public void checkInternetConnection() {
-        /*
-         * new Thread() { public void run() {
-         */
         int duration = Toast.LENGTH_SHORT;
         Toast toast;
         if (context == null) {
             context = getApplicationContext();
         }
         duration = Toast.LENGTH_SHORT;
-        /*
-         * toast = Toast.makeText(context,
-         * "Inventory App checking Internet Connection. Please be patient..",
-         * duration); toast.setGravity(Gravity.CENTER, 0, 0); toast.show();
-         */
 
         SenateActivity.this.context = context;
         ConnectivityManager cm = ((ConnectivityManager) context
@@ -923,22 +788,6 @@ public abstract class SenateActivity extends Activity implements
             toast.show();
 
         }
-        // 1. Instantiate an AlertDialog.Builder with its constructor
-        /*
-         * AlertDialog.Builder builder = new AlertDialog.Builder(context);
-         *
-         * // 2. Chain together various setter methods to set the dialog
-         * characteristics builder.setMessage(
-         * "Internet Connection is Lost. Please fix before continuing.")
-         * .setTitle("Internet Connection Lost");
-         *
-         * // 3. Get the AlertDialog from create() AlertDialog dialog =
-         * builder.create(); dialog.show();
-         */
-        /*
-         * } }.start();
-         */
-
     }
 
     /*
@@ -1126,8 +975,8 @@ public abstract class SenateActivity extends Activity implements
                     }
 
                     RequestFuture<JSONObject> future = RequestFuture.newFuture();
-                    JsonInvObjectRequest req = new JsonInvObjectRequest(URL  + "Login?user=" + user_name + "&pwd="
-                            + password + "&defrmint=" + defrmint, new JSONObject(),future, future);
+                    JsonInvObjectRequest req = new JsonInvObjectRequest(URL + "Login?user=" + user_name + "&pwd="
+                            + password + "&defrmint=" + defrmint, new JSONObject(), future, future);
                     /* Add your Requests to the RequestQueue to execute */
                     AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
 
@@ -1149,7 +998,7 @@ public abstract class SenateActivity extends Activity implements
                         e.printStackTrace();
                     } catch (NullPointerException e) {
                         // TODO Auto-generated catch block
-                        noServerResponse("Senate Activity:3:"+e.getMessage());
+                        noServerResponse("Senate Activity:3:" + e.getMessage());
                     }
                 } catch (Exception e) {
 
@@ -1425,7 +1274,7 @@ public abstract class SenateActivity extends Activity implements
 
     public void noServerResponse(String testLocation, Context context) {
         Log.i(this.getClass().getName(), "NOSERVERRESPONSE (SENATEACTIVITY)");
-        Log.i(this.getClass().getName(), "noServerResponse:"+testLocation);
+        Log.i(this.getClass().getName(), "noServerResponse:" + testLocation);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -1456,8 +1305,7 @@ public abstract class SenateActivity extends Activity implements
 
         try {
             new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
         }
 

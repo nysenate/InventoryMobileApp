@@ -146,9 +146,9 @@ public class EditRemovalRequest extends SenateActivity
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
-                AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id="+ Integer.valueOf(getIntent().getStringExtra("transactionNum")), null, removalRequestResponseListener);
+                AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id=" + Integer.valueOf(getIntent().getStringExtra("transactionNum")), null, removalRequestResponseListener);
 
-        Log.i(this.getClass().getName(), AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id="+ Integer.valueOf(getIntent().getStringExtra("transactionNum")));
+        Log.i(this.getClass().getName(), AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest?id=" + Integer.valueOf(getIntent().getStringExtra("transactionNum")));
 
         /* Add your Requests to the RequestQueue to execute */
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
@@ -331,7 +331,7 @@ public class EditRemovalRequest extends SenateActivity
 
     public void updateRemovalRequest() {
         Map<String, String> params = new HashMap<>();
-        Log.i(this.getClass().getName(), "removalRequest: "+Serializer.serialize(removalRequest));
+        Log.i(this.getClass().getName(), "removalRequest: " + Serializer.serialize(removalRequest));
         params.put("RemovalRequest", Serializer.serialize(removalRequest));
 
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST,
@@ -343,13 +343,6 @@ public class EditRemovalRequest extends SenateActivity
             }
         };
 
-        Log.i(this.getClass().getName(), "updateRemovalRequest " + AppProperties.getBaseUrl(EditRemovalRequest.this) + "RemovalRequest");
-
-/*        try {
-            Log.i(this.getClass().getName(), "updateRemovalRequest " + new String(stringInvRequest.getBody()));
-        } catch (AuthFailureError authFailureError) {
-            authFailureError.printStackTrace();
-        }*/
 
 //  Old code for testing purposes
         List<NameValuePair> values = new ArrayList<NameValuePair>();
@@ -358,8 +351,7 @@ public class EditRemovalRequest extends SenateActivity
 
         try {
             urlEncodedFormEntity = new UrlEncodedFormEntity(values);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //  Old code for testing purposes  END
@@ -371,23 +363,15 @@ public class EditRemovalRequest extends SenateActivity
 //            new MsgAlert(this).showMessage("NEW REQUEST", newRequest);
 //            new MsgAlert(this).showMessage("OLD REQUEST", oldRequest);
 
-            Log.i(this.getClass().getName(), "OLD HEADER: "+urlEncodedFormEntity.getContentType().getValue());
-            Log.i(this.getClass().getName(), "NEW HEADER: "+stringInvRequest.getBodyContentType());
+            Log.i(this.getClass().getName(), "OLD HEADER: " + urlEncodedFormEntity.getContentType().getValue());
+            Log.i(this.getClass().getName(), "NEW HEADER: " + stringInvRequest.getBodyContentType());
 
-            Log.i(this.getClass().getName(), "OLD: "+oldRequest);
+            Log.i(this.getClass().getName(), "OLD: " + oldRequest);
             Log.i(this.getClass().getName(), "   ");
-            Log.i(this.getClass().getName(), "NEW: "+newRequest);
+            Log.i(this.getClass().getName(), "NEW: " + newRequest);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-
-       // params.put("RemovalRequest", oldRequest);   //  test using old request values
-
-        if (1==1) {  // testing purposes only
-//            new MsgAlert(this).showMessage("TEST", "Testing, need to comment this out");
-//            return;
         }
 
         /* Add your Requests to the RequestQueue to execute */

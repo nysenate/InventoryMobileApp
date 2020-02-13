@@ -99,16 +99,10 @@ public class RemovePickupItems extends SenateActivity {
     }
 
     public void backButton(View view) {
-        //if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-        //}
+        super.onBackPressed();
     }
 
     public void continueButton(View view) {
-        /*if (checkServerResponse(true) != OK) {
-            return;
-        }*/
-
         if (adapter.getSelectedItems(true).size() < 1) {
             AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
             confirmDialog.setCancelable(false);
@@ -227,94 +221,4 @@ public class RemovePickupItems extends SenateActivity {
         }
     }
 
-    /*private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response;
-            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
-            url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
-            url += "&userFallback=" + LoginActivity.nauser;
-
-            try {
-                response = httpClient.execute(new HttpGet(url));
-                return response.getStatusLine().getStatusCode();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(RemovePickupItems.this, Move.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            HttpUtils.displayResponseResults(RemovePickupItems.this, response);
-            LoginActivity.activeAsyncTask = null;
-        }
-    }*/
-
-    /*private class RemoveItemsTask extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            //LoginActivity.activeAsyncTask = this;
-           // if (checkServerResponse(true) != OK) {
-            //    return RemovePickupItems.this.NO_SERVER_RESPONSE;
-            //}
-            String url = AppProperties.getBaseUrl(RemovePickupItems.this);
-            url += "RemovePickupItems";
-
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response;
-            HttpPost post = new HttpPost(url);
-
-            try {
-                List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("nuxrpd", Integer.toString(pickup.getNuxrpd())));
-
-                for (InvItem aValue : adapter.getSelectedItems(true)) {
-                    values.add(new BasicNameValuePair("items[]", aValue.getNusenate()));
-                }
-
-                post.setEntity(new UrlEncodedFormEntity(values));
-                response = httpClient.execute(post);
-
-                return response.getStatusLine().getStatusCode();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            Intent intent = new Intent(RemovePickupItems.this, EditPickupMenu.class);
-            intent.putExtra("nuxrpd", Integer.toString(pickup.getNuxrpd()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            HttpUtils.displayResponseResults(RemovePickupItems.this, response);
-            LoginActivity.activeAsyncTask = null;
-        }
-    }*/
 }

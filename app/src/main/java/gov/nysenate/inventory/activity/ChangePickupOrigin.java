@@ -76,7 +76,7 @@ public class ChangePickupOrigin extends SenateActivity {
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ChangePickupOrigin.this, android.R.layout.simple_dropdown_item_1line, locSummaries);
 
-            if (newPickupLocation  == null) {
+            if (newPickupLocation == null) {
                 newPickupLocation = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
             }
 
@@ -159,12 +159,6 @@ public class ChangePickupOrigin extends SenateActivity {
         SimpleDateFormat sdf = ((InvApplication) getApplicationContext()).getDateTimeFormat();
         oldDate.setText(sdf.format(pickup.getPickupDate()));
 
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            new GetLocations().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            new GetLocations().execute();
-        }*/
-
         this.getLocations();
     }
 
@@ -245,7 +239,8 @@ public class ChangePickupOrigin extends SenateActivity {
 
         }
     }
-    private void getLocations ( ){
+
+    private void getLocations() {
         String url = AppProperties.getBaseUrl();
         url += "LocCodeList?";
         url += "&userFallback=" + LoginActivity.nauser;
@@ -266,11 +261,6 @@ public class ChangePickupOrigin extends SenateActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            //LoginActivity.activeAsyncTask  = this;
-          /*  if (checkServerResponse(true) != OK) {
-                return "";
-            }*/
-
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -367,16 +357,12 @@ public class ChangePickupOrigin extends SenateActivity {
     };
 
     public void backButton(View view) {
-      //  if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-      //  }
+        //  if (checkServerResponse(true) == OK) {
+        super.onBackPressed();
+        //  }
     }
 
     public void continueButton(View view) {
-        /*if (checkServerResponse(true) != OK) {
-            return;
-        }*/
-
         if (!summaryToLocationMap.containsKey(newPickupLocation.getText().toString())) {
             if (newPickupLocation.getText().length() > 0) {
                 Toasty.displayCenteredMessage(this, "You must select a valid Pickup Location.", Toast.LENGTH_SHORT);

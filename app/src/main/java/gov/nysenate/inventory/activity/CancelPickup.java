@@ -93,47 +93,45 @@ public class CancelPickup extends SenateActivity {
     }
 
     public void continueButton(View view) {
-       // if (checkServerResponse(true) == OK) {
-            AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
-            confirmDialog.setCancelable(false);
-            confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Cancel Pickup</font>"));
-            confirmDialog.setMessage(Html.fromHtml("You are about to <b>cancel</b> this pickup.<br><br>"
-                    + "Are you sure you want to continue?"));
-            confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
+        // if (checkServerResponse(true) == OK) {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setCancelable(false);
+        confirmDialog.setTitle(Html.fromHtml("<font color='#000055'>Cancel Pickup</font>"));
+        confirmDialog.setMessage(Html.fromHtml("You are about to <b>cancel</b> this pickup.<br><br>"
+                + "Are you sure you want to continue?"));
+        confirmDialog.setNegativeButton(Html.fromHtml("<b>No</b>"), new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    return;
-                }
-            });
-            confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        confirmDialog.setPositiveButton(Html.fromHtml("<b>Yes</b>"), new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    progressBar = (ProgressBar) findViewById(R.id.pickup_cancel_progress_bar);
-                    progressBar.setVisibility(ProgressBar.VISIBLE);
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressBar = (ProgressBar) findViewById(R.id.pickup_cancel_progress_bar);
+                progressBar.setVisibility(ProgressBar.VISIBLE);
 
-                    dialog.dismiss();
-                    String url = AppProperties.getBaseUrl(CancelPickup.this);
-                    url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
-                    url += "&userFallback=" + LoginActivity.nauser;
+                dialog.dismiss();
+                String url = AppProperties.getBaseUrl(CancelPickup.this);
+                url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
+                url += "&userFallback=" + LoginActivity.nauser;
 
-                    StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, cancelPickupresponseListener);
+                StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, cancelPickupresponseListener);
 
-                    /* Add your Requests to the RequestQueue to execute */
-                    AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
+                /* Add your Requests to the RequestQueue to execute */
+                AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
 
-                    //new CancelPickupTask().execute();
-                }
-            });
-            confirmDialog.show();
-       // }
+            }
+        });
+        confirmDialog.show();
     }
 
     public void backButton(View view) {
-      //  if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-       // }
+        //  if (checkServerResponse(true) == OK) {
+        super.onBackPressed();
+        // }
     }
 
     private class CancelPickupTask extends AsyncTask<Void, Void, Integer> {
@@ -155,16 +153,16 @@ public class CancelPickup extends SenateActivity {
             url += "CancelPickup?nuxrpd=" + pickup.getNuxrpd();
             url += "&userFallback=" + LoginActivity.nauser;
 
-           // if (checkServerResponse(true) == OK) {
-                try {
-                    response = httpClient.execute(new HttpGet(url));
-                    return response.getStatusLine().getStatusCode();
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-           // }
+            // if (checkServerResponse(true) == OK) {
+            try {
+                response = httpClient.execute(new HttpGet(url));
+                return response.getStatusLine().getStatusCode();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // }
 
             return null;
         }

@@ -67,7 +67,6 @@ public class Verification extends SenateActivity {
     static ClearableAutoCompleteTextView autoCompleteTextView1;
     static Button btnVerify1Cont;
     static Button btnVerify1Cancel;
-    // TextView tvLocCd;
     TextView tvDescript;
     TextView tvCount;
     TextView tvOffice;
@@ -152,7 +151,7 @@ public class Verification extends SenateActivity {
                     return;
                 }
 
-                InvApplication.timeoutType =  -1;
+                InvApplication.timeoutType = -1;
 
                 summaryToLocation = new HashMap<>();
                 List<Location> locations = Serializer.deserialize(response, Location.class);
@@ -238,10 +237,9 @@ public class Verification extends SenateActivity {
 
         loc_code = (EditText) findViewById(R.id.preferencePWD);
 
-        if (filterTextWatcher==null) {
+        if (filterTextWatcher == null) {
             Log.i(this.getClass().getName(), "filterTextWatcher IS NULL");
-        }
-        else {
+        } else {
             autoCompleteTextView1.addTextChangedListener(filterTextWatcher);
         }
         autoCompleteTextView1
@@ -433,14 +431,14 @@ public class Verification extends SenateActivity {
             // fetch data
             status = "yes";
 
-                Location selectedLocation = summaryToLocation.get(autoCompleteTextView1.getText().toString());
-                if (selectedLocation == null) {
-                    Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
-                    return;
+            Location selectedLocation = summaryToLocation.get(autoCompleteTextView1.getText().toString());
+            if (selectedLocation == null) {
+                Toasty.displayCenteredMessage(this, "Entered text is invalid.", Toast.LENGTH_SHORT);
+                return;
             }
 
-            JsonInvObjectRequest jsonInvObjectRequest= new JsonInvObjectRequest(Request.Method.GET,
-                    URL +"LocationDetails?location_code=" + selectedLocation.getCdlocat()
+            JsonInvObjectRequest jsonInvObjectRequest = new JsonInvObjectRequest(Request.Method.GET,
+                    URL + "LocationDetails?location_code=" + selectedLocation.getCdlocat()
                             + "&location_type=" + selectedLocation.getCdloctype(), null, responseListener);
 
             InvApplication.timeoutType = this.LOCATIONDETAILS_TIMEOUT;
@@ -466,8 +464,8 @@ public class Verification extends SenateActivity {
 
             URL = AppProperties.getBaseUrl();
 
-            StringInvRequest stringInvRequest= new StringInvRequest(Request.Method.GET,
-                    URL +"LocCodeList", null, locListRespListener);
+            StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
+                    URL + "LocCodeList", null, locListRespListener);
 
             InvApplication.timeoutType = LOCCODELIST_TIMEOUT;
 
@@ -482,31 +480,31 @@ public class Verification extends SenateActivity {
     }
 
     public void continueButton(View view) {
-            String currentLocation = Verification.autoCompleteTextView1
-                    .getText().toString();
-            int duration = Toast.LENGTH_SHORT;
+        String currentLocation = Verification.autoCompleteTextView1
+                .getText().toString();
+        int duration = Toast.LENGTH_SHORT;
         if (currentLocation == null || currentLocation.trim().length() == 0) {
-                new Toasty(this).showMessage("!!ERROR: You must first pick a location.", duration);
-                boolean focusRequested = autoCompleteTextView1.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+            new Toasty(this).showMessage("!!ERROR: You must first pick a location.", duration);
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else if (!summaryToLocation.containsKey(currentLocation)) {
+        } else if (!summaryToLocation.containsKey(currentLocation)) {
             new Toasty(this).showMessage("!!ERROR: Location Code \"" + currentLocation
-                        + "\" is invalid.", duration);
-                boolean focusRequested = autoCompleteTextView1.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
+                    + "\" is invalid.", duration);
+            boolean focusRequested = autoCompleteTextView1.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
 
-            } else {
-                progBarVerify.setVisibility(View.VISIBLE);
-                btnVerify1Cont.getBackground().setAlpha(45);
-                Intent intent = new Intent(this, VerScanActivity.class);
-                intent.putExtra(loc_code_intent, loc_code_str);
-                intent.putExtra(cdloctype_intent, cdloctype);
-                startActivity(intent);
-                overridePendingTransition(R.anim.in_right, R.anim.out_left);
-            }
+        } else {
+            progBarVerify.setVisibility(View.VISIBLE);
+            btnVerify1Cont.getBackground().setAlpha(45);
+            Intent intent = new Intent(this, VerScanActivity.class);
+            intent.putExtra(loc_code_intent, loc_code_str);
+            intent.putExtra(cdloctype_intent, cdloctype);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        }
 
     }
 

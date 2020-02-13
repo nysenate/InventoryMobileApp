@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TableLayout
         android:id="@+id/pickup_info"
@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 
@@ -140,8 +140,7 @@
         android:layout_below="@+id/edit_pickup_menu_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="@drawable/customshape" >
-    </ListView>
+        android:background="@drawable/customshape"></ListView>
 
     <ProgressBar
         android:id="@+id/edit_pickup_menu_progress_bar"

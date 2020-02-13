@@ -88,12 +88,6 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         /* Add your Requests to the RequestQueue to execute */
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
 
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            new GetPickup().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            new GetPickup().execute();
-        }*/
-
         menuRowItems = new ArrayList<RowItem>();
         for (int i = 0; i < titles.length; i++) {
             menuRowItems.add(new RowItem(images[i], titles[i]));
@@ -163,61 +157,4 @@ public class EditPickupMenu extends SenateActivity implements OnItemClickListene
         overridePendingTransition(inTransition, outTransition);
     }
 
-/*    private class GetPickup extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = AppProperties.getBaseUrl(EditPickupMenu.this);
-            url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
-            url += "&userFallback=" + LoginActivity.nauser;
-
-            try {
-                new HttpUtils().updateOffline(url);  // testing only
-
-                response = httpClient.execute(new HttpGet(url));
-                response.getEntity().writeTo(out);
-                Log.i("EditPickupMenu", "Server Pickup Response:" + out.toString());
-                pickup = Serializer.deserialize(out.toString(), Transaction.class).get(0);
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return response.getStatusLine().getStatusCode();
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            if (response == HttpStatus.SC_OK) {
-                if (pickup.isRemote()) {
-                    oldPickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
-                    oldDeliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
-                } else {
-                    oldPickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
-                    oldDeliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
-                }
-                oldPickupBy.setText(pickup.getNapickupby());
-                oldCount.setText(Integer.toString(pickup.getPickupItems().size()));
-                SimpleDateFormat sdf = ((InvApplication) getApplicationContext()).getDateTimeFormat();
-                oldDate.setText(sdf.format(pickup.getPickupDate()));
-            } else if (response == HttpStatus.SC_BAD_REQUEST) {
-                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unable to getInstance pickup info, invalid nuxrpd.", Toast.LENGTH_SHORT);
-            } else if (response == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Database Error while trying to getInstance pickup info.", Toast.LENGTH_SHORT);
-            } else {
-                Toasty.displayCenteredMessage(EditPickupMenu.this, "!!ERROR: Unknown Error occured pickup data may be inaccurate.", Toast.LENGTH_SHORT);
-            }
-            LoginActivity.activeAsyncTask = null;
-        }
-    }*/
 }

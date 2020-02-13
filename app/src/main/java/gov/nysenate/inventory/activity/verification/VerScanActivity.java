@@ -228,7 +228,7 @@ public class VerScanActivity extends SenateActivity implements
             InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
                     vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
 
-            if (invItem.getType()==null) {
+            if (invItem.getType() == null) {
                 invItem.setType(itemType);
             }
 
@@ -257,7 +257,7 @@ public class VerScanActivity extends SenateActivity implements
 
                 invList = (ArrayList) Serializer.deserialize(response, InvItem.class);
 
-                for (InvItem invItem:invList) {
+                for (InvItem invItem : invList) {
                     invItem.setType("EXISTING");
                 }
 
@@ -272,13 +272,12 @@ public class VerScanActivity extends SenateActivity implements
                 progBarVerify.setVisibility(View.INVISIBLE);
 
                 status = "yes1";
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(this.getClass().getName(), "JSON: " + response);
+                new MsgAlert(VerScanActivity.this, "ERROR: Item List", "!!ERROR: Unable to  build item list.");
             }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "JSON: "+response);
-                    new MsgAlert(VerScanActivity.this, "ERROR: Item List", "!!ERROR: Unable to  build item list.");
-                }
-            }
+        }
     };
 
     Response.Listener comKeywordListRespListener = new Response.Listener<String>() {
@@ -302,8 +301,7 @@ public class VerScanActivity extends SenateActivity implements
                 newInvDialog.checkKeywordsFound();
                 NewInvDialog.progBarNewInvItem.setVisibility(View.INVISIBLE);
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 new MsgAlert(InvApplication.getAppContext(), "ERROR: Item List", "!!ERROR: Unable to  build item list.");
             }
         }
@@ -489,7 +487,7 @@ public class VerScanActivity extends SenateActivity implements
         for (int x = 0; x < invList.size(); x++) {
             InvItem curInvItem = invList.get(x);
             if (curInvItem != null) {
-                if (curInvItem.getType()!=null) {
+                if (curInvItem.getType() != null) {
                     if (curInvItem.getType().equalsIgnoreCase(type)) {
                         count++;
                     }
@@ -760,7 +758,7 @@ public class VerScanActivity extends SenateActivity implements
     }
 
     public void nusenateDidNotExist(final String nusenate) {
-        Log.i(this.getClass().getName(), "nusenateDidNotExist: "+nusenate);
+        Log.i(this.getClass().getName(), "nusenateDidNotExist: " + nusenate);
 
         playSound(R.raw.error);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -940,7 +938,7 @@ public class VerScanActivity extends SenateActivity implements
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-                if (curInvItem.getType()==null||curInvItem.getType().length()==0) {
+                if (curInvItem.getType() == null || curInvItem.getType().length() == 0) {
                     curInvItem.setType("EXISTING");
                 }
 
@@ -1050,7 +1048,7 @@ public class VerScanActivity extends SenateActivity implements
 
         holdNusenate = nusenate;
 
-        StringInvRequest stringInvRequest= new StringInvRequest(Request.Method.GET,
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
                 URL + "Item?barcode=" + nusenate, null, addItemRespListener);
 
         InvApplication.timeoutType = this.ITEMDETAILS_TIMEOUT;
@@ -1128,7 +1126,7 @@ public class VerScanActivity extends SenateActivity implements
         int cntNew = countOf(invList, "NEW");
         int cntInactive = countOf(invList, "INACTIVE");
         int cntDiffLoc = countOf(invList, "DIFFERENT LOCATION");
-        Log.i(this.getClass().getName(), "(updateChanges) invList Size:"+invList.size()+" All Scanned Items Size:"+allScannedItems.size()+" (cntNew:"+cntNew+" + cntDiffLoc:"+cntDiffLoc+" + cntInactive:"+cntInactive+") (cntExisting:"+cntExisting+") ( cntScanned:"+cntScanned+")");
+        Log.i(this.getClass().getName(), "(updateChanges) invList Size:" + invList.size() + " All Scanned Items Size:" + allScannedItems.size() + " (cntNew:" + cntNew + " + cntDiffLoc:" + cntDiffLoc + " + cntInactive:" + cntInactive + ") (cntExisting:" + cntExisting + ") ( cntScanned:" + cntScanned + ")");
 
         tv_counts_new.setText(Html.fromHtml("<b>New/Found</b><br/>"
                 + (cntNew + cntDiffLoc + cntInactive)));
@@ -1177,7 +1175,7 @@ public class VerScanActivity extends SenateActivity implements
         }
 
         if ((resumeFromTimeout && currentState == ADDITEM_STATE) || invItemIndex == -1) { // Item not found, so Add Item to list
-           // int addItemResults = -1;
+            // int addItemResults = -1;
             addItem(nusenate);  // addItemResults =
             /*if (addItemResults == SERVER_SESSION_TIMED_OUT) {
                 return;
@@ -1271,7 +1269,7 @@ public class VerScanActivity extends SenateActivity implements
                         rInvItem.getDecommodityf());
             } else if (currentSortValue.equalsIgnoreCase("Senate Tag#")) {
                 Integer lNusenate = new Integer(lInvItem.getNusenate());
-                                                       Integer rNusenate = new Integer(rInvItem.getNusenate());
+                Integer rNusenate = new Integer(rInvItem.getNusenate());
                 return lNusenate.compareTo(rNusenate);
             } else if (currentSortValue.equalsIgnoreCase("Last Inventory Date")) {
                 // Need to Pull Inventory Date C

@@ -4,21 +4,19 @@ import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.HashMap;
-
-import com.android.volley.ParseError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -44,8 +42,8 @@ public class MultipartInvRequest extends Request<NetworkResponse> {
      * @param errorListener on error http or library timeout
      */
     public MultipartInvRequest(String url, Map<String, String> headers,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+                               Response.Listener<NetworkResponse> listener,
+                               Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;
@@ -61,15 +59,15 @@ public class MultipartInvRequest extends Request<NetworkResponse> {
      * @param errorListener on error event handler
      */
     public MultipartInvRequest(int method, String url,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+                               Response.Listener<NetworkResponse> listener,
+                               Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;
     }
 
     public MultipartInvRequest(int method, String url,
-                            Response.Listener<NetworkResponse> listener) {
+                               Response.Listener<NetworkResponse> listener) {
         this(method, url, listener, InvApplication.getInstance().errorListener);
     }
 
@@ -84,7 +82,7 @@ public class MultipartInvRequest extends Request<NetworkResponse> {
         if (headers == null
                 || headers.equals(Collections.emptyMap())) {
             headers = new HashMap<String, String>();
-            headers.put("Content-Type", "multipart/form-data ; boundary="+boundary); // application/json; charset=UTF-8   multipart/form-data; boundary=???
+            headers.put("Content-Type", "multipart/form-data ; boundary=" + boundary); // application/json; charset=UTF-8   multipart/form-data; boundary=???
             headers.put("Authorization", "Basic " + auth_token_string);
         }
 
@@ -137,7 +135,7 @@ public class MultipartInvRequest extends Request<NetworkResponse> {
     }
 
     public void addByteData(String paramName, String filename, byte[] byteArray, String dataType) {
-            mParams.put(paramName, new DataPart(filename, byteArray, dataType));
+        mParams.put(paramName, new DataPart(filename, byteArray, dataType));
     }
 
     public void clearByteData() {

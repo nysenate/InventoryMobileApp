@@ -115,7 +115,7 @@ public class Delivery3 extends SenateActivity {
 
             List<Employee> currentEmployees = Serializer.deserialize(response, Employee.class);
             employeeHiddenList.addAll(currentEmployees);
-            for (Employee emp: currentEmployees) {
+            for (Employee emp : currentEmployees) {
                 employeeNameList.add(emp.getFullName());
             }
 
@@ -278,7 +278,7 @@ public class Delivery3 extends SenateActivity {
         setNotBusy();
     }
 
-    private void setNotBusy(){
+    private void setNotBusy() {
         if (this.btnDeliv3ClrSig == null) {
             this.btnDeliv3ClrSig = (Button) this
                     .findViewById(R.id.btnDeliv3ClrSig);
@@ -311,9 +311,9 @@ public class Delivery3 extends SenateActivity {
     }
 
     @Override
-    public void onVolleyInvError () {
-       new Toasty(this).showMessage("On Volley Error DELIVERY Activity");
-       setNotBusy();
+    public void onVolleyInvError() {
+        new Toasty(this).showMessage("On Volley Error DELIVERY Activity");
+        setNotBusy();
     }
 
     public void continueButton(View view) {
@@ -329,7 +329,7 @@ public class Delivery3 extends SenateActivity {
         }
 
         String emp = "";
-        if (delivery==null||!delivery.isRemoteDelivery()) {
+        if (delivery == null || !delivery.isRemoteDelivery()) {
             emp = naemployeeView.getEditableText().toString().trim();
             if (!selectedEmployeeValid(emp, employeeHiddenList)) {
                 displayInvalidEmployeeMessage(naemployeeView.getEditableText().toString().trim());
@@ -570,8 +570,7 @@ public class Delivery3 extends SenateActivity {
         if (delivery.isRemoteDelivery()) {
             Log.i(this.getClass().getName(), "Remote Delivery: Process without a signature");
             processDeliveryPart2();
-        }
-        else {
+        } else {
             Log.i(this.getClass().getName(), "Not a Remote Delivery: Process signature");
 
             String imageString = Arrays.toString(getByteArray(sign.getImage(), 200, 40));
@@ -622,11 +621,11 @@ public class Delivery3 extends SenateActivity {
     public void getDeliveryDetails() {
 
         String url = AppProperties.getBaseUrl();
-        url +=  URL + "GetPickup?nuxrpd=" + nuxrpd;
+        url += URL + "GetPickup?nuxrpd=" + nuxrpd;
 
         Log.i(this.getClass().getName(), url);
 
-        InvApplication.timeoutType =  DELIVERYDETAILS_TIMEOUT;
+        InvApplication.timeoutType = DELIVERYDETAILS_TIMEOUT;
 
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, url, null, deliveryListResponseListener);
 

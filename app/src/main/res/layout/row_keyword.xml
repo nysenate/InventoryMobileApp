@@ -3,7 +3,7 @@
     android:id="@+id/rlkeywordlistrow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/etKeyword"
@@ -13,7 +13,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:inputType="textNoSuggestions"
-        android:textColor="#000000" >
+        android:textColor="#000000">
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>
@@ -26,8 +26,7 @@
         android:focusableInTouchMode="true"
         android:gravity="center"
         android:inputType="textNoSuggestions"
-        android:textColor="#000000" >
-    </TextView>
+        android:textColor="#000000"></TextView>
 
     <Button
         android:id="@+id/btnDeleteKeyword"

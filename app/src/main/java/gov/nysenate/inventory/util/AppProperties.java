@@ -3,11 +3,12 @@ package gov.nysenate.inventory.util;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.widget.Toast;
-import gov.nysenate.inventory.android.InvApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import gov.nysenate.inventory.android.InvApplication;
 
 public class AppProperties {
 

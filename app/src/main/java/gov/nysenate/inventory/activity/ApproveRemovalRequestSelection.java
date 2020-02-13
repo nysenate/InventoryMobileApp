@@ -1,34 +1,25 @@
 package gov.nysenate.inventory.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 
-import org.apache.http.HttpStatus;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import gov.nysenate.inventory.adapter.NothingSelectedSpinnerAdapter;
 import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.CancelBtnFragment;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemovalRequestListFragment;
 import gov.nysenate.inventory.android.StringInvRequest;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.model.RemovalRequest;
-import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
@@ -91,14 +82,14 @@ public class ApproveRemovalRequestSelection extends SenateActivity
 
     @Override
     public void nextActivity(int position) {
-       // if (checkServerResponse(true) == OK) {
-            RemovalRequest rr = rrs.get(position);
-            String transactionNum = String.valueOf(rr.getTransactionNum());
-            Intent intent = new Intent(this, ApproveRemovalRequest.class);
-            intent.putExtra("transactionNum", transactionNum);
-            startActivity(intent);
-            overridePendingTransition(R.anim.in_right, R.anim.out_left);
-      //  }
+        // if (checkServerResponse(true) == OK) {
+        RemovalRequest rr = rrs.get(position);
+        String transactionNum = String.valueOf(rr.getTransactionNum());
+        Intent intent = new Intent(this, ApproveRemovalRequest.class);
+        intent.putExtra("transactionNum", transactionNum);
+        startActivity(intent);
+        overridePendingTransition(R.anim.in_right, R.anim.out_left);
+        //  }
     }
 
     @Override

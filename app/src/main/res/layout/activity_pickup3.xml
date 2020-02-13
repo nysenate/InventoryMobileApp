@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="startCommentsSpeech"
-    tools:context=".Pickup3" >
+    tools:context=".Pickup3">
 
     <TextView
         android:id="@+id/textView1"
@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="18dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 
@@ -114,8 +114,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/remote_checkbox"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp" >
-    </ListView>
+        android:layout_marginTop="10dp"></ListView>
 
     <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
         android:id="@+id/naemployee"
@@ -126,7 +125,7 @@
         android:ems="10"
         android:hint="@string/pickup_emp_list_hint"
         android:inputType="textNoSuggestions"
-        android:singleLine="true" >
+        android:singleLine="true">
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>

@@ -2,18 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dgNewInvItemTop"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:id="@+id/dgNewInvItem"
         android:layout_width="fill_parent"
         android:layout_height="540sp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-            >
+            android:layout_height="wrap_content">
+            >
+
 
             <TableRow>
 
@@ -42,7 +43,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <gov.nysenate.inventory.android.ClearableTextView
                         android:id="@+id/tvKeywordsToBlock"
@@ -69,8 +70,7 @@
                     android:id="@+id/searchResults"
                     android:layout_width="fill_parent"
                     android:layout_height="200sp"
-                    android:layout_span="2" >
-                </ListView>
+                    android:layout_span="2"></ListView>
             </TableRow>
         </TableLayout>
 
@@ -86,7 +86,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <gov.nysenate.inventory.android.ClearableEditText
                 android:id="@+id/etNewItemComments"

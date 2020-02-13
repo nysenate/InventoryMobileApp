@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuActivity" >
+    tools:context=".MenuActivity">
 
     <ImageView
         android:id="@+id/nysenateLogo"
@@ -29,8 +29,7 @@
         android:layout_below="@+id/nysenateLogo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
-        android:background="@drawable/customshape" >
-    </ListView>
+        android:background="@drawable/customshape"></ListView>
 
     <ProgressBar
         android:id="@+id/progBarMenu"

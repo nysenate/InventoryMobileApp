@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="validate"
-    tools:context=".LoginActivity" >
+    tools:context=".LoginActivity">
 
     <TextView
         android:id="@+id/textView1"
@@ -47,7 +47,7 @@
         android:hint="@string/user_name_str"
         android:singleLine="true"
         android:textSize="25sp"
-        android:textStyle="bold" >
+        android:textStyle="bold">
 
         <requestFocus />
     </gov.nysenate.inventory.android.ClearableEditText>

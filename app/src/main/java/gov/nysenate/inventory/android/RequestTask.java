@@ -3,16 +3,8 @@ package gov.nysenate.inventory.android;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,13 +14,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
 
 import gov.nysenate.inventory.activity.LoginActivity;
@@ -39,7 +27,7 @@ import gov.nysenate.inventory.util.Toasty;
 public class RequestTask extends AsyncTask<String, String, String> {
     public final int GET = -2;
     public final int POST = -3;
-    Hashtable<String, String> nameValuePairs ;
+    Hashtable<String, String> nameValuePairs;
 
     public static final int SC_SESSION_TIMEOUT = 599;
 
@@ -86,15 +74,6 @@ public class RequestTask extends AsyncTask<String, String, String> {
     @Override
     public String doInBackground(String... uri) {
         String res = "";
-//        HttpClient httpClient = LoginActivity.httpClient;
-        Log.i(this.getClass().getName(), "doInBackground");
-/*        if (httpClient == null) {
-            Log.i(RequestTask.class.getName(),
-                    "MainActivity.httpClient was null so it is being reset");
-            LoginActivity.httpClient = new DefaultHttpClient();
-            httpClient = LoginActivity.httpClient;
-        }*/
-        Log.i(this.getClass().getName(), "doInBackground 10");
 
         HttpUtils httpUtils = new HttpUtils();
         Log.i(this.getClass().getName(), "doInBackground before !httpUtils.isOnline()");
@@ -103,8 +82,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
             Log.i("RequestTask", "App is offline for:" + LoginActivity.WEBAPP_BASE_URL);
             try {
                 new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.i("RequestTask", "!!ERROR: Could not show toasty message that App is Offline!!");
             }
 
@@ -112,42 +90,38 @@ public class RequestTask extends AsyncTask<String, String, String> {
             Log.i(this.getClass().getName(), "doInBackground after returning blank");
             return "";
         }
-        Log.i(this.getClass().getName(), "doInBackground after !httpUtils.isOnline()");
 
-        //HttpResponse response;
         String responseString = null;
         StringBuilder url = new StringBuilder();
         String currentURI = uri[0].trim();
-        Log.i(this.getClass().getName(), "doInBackground before updateOffline:"+uri[0]);
         new HttpUtils().updateOffline(uri[0]);  // testing only
 
         if (allowURLModification) {
-             Log.i("RequestTask", "(1)allowURLModification=true");
             if (!currentURI.toLowerCase().startsWith("http")) {
-                 Log.i("RequestTask",
-                 "(2)allowURLModification=true MISSING HTTP");
+                Log.i("RequestTask",
+                        "(2)allowURLModification=true MISSING HTTP");
                 String URL = null;
                 try {
                     URL = LoginActivity.properties.get("WEBAPP_BASE_URL")
                             .toString().trim();
-                     Log.i("RequestTask",
-                     "(3)allowURLModification=true URL to add:"+URL);
+                    Log.i("RequestTask",
+                            "(3)allowURLModification=true URL to add:" + URL);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
                 if (URL.endsWith("/")) {
                     if (currentURI.startsWith("/")) {
                         currentURI = currentURI.substring(1);
-                         Log.i("RequestTask",
-                         "(4)allowURLModification=true currentURI:"+currentURI);
+                        Log.i("RequestTask",
+                                "(4)allowURLModification=true currentURI:" + currentURI);
                     }
                     url.append(URL);
                 } else {
                     if (!currentURI.startsWith("/")) {
                         url.append(URL);
                         url.append("/");
-                         Log.i("RequestTask",
-                         "(5)allowURLModification=true url added:"+url.toString());
+                        Log.i("RequestTask",
+                                "(5)allowURLModification=true url added:" + url.toString());
                     } else {
                         url.append(URL);
                     }
@@ -185,10 +159,10 @@ public class RequestTask extends AsyncTask<String, String, String> {
 
             Log.i(this.getClass().getName(), "doInBackground BEFORE POST/GET");
             if (currentMode == POST) {
-                Log.i(this.getClass().getName(), "Current Mode: POST: "+url.toString());
+                Log.i(this.getClass().getName(), "Current Mode: POST: " + url.toString());
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
-                if (LoginActivity.cookie!=null) {
+                if (LoginActivity.cookie != null) {
 
                 }
                 OutputStream os = urlConnection.getOutputStream();
@@ -204,16 +178,16 @@ public class RequestTask extends AsyncTask<String, String, String> {
 
                 //response = httpClient.execute(httpPost);
             } else {
-                Log.i(this.getClass().getName(), "Current Mode: GET: "+url.toString());
+                Log.i(this.getClass().getName(), "Current Mode: GET: " + url.toString());
                 urlConnection.setRequestMethod("GET");
                 //HttpGet httpGet = new HttpGet(url.toString());
                 //response = httpClient.execute(httpGet);
             }
             int responseCode = urlConnection.getResponseCode();
 
-            Log.i(this.getClass().getName(), "Response Code:"+responseCode);
+            Log.i(this.getClass().getName(), "Response Code:" + responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
-                BufferedReader in = new BufferedReader(new InputStreamReader( urlConnection.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String inputLine;
                 StringBuffer response = new StringBuffer();
 
@@ -226,7 +200,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
                 return "";
             }
 
-          //  Log.i(this.getClass().getName(), "doInBackground AFTER POST/GET");
+            //  Log.i(this.getClass().getName(), "doInBackground AFTER POST/GET");
 
             //StatusLine statusLine = response.getStatusLine();
             //Log.i(this.getClass().getName(), "doInBackground AFTER POST/GET statusLine:"+statusLine);
@@ -264,7 +238,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
                 }
             }
         }
-        Log.i(this.getClass().getName(), "doInBackground ALMOST DONE:"+responseString);
+        Log.i(this.getClass().getName(), "doInBackground ALMOST DONE:" + responseString);
         res = responseString;
         Log.i(this.getClass().getName(), "doInBackground ALMOST DONE");
         return responseString;

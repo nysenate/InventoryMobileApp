@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Delivery3" >
+    tools:context=".Delivery3">
 
     <TextView
         android:id="@+id/tvLblTitle"
@@ -21,14 +21,14 @@
         android:layout_below="@+id/tvLblTitle"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="15sp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvLblDeliveryTo"
@@ -73,8 +73,7 @@
         android:layout_height="300dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/delivery_info3"
-        android:layout_marginTop="29dp" >
-    </ListView>
+        android:layout_marginTop="29dp"></ListView>
 
     <gov.nysenate.inventory.android.ClearableEditText
         android:id="@+id/deliveryCommentsEditText"

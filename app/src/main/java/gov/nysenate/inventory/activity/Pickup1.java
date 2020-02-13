@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -262,7 +261,7 @@ public class Pickup1 extends SenateActivity {
                                                          }
                                                      }
         );
-            getAllLocations();
+        getAllLocations();
 
     }
 
@@ -471,7 +470,7 @@ public class Pickup1 extends SenateActivity {
         }
     }
 
-    public void getAllLocations()  {
+    public void getAllLocations() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 

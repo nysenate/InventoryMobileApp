@@ -90,10 +90,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        /*if (checkServerResponse(true) != OK) {
-            return;
-        }*/
-
         String selection = rowItems.get(position).getTitle();
         if (selection.equalsIgnoreCase("Search")) {
             this.search(view);
@@ -253,8 +249,7 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
 
         try {
             new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
         }
 
@@ -272,7 +267,6 @@ public class MenuActivity extends SenateActivity implements OnItemClickListener 
     }
 
     /*
-     *
      * Testing Code above
      */
 

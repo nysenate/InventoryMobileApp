@@ -2,14 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/lvKeywords"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@drawable/customshape" >
-    </ListView>
+        android:background="@drawable/customshape"></ListView>
 
     <EditText
         android:id="@+id/etDummy"
@@ -17,7 +16,7 @@
         android:layout_height="wrap_content"
         android:digits=""
         android:ems="10"
-        android:onClick="returnToList" >
+        android:onClick="returnToList">
 
         <requestFocus />
     </EditText>

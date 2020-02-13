@@ -1,20 +1,13 @@
 package gov.nysenate.inventory.util;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import gov.nysenate.inventory.dto.ItemInventoriedDetails;
 
 public class Serializer {
 

@@ -63,9 +63,9 @@ public class UpgradeActivity extends SenateActivity {
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // getInstance the app version Name for display
+        // Get the app version Name for display
         String version = pInfo.versionName;
-        // getInstance the app version Code for checking
+        // Get the app version Code for checking
         versionCode = pInfo.versionCode;
         // display the current version in a TextView
         currentVersion = (TextView) findViewById(R.id.currentVersion);
@@ -85,7 +85,7 @@ public class UpgradeActivity extends SenateActivity {
 
         // First check to see if the Login activity has the latest version info
         // of this App
-        // If it does, we don't need to connect to the web service simply to getInstance
+        // If it does, we don't need to connect to the web service simply to get
         // the
         // version info, instead, we can simply compare..
         // if login activity does not have
@@ -168,10 +168,10 @@ public class UpgradeActivity extends SenateActivity {
                 boolean success = responseObj.getBoolean("success");
                 // if the reponse was successful check further
                 if (success) {
-                    // getInstance the latest version from the JSON string
+                    // Get the latest version from the JSON string
                     latestVersion = responseObj.getInt("latestVersion");
 
-                    // getInstance the lastest application URI from the JSON string
+                    // Get the lastest application URI from the JSON string
                     appURI = responseObj.getString("appURI");
                     latestVersionName = responseObj
                             .getString("latestVersionName");
@@ -197,8 +197,7 @@ public class UpgradeActivity extends SenateActivity {
                     newVersion.setText("Downgrading to Version: " + latestVersionName
                             + " (" + latestVersion + ")");
                     updateType = "DOWNGRADE";
-                }
-                else {
+                } else {
                     newVersion.setText("Updating to Version: " + latestVersionName
                             + " (" + latestVersion + ")");
                 }
@@ -211,7 +210,7 @@ public class UpgradeActivity extends SenateActivity {
                         Html.fromHtml("In order to use the Inventory Mobile App, you <b>must</b> download the new version."
                                 + " Click <b>OK</b> to download now or <b>Close App</b> to cancel."))
                         .setTitle(
-                                Html.fromHtml("<font color='#000055'>"+updateType+" TO INVENTORY MOBILE APP FOUND. &nbsp;["
+                                Html.fromHtml("<font color='#000055'>" + updateType + " TO INVENTORY MOBILE APP FOUND. &nbsp;["
                                         + latestVersionName
                                         + "."
                                         + latestVersion + "] </font>"))
@@ -311,47 +310,7 @@ public class UpgradeActivity extends SenateActivity {
         overridePendingTransition(R.anim.in_up, R.anim.out_up);
     }
 
-    /*
-     * Does not work because the setShorcut is fired prior to the new version of
-     * the App being installed so it appears to do nothing. (Brian H)
-     */
-
-    /*
-     * public boolean setShortCut(Context context, String appName) {
-     * System.out.println("in the shortcutapp on create method "); boolean flag
-     * = false; int app_id = -1; PackageManager p = context.getPackageManager();
-     * Intent i = new Intent(Intent.ACTION_MAIN);
-     * i.addCategory(Intent.CATEGORY_LAUNCHER); List<ResolveInfo> res =
-     * p.queryIntentActivities(i, 0); System.out.println("the res size is: " +
-     * res.size());
-     *
-     * for (int k = 0; k < res.size(); k++) {
-     * System.out.println("the application name is: " +
-     * res.getInstance(k).activityInfo.loadLabel(p)); if
-     * (res.getInstance(k).activityInfo.loadLabel(p).toString().equals(appName)) { flag
-     * = true; app_id = k; break; } }
-     *
-     * if (flag) { ActivityInfo ai = res.getInstance(app_id).activityInfo;
-     *
-     * Intent shortcutIntent = new Intent();
-     * shortcutIntent.setClassName(ai.packageName, ai.name);
-     * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-     * shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); Intent intent =
-     * new Intent(); intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
-     * shortcutIntent);
-     *
-     * intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, appName);
-     *
-     * intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-     * Intent.ShortcutIconResource.fromContext(context, R.drawable.invapplogo));
-     * // intent.addCategory(Intent.CATEGORY_DEFAULT);
-     * intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-     * context.sendBroadcast(intent);
-     * System.out.println("in the shortcutapp on create method completed"); }
-     * else System.out.println("appllicaton not found"); return true; }
-     */
-
-    // broadcast receiver to getInstance notification about ongoing downloads
+    // broadcast receiver to get notification about ongoing downloads
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 
         @Override

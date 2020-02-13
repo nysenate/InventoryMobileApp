@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -17,7 +16,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import org.apache.http.Header;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 
 import java.text.SimpleDateFormat;
@@ -74,17 +72,16 @@ public class InvApplication extends Application {
             }
 
             if (volleyError.networkResponse.statusCode == InvApplication.SC_SESSION_TIMEOUT) {
-                currentSenateActivity = (SenateActivity)tryNotNullContext();
+                currentSenateActivity = (SenateActivity) tryNotNullContext();
 
                 if (currentSenateActivity != null) {
                     Intent intentTimeout = new Intent(currentSenateActivity, LoginActivity.class);
                     intentTimeout.putExtra("TIMEOUTFROM", timeoutFrom);
                     currentSenateActivity.startActivityForResult(intentTimeout, timeoutType);
-                }
-                else {
-                    currentSenateActivity = (SenateActivity)getApplicationContext();
+                } else {
+                    currentSenateActivity = (SenateActivity) getApplicationContext();
                     if (currentSenateActivity != null)
-                    new Toasty(context).showMessage("errorListener currentSenateActivity is null");
+                        new Toasty(context).showMessage("errorListener currentSenateActivity is null");
                 }
 
                 return;
@@ -174,24 +171,23 @@ public class InvApplication extends Application {
     }
 
     private Context tryNotNullContext() {
-        if (currentSenateActivity!=null) {
+        if (currentSenateActivity != null) {
             return currentSenateActivity;
-        } if (this.getApplicationContext()!=null) {
+        }
+        if (this.getApplicationContext() != null) {
             return this.getApplicationContext();
-        } else if (getAppContext()!=null) {
+        } else if (getAppContext() != null) {
             return getAppContext();
-        } else if (context!=null) {
+        } else if (context != null) {
             return context;
-        } else if (mContext!=null) {
+        } else if (mContext != null) {
             return mContext;
         } else if (InvApplication.getInstance().getApplicationContext() != null) {
             return InvApplication.getInstance().getApplicationContext();
-        }
-        else {
+        } else {
             return currentSenateActivity;
         }
     }
-
 
     /**
      * Checks the response headers for session cookie and saves it

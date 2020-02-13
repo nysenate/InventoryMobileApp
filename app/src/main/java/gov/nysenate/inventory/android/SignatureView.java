@@ -192,15 +192,8 @@ public class SignatureView extends View {
             for (int x = 1; x < this.getWidth(); x++) {
                 for (int y = 1; y < this.getHeight(); y++) {
                     mBitmap.setPixel(x, y, Color.TRANSPARENT);
-                    /*
-                     * if (mBitmap.getPixel(x, y)==Color.BLUE) {
-                     * mBitmap.setPixel(x, y, Color.TRANSPARENT); }
-                     */
+
                 }
-                /*
-                 * mCanvas.drawColor(Color.WHITE); mCanvas.drawRect(0f, 0f,
-                 * (float)this.getWidth(), (float)this.getHeight(), bgPaint);
-                 */
 
             }
 
@@ -208,8 +201,6 @@ public class SignatureView extends View {
             this.setImage(initialBitmap);
         }
         this.signed = false;
-        // this.setBackgroundResource(R.drawable.simplethinborder);
-        // this.setBackgroundResource(R.drawable.simplethinborder);
     }
 
     public void setSigned(boolean signed) {

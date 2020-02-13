@@ -63,10 +63,6 @@ public class CommodityListViewAdapter extends ArrayAdapter<Commodity> implements
             holder = new ViewHolder();
             holder.rlcomlist = (RelativeLayout) convertView
                     .findViewById(R.id.rlcomlist);
-            /*
-             * holder.commodityListNucnt = (TextView) convertView
-             * .findViewById(R.id.commodityListNucnt);
-             */
             holder.commodityListCdcommodity = (TextView) convertView
                     .findViewById(R.id.commodityListCdcommodity);
             holder.commodityListDecommodityf = (TextView) convertView

@@ -1,17 +1,11 @@
 package gov.nysenate.inventory.util;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class SFMSHttpUrlConnection extends HttpURLConnection {
     private static final String USER_AGENT = "Mozilla/5.0";

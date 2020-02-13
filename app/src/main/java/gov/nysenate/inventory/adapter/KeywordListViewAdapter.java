@@ -44,11 +44,7 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
             for (int k = arg1; k < arg2; k++) {
                 if (k > 0 && arg0.charAt(k) == ',' && etKeywordCurrent.getText().toString().endsWith(",")) {
                     return "";
-                }
-                    /* else if (Character.isSpaceChar(arg0.charAt(k))) {
-                         return ",";   
-                     }*/
-                else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {
+                } else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {
                     return "";
                 }
             }
@@ -149,16 +145,6 @@ public class KeywordListViewAdapter extends ArrayAdapter<String> implements
                 items.set(currentPosition, currentEtKeyword.getText()
                         .toString());
                 rowSelected = currentPosition;
-               /* String result = s.toString().replaceAll(" ", ",");
-                if (result.indexOf(",,")>-1) {
-                    result = result.replaceAll(",,",",");
-                }
-                if (!s.toString().equals(result)) {
-                    currentEtKeyword.setText(result);
-                    currentEtKeyword.setSelection(result.length());
-                    // alert the user
-               }*/
-                // notifyDataSetChanged();
             }
         };
 

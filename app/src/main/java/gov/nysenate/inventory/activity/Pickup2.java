@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +40,6 @@ import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Serializer;
-import gov.nysenate.inventory.util.Toasty;
 
 public class Pickup2 extends SenateActivity {
     public ClearableEditText senateTagTV;
@@ -73,7 +71,7 @@ public class Pickup2 extends SenateActivity {
         @Override
         public void onResponse(String response) {
             try {
-                 // add it to list and displist and scanned items
+                // add it to list and displist and scanned items
                 if (response == null) {
                     noServerResponse(barcode_num);
                     return;
@@ -307,7 +305,7 @@ public class Pickup2 extends SenateActivity {
         try {
             senateTagTV.setText("");
         } catch (NullPointerException e) { // TODO: when does senateTagTV not
-            // getInstance initialized??
+            // Get initialized??
             senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
             e.printStackTrace();
         }
@@ -622,17 +620,7 @@ public class Pickup2 extends SenateActivity {
         //  Future is a synchronized request that waits for the result. It was used here to minimize the coding changes.
         //  At a future date, this code should be changed to use Volley Asynchronized methods, (examples are in Search Activity and Verification)
 
-        /// 11/20/19  --- HERE (TESTING)  -- Below freezes
-
-        //  RequestFuture<String> future = RequestFuture.newFuture();
-        //  StringInvRequest req = new StringInvRequest(Request.Method.GET, URL +  "Item?barcode=" + barcode_num, null, future, future);
-
-        //  RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        //  JsonInvObjectRequest req = new JsonInvObjectRequest(URL + "Item?barcode=" + barcode_num, new JSONObject(), future, future);
-        /* Add your Requests to the RequestQueue to execute */
-        //  AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
-
-        InvApplication.timeoutType =  ITEMDETAILS_TIMEOUT;
+        InvApplication.timeoutType = ITEMDETAILS_TIMEOUT;
 
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET, URL + "Item?barcode=" + barcode_num, null, itemDetailResponseListener);
 

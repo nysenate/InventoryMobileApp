@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.model;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,9 +35,9 @@ public class Item {
         try {
             this.setId(jsonObject.getInt("id"));
             this.setBarcode(jsonObject.getString("barcode"));
-            this.setLocation((Location)jsonObject.get("location"));
-            this.setCommodity((Commodity)jsonObject.get("commodity"));
-            this.setAdjustCode((AdjustCode)jsonObject.get("adjustCode"));
+            this.setLocation((Location) jsonObject.get("location"));
+            this.setCommodity((Commodity) jsonObject.get("commodity"));
+            this.setAdjustCode((AdjustCode) jsonObject.get("adjustCode"));
             this.setStatus(Enum.valueOf(ItemStatus.class, jsonObject.getString("status")));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -114,8 +112,7 @@ public class Item {
     public void setLocations(List<Location> locations) {
         if (locations == null) {
             this.locations = new ArrayList<>();
-        }
-        else {
+        } else {
             this.locations = locations;
         }
     }

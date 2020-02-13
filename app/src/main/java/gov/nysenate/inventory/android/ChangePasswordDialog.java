@@ -250,12 +250,6 @@ public class ChangePasswordDialog extends DialogFragment {
                             }
                         });
 
-        /*
-         * if (senateActivity.dialogComments != null) {
-         * etComments.setText(senateActivity.dialogComments);
-         * senateActivity.dialogComments = null; }
-         */
-
         this.setStyle(STYLE_NO_FRAME, android.R.style.Theme_Holo);
 
         Dialog dialog = builder.create();

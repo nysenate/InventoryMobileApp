@@ -29,7 +29,6 @@ public class InvListViewAdapter extends ArrayAdapter<InvItem> {
         this.items = items;
     }
 
-    /* private view holder class */
     private class ViewHolder {
         RelativeLayout rlList;
         ImageView speech2Txt;

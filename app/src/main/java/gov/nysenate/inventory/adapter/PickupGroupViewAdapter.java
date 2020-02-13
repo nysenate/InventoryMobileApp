@@ -26,7 +26,6 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
         this.pickupGroups = pickupGroups;
     }
 
-    /* private view holder class */
     private class ViewHolder {
         RelativeLayout rlPickupGrpRow;
         TextView pickupDateTime;
@@ -90,11 +89,6 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
             e.printStackTrace();
         }
 
-        /*
-         * try {
-         * holder.pickupRelBy.setText(currentPickupGroup.getPickupRelBy()); }
-         * catch (Exception e) { e.printStackTrace(); }
-         */
         try {
             holder.pickupBy.setText(currentPickupGroup.getPickupFrom());
         } catch (Exception e) {
@@ -113,18 +107,6 @@ public class PickupGroupViewAdapter extends ArrayAdapter<PickupGroup> {
             e.printStackTrace();
         }
 
-        /*
-         * OnClickListener l = new OnClickListener() {
-         *
-         * @Override public void onClick(View v) { if
-         * (v.getId()==R.id.invListSpeech){
-         *
-         * }
-         *
-         * } };
-         *
-         * holder.speech2Txt.setOnClickListener(l);
-         */
         return convertView;
     }
 

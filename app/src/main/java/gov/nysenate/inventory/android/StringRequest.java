@@ -10,14 +10,13 @@ import java.util.Map;
 
 public class StringRequest extends com.android.volley.toolbox.StringRequest {
 
-    private  Map<String, String> _params;
+    private Map<String, String> _params;
 
     /**
      * @param method
      * @param url
-     * @param params
-     *            A {@link HashMap} to post with the request. Null is allowed
-     *            and indicates no parameters will be posted along with request.
+     * @param params        A {@link HashMap} to post with the request. Null is allowed
+     *                      and indicates no parameters will be posted along with request.
      * @param listener
      * @param errorListener
      */

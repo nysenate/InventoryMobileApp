@@ -6,7 +6,6 @@ package gov.nysenate.inventory.model;
  */
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,17 +71,17 @@ public class InvSerialNumber {
     }
 
     public void setLocations(JSONArray jsonArray) {
-       setLocations((ArrayList<Location>) Serializer.deserialize(jsonArray.toString(), Location.class));
+        setLocations((ArrayList<Location>) Serializer.deserialize(jsonArray.toString(), Location.class));
     }
 
-    public void setLocations(List <Location> locations) {
+    public void setLocations(List<Location> locations) {
         if (locations == null) {
             this.locations = new ArrayList<>();
-        }
-        else {
+        } else {
             this.locations = locations;
         }
     }
+
     public List<Location> getLocations() {
         return locations;
     }

@@ -2,7 +2,6 @@ package gov.nysenate.inventory.adapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

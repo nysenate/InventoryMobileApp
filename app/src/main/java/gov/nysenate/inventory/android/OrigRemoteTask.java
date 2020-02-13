@@ -54,8 +54,7 @@ public class OrigRemoteTask extends AsyncTask<Void, Void, Integer> {
 
             try {
                 new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
             }
 

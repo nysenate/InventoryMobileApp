@@ -7,7 +7,7 @@
     android:layout_marginTop="7dp"
     android:orientation="vertical"
     android:paddingLeft="20dp"
-    tools:context=".SearchActivity" >
+    tools:context=".SearchActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -36,7 +36,7 @@
         android:layout_marginTop="7dp"
         android:layout_toRightOf="@+id/spinSearchBy"
         android:gravity="top"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <gov.nysenate.inventory.android.ClearableEditText
             android:id="@+id/barcode"
@@ -51,8 +51,7 @@
             android:maxWidth="10dp"
             android:padding="4dip"
             android:singleLine="true"
-            android:textStyle="bold" >
-        </gov.nysenate.inventory.android.ClearableEditText>
+            android:textStyle="bold"></gov.nysenate.inventory.android.ClearableEditText>
 
         <gov.nysenate.inventory.android.ClearableAutoCompleteTextView
             android:id="@+id/acNuserial"
@@ -65,8 +64,7 @@
             android:padding="4dip"
             android:singleLine="true"
             android:textStyle="bold"
-            android:visibility="invisible" >
-        </gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
+            android:visibility="invisible"></gov.nysenate.inventory.android.ClearableAutoCompleteTextView>
     </LinearLayout>
 
     <TextView

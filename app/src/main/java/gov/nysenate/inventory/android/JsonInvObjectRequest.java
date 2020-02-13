@@ -29,20 +29,17 @@ public class JsonInvObjectRequest extends JsonObjectRequest {
     }
 
     public JsonInvObjectRequest(String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener) {
-        super( url, jsonRequest, listener, InvApplication.getInstance().errorListener);
+        super(url, jsonRequest, listener, InvApplication.getInstance().errorListener);
     }
 
     public JsonInvObjectRequest(String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        super( url, jsonRequest, listener, errorListener);
+        super(url, jsonRequest, listener, errorListener);
     }
-
 
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         // since we don't know which of the two underlying network vehicles
         // will Volley use, we have to handle and store session cookies manually
-
-//        Log.i (this.getClass().getName(),"parseNetworkResponse Status Code: " +response.statusCode);
 
         InvApplication.getInstance().checkSessionCookie(response.headers);
 
@@ -68,8 +65,6 @@ public class JsonInvObjectRequest extends JsonObjectRequest {
             headers.put("Content-Type", "application/json; charset=UTF-8");
             headers.put("Authorization", "Basic " + auth_token_string);
         }
-
-//        Log.i(this.getClass().getName(), "getHeaders: headers: "+headers.size()) ;
 
         InvApplication.getInstance().addSessionCookie(headers);
 

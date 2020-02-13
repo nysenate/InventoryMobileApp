@@ -39,7 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gov.nysenate.inventory.activity.LoginActivity;
-import gov.nysenate.inventory.activity.verification.VerScanActivity;
 import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.JsonInvObjectRequest;
@@ -341,7 +340,7 @@ public class HttpUtils {
 
         RequestQueue queue = AppSingleton.getInstance(gov.nysenate.inventory.util.InvApplication.getAppContext()).getRequestQueue();
 
-        StringRequest strreq = new StringRequest(Request.Method.GET, url, new Response.Listener < String > () {
+        StringRequest strreq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String Response) {
@@ -353,13 +352,11 @@ public class HttpUtils {
                 e.printStackTrace();
                 Toast.makeText(InvApplication.getAppContext(), e + "error", Toast.LENGTH_LONG).show();
             }
-        })
-        {
+        }) {
             // set headers
             @Override
-            public Map< String, String > getHeaders() throws com.android.volley.AuthFailureError {
-                Map < String, String > params = new HashMap< String, String >();
-//                params.put("Authorization: Basic", TOKEN);
+            public Map<String, String> getHeaders() throws com.android.volley.AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
                 return params;
             }
         };
@@ -367,7 +364,7 @@ public class HttpUtils {
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(strreq);
     }
 
-    private void uploadImage(Bitmap bitmap, String upload_URL){
+    private void uploadImage(Bitmap bitmap, String upload_URL) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
@@ -377,9 +374,7 @@ public class HttpUtils {
             jsonObject = new JSONObject();
             String imgname = String.valueOf(Calendar.getInstance().getTimeInMillis());
             jsonObject.put("name", imgname);
-            //  Log.e("Image name", etxtUpload.getText().toString().trim());
             jsonObject.put("image", encodedImage);
-            // jsonObject.put("aa", "aa");
         } catch (JSONException e) {
             Log.e("JSONObject Here", e.toString());
         }
@@ -389,12 +384,10 @@ public class HttpUtils {
                     public void onResponse(JSONObject jsonObject) {
                         Log.e("aaaaaaa", jsonObject.toString());
                         AppSingleton.getInstance(InvApplication.getAppContext()).getRequestQueue().getCache().clear();
-                       // Toast.makeText(InvApplication.getAppContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e("aaaaaaa", volleyError.toString());
 
             }
         });
@@ -426,8 +419,7 @@ public class HttpUtils {
 
             /* Add your Requests to the RequestQueue to execute */
             AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -123,59 +123,59 @@ public class LoginStatus {
          * external libraries.
          */
 
-            try {
-                this.setNauser(jsonObject.getString("nauser"));
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            this.setNauser(jsonObject.getString("nauser"));
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
-            try {
-                this.setDestatus(jsonObject.getString("destatus"));
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            this.setDestatus(jsonObject.getString("destatus"));
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
-            try {
-                this.setNustatus(jsonObject.getInt("nustatus"));
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            this.setNustatus(jsonObject.getInt("nustatus"));
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
-            try {
-                String dtpasswdexpString = null;
-                dtpasswdexpString = jsonObject.getString("dtpasswdexp");
-                if (dtpasswdexpString != null && dtpasswdexpString.length() > 0) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                    Date date = simpleDateFormat.parse(dtpasswdexpString);
-                    this.setDtpasswdexp(date);
-                } else {
-                    this.setDtpasswdexp(null);
-                }
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            } catch (Exception e3) {
-                e3.printStackTrace();
+        try {
+            String dtpasswdexpString = null;
+            dtpasswdexpString = jsonObject.getString("dtpasswdexp");
+            if (dtpasswdexpString != null && dtpasswdexpString.length() > 0) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                Date date = simpleDateFormat.parse(dtpasswdexpString);
+                this.setDtpasswdexp(date);
+            } else {
+                this.setDtpasswdexp(null);
             }
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        } catch (Exception e3) {
+            e3.printStackTrace();
+        }
 
-            try {
-                this.setCdseclevel(jsonObject.getString("cdseclevel"));
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            this.setCdseclevel(jsonObject.getString("cdseclevel"));
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
 
-            try {
-                this.setSQLErrorCode(jsonObject.getInt("sqlErrorCode"));
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            this.setSQLErrorCode(jsonObject.getInt("sqlErrorCode"));
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
-            try {
-                String usernamePasswordValids = jsonObject.getString("usernamePasswordValid").toLowerCase();
-                this.usernamePasswordValid = usernamePasswordValids.startsWith("t");
-            } catch (JSONException e2) {
-                e2.printStackTrace();
-            }
+        try {
+            String usernamePasswordValids = jsonObject.getString("usernamePasswordValid").toLowerCase();
+            this.usernamePasswordValid = usernamePasswordValids.startsWith("t");
+        } catch (JSONException e2) {
+            e2.printStackTrace();
+        }
 
     }
 

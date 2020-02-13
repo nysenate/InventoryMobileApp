@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Verification" >
+    tools:context=".Verification">
 
     <TextView
         android:id="@+id/textView1"
@@ -36,7 +36,7 @@
         android:layout_below="@+id/autoCompleteTextView1"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 

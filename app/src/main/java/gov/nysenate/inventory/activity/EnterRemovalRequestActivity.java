@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -24,9 +23,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +38,6 @@ import gov.nysenate.inventory.android.InvApplication;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RemovalRequestItemsList;
 import gov.nysenate.inventory.android.StringInvRequest;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.model.AdjustCode;
 import gov.nysenate.inventory.model.Item;
@@ -144,11 +139,6 @@ public class EnterRemovalRequestActivity extends SenateActivity
         @Override
         public void afterTextChanged(Editable text) {
             if (text.length() == 6) {
-                //  if (checkServerResponse(true) == OK) {
-/*                GetItem task = new GetItem();
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        AppProperties.getBaseUrl(EnterRemovalRequestActivity.this) + "Item?barcode=" + text.toString());*/
-                // }
                 getItem(text);
             }
         }

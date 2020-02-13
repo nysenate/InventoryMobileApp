@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.model;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

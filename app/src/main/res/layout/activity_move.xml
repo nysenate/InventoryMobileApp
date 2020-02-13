@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Move" >
+    tools:context=".Move">
 
     <ImageView
         android:id="@+id/invMoveTitle"
@@ -20,8 +20,7 @@
         android:layout_below="@+id/invMoveTitle"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/customshape" >
-    </ListView>
+        android:background="@drawable/customshape"></ListView>
 
     <ProgressBar
         android:id="@+id/progBarMove"

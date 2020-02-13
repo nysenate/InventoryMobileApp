@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -23,8 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="20dp"
-        android:background="@drawable/customshape" >
-    </ListView>
+        android:background="@drawable/customshape"></ListView>
 
     <ProgressBar
         android:id="@+id/progBarMove"

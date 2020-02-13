@@ -89,8 +89,7 @@ public class SearchActivity extends SenateActivity {
             for (int k = arg1; k < arg2; k++) {
                 if (k > 0 && arg0.charAt(k) == ',' && acNuserial.getText().toString().endsWith(",")) {
                     return "";
-                }
-                else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {
+                } else if (!Character.isLetterOrDigit(arg0.charAt(k)) && arg0.charAt(k) != '-' && arg0.charAt(k) != '/' && arg0.charAt(k) != '\\'/* && arg0.charAt(k) != '.' && arg0.charAt(k) != ','*/) {
                     return "";
                 }
             }
@@ -316,7 +315,7 @@ public class SearchActivity extends SenateActivity {
 
                 ItemInventoriedDetails itemInventoriedDetails = Serializer.deserialize(response, ItemInventoriedDetails.class).get(0);
 
-                Log.i(this.getClass().getName(), "RESPONSE(A): "+response);
+                Log.i(this.getClass().getName(), "RESPONSE(A): " + response);
 
                 SearchActivity.this.searchBarcode(itemInventoriedDetails);
 
@@ -375,7 +374,7 @@ public class SearchActivity extends SenateActivity {
                     break;
                 }
 
-                Log.i(this.getClass().getName(), "Locations: "+jo.getString("locations"));
+                Log.i(this.getClass().getName(), "Locations: " + jo.getString("locations"));
 
                 serialListNeeded = false;
                 InvSerialNumber invSerialNumber = new InvSerialNumber();
@@ -430,11 +429,10 @@ public class SearchActivity extends SenateActivity {
         if (force || locHistAdapter == null) {
             if (item == null) {
                 locations = new ArrayList<Location>();
+            } else {
+                locations = item.getLocations();
             }
-            else {
-                locations =  item.getLocations();
-            }
-            locHistAdapter= new LocHistAdapter(this, R.layout.row_location_history, locations);
+            locHistAdapter = new LocHistAdapter(this, R.layout.row_location_history, locations);
             this.lvLocationHistory.setAdapter(locHistAdapter);
         }
     }

@@ -1,7 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import org.json.JSONObject;
-
 import gov.nysenate.inventory.util.AppProperties;
 
 public class EnterRemote1 extends SelectDelivery1 {

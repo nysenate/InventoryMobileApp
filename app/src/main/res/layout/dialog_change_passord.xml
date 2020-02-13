@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="500dp" >
+    android:layout_height="500dp">
 
     <TableLayout
         android:id="@+id/tablePassword"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="top|right" >
+        android:layout_gravity="top|right">
 
         <TableRow>
 
@@ -34,7 +34,7 @@
                 android:hint="@string/new_password_str"
                 android:inputType="textPassword"
                 android:textSize="25sp"
-                android:textStyle="bold" >
+                android:textStyle="bold">
 
                 <requestFocus />
             </gov.nysenate.inventory.android.ClearableEditText>
@@ -59,8 +59,7 @@
             android:id="@+id/blankSpacerRow"
             android:layout_width="300dp"
             android:layout_height="75dp"
-            android:layout_marginTop="75dp" >
-        </TableRow>
+            android:layout_marginTop="75dp"></TableRow>
     </TableLayout>
 
 </RelativeLayout>

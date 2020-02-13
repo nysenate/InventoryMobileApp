@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -118,7 +117,7 @@ public class ChangePickupDestination extends SenateActivity {
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ChangePickupDestination.this, android.R.layout.simple_dropdown_item_1line, locSummaries);
 
-            if (newDeliveryLocation  == null) {
+            if (newDeliveryLocation == null) {
                 newDeliveryLocation = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
             }
 
@@ -177,14 +176,9 @@ public class ChangePickupDestination extends SenateActivity {
 
         this.getLocations();
 
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            new GetLocations().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            new GetLocations().execute();
-        }*/
     }
 
-    private void getLocations ( ){
+    private void getLocations() {
         String url = AppProperties.getBaseUrl(ChangePickupDestination.this);
         url += "LocCodeList?";
         url += "&userFallback=" + LoginActivity.nauser;
@@ -206,10 +200,6 @@ public class ChangePickupDestination extends SenateActivity {
         // e.g. what does it send back to indicate an error?
         @Override
         protected String doInBackground(Void... params) {
-//            LoginActivity.activeAsyncTask = this;
-         /*   if (checkServerResponse(true) != OK) {
-                return "";
-            }*/
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -241,7 +231,7 @@ public class ChangePickupDestination extends SenateActivity {
             List<String> locSummaries = new ArrayList<>(summaryToLocationMap.keySet());
             Collections.sort(locSummaries);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ChangePickupDestination.this, android.R.layout.simple_dropdown_item_1line, locSummaries);
-            if (newDeliveryLocation  == null) {
+            if (newDeliveryLocation == null) {
                 newDeliveryLocation = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
             }
 
@@ -280,6 +270,7 @@ public class ChangePickupDestination extends SenateActivity {
             LoginActivity.activeAsyncTask = null;
         }
     }
+
     protected void changeLocation() {
         String url = AppProperties.getBaseUrl();
         url += "ChangeDeliveryLocation?nuxrpd=" + pickup.getNuxrpd() + "&cdloc=" + newLocation.getCdlocat();
@@ -300,10 +291,6 @@ public class ChangePickupDestination extends SenateActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-           /* if (checkServerResponse(true) != OK) {
-                return "";
-            }*/
-
             HttpClient httpClient = LoginActivity.getHttpClient();
             HttpResponse response = null;
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -387,15 +374,11 @@ public class ChangePickupDestination extends SenateActivity {
 
     public void backButton(View view) {
 //        if (checkServerResponse(true) == OK) {
-            super.onBackPressed();
-  //      }
+        super.onBackPressed();
+        //      }
     }
 
     public void continueButton(View view) {
-       /* if (checkServerResponse(true) != OK) {
-            return;
-        }*/
-
         if (!summaryToLocationMap.containsKey(newDeliveryLocation.getText().toString())) {
             if (newDeliveryLocation.getText().length() > 0) {
                 Toasty.displayCenteredMessage(this, "You must enter a valid Delivery Location.", Toast.LENGTH_SHORT);
@@ -420,11 +403,6 @@ public class ChangePickupDestination extends SenateActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-/*                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    new ChangeDeliveryLocation().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    new ChangeDeliveryLocation().execute();
-                }*/
                 changeLocation();
             }
         });

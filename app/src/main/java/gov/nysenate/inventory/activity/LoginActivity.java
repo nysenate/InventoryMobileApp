@@ -10,7 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -67,14 +66,11 @@ import gov.nysenate.inventory.android.MsgAlert;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
-import gov.nysenate.inventory.model.DBAdapter;
 import gov.nysenate.inventory.model.InvSerialNumber;
 import gov.nysenate.inventory.model.LoginStatus;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Toasty;
-
-import static com.android.volley.VolleyLog.TAG;
 
 //   WIFI Code Added Below
 
@@ -151,7 +147,7 @@ public class LoginActivity extends SenateActivity implements
         setContentView(R.layout.activity_login);
         registerBaseActivityReceiver();
 
-        tvLAppVersion = (TextView)  findViewById(R.id.tvLAppVersion);
+        tvLAppVersion = (TextView) findViewById(R.id.tvLAppVersion);
 
         if (wifiCountStart == null) {
             wifiCountStart = new Date();
@@ -239,11 +235,10 @@ public class LoginActivity extends SenateActivity implements
         if (!this.timeoutActivity) {
             checkInitialWifiConnection();
             checkInitialAudioLevel();
-            if (tvLAppVersion!=null) {
-                tvLAppVersion.setText("MOBILE APP VERSION: "+versionName);
+            if (tvLAppVersion != null) {
+                tvLAppVersion.setText("MOBILE APP VERSION: " + versionName);
             }
-        }
-        else {
+        } else {
             tvLAppVersion.setText("MOBILE APP TIMEOUT");
         }
     }
@@ -426,7 +421,7 @@ public class LoginActivity extends SenateActivity implements
             }
 
             mainWifi.startScan();
-            // getInstance list of the results in object format ( like an array )
+            // Get list of the results in object format ( like an array )
             wifiList = mainWifi.getScanResults();
             WifiInfo connectionInfo = mainWifi.getConnectionInfo();
 
@@ -659,7 +654,7 @@ public class LoginActivity extends SenateActivity implements
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // getInstance the app version Code for checking
+        // Get the app version Code for checking
         this.versionCode = pInfo.versionCode;
         this.versionName = pInfo.versionName;
         //Log.i("onCreate VERSION CODE", "versionCode:" + versionCode);
@@ -705,11 +700,11 @@ public class LoginActivity extends SenateActivity implements
                             //Log.i("LoginActivity", "CheckAppVersion returned success:"+ success);
                             // if the reponse was successful check further
                             if (success) {
-                                // getInstance the latest version from the JSON string
+                                // Get the latest version from the JSON string
                                 latestVersion = responseObj
                                         .getInt("latestVersion");
 
-                                // getInstance the lastest application URI from the JSON
+                                // Get the lastest application URI from the JSON
                                 // string
                                 appURI = responseObj.getString("appURI");
                                 latestVersionName = responseObj
@@ -946,12 +941,12 @@ public class LoginActivity extends SenateActivity implements
                             return;
                         }
 
-                            /*
-                             * Serializer was used on the Server to convert LoginStatus to a JSON Object,
-                             * but currently deserializing on the client is not working (object returned
-                             * but values were set to null). Had to change the format mask for dtpasswdexpire
-                             * to match the new format mask set on the server within the LoginStatus.parseHSON method
-                             * */
+                        /*
+                         * Serializer was used on the Server to convert LoginStatus to a JSON Object,
+                         * but currently deserializing on the client is not working (object returned
+                         * but values were set to null). Had to change the format mask for dtpasswdexpire
+                         * to match the new format mask set on the server within the LoginStatus.parseHSON method
+                         * */
 
                     } catch (NullPointerException e) {
                         // TODO Auto-generated catch block
@@ -1373,16 +1368,6 @@ public class LoginActivity extends SenateActivity implements
 
                 this.login(u_name, pwd);
                 progressBarLogin.setVisibility(View.INVISIBLE);
-                /*
-                 * Intent intent = new Intent(this,
-                 * DisplayMessageActivity.class); // Intent intent = new
-                 * Intent(this, MenuActivity.class); String u_name =
-                 * user_name.getText().toString(); String pwd =
-                 * password.getText().toString(); intent.putExtra(u_name_intent,
-                 * u_name); intent.putExtra(pwd_intent, pwd);
-                 * startActivity(intent);
-                 * overridePendingTransition(R.anim.in_right, R.anim.out_left);
-                 */
             }
         }
     }
@@ -1537,7 +1522,6 @@ public class LoginActivity extends SenateActivity implements
                 JSONObject jo = new JSONObject();
                 jo = jsonArray.getJSONObject(i);
                 statusNum = jo.getInt("statusNum");
-                //System.out.println("statusNum:"+statusNum);
                 if (statusNum != 0) {
                     break;
                 }
@@ -1566,7 +1550,6 @@ public class LoginActivity extends SenateActivity implements
             e.printStackTrace();
         }
 
-        Toasty toasty = new Toasty(context);
         return serialList;
     }
 

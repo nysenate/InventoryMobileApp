@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VerSummeryActivity" >
+    tools:context=".VerSummeryActivity">
 
     <TextView
         android:id="@+id/textView1"
@@ -36,7 +36,7 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="21dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 
@@ -134,58 +134,54 @@
         android:layout_above="@+id/btnVerSumCont"
         android:layout_alignLeft="@+id/tableLayout20"
         android:layout_below="@+id/tableLayout20"
-        android:layout_marginTop="37dp" >
+        android:layout_marginTop="37dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="583dp"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
+                android:layout_height="wrap_content"></TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="516dp" >
+                android:layout_height="516dp">
 
                 <LinearLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
-                    android:layout_height="310dp" >
+                    android:layout_height="310dp">
 
                     <ListView
                         android:id="@+id/listView1"
                         android:layout_width="562dp"
-                        android:layout_height="278dp" >
-                    </ListView>
+                        android:layout_height="278dp"></ListView>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
-                    android:layout_height="310dp" >
+                    android:layout_height="310dp">
 
                     <ListView
                         android:id="@+id/listView2"
                         android:layout_width="match_parent"
-                        android:layout_height="278dp" >
-                    </ListView>
+                        android:layout_height="278dp"></ListView>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
-                    android:layout_height="310dp" >
+                    android:layout_height="310dp">
 
                     <ListView
                         android:id="@+id/listView3"
                         android:layout_width="match_parent"
-                        android:layout_height="278dp" >
-                    </ListView>
+                        android:layout_height="278dp"></ListView>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
@@ -217,19 +213,19 @@
         android:textColor="#FFFFFF"
         android:textSize="22sp" />
 
-    <Button android:id="@+id/editButton"
-            android:layout_width="151dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/btnVerSumBack"
-            android:layout_alignBaseline="@+id/btnVerSumCont"
-            android:layout_alignBottom="@+id/btnVerSumCont"
-            android:background="@drawable/buttonshapered"
-            android:text="Edit"
-            android:textSize="22sp"
-            android:textColor="#FFFFFF"
-            android:onClick="editButtonOnClick"
-            />
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="151dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/btnVerSumBack"
+        android:layout_alignBaseline="@+id/btnVerSumCont"
+        android:layout_alignBottom="@+id/btnVerSumCont"
+        android:background="@drawable/buttonshapered"
+        android:text="Edit"
+        android:textSize="22sp"
+        android:textColor="#FFFFFF"
+        android:onClick="editButtonOnClick" />
 
     <Button
         android:id="@+id/btnVerSumCont"

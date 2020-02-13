@@ -129,7 +129,6 @@ public class InvSerialAdapter extends ArrayAdapter {
                 }
             }
         }
-        //System.out.println ("getFilteredCount:"+s+" = "+cnt);
         return cnt;
     }
 
@@ -179,16 +178,10 @@ public class InvSerialAdapter extends ArrayAdapter {
         protected synchronized void publishResults(CharSequence constraint, FilterResults results) {
             try {
                 ArrayList<InvSerialNumber> filteredList = ((ArrayList<InvSerialNumber>) results.values);
-                //filteredList = (ArrayList<InvSerialNumber>)Collections.synchronizedList(filteredList);
-
-                //int listSize = filteredList.size();
                 if (results != null && results.count > 0) {
                     clear();
-                    //InvSerialNumber invSerialNumber;
-//                    for (int x=0;x<listSize;x++) {
                     for (InvSerialNumber invSerialNumber : filteredList) {
                         try {
-                            //invSerialNumber = filteredList.getInstance(x);
                             add(invSerialNumber);
                         } catch (Exception e) {
 

@@ -182,7 +182,7 @@ public class EditRemoteStatus extends SenateActivity {
     }
 
     public void backButton(View view) {
-            super.onBackPressed();
+        super.onBackPressed();
     }
 
     private boolean anythingWasEdited() {
@@ -312,7 +312,6 @@ public class EditRemoteStatus extends SenateActivity {
         /* Add your Requests to the RequestQueue to execute */
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
-
 
     private class EditRemoteStatusTask extends AsyncTask<Void, Void, Integer> {
 

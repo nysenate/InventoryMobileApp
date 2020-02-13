@@ -1,7 +1,6 @@
 package gov.nysenate.inventory.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -76,7 +75,7 @@ public class EditRemovalRequestSelection extends SenateActivity
     }
 
     public void getRemovalRequests() {
-        if (bar!=null) {
+        if (bar != null) {
             bar.setVisibility(ProgressBar.VISIBLE);
         }
 

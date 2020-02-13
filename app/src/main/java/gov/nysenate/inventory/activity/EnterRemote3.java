@@ -33,7 +33,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,54 +214,6 @@ public class EnterRemote3 extends SenateActivity {
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
 
-    /*private class GetPickup extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            //LoginActivity.activeAsyncTask = this;
-            HttpClient httpClient = LoginActivity.getHttpClient();
-            HttpResponse response = null;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            String url = AppProperties.getBaseUrl(EnterRemote3.this);
-            url += "GetPickup?nuxrpd=" + getIntent().getStringExtra("nuxrpd");
-            url += "&userFallback=" + LoginActivity.nauser;
-
-
-            try {
-                response = httpClient.execute(new HttpGet(url));
-                response.getEntity().writeTo(out);
-                pickup = Serializer.deserialize(out.toString(), Transaction.class).get(0);
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return response.getStatusLine().getStatusCode();
-        }
-
-        @Override
-        protected void onPostExecute(Integer response) {
-            if (response == HttpStatus.SC_OK) {
-                if (pickup.isRemote()) {
-                    pickupLocation.setText(Html.fromHtml(pickup.getOrigin().getLocationSummaryStringRemoteAppended()));
-                    deliveryLocation.setText(Html.fromHtml(pickup.getDestination().getLocationSummaryStringRemoteAppended()));
-                } else {
-                    pickupLocation.setText(pickup.getOrigin().getLocationSummaryString());
-                    deliveryLocation.setText(pickup.getDestination().getLocationSummaryString());
-                }
-                pickupBy.setText(pickup.getNapickupby());
-                itemCount.setText(Integer.toString(pickup.getPickupItems().size()));
-                checkForPreviousEntry();
-            }
-        }
-    }*/
-
-
     public void getOriginalRemote() {
 
         String url = AppProperties.getBaseUrl();
@@ -277,13 +228,6 @@ public class EnterRemote3 extends SenateActivity {
     }
 
     private void checkForPreviousEntry() {
-/*        OrigRemoteTask task = new OrigRemoteTask(this, pickup, verMethod, remoteSigner, remoteComment, remoteHelpReferenceNum);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            task.execute();
-        }*/
-
         getOriginalRemote();
     }
 
@@ -300,63 +244,6 @@ public class EnterRemote3 extends SenateActivity {
         /* Add your Requests to the RequestQueue to execute */
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
-
-/*    private class GetEmployeeList extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar = (ProgressBar) findViewById(R.id.enter_remote_3_progress_bar);
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String responseJson = "";
-
-            try {
-                String url = AppProperties.getBaseUrl(EnterRemote3.this);
-                url += "EmployeeList?";
-                url += "userFallback=" + LoginActivity.nauser;
-
-
-                // We cant use the same HttpClient (LoginActivity.httpClient) in 2 requests at the same time.
-                // Therefore we copy the cookies into a new HttpClient.
-                DefaultHttpClient httpClient = LoginActivity.getHttpClient();
-                CookieStore store = httpClient.getCookieStore();
-                HttpContext context = new BasicHttpContext();
-                context.setAttribute(ClientContext.COOKIE_STORE, store);
-
-                HttpResponse response = new DefaultHttpClient().execute(new HttpGet(url), context);
-
-                StatusLine statusLine = response.getStatusLine();
-                if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    response.getEntity().writeTo(out);
-                    out.close();
-                    responseJson = out.toString();
-                    employeeNameList = Serializer.deserialize(responseJson, Employee.class);
-                } else {
-                    // Closes the connection.
-                    response.getEntity().getContent().close();
-                    throw new IOException(statusLine.getReasonPhrase());
-                }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return responseJson;
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            initializeRemoteSignerTextBox();
-            LoginActivity.activeAsyncTask = null;
-        }
-
-    }*/
 
     private void initializeRemoteSignerTextBox() {
         remoteSigner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAllEmployeeNames()));

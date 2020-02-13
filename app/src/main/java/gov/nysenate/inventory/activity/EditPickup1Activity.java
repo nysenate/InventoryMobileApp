@@ -1,10 +1,5 @@
 package gov.nysenate.inventory.activity;
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import gov.nysenate.inventory.util.AppProperties;
 
 public class EditPickup1Activity extends SelectDelivery1 {

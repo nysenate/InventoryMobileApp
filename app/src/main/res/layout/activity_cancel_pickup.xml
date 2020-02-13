@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/cancel_pickup_title"
@@ -22,7 +22,7 @@
         android:layout_below="@+id/cancel_pickup_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:background="@drawable/customshape" >
+        android:background="@drawable/customshape">
 
         <TableRow>
 
@@ -139,8 +139,7 @@
         android:layout_height="310dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/pickup_info"
-        android:layout_marginTop="27dp" >
-    </ListView>
+        android:layout_marginTop="27dp"></ListView>
 
     <TextView
         android:id="@+id/cancel_pickup_comments_title"

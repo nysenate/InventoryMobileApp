@@ -31,7 +31,7 @@ public class StringInvRequest extends StringRequest {
         this.params = params;
     }
 
-    public StringInvRequest(int method, String url,  Map<String, String> params, Response.Listener<String> listener) {
+    public StringInvRequest(int method, String url, Map<String, String> params, Response.Listener<String> listener) {
         super(method, url, params, listener, InvApplication.getInstance().errorListener);
         this.params = params;
     }
@@ -40,8 +40,6 @@ public class StringInvRequest extends StringRequest {
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
         // since we don't know which of the two underlying network vehicles
         // will Volley use, we have to handle and store session cookies manually
-
-//        Log.i (this.getClass().getName(),"parseNetworkResponse Status Code: " +response.statusCode);
 
         InvApplication.getInstance().checkSessionCookie(response.headers);
 
@@ -67,8 +65,6 @@ public class StringInvRequest extends StringRequest {
             headers.put("Authorization", "Basic " + auth_token_string);
         }
 
-//        Log.i(this.getClass().getName(), "getHeaders: headers: "+headers.size()) ;
-
         InvApplication.getInstance().addSessionCookie(headers);
 
         return headers;
@@ -85,8 +81,9 @@ public class StringInvRequest extends StringRequest {
     @Override
     protected Map<String, String> getParams() {
         return params;
-    };
+    }
 
+    ;
 
 
 }

@@ -20,19 +20,17 @@ public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<
 
 // prepare the Request
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, (String) urls[0], null,
-                new Response.Listener<JSONObject>()
-                {
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         // display response
                         Log.d("Response", response.toString());
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage()+" ["+error.getCause()+"]");
+                        Log.d("Error.Response", error.getMessage() + " [" + error.getCause() + "]");
                     }
                 }
         );
@@ -40,52 +38,8 @@ public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<
 // add it to the RequestQueue
 
 // Get a RequestQueue
-/*        RequestQueue queue = AppSingleton.getInstance(InvApplication.getAppContext()).
-                getRequestQueue();*/
 
         AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(getRequest);
-
-        //LoginActivity.activeAsyncTask = this;
-/*        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        CookieStore store = LoginActivity.getHttpClient().getCookieStore();
-        HttpContext context = new BasicHttpContext();
-        context.setAttribute(ClientContext.COOKIE_STORE, store);
-
-        Result result = null;
-        HttpResponse response = null;
-        HttpUtils httpUtils = new HttpUtils();
-        try {
-            if (httpUtils.isOnline()) {
-
-                httpUtils.updateOffline((String) urls[0]);  // Test only
-                response = new DefaultHttpClient().execute(new HttpGet((String) urls[0]), context);
-                response.getEntity().writeTo(out);
-                result = handleBackgroundResult(out.toString(), response.getStatusLine().getStatusCode());
-                response.getEntity().consumeContent();
-                Log.i("BaseAsyncTask", "App is connected for:" + (String) urls[0]);
-            } else {
-                Log.i("BaseAsyncTask", "App is offline for:" + (String) urls[0]);
-                httpUtils.updateOffline((String) urls[0]);
-
-                try {
-                    new Toasty(SenateActivity.stContext).showMessage("!!ERROR: App is Offline.");
-                }
-                catch (Exception e) {
-                    Log.e(this.getClass().getName(), "!!ERROR: Could not show toasty message that App is Offline!!");
-                }
-
-                httpUtils.playSound(R.raw.noconnect);
-            }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Generic Exception Below Added on 9/18/19
-        catch (Exception e) {
-            Log.d("BaseAsyncTask", "!!GENERIC ERROR:" + e.getMessage());
-            Log.d("BaseAsyncTask", "     RESPONSE:" + response.toString());
-        }*/
 
         return null;//result;
     }

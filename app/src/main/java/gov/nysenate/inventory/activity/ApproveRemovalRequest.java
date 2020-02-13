@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -35,7 +34,6 @@ import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RRRejectConfirmationDialog;
 import gov.nysenate.inventory.android.RemovalRequestListSelectionFragment;
 import gov.nysenate.inventory.android.StringInvRequest;
-import gov.nysenate.inventory.android.asynctask.BaseAsyncTask;
 import gov.nysenate.inventory.android.asynctask.UpdateRemovalRequest;
 import gov.nysenate.inventory.comparator.RemovalRequestComparer;
 import gov.nysenate.inventory.model.Item;
@@ -98,21 +96,17 @@ public class ApproveRemovalRequest extends SenateActivity
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() == 6) {
-                /*if (checkServerResponse() == OK && items != null) {*/
-                    Item item = getItemByBarcode(s.toString());
-                    if (item != null) {
-                        list.approveItem(item);
-                        updateRemainingCount();
-                        playSound(R.raw.ok);
-                    } else {
-                        playSound(R.raw.warning);
-                        Toasty.displayCenteredMessage(ApproveRemovalRequest.this,
-                                "Scanned Item is not part of the Removal Request", Toast.LENGTH_SHORT);
-                    }
-                    barcode.setText("");
-                /*} else {
+                Item item = getItemByBarcode(s.toString());
+                if (item != null) {
+                    list.approveItem(item);
+                    updateRemainingCount();
+                    playSound(R.raw.ok);
+                } else {
                     playSound(R.raw.warning);
-                }*/
+                    Toasty.displayCenteredMessage(ApproveRemovalRequest.this,
+                            "Scanned Item is not part of the Removal Request", Toast.LENGTH_SHORT);
+                }
+                barcode.setText("");
             }
         }
     };
@@ -129,17 +123,6 @@ public class ApproveRemovalRequest extends SenateActivity
         }
         return null;
     }
-
-/*    private void queryRemovalRequest() {
-       // if (checkServerResponse() != OK) {
-       //     return;
-      //  }
-
-        GetRemovalRequest rrTask = new GetRemovalRequest();
-
-        rrTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                AppProperties.getBaseUrl(this) + "RemovalRequest?id=" + Integer.valueOf(getIntent().getStringExtra("transactionNum")));
-    }*/
 
     public void getRemovalRequest() {
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
@@ -208,11 +191,6 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     public void onRejectBtnClick(View v) {
-        /*if (checkServerResponse() != OK) {
-            rejectBtn.setEnabled(true);
-            return;
-        }*/
-
         DialogFragment dialog = RRRejectConfirmationDialog.newInstance(removalRequest, this);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "reject_dialog");
@@ -233,11 +211,6 @@ public class ApproveRemovalRequest extends SenateActivity
     public void onApproveBtnSubmit(View v) {
         final Button approvalBtn = (Button) findViewById(R.id.approve_submit_btn);
 
-       /* if (checkServerResponse() != OK) {
-            approvalBtn.setEnabled(true);
-            return;
-        }*/
-
         if (allItemsApproved()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -255,10 +228,10 @@ public class ApproveRemovalRequest extends SenateActivity
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                         //   if (checkServerResponse(true) == OK) {
-                                removalRequest.setStatus("SM");
-                                saveChanges();
-                           // }
+                            //   if (checkServerResponse(true) == OK) {
+                            removalRequest.setStatus("SM");
+                            saveChanges();
+                            // }
                         }
 
                     });
@@ -272,13 +245,6 @@ public class ApproveRemovalRequest extends SenateActivity
     private boolean allItemsApproved() {
         return remainingItemCount() == 0 ? true : false;
     }
-
-/*    private void saveChanges() {
-        UpdateRemovalRequest task = new UpdateRemovalRequest(ApproveRemovalRequest.this, removalRequest, this);
-        task.setProgressBar(progressBar);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, AppProperties.getBaseUrl(this) + "RemovalRequest");
-        returnToInventoryRemovalMenu();
-    } */
 
     public void saveChanges() {
         Map<String, String> params = new HashMap<>();
@@ -356,35 +322,5 @@ public class ApproveRemovalRequest extends SenateActivity
     }
 
     /* --- Background --- */
-
-  /*  private class GetRemovalRequest extends BaseAsyncTask<String, Void, RemovalRequest> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-        }
-
-        @Override
-        public RemovalRequest handleBackgroundResult(String out, int responseCode) {
-            RemovalRequest rr = null;
-            if (responseCode == HttpStatus.SC_OK) {
-                rr = Serializer.deserialize(out, RemovalRequest.class).get(0);
-            }
-            return rr;
-        }
-
-        @Override
-        protected void onPostExecute(RemovalRequest rr) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            if (rr != null) {
-                removalRequest = rr;
-                initializeOriginalInfo(rr);
-                initializeItems();
-                updateRemainingCount();
-            } else {
-                Toasty.displayCenteredMessage(ApproveRemovalRequest.this, "A Server Error has occured, Please try again.", Toast.LENGTH_SHORT);
-            }
-        }
-    } */
 
 }
