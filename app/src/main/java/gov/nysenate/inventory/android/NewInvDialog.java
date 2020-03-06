@@ -215,7 +215,20 @@ public class NewInvDialog extends DialogFragment implements
         adapter = (CommodityListViewAdapter) commodityList.getAdapter();
         int currentWordCount = 0;
         for (int x = 0; x < keywordList.length; x++) {
-            currentWordCount = adapter.wordRowCount(keywordList[x]);
+            currentWordCount = 0;
+            try {
+                currentWordCount = adapter.wordRowCount(keywordList[x]);
+            }
+            catch (NullPointerException e) {
+                // If keywordList row is null, then the wordcount is 0.
+                // Prevent a crash from occuring on a NullPointerException
+
+                currentWordCount = 0;
+            }
+            catch (Exception e) {
+                Toast.makeText(InvApplication.getAppContext(), "ERROR on checkKeywordsFound: "+e.getMessage() + ". Please contact STSBAC.", Toast.LENGTH_LONG).show();
+                // Add Msg Here.
+            }
 
             if (currentWordCount > 0) {
                 s.append("<font color='#005500'><b>");

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import gov.nysenate.inventory.activity.LoginActivity;
 
@@ -14,21 +15,32 @@ public class SoundAlert extends AsyncTask<Object, Integer, String> {
     protected String doInBackground(Object... soundParams) {
         //LoginActivity.activeAsyncTask = this;
         Context context = (Context) soundParams[0];
+
+        if (soundParams == null) {
+            return null;
+        }
+
         int soundCnt = soundParams.length;
         for (int x = 1; x < soundCnt; x++) {
-            mp = MediaPlayer.create(context,
-                    ((Integer) soundParams[x]).intValue());
-            mp.setOnCompletionListener(new OnCompletionListener() {
+            try {
+                mp = MediaPlayer.create(context,
+                        ((Integer) soundParams[x]).intValue());
+                mp.setOnCompletionListener(new OnCompletionListener() {
 
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    // TODO Auto-generated method stub
-                    mp.reset();
-                    mp.release();
-                }
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        // TODO Auto-generated method stub
+                        mp.reset();
+                        mp.release();
+                    }
 
-            });
-            mp.start();
+                });
+                mp.start();
+            }
+            catch (Exception e) {
+                Toast.makeText(InvApplication.getAppContext(), "ERROR on SoundAlert playing sound#:"+x+" : "+e.getMessage() + ". Please contact STSBAC.", Toast.LENGTH_LONG).show();
+            }
+
         }
         return null;
     }
