@@ -60,6 +60,7 @@ import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 
 import static gov.nysenate.inventory.activity.verification.Verification.progBarVerify;
 
@@ -151,98 +152,130 @@ public class VerScanActivity extends SenateActivity implements
 
         @Override
         public void onResponse(String response) {
-            InvApplication.timeoutType = -1;
-            Item item = Serializer.deserialize(response, Item.class).get(0);
+            if (response == null) {
+                try {
+                    try {
+                        playSound(R.raw.honk);
+                    }
+                    catch (Exception e0) {
 
-            if (item.getStatus() == ItemStatus.DOES_NOT_EXIST) {
-                nusenateDidNotExist(VerScanActivity.this.holdNusenate);
+                    }
+                    new MsgAlert(VerScanActivity.this, "ERROR (A02): Add Item", "!!ERROR: Unable to add Item. Unable to get a server response");
+                }
+                catch (Exception  e1) {
+                    new Toasty(VerScanActivity.this).showMessage("!!ERROR (A02): Unable to add Item. Unable to get a server response", Toast.LENGTH_LONG);
+                }
                 return;
             }
 
-            String itemType = null;
-            verList vl = new verList();
-            vl.NUSENATE = item.getBarcode();
-            String nusenateReturned = null;
-            vl.CDCATEGORY = item.getCommodity().getCategory();
-            vl.CDLOCAT = item.getLocation().getCdlocat();
-            itemType = "EXISTING";
-
             try {
-                vl.CDLOCTYPE = item.getLocation().getCdloctype();
-            } catch (Exception e) {
-                vl.CDLOCTYPE = "(N/A)";
-            }
-            nusenateReturned = item.getBarcode();
+                InvApplication.timeoutType = -1;
+                Item item = Serializer.deserialize(response, Item.class).get(0);
 
-            if (nusenateReturned == null) {
-                vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
-                vl.CONDITION = "NEW";
-                itemType = "NEW";
-                nusenateDidNotExist(VerScanActivity.this.holdNusenate);
-            } else if (item.getStatus() == ItemStatus.INACTIVE) {
-                vl.DECOMMODITYF = item.getCommodity().getDescription();
-                inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                if (item.getStatus() == ItemStatus.DOES_NOT_EXIST) {
+                    nusenateDidNotExist(VerScanActivity.this.holdNusenate);
+                    return;
+                }
+
+                String itemType = null;
+                verList vl = new verList();
+                vl.NUSENATE = item.getBarcode();
+                String nusenateReturned = null;
+                vl.CDCATEGORY = item.getCommodity().getCategory();
+                vl.CDLOCAT = item.getLocation().getCdlocat();
+                itemType = "EXISTING";
+
+                try {
+                    vl.CDLOCTYPE = item.getLocation().getCdloctype();
+                } catch (Exception e) {
+                    vl.CDLOCTYPE = "(N/A)";
+                }
+                nusenateReturned = item.getBarcode();
+
+                if (nusenateReturned == null) {
+                    vl.DECOMMODITYF = " ***NOT IN SFMS***  New Item";
+                    vl.CONDITION = "NEW";
+                    itemType = "NEW";
+                    nusenateDidNotExist(VerScanActivity.this.holdNusenate);
+                } else if (item.getStatus() == ItemStatus.INACTIVE) {
+                    vl.DECOMMODITYF = item.getCommodity().getDescription();
+                    inactiveInvItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
+                            vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
+
+                    inactiveInvItem.setType("INACTIVE");
+                    itemType = "INACTIVE";
+
+                    inactiveMessage(
+                            VerScanActivity.this.holdNusenate,
+                            "<b>**WARNING</b>: Senate Tag#:<b>" + VerScanActivity.this.holdNusenate
+                                    + "</b> has been <b>INACTIVATED</b>.",
+                            "Item Description: <b>"
+                                    + vl.DECOMMODITYF
+                                    + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
+
+                } else {
+                    vl.DECOMMODITYF = item.getCommodity().getDescription()
+                            + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
+                    vl.CONDITION = "DIFFERENT LOCATION";
+                    playSound(R.raw.warning);
+                    itemType = "DIFFERENT LOCATION";
+                }
+                StringBuilder s_new = new StringBuilder();
+                // s_new.append(vl.NUSENATE); since the desc coming from
+                // server already contains barcode number we wont add it
+                // again
+                // s_new.append(" ");
+                s_new.append("ADDED: ");
+                s_new.append(vl.NUSENATE);
+                s_new.append(": ");
+                s_new.append(vl.CDCATEGORY);
+                s_new.append(" ");
+                s_new.append(vl.DECOMMODITYF);
+
+                // display toster
+                Context context = getApplicationContext();
+                CharSequence text = s_new;
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
+                // 3/15/13 BH Coded below to use InvItem Objects to display
+                // the list.
+                InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
                         vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
 
-                inactiveInvItem.setType("INACTIVE");
-                itemType = "INACTIVE";
+                if (invItem.getType() == null) {
+                    invItem.setType(itemType);
+                }
 
-                inactiveMessage(
-                        VerScanActivity.this.holdNusenate,
-                        "<b>**WARNING</b>: Senate Tag#:<b>" + VerScanActivity.this.holdNusenate
-                                + "</b> has been <b>INACTIVATED</b>.",
-                        "Item Description: <b>"
-                                + vl.DECOMMODITYF
-                                + "</b><br/><br/>  <font color='RED'>Adding this item will </font><b>ONLY</b> <font color='RED'> save it as a Verification Exception Item. Further action is required by Management to bring it back into the Senate Tracking System via the <b>\"Inventory Record Adjustment E/U\"</b></font>. <br/><br/> Do you want to save this Item for further review?");
+                invList.add(invItem);
+                cntScanned++;
 
-            } else {
-                vl.DECOMMODITYF = item.getCommodity().getDescription()
-                        + " \n***Found in: " + vl.CDLOCAT + "-" + vl.CDLOCTYPE;
-                vl.CONDITION = "DIFFERENT LOCATION";
-                playSound(R.raw.warning);
-                itemType = "DIFFERENT LOCATION";
+                allScannedItems.add(invItem);
+                newItems.add(invItem); // to keep track of (number+details)
+
+                // for summary
+                updateChanges();
+                currentState = NONE;
+                // Clear Barcode after all actions are done
+                barcode.setText("");
             }
-            StringBuilder s_new = new StringBuilder();
-            // s_new.append(vl.NUSENATE); since the desc coming from
-            // server already contains barcode number we wont add it
-            // again
-            // s_new.append(" ");
-            s_new.append("ADDED: ");
-            s_new.append(vl.NUSENATE);
-            s_new.append(": ");
-            s_new.append(vl.CDCATEGORY);
-            s_new.append(" ");
-            s_new.append(vl.DECOMMODITYF);
+            catch (Exception e) {
+                try {
+                    try {
+                        playSound(R.raw.honk);
+                    }
+                    catch (Exception e0) {
 
-            // display toster
-            Context context = getApplicationContext();
-            CharSequence text = s_new;
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-
-            // 3/15/13 BH Coded below to use InvItem Objects to display
-            // the list.
-            InvItem invItem = new InvItem(vl.NUSENATE, vl.CDCATEGORY,
-                    vl.CONDITION, vl.DECOMMODITYF, vl.CDLOCAT);
-
-            if (invItem.getType() == null) {
-                invItem.setType(itemType);
+                    }
+                    new MsgAlert(VerScanActivity.this, "ERROR (A01): Add Item", "!!ERROR: Unable to add Item. " + e.getMessage());
+                }
+                catch (Exception  e1) {
+                    new Toasty(VerScanActivity.this).showMessage("!!ERROR (A01): Unable to add Item. " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
-
-            invList.add(invItem);
-            cntScanned++;
-
-            allScannedItems.add(invItem);
-            newItems.add(invItem); // to keep track of (number+details)
-
-            // for summary
-            updateChanges();
-            currentState = NONE;
-            // Clear Barcode after all actions are done
-            barcode.setText("");
         }
     };
 
@@ -273,9 +306,19 @@ public class VerScanActivity extends SenateActivity implements
 
                 status = "yes1";
             } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "JSON: " + response);
-                new MsgAlert(VerScanActivity.this, "ERROR: Item List", "!!ERROR: Unable to  build item list.");
+                try {
+                    try {
+                        playSound(R.raw.honk);
+                    }
+                    catch (Exception e0) {
+
+                    }
+
+                    new MsgAlert(VerScanActivity.this, "ERROR: Item List", "!!ERROR: Unable to build item list. "+ e.getMessage());
+                }
+                catch (Exception  e1) {
+                    new Toasty(VerScanActivity.this).showMessage("!!ERROR: Unable to build item list. " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         }
     };
@@ -302,7 +345,19 @@ public class VerScanActivity extends SenateActivity implements
                 NewInvDialog.progBarNewInvItem.setVisibility(View.INVISIBLE);
 
             } catch (Exception e) {
-                new MsgAlert(InvApplication.getAppContext(), "ERROR: Item List", "!!ERROR: Unable to  build item list.");
+                try {
+                    try {
+                        playSound(R.raw.honk);
+                    }
+                    catch (Exception e0) {
+
+                    }
+
+                    new MsgAlert(InvApplication.getAppContext(), "ERROR: Item List", "!!ERROR: Unable to build commodity list. "+e.getMessage());
+                }
+                catch (Exception  e1) {
+                    new Toasty(VerScanActivity.this).showMessage("!!ERROR: Unable to build commodity list. " + e.getMessage(), Toast.LENGTH_LONG);
+                }
             }
         }
     };
@@ -594,34 +649,44 @@ public class VerScanActivity extends SenateActivity implements
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (barcode.getText().toString().length() >= 6) {
-                String barcode_num = barcode.getText().toString().trim();
-                String barcode_number = barcode_num;
+            try {
+                if (barcode.getText().toString().length() >= 6) {
+                    String barcode_num = barcode.getText().toString().trim();
+                    String barcode_number = barcode_num;
 
-                boolean barcodeFound = false;
+                    // to delete an element from the list
 
-                // to delete an element from the list
-                int flag = 0;
+                    // If the item is already scanned then display a
+                    // toaster "Already Scanned"
+                    if (findBarcode(barcode_num, allScannedItems) > -1) {
+                        // display toaster
+                        Context context = getApplicationContext();
+                        CharSequence text = "Already Scanned  ";
+                        int duration = Toast.LENGTH_SHORT;
 
-                // If the item is already scanned then display a
-                // toaster "Already Scanned"
-                if (findBarcode(barcode_num, allScannedItems) > -1) {
-                    // display toaster
-                    barcodeFound = true;
-                    Context context = getApplicationContext();
-                    CharSequence text = "Already Scanned  ";
-                    int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                        barcode.setText("");
 
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    barcode.setText("");
+                        HttpUtils.keepAlive(keepAliveRespListener);
 
-                    HttpUtils.keepAlive(keepAliveRespListener);
-
-                    return;
+                        return;
+                    }
+                    handleItem();
                 }
-                handleItem();
+            }
+
+            catch (Exception e0) {
+                new Toasty(VerScanActivity.this).showMessage( "!!ERROR: Problem with interpreting barcode. "+e0.getMessage(), Toast.LENGTH_LONG);
+
+                try {
+                    playSound(R.raw.error);
+                }
+                catch (Exception e1) {
+
+                }
+
             }
         }
     };
@@ -1044,8 +1109,6 @@ public class VerScanActivity extends SenateActivity implements
         // attempts to add an item with
         // the else condition.
 
-        String serverResponse = null;
-
         holdNusenate = nusenate;
 
         StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.GET,
@@ -1175,11 +1238,7 @@ public class VerScanActivity extends SenateActivity implements
         }
 
         if ((resumeFromTimeout && currentState == ADDITEM_STATE) || invItemIndex == -1) { // Item not found, so Add Item to list
-            // int addItemResults = -1;
             addItem(nusenate);  // addItemResults =
-            /*if (addItemResults == SERVER_SESSION_TIMED_OUT) {
-                return;
-            }*/
         }
 
         updateChanges();

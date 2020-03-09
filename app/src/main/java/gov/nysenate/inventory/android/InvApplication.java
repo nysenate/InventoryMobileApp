@@ -71,7 +71,7 @@ public class InvApplication extends Application {
                 context = tryNotNullContext();
             }
 
-            if (volleyError.networkResponse.statusCode == InvApplication.SC_SESSION_TIMEOUT) {
+            if (volleyError != null && volleyError.networkResponse != null && volleyError.networkResponse.statusCode == InvApplication.SC_SESSION_TIMEOUT) {
                 currentSenateActivity = (SenateActivity) tryNotNullContext();
 
                 if (currentSenateActivity != null) {
