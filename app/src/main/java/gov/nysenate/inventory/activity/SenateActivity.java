@@ -31,6 +31,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONObject;
@@ -39,14 +41,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gov.nysenate.inventory.activity.verification.VerScanActivity;
 import gov.nysenate.inventory.android.AppSingleton;
 import gov.nysenate.inventory.android.ChangePasswordDialog;
 import gov.nysenate.inventory.android.CommentsDialog;
@@ -58,13 +63,19 @@ import gov.nysenate.inventory.android.NewInvDialog;
 import gov.nysenate.inventory.android.R;
 import gov.nysenate.inventory.android.RequestTask;
 import gov.nysenate.inventory.android.SoundAlert;
+import gov.nysenate.inventory.android.StringInvRequest;
 import gov.nysenate.inventory.listener.ChangePasswordDialogListener;
 import gov.nysenate.inventory.listener.CommodityDialogListener;
 import gov.nysenate.inventory.listener.OnKeywordChangeListener;
 import gov.nysenate.inventory.model.Commodity;
 import gov.nysenate.inventory.model.Employee;
+import gov.nysenate.inventory.model.InvItem;
+import gov.nysenate.inventory.model.Item;
+import gov.nysenate.inventory.model.ItemStatus;
 import gov.nysenate.inventory.model.LoginStatus;
+import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
+import gov.nysenate.inventory.util.Serializer;
 import gov.nysenate.inventory.util.Toasty;
 
 public abstract class SenateActivity extends Activity implements
@@ -90,6 +101,21 @@ public abstract class SenateActivity extends Activity implements
     public String dialogMsg = null;
     public boolean senateTagNum = false;
 
+    protected DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (which == dialog.BUTTON_POSITIVE) {
+                SenateActivity.this.showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
+            }
+        }
+    };
+
+    protected String oldPasswordF = null;
+    protected String newPasswordF = null;
+    protected String confirmPasswordF = null;
+    protected boolean oldPasswordRequiredF = false;
+    protected LoginStatus loginStatus = new LoginStatus();
+
     public NewInvDialog newInvDialog = null;
     public CommentsDialog commentsDialog = null;
     public static Context stContext;
@@ -108,6 +134,115 @@ public abstract class SenateActivity extends Activity implements
     // for every Activity
     // The Check Internet Service will check for
     // connections and disconnections.
+
+/*   --- NEED TO ADD THIS CODING
+
+ */
+Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
+
+    @Override
+    public void onResponse(JSONObject response) {
+        String username = LoginActivity.user_name.getText().toString();
+
+        loginStatus.setFromJSON(response);
+
+        if (response == null) {
+            noServerResponse("Senate Activity:2:null");
+        }
+
+        if (!loginStatus.isUsernamePasswordValid()) {
+            if (loginStatus.getNustatus() == loginStatus.INVALID_USERNAME_OR_PASSWORD) {
+                onClickListener = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == dialog.BUTTON_POSITIVE) {
+                            SenateActivity.this.showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
+                        }
+                    }
+               };
+                new MsgAlert(SenateActivity.this).showMessage("!!ERROR: Invalid Old Password", "Invalid Old Password.", onClickListener);
+            } else {
+                new MsgAlert(SenateActivity.this).showMessage("!!ERROR: " + loginStatus.getDestatus(), loginStatus.getDestatus(), onClickListener);
+            }
+            return;
+        }
+        validateNewPassword(oldPasswordRequiredF, oldPasswordF, newPasswordF, confirmPasswordF, onClickListener);
+
+   }
+  };
+
+    Response.Listener changePasswordListener = new Response.Listener<String>() {
+        public void onResponse(String response) {
+            String username = LoginActivity.user_name.getText().toString();
+
+            try {
+                MsgAlert msgAlert = new MsgAlert(SenateActivity.this);
+
+                if (response.trim().equalsIgnoreCase("OK") || response.trim().toUpperCase().startsWith("**WARNING:") || response.trim().toUpperCase().startsWith("***WARNING:")) {
+                    if (response.trim().equalsIgnoreCase("OK")) {
+                        new Toasty(SenateActivity.this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
+                        if (changePasswordOnLogin && currentLoginActivity != null) {
+                            currentLoginActivity.login(username, newPasswordF);
+                        }
+                    } else {
+                        onClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new Toasty(getApplicationContext(), "Password has been partially changed.", Toast.LENGTH_SHORT).showMessage();
+                            }
+                        };
+                        /** **WARNING message from the Server will remain a warning because the mobile app will still work
+                         *  but !!ERROR will display to the user to indicate a problem the user should call about
+                         */
+                        if (response.trim().toUpperCase().contains("**WARNING:(CHANGESSOPASSWORD)") || response.trim().toUpperCase().contains("**WARNING:(UPDATESSOUSERRESOURCE)")) {
+                            msgAlert.showMessage("!!ERROR: Part of Password Change failed. Please contact STSBAC.", "ERROR DETAILS:<br/>" + response.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                        } else {
+                            msgAlert.showMessage("!!ERROR: Problem during Password Change. Please contact STSBAC.", "ERROR DETAILS:<br/>" + response.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
+                        }
+                    }
+                } else if (response.contains("ORA-20003") || response.contains("ORA-20002") || response.contains("ORA-00988") || response.contains("ORA-28003")) {
+
+                    onClickListener = new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == Dialog.BUTTON_POSITIVE) {
+                                showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                            }
+                        }
+                    };
+
+                    msgAlert.showMessage("!!ERROR: SFMS Password Policy Issue", response.trim(), onClickListener);
+                } else {
+
+                    onClickListener = new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == Dialog.BUTTON_POSITIVE) {
+                                showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
+                            }
+                        }
+                    };
+
+                    if (response.contains("ORA-28007")) {
+                        msgAlert.showMessage("!!ERROR: Password cannot be reused", response.trim(), onClickListener);
+                    } else if (response.contains("ORA-28002")) {
+                        msgAlert.showMessage("!!ERROR: Your password will expire soon", response.trim(), onClickListener);
+                    } else {
+                        msgAlert.showMessage("!!ERROR: Change Password", response.trim(), onClickListener);
+                    }
+
+                }
+            } catch (Exception e) {
+                MsgAlert msgAlert = new MsgAlert(SenateActivity.this);
+                msgAlert.showMessage("!!ERROR: Generic Exception. Please contact STSBAC.", "!!ERROR: " + e.getMessage() + ". Please Contact STSBAC.");
+                e.printStackTrace();
+            }
+
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -773,10 +908,8 @@ public abstract class SenateActivity extends Activity implements
                     // wifiAlert("WIFI IS CURRENTLY TURNED OFF",
                     // "**WARNING: Wifi is currently turned <font color='RED'>OFF</font>. This app cannot work without the Wifi connection. Do you want to turn it on?");
 
-                    new Toasty(this.getApplicationContext()).showMessage("turnWifiOn is commented out in Senate Activity for testing");
-
                     // so using turnwifi on directly
-                    //turnWifiOn();
+                    turnWifiOn();
                 }
             }
             ;
@@ -948,6 +1081,14 @@ public abstract class SenateActivity extends Activity implements
         InvApplication.timeoutType = -1;
         InvApplication.currentSenateActivity = this;
 
+        try {
+            if (this.defrmint == null) {
+                this.defrmint = AppProperties.getDefrmint();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (stContext == null)
             stContext = getApplicationContext();
         if (!((Object) this).getClass().getSimpleName().equalsIgnoreCase("LoginActivity"))
@@ -955,49 +1096,28 @@ public abstract class SenateActivity extends Activity implements
         setCurrentActivity(((Object) this).getClass().getSimpleName());
     }
 
-    public LoginStatus verifyLogin(String user_name, String password) {
+
+    public void verifyLogin(String user_name, String password) {
         LoginStatus loginStatus = new LoginStatus();
         try {
             // check network connection
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            JSONObject res = null;
 
             if (networkInfo != null && networkInfo.isConnected()) {
                 // fetch data
                 try {
                     // Get the URL from the properties
                     // if (loginStatusParam==null)
-                    String URL = LoginActivity.properties
-                            .get("WEBAPP_BASE_URL").toString();
-                    if (!URL.endsWith("/")) {
-                        URL += "/";
-                    }
+                    String URL = AppProperties.getBaseUrl();
 
-                    RequestFuture<JSONObject> future = RequestFuture.newFuture();
                     JsonInvObjectRequest req = new JsonInvObjectRequest(URL + "Login?user=" + user_name + "&pwd="
-                            + password + "&defrmint=" + defrmint, new JSONObject(), future, future);
+                            + password + "&defrmint=" + defrmint, new JSONObject(), verifyLoginListener);
                     /* Add your Requests to the RequestQueue to execute */
                     AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(req);
 
-
                     try {
-                        res = future.get();
-
-                        loginStatus.parseJSON(res);
-
-                        if (res == null) {
-
-                            noServerResponse("Senate Activity:2:null");
-                        }
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     } catch (NullPointerException e) {
-                        // TODO Auto-generated catch block
                         noServerResponse("Senate Activity:3:" + e.getMessage());
                     }
                 } catch (Exception e) {
@@ -1013,7 +1133,6 @@ public abstract class SenateActivity extends Activity implements
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
-        return loginStatus;
     }
 
     private static String activity;
@@ -1071,16 +1190,17 @@ public abstract class SenateActivity extends Activity implements
         toast.show();
     }
 
+
+    ///////CODE CHANGE NEEDED HERE
     @Override
     public void onChangePasswordOKButtonClicked(boolean oldPasswordRequired, String oldPassword, String newPassword,
                                                 String confirmPassword) {
         String username = LoginActivity.user_name.getText().toString();
-        final String oldPasswordF = oldPassword;
-        final String newPasswordF = newPassword;
-        final String confirmPasswordF = confirmPassword;
-        final boolean oldPasswordRequiredF = oldPasswordRequired;
-
-        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+        oldPasswordF = oldPassword;
+        newPasswordF = newPassword;
+        confirmPasswordF = confirmPassword;
+        oldPasswordRequiredF = oldPasswordRequired;
+        onClickListener = new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -1102,34 +1222,24 @@ public abstract class SenateActivity extends Activity implements
         }
 
         if (oldPasswordRequired) {
-            LoginStatus loginStatus = new LoginStatus();
-            loginStatus = verifyLogin(username, oldPassword);
-            if (!loginStatus.isUsernamePasswordValid()) {
-                if (loginStatus.getNustatus() == loginStatus.INVALID_USERNAME_OR_PASSWORD) {
-                    onClickListener = new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == dialog.BUTTON_POSITIVE) {
-                                showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
-                            }
-
-                        }
-
-                    };
-                    new MsgAlert(this).showMessage("!!ERROR: Invalid Old Password", "Invalid Old Password.", onClickListener);
-                } else {
-                    new MsgAlert(this).showMessage("!!ERROR: " + loginStatus.getDestatus(), loginStatus.getDestatus(), onClickListener);
-                }
-                return;
-            }
+            verifyLogin(username, oldPassword);
         }
+        else {
+            validateNewPassword(oldPasswordRequired, oldPassword, newPassword, confirmPassword, onClickListener);
+        }
+    }
+
+    private void validateNewPassword(boolean oldPasswordRequired, String oldPassword, String newPassword, String confirmPassword, DialogInterface.OnClickListener  onClickListener) {
+        final String oldPasswordF = oldPassword;
+        final String newPasswordF = newPassword;
+        final String confirmPasswordF = confirmPassword;
+        final boolean oldPasswordRequiredF = oldPasswordRequired;
 
         if (newPassword.isEmpty()) {
 
             new MsgAlert(this).showMessage("!!ERROR: New Password must be entered", "New Password must be entered.", onClickListener);
         } else if (newPassword.length() < 8) {
-            onClickListener = new DialogInterface.OnClickListener() {
+              onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1142,7 +1252,7 @@ public abstract class SenateActivity extends Activity implements
             new MsgAlert(this).showMessage("!!ERROR: New Password too short", "New password must be at least 8 characters in length.", onClickListener);
         } else if ((oldPasswordRequired && (newPassword.equalsIgnoreCase(oldPassword))) ||
                 (!oldPasswordRequired && (newPassword.trim().equalsIgnoreCase(LoginActivity.password.getText().toString().trim())))) {
-            onClickListener = new DialogInterface.OnClickListener() {
+             onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1159,7 +1269,7 @@ public abstract class SenateActivity extends Activity implements
         } else if (confirmPassword.equals(newPassword)) {
             changePassword(LoginActivity.user_name.getText().toString(), newPassword, oldPasswordRequired, oldPassword);
         } else {
-            onClickListener = new DialogInterface.OnClickListener() {
+              onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1174,98 +1284,25 @@ public abstract class SenateActivity extends Activity implements
         }
     }
 
+
     @Override
     public void onChangePasswordCancelButtonClicked() {
     }
 
+    ///CODE CHANGES NEEDED HERE.
     private void changePassword(String userName, String newPassword) {
         changePassword(userName, newPassword, false, null);
     }
 
     private void changePassword(String userName, String newPassword, boolean oldPasswordRequired, String oldPassword) {
-        Hashtable<String, String> postParams = new Hashtable<>();
-        postParams.put("user", userName);
-        postParams.put("newPassword", newPassword);
-        AsyncTask<String, String, String> resr1;
-        resr1 = new RequestTask(postParams).execute("ChangePassword");
-        String res = null;
-        try {
-            res = resr1.get().trim().toString();
-            final String oldPasswordF = oldPassword;
-            final boolean oldPasswordRequiredF = oldPasswordRequired;
-            MsgAlert msgAlert = new MsgAlert(this);
+        Map<String, String> params = new HashMap<>();
+        params.put("user", userName);
+        params.put("newPassword", newPassword);
 
-            if (res.trim().equalsIgnoreCase("OK") || res.trim().toUpperCase().startsWith("**WARNING:") || res.trim().toUpperCase().startsWith("***WARNING:")) {
-                if (res.trim().equalsIgnoreCase("OK")) {
-                    new Toasty(this, "Password has been changed.", Toast.LENGTH_SHORT).showMessage();
-                    if (changePasswordOnLogin && currentLoginActivity != null) {
-                        currentLoginActivity.login(userName, newPassword);
-                    }
-                } else {
-                    DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new Toasty(getApplicationContext(), "Password has been partially changed.", Toast.LENGTH_SHORT).showMessage();
-                        }
-                    };
-                    /** **WARNING message from the Server will remain a warning because the mobile app will still work
-                     *  but !!ERROR will display to the user to indicate a problem the user should call about
-                     */
-                    if (res.trim().toUpperCase().contains("**WARNING:(CHANGESSOPASSWORD)") || res.trim().toUpperCase().contains("**WARNING:(UPDATESSOUSERRESOURCE)")) {
-                        msgAlert.showMessage("!!ERROR: Part of Password Change failed. Please contact STSBAC.", "ERROR DETAILS:<br/>" + res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
-                    } else {
-                        msgAlert.showMessage("!!ERROR: Problem during Password Change. Please contact STSBAC.", "ERROR DETAILS:<br/>" + res.trim().replaceFirst("\\*\\*\\*WARNING:", "").replaceFirst("\\*\\*WARNING:", ""), onClickListener);
-                    }
-                }
-            } else if (res.contains("ORA-20003") || res.contains("ORA-20002") || res.contains("ORA-00988") || res.contains("ORA-28003")) {
+        StringInvRequest stringInvRequest = new StringInvRequest(Request.Method.POST, AppProperties.getBaseUrl() + "ChangePassword", params, changePasswordListener);
 
-                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == Dialog.BUTTON_POSITIVE) {
-                            showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
-                        }
-                    }
-                };
-
-                msgAlert.showMessage("!!ERROR: SFMS Password Policy Issue", res.trim(), onClickListener);
-            } else {
-
-                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == Dialog.BUTTON_POSITIVE) {
-                            showChangePasswordDialog(oldPasswordF, null, null, oldPasswordRequiredF, ChangePasswordDialog.NEWPASSWORDFOCUS);
-                        }
-                    }
-                };
-
-                if (res.contains("ORA-28007")) {
-                    msgAlert.showMessage("!!ERROR: Password cannot be reused", res.trim(), onClickListener);
-                } else if (res.contains("ORA-28002")) {
-                    msgAlert.showMessage("!!ERROR: Your password will expire soon", res.trim(), onClickListener);
-                } else {
-                    msgAlert.showMessage("!!ERROR: Change Password", res.trim(), onClickListener);
-                }
-
-            }
-        } catch (InterruptedException e) {
-            MsgAlert msgAlert = new MsgAlert(this);
-            msgAlert.showMessage("!!ERROR: Interruption Exception. Please contact STSBAC.", "!!ERROR: " + e.getMessage() + ". Please Contact STSBAC.");
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            MsgAlert msgAlert = new MsgAlert(this);
-            msgAlert.showMessage("!!ERROR: Execution Exception. Please contact STSBAC.", "!!ERROR: " + e.getMessage() + ". Please Contact STSBAC.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            MsgAlert msgAlert = new MsgAlert(this);
-            msgAlert.showMessage("!!ERROR: Generic Exception. Please contact STSBAC.", "!!ERROR: " + e.getMessage() + ". Please Contact STSBAC.");
-            e.printStackTrace();
-        }
-
-
+        /* Add your Requests to the RequestQueue to execute */
+        AppSingleton.getInstance(InvApplication.getAppContext()).addToRequestQueue(stringInvRequest);
     }
 
     public void noServerResponse(String testLocation) {

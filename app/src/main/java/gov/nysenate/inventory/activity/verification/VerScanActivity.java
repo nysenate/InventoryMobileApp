@@ -818,8 +818,6 @@ public class VerScanActivity extends SenateActivity implements
          * okButtonListener = new OKButtonListener(dialog);
          * positiveButton.setOnClickListener(okButtonListener);
          */
-
-        // newInvDialog.getDialog().setCanceledOnTouchOutside(false);
     }
 
     public void nusenateDidNotExist(final String nusenate) {

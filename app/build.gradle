@@ -6,8 +6,8 @@ android {
         applicationId "gov.nysenate.myapplication"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 12
-        versionName "1.6"
+        versionCode 13
+        versionName "1.6.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
