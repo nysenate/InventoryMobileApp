@@ -21,12 +21,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.NavUtils;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -135,42 +138,42 @@ public abstract class SenateActivity extends Activity implements
     // The Check Internet Service will check for
     // connections and disconnections.
 
-/*   --- NEED TO ADD THIS CODING
+    /*   --- NEED TO ADD THIS CODING
 
- */
-Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
+     */
+    Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
 
-    @Override
-    public void onResponse(JSONObject response) {
-        String username = LoginActivity.user_name.getText().toString();
+        @Override
+        public void onResponse(JSONObject response) {
+            String username = LoginActivity.user_name.getText().toString();
 
-        loginStatus.setFromJSON(response);
+            loginStatus.setFromJSON(response);
 
-        if (response == null) {
-            noServerResponse("Senate Activity:2:null");
-        }
-
-        if (!loginStatus.isUsernamePasswordValid()) {
-            if (loginStatus.getNustatus() == loginStatus.INVALID_USERNAME_OR_PASSWORD) {
-                onClickListener = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == dialog.BUTTON_POSITIVE) {
-                            SenateActivity.this.showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
-                        }
-                    }
-               };
-                new MsgAlert(SenateActivity.this).showMessage("!!ERROR: Invalid Old Password", "Invalid Old Password.", onClickListener);
-            } else {
-                new MsgAlert(SenateActivity.this).showMessage("!!ERROR: " + loginStatus.getDestatus(), loginStatus.getDestatus(), onClickListener);
+            if (response == null) {
+                noServerResponse("Senate Activity:2:null");
             }
-            return;
-        }
-        validateNewPassword(oldPasswordRequiredF, oldPasswordF, newPasswordF, confirmPasswordF, onClickListener);
 
-   }
-  };
+            if (!loginStatus.isUsernamePasswordValid()) {
+                if (loginStatus.getNustatus() == loginStatus.INVALID_USERNAME_OR_PASSWORD) {
+                    onClickListener = new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == dialog.BUTTON_POSITIVE) {
+                                SenateActivity.this.showChangePasswordDialog("", newPasswordF, confirmPasswordF, oldPasswordRequiredF, ChangePasswordDialog.OLDPASSWORDFOCUS);
+                            }
+                        }
+                    };
+                    new MsgAlert(SenateActivity.this).showMessage("!!ERROR: Invalid Old Password", "Invalid Old Password.", onClickListener);
+                } else {
+                    new MsgAlert(SenateActivity.this).showMessage("!!ERROR: " + loginStatus.getDestatus(), loginStatus.getDestatus(), onClickListener);
+                }
+                return;
+            }
+            validateNewPassword(oldPasswordRequiredF, oldPasswordF, newPasswordF, confirmPasswordF, onClickListener);
+
+        }
+    };
 
     Response.Listener changePasswordListener = new Response.Listener<String>() {
         public void onResponse(String response) {
@@ -1096,7 +1099,6 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
         setCurrentActivity(((Object) this).getClass().getSimpleName());
     }
 
-
     public void verifyLogin(String user_name, String password) {
         LoginStatus loginStatus = new LoginStatus();
         try {
@@ -1162,6 +1164,32 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
         return index > -1 ? true : false;
     }
 
+    protected void returnToField(final TextView textView, long maxTime) {
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // new Toasty(SenateActivity.this.getApplicationContext()).showMessage("Before Text Changed:"+charSequence.toString()+" "+i+","+i1+","+i2);
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*InputMethodManager mgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                textView.requestFocus();
+                mgr.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
+                new Toasty(SenateActivity.this.getApplicationContext()).showMessage("!!!Text Changed:"+charSequence.toString()+" "+i+","+i1+","+i2);*/
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        };
+
+        textView.addTextChangedListener(textWatcher);
+        new Toasty(SenateActivity.this.getApplicationContext()).showMessage("Watching textfield");
+
+    }
+
     protected void displayInvalidEmployeeMessage(String name) {
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
@@ -1223,13 +1251,12 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
 
         if (oldPasswordRequired) {
             verifyLogin(username, oldPassword);
-        }
-        else {
+        } else {
             validateNewPassword(oldPasswordRequired, oldPassword, newPassword, confirmPassword, onClickListener);
         }
     }
 
-    private void validateNewPassword(boolean oldPasswordRequired, String oldPassword, String newPassword, String confirmPassword, DialogInterface.OnClickListener  onClickListener) {
+    private void validateNewPassword(boolean oldPasswordRequired, String oldPassword, String newPassword, String confirmPassword, DialogInterface.OnClickListener onClickListener) {
         final String oldPasswordF = oldPassword;
         final String newPasswordF = newPassword;
         final String confirmPasswordF = confirmPassword;
@@ -1239,7 +1266,7 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
 
             new MsgAlert(this).showMessage("!!ERROR: New Password must be entered", "New Password must be entered.", onClickListener);
         } else if (newPassword.length() < 8) {
-              onClickListener = new DialogInterface.OnClickListener() {
+            onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1252,7 +1279,7 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
             new MsgAlert(this).showMessage("!!ERROR: New Password too short", "New password must be at least 8 characters in length.", onClickListener);
         } else if ((oldPasswordRequired && (newPassword.equalsIgnoreCase(oldPassword))) ||
                 (!oldPasswordRequired && (newPassword.trim().equalsIgnoreCase(LoginActivity.password.getText().toString().trim())))) {
-             onClickListener = new DialogInterface.OnClickListener() {
+            onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1269,7 +1296,7 @@ Response.Listener verifyLoginListener = new Response.Listener<JSONObject>() {
         } else if (confirmPassword.equals(newPassword)) {
             changePassword(LoginActivity.user_name.getText().toString(), newPassword, oldPasswordRequired, oldPassword);
         } else {
-              onClickListener = new DialogInterface.OnClickListener() {
+            onClickListener = new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

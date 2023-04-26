@@ -26,6 +26,8 @@
         android:layout_marginTop="5sp"
         android:entries="@array/search_searchby"
         android:gravity="center"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -84,9 +86,8 @@
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/autoCompleteTextView1"
-        android:layout_alignLeft="@+id/autoCompleteTextView1"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="80dp"
+        tools:ignore="UnknownIdInLayout">
 
         <TableLayout
             android:id="@+id/tableLayout1"

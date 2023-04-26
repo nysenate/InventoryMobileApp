@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".UpgradeActivity">
+    tools:context="gov.nysenate.inventory.activity.UpgradeActivity">
 
     <ProgressBar
         android:id="@+id/pbDownloadProgress"

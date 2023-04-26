@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="20dp"
-    tools:context=".Pickup1">
+    tools:context="gov.nysenate.inventory.activity.Pickup1">
 
     <TextView
         android:id="@+id/textView1"

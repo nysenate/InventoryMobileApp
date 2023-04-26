@@ -214,7 +214,7 @@ public class Verification extends SenateActivity {
 
         autoCompleteTextView1 = (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 
-        loc_code = (EditText) findViewById(R.id.preferencePWD);
+        //loc_code = (EditText) findViewById(R.id.preferencePWD);
         // code for the autocomplete arraylist of location
 
         // Button Setup
@@ -235,7 +235,7 @@ public class Verification extends SenateActivity {
         getLocCodeList();
         // code for textwatcher
 
-        loc_code = (EditText) findViewById(R.id.preferencePWD);
+        //loc_code = (EditText) findViewById(R.id.preferencePWD);
 
         if (filterTextWatcher == null) {
             Log.i(this.getClass().getName(), "filterTextWatcher IS NULL");
@@ -260,7 +260,7 @@ public class Verification extends SenateActivity {
                     }
                 });
 
-        loc_details = (TextView) findViewById(R.id.textView2);
+        //loc_details = (TextView) findViewById(R.id.textView2);
     }
 
     @Override

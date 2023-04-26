@@ -1,25 +1,26 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/changeWifiCountsMenu"
         android:enabled="true"
         android:orderInCategory="991"
-        android:showAsAction="never"
         android:title="Wifi Found/Lost Counts"
-        android:visible="true"></item>
+        android:visible="true"
+        app:showAsAction="never"></item>
     <item
         android:id="@+id/resetWifiCountsMenu"
         android:enabled="true"
         android:orderInCategory="992"
-        android:showAsAction="never"
         android:title="Reset Wifi Found/Lost Counts"
-        android:visible="true"></item>
+        android:visible="true"
+        app:showAsAction="never"></item>
     <item
         android:id="@+id/aboutApp"
         android:enabled="true"
         android:orderInCategory="1000"
-        android:showAsAction="never"
         android:title="@string/menu_about_title"
-        android:visible="true"></item>
+        android:visible="true"
+        app:showAsAction="never"></item>
 
 </menu>

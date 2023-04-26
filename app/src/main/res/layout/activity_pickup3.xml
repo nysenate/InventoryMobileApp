@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="startCommentsSpeech"
-    tools:context=".Pickup3">
+    tools:context="gov.nysenate.inventory.activity.Pickup3">
 
     <TextView
         android:id="@+id/textView1"

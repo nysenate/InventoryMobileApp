@@ -323,6 +323,9 @@ public class SearchActivity extends SenateActivity {
                 imm.hideSoftInputFromWindow(
                         barcode.getWindowToken(), 0);
 
+                if (!barcode.hasFocus()) {
+                    barcode.requestFocus();
+                }
             }
         };
 
@@ -551,10 +554,13 @@ public class SearchActivity extends SenateActivity {
 
     }
 
-    /*
-     * @Override public void onBackPressed() { super.onBackPressed();
-     * overridePendingTransition(R.anim.in_left, R.anim.out_right); }
-     */
+
+     @Override public void onBackPressed() {
+        new Toasty(this).showMessage("Back Button PRESSED!!!");
+        super.onBackPressed();
+     //overridePendingTransition(R.anim.in_left, R.anim.out_right);
+    }
+
 
     @Override
     public void startTimeout(int timeoutType) {

@@ -362,6 +362,10 @@ public class VerScanActivity extends SenateActivity implements
         }
     };
 
+    public void testVerButton(View view) {
+        new Toasty(getApplicationContext()).showMessage("FOCCUS: "+ getApplicationContext().getResources().getResourceName(getCurrentFocus().getId()));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,6 +387,14 @@ public class VerScanActivity extends SenateActivity implements
         listView = (ListView) findViewById(R.id.preferenceList);
         spinSortList = (Spinner) findViewById(R.id.spinSortList);
         spinSortList.setOnItemSelectedListener(new SortChangedListener());
+        listView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    barcode.requestFocus();
+                }
+            }
+        });
         String[] spinnerList = getResources().getStringArray(
                 R.array.verify_sort);
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this,
@@ -491,6 +503,8 @@ public class VerScanActivity extends SenateActivity implements
                 return true;
             }
         });
+
+
     }
 
     @Override
@@ -663,6 +677,8 @@ public class VerScanActivity extends SenateActivity implements
                         Context context = getApplicationContext();
                         CharSequence text = "Already Scanned  ";
                         int duration = Toast.LENGTH_SHORT;
+
+                        playSound(R.raw.ftsnd);
 
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);

@@ -40,6 +40,7 @@ import gov.nysenate.inventory.model.Transaction;
 import gov.nysenate.inventory.util.AppProperties;
 import gov.nysenate.inventory.util.HttpUtils;
 import gov.nysenate.inventory.util.Serializer;
+import gov.nysenate.inventory.util.Toasty;
 
 public class Pickup2 extends SenateActivity {
     public ClearableEditText senateTagTV;
@@ -202,6 +203,14 @@ public class Pickup2 extends SenateActivity {
         origin = Serializer.deserialize(getIntent().getStringExtra("origin"), Location.class).get(0);
         destination = Serializer.deserialize(getIntent().getStringExtra("destination"), Location.class).get(0);
         pickedUpItemsLV = (ListView) findViewById(R.id.listView1);
+        pickedUpItemsLV.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    senateTagTV.requestFocus();
+                }
+            }
+        });
         senateTagTV = (ClearableEditText) findViewById(R.id.etNusenate);
         senateTagTV.addTextChangedListener(senateTagTextWatcher);
         pickupCount = 0;
@@ -219,12 +228,33 @@ public class Pickup2 extends SenateActivity {
         continueBtn.getBackground().setAlpha(255);
         cancelBtn = (Button) findViewById(R.id.btnPickup2Cancel);
         cancelBtn.getBackground().setAlpha(255);
+        cancelBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    senateTagTV.requestFocus();
+                }
+            }
+        });
+
+        continueBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    senateTagTV.requestFocus();
+                }
+            }
+        });
 
         try {
             Pickup1.progBarPickup1.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void testButton(View view) {
+       new Toasty(getApplicationContext()).showMessage("FOCCUS: "+ context.getResources().getResourceName(getCurrentFocus().getId()));
     }
 
     @Override
@@ -278,6 +308,8 @@ public class Pickup2 extends SenateActivity {
                     CharSequence text = "Already Scanned  ";
                     int duration = Toast.LENGTH_SHORT;
 
+                    playSound(R.raw.ftsnd);
+
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -293,6 +325,10 @@ public class Pickup2 extends SenateActivity {
                 // notify the adapter that the data in the list is changed and
                 // refresh the view
                 updateChanges();
+
+                if (!senateTagTV.hasFocus()) {
+                    senateTagTV.requestFocus();
+                }
             }
         }
     };

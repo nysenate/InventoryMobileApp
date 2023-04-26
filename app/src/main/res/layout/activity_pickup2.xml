@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/pad20dp"
-    tools:context=".Pickup2Activity">
+    tools:context="gov.nysenate.inventory.activity.Pickup2">
 
     <ListView
         android:id="@+id/listView1"
